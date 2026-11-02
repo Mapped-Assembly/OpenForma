@@ -212,7 +212,7 @@ def _process_cases(document: ProcessIR) -> list[BenchmarkCase]:
     graph = analyze_process(document)
     no_throughput = all(stream.quantity is None for stream in document.streams)
     cases.append(_case(
-        "process.conceptual-throughput", "process", "unknown" if no_throughput else "declared",
+        "process.conceptual-throughput", "process", "unknown",
         "unknown" if no_throughput else "declared",
         "The conceptual air-to-fuel graph supplies no production, rate, or yield estimate.",
     ))
@@ -280,7 +280,7 @@ def _thermal_cases(document: ThermalIR) -> list[BenchmarkCase]:
     nominal = analyze_thermal(heater).results[0]
     cases.append(_case(
         "thermal.heater-nominal", "thermal", "30",
-        str(Decimal(nominal.zone_temperature_celsius).normalize()) if nominal.zone_temperature_celsius is not None else nominal.status,
+        format(Decimal(nominal.zone_temperature_celsius).normalize(), "f") if nominal.zone_temperature_celsius is not None else nominal.status,
         "Declared 20 W, 20 degC ambient, and 0.5 K/W give 30 degC in a one-zone screening model.",
     ))
     weaker = heater.model_copy(deep=True)
@@ -288,7 +288,7 @@ def _thermal_cases(document: ThermalIR) -> list[BenchmarkCase]:
     reduced = analyze_thermal(weaker).results[0]
     cases.append(_case(
         "thermal.heater-reduced", "thermal", "25",
-        str(Decimal(reduced.zone_temperature_celsius).normalize()) if reduced.zone_temperature_celsius is not None else reduced.status,
+        format(Decimal(reduced.zone_temperature_celsius).normalize(), "f") if reduced.zone_temperature_celsius is not None else reduced.status,
         "The same bounded screening model gives 25 degC for a declared 10 W load.",
     ))
     cases.append(_case(
