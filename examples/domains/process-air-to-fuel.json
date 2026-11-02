@@ -313,5 +313,37 @@
       ]
     }
   ],
-  "evidence": []
+  "evidence": [],
+  "steps": [
+    {
+      "step_id": "capture_carbon",
+      "operation_id": "capture"
+    },
+    {
+      "step_id": "electrolyze_water",
+      "operation_id": "electrolyzer"
+    },
+    {
+      "step_id": "synthesize_methanol",
+      "operation_id": "methanol_reactor",
+      "depends_on": [
+        "capture_carbon",
+        "electrolyze_water"
+      ]
+    },
+    {
+      "step_id": "convert_product",
+      "operation_id": "conversion",
+      "depends_on": [
+        "synthesize_methanol"
+      ]
+    },
+    {
+      "step_id": "store_product",
+      "operation_id": "product_storage",
+      "depends_on": [
+        "convert_product"
+      ]
+    }
+  ]
 }
