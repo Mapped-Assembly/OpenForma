@@ -231,6 +231,51 @@ class ProcessIRTests(unittest.TestCase):
         self.assertIn("link_revision", [f.code for f in stale.composition])
         self.assertEqual([], stale.local[process.artifact_id])
 
+    def test_typed_equipment_and_electrical_interface_links(self) -> None:
+        """Process ports can refer to external physical interfaces without owning them."""
+        from forma_core.domains.compatibility import import_hardware_ir
+
+        legacy = import_hardware_ir(load("motor-hardware.json"), product_id="motor")
+        native = [parse_domain(payload) for payload in legacy.artifacts.values()]
+        mechanical = next(doc for doc in native if doc.domain == "mechanical")
+        electrical = next(doc for doc in native if doc.domain == "electrical")
+        irrigation = ProcessIR.model_validate(load("process-irrigation.json"))
+        equipment_link = DomainLink(
+            link_id="pump-equipment", kind="uses_equipment",
+            source=LinkEndpoint(artifact_id=irrigation.artifact_id, revision=1,
+                                object_id="pump"),
+            target=LinkEndpoint(artifact_id=mechanical.artifact_id, revision=1,
+                                object_id="M1"),
+            fact_owners={"process.operation": "process", "geometry": "mechanical"},
+        )
+        bundle = compose_product("demo", [irrigation, mechanical],
+                                 links=[equipment_link])
+        self.assertTrue(validate_product(bundle).is_valid)
+
+        bad = equipment_link.model_copy(deep=True)
+        bad.source.port_id = "out"
+        invalid = validate_product(compose_product("demo", [irrigation, mechanical],
+                                                   links=[bad]))
+        self.assertIn("process_link_port", [f.code for f in invalid.composition])
+
+        air = ProcessIR.model_validate(load("process-air-to-fuel.json"))
+        power_link = DomainLink(
+            link_id="electrolyzer-power", kind="uses_electrical_port",
+            source=LinkEndpoint(artifact_id=air.artifact_id, revision=1,
+                                object_id="electrolyzer", port_id="power_in"),
+            target=LinkEndpoint(artifact_id=electrical.artifact_id, revision=1,
+                                object_id="M1", port_id="VCC"),
+            fact_owners={"process.operation": "process", "power": "electrical"},
+        )
+        report = validate_product(compose_product("demo", [air, electrical],
+                                                  links=[power_link]))
+        self.assertTrue(report.is_valid)
+        bad_power = power_link.model_copy(deep=True)
+        bad_power.source.port_id = "water_in"
+        report = validate_product(compose_product("demo", [air, electrical],
+                                                  links=[bad_power]))
+        self.assertIn("process_link_port", [f.code for f in report.composition])
+
     def test_legacy_hardware_export_is_explicitly_lossy(self) -> None:
         """HardwareIR cannot silently absorb process design or material streams."""
         process = ProcessIR.model_validate(load("process-irrigation.json"))
