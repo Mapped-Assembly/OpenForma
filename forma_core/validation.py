@@ -1,4 +1,5 @@
 from typing import List, Dict, Set, Optional
+from forma_core.firmware.validation import firmware_target_rules
 from forma_core.fluidics import FluidicSystem, validate_fluidic_system
 from forma_core.workspaces.projects.models import (
     ComponentInstance,
@@ -384,10 +385,11 @@ def validate_fluidics(system: FluidicSystem | None) -> List[ValidationIssue]:
 
 
 def validate_project(project: HardwareIntermediateRepresentation) -> List[ValidationIssue]:
-    """Validate the existing electrical contract plus optional fluidics."""
+    """Validate the existing electrical contract plus optional fluidics and firmware targets."""
     return [
         *validate_circuit(project.components, project.nets, project.requirements),
         *validate_fluidics(project.fluidic_system),
+        *firmware_target_rules(project),
     ]
 
 

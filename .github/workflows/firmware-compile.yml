@@ -1,0 +1,40 @@
+name: Firmware compile checks
+
+on:
+  pull_request:
+    paths:
+      - 'forma_core/firmware/**'
+      - 'tests/firmware/**'
+      - '.github/workflows/firmware-compile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  firmware-compile:
+    strategy:
+      fail-fast: false
+      matrix:
+        board: [esp32dev, nanoatmega328]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install package and PlatformIO Core
+        run: python -m pip install -e . platformio
+      - name: Cache PlatformIO platforms and toolchains
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio/platform
+            ~/.platformio/packages
+          key: firmware-compile-${{ matrix.board }}-${{ runner.os }}-${{ hashFiles('.github/workflows/firmware-compile.yml') }}-${{ hashFiles('tests/firmware/golden/**/platformio.ini') }}
+          restore-keys: |
+            firmware-compile-${{ matrix.board }}-${{ runner.os }}-
+      - name: Compile generated scaffold (${{ matrix.board }})
+        run: python scripts/quality/compile_firmware_scaffolds.py --board ${{ matrix.board }}

@@ -90,6 +90,31 @@ Use `forma.generate_project` only when the user wants Forma's separately configu
 python <skill-directory>/scripts/forma.py generate "ESP32 plant monitor with an OLED" --output "$PROJECT_DIR/forma-project.json"
 ```
 
+## Firmware scaffold
+
+After a project compiles, generate a deterministic PlatformIO firmware
+scaffold — pin defines, bus initialization, driver stubs, and a build config
+matched to the wiring. Call `forma.generate_firmware` with the same
+`project_ir` you compiled (the optional `firmware` field pins the board;
+otherwise the board is inferred from the controller part number), then write
+each returned file under `$PROJECT_DIR/firmware/` beside the manifest,
+preserving the returned paths:
+
+```bash
+python <skill-directory>/scripts/forma.py firmware "$PROJECT_DIR/compiled-project.json" --output "$PROJECT_DIR/firmware"
+```
+
+(With the native MCP tool, write `result.files` to disk yourself.) The tool
+returns non-blocking `warnings` — report them, and treat every file as a
+generated starting point for the host agent to extend, never finished control
+logic. Regenerate instead of hand-editing.
+
+The scaffold is also downloadable from the project's `/exports` manifest: the
+`firmware` entry carries a `sha256` and a content-addressed
+`/exports/firmware/{sha256}` URL for the single zip. The digest is stable for
+the same IR, so re-downloading after unrelated project changes returns
+identical bytes.
+
 ## Output integrity
 
 Keep compiled JSON intact inside `PROJECT_DIR`. Do not expose credentials. Do not claim that diagrams, prices, availability, compatibility, or clearances were physically verified unless returned evidence establishes that.

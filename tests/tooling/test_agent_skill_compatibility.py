@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 import unittest
 from pathlib import Path
@@ -44,6 +45,45 @@ class AgentSkillCompatibilityTests(unittest.TestCase):
 
         self.assertEqual("nemoclaw", args.authoring_agent)
         self.assertEqual("compiled.json", args.output)
+
+    def test_bundled_client_firmware_subcommand_writes_scaffold_files(self) -> None:
+        script = SKILL_ROOT / "scripts" / "forma.py"
+        spec = importlib.util.spec_from_file_location("forma_skill_client_firmware", script)
+        module = importlib.util.module_from_spec(spec)
+        assert spec and spec.loader
+        spec.loader.exec_module(module)
+
+        scaffold = {
+            "target": {"board_id": "esp32dev", "framework": "arduino", "platform": "espressif32"},
+            "files": {
+                "platformio.ini": "[env:esp32dev]\n",
+                "include/pins.h": "#define PIN_SDA 21\n",
+                "src/main.cpp": "int main() { return 0; }\n",
+                "README.md": "# Firmware scaffold\n",
+            },
+            "warnings": ["no MCU in BOM — generated empty scaffold"],
+        }
+
+        with TemporaryDirectory() as temporary_directory:
+            project_manifest = Path(temporary_directory) / "compiled-project.json"
+            project_manifest.write_text(json.dumps({"project_ir": {"hardware_ir_version": "0.2"}}), encoding="utf-8")
+            output_root = Path(temporary_directory) / "firmware"
+            with patch.object(module, "call_tool", return_value=scaffold) as call:
+                exit_code = module.main(
+                    ["firmware", str(project_manifest), "--output", str(output_root)]
+                )
+
+            self.assertEqual(0, exit_code)
+            call.assert_called_once_with(
+                "forma.generate_firmware",
+                {"project_ir": {"hardware_ir_version": "0.2"}},
+                url=None,
+                timeout=None,
+            )
+            for relative_path, content in scaffold["files"].items():
+                written = output_root / relative_path
+                self.assertTrue(written.is_file(), relative_path)
+                self.assertEqual(content, written.read_text(encoding="utf-8"))
 
     def test_project_allocator_uses_a_generated_uuid_under_the_workspace(self) -> None:
         script = SKILL_ROOT / "scripts" / "create_project.py"

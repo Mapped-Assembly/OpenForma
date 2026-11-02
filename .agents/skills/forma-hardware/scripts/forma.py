@@ -210,6 +210,25 @@ def _write_compiled_artifacts(project_path: Path, compiled: dict[str, Any]) -> l
     return references
 
 
+def _write_firmware_files(result: Any, output: str | None) -> None:
+    """Materialize the firmware scaffold's returned files under --output."""
+    if not isinstance(result, dict) or not isinstance(result.get("files"), dict):
+        raise FormaClientError("Forma did not return firmware scaffold files.")
+    if not output or output == "-":
+        sys.stdout.write(json.dumps(result, indent=2, sort_keys=True) + "\n")
+        return
+    root = Path(output)
+    for path_value, content in sorted(result["files"].items()):
+        artifact_path = root / path_value
+        if ".." in Path(path_value).parts or Path(path_value).is_absolute():
+            raise FormaClientError(f"Firmware scaffold path escapes the output directory: {path_value}")
+        artifact_path.parent.mkdir(parents=True, exist_ok=True)
+        artifact_path.write_text(content, encoding="utf-8")
+        print(artifact_path)
+    for warning in result.get("warnings") or []:
+        print(f"forma: firmware warning: {warning}", file=sys.stderr)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Call Forma from any Agent Skills host.")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -228,13 +247,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     validate_parser = commands.add_parser("validate")
     validate_parser.add_argument("project")
+    firmware_parser = commands.add_parser("firmware")
+    firmware_parser.add_argument("project")
     generate_parser = commands.add_parser("generate")
     generate_parser.add_argument("prompt")
     generate_parser.add_argument("--workflow", choices=("default", "web_research"), default="default")
     call_parser = commands.add_parser("call")
     call_parser.add_argument("tool")
     call_parser.add_argument("--arguments", default="{}")
-    for command_parser in (tools_parser, compile_parser, validate_parser, generate_parser, call_parser):
+    for command_parser in (tools_parser, compile_parser, validate_parser, firmware_parser, generate_parser, call_parser):
         command_parser.add_argument("--url")
         command_parser.add_argument("--timeout", type=float)
         command_parser.add_argument("--output")
@@ -250,6 +271,8 @@ def run(args: argparse.Namespace) -> Any:
     if args.command == "validate":
         project = _load(args.project)
         return call_tool("forma.validate_circuit", {"components": project.get("components", []), "nets": project.get("nets", [])}, **options)
+    if args.command == "firmware":
+        return call_tool("forma.generate_firmware", {"project_ir": _load(args.project)}, **options)
     if args.command == "generate":
         return call_tool("forma.generate_project", {"prompt": args.prompt, "workflow": args.workflow}, **options)
     arguments = json.loads(args.arguments)
@@ -262,6 +285,9 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
         result = run(args)
+        if args.command == "firmware":
+            _write_firmware_files(result, args.output)
+            return 0
         if args.command == "compile" and args.update_project:
             same_output = (
                 args.output

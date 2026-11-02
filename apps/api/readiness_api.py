@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import hashlib
+import io
 from pathlib import Path
 import re
 from tempfile import TemporaryDirectory
 from typing import Any
 from uuid import UUID
+import zipfile
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel, ConfigDict, Field
@@ -20,6 +22,7 @@ from forma_core.database import (
     get_project_identity,
     initiate_project_build,
 )
+from forma_core.firmware import FirmwareScaffold, UnknownBoardError, generate_firmware
 from forma_core.persistence.project_artifacts import ProjectArtifactStorage, ProjectArtifactStorageError
 from forma_core.workspaces.projects.cad_generation import (
     CadGenerationError,
@@ -39,6 +42,7 @@ from forma_core.workspaces.projects.fabrication.models import (
     SliceRequest as FabricationSliceRequest,
 )
 from forma_core.workspaces.projects.fabrication.slicing import slice_project
+from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
 from forma_core.workspaces.projects.state import ProjectArtifact, ProjectStateError
 from forma_core.workspaces.readiness import (
     BuildAnywayRequest,
@@ -55,6 +59,7 @@ from forma_core.workspaces.workflow import WorkflowStateError
 router = APIRouter(prefix="/projects/{project_id}", tags=["project-readiness"])
 GCODE_MEDIA_TYPE = "text/x.gcode"
 STEP_MEDIA_TYPE = "model/step"
+FIRMWARE_MEDIA_TYPE = "application/zip"
 MESH_EXPORT_MEDIA_TYPES = {
     "stl": "model/stl",
     "3mf": "model/3mf",
@@ -233,6 +238,56 @@ def _gcode_preview(content: bytes) -> str:
     return "\n".join(text.splitlines()[:100])[:12000]
 
 
+def _firmware_scaffold_zip(scaffold: FirmwareScaffold) -> bytes:
+    """Render a scaffold as one deterministic zip so its sha256 is content-addressed.
+
+    Fixed timestamps and sorted entries keep the bytes a pure function of the
+    scaffold — regenerating the same IR must reproduce the same digest.
+    """
+
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+        for path in sorted(scaffold.files):
+            info = zipfile.ZipInfo(path, date_time=(1980, 1, 1, 0, 0, 0))
+            info.external_attr = 0o644 << 16
+            archive.writestr(info, scaffold.files[path])
+    return buffer.getvalue()
+
+
+def _firmware_export_descriptor(project_key: str, owner_user_id: str) -> dict[str, Any] | None:
+    """Describe the project's deterministic firmware scaffold, or None when absent.
+
+    Absent means no persisted IR, an unresolvable board, or an empty no-MCU
+    scaffold — firmware is a best-effort manifest entry, never a hard failure.
+    """
+
+    try:
+        revision = get_latest_project_revision(project_key, owner_user_id)
+    except ProjectStateError:
+        return None
+    state = getattr(revision, "state", None)
+    ir = state if isinstance(state, HardwareIntermediateRepresentation) else None
+    if ir is None:
+        return None
+    try:
+        scaffold = generate_firmware(ir)
+    except UnknownBoardError:
+        return None
+    if scaffold.target is None:
+        return None
+    content = _firmware_scaffold_zip(scaffold)
+    digest = hashlib.sha256(content).hexdigest()
+    return {
+        "filename": "firmware.zip",
+        "sha256": digest,
+        "size_bytes": len(content),
+        "media_type": FIRMWARE_MEDIA_TYPE,
+        "board_id": scaffold.target.board_id,
+        "download_url": f"/projects/{project_key}/exports/firmware/{digest}",
+        "_content": content,
+    }
+
+
 @router.get("/readiness", response_model=ReadinessResult)
 def evaluate_readiness_endpoint(
     project_id: UUID,
@@ -315,6 +370,7 @@ def list_project_exports_endpoint(
             mesh_exports[format_name]["download_url"] = (
                 f"/projects/{project_key}/exports/mesh/{format_name}/{descriptor['sha256']}"
             )
+    firmware_descriptor = _firmware_export_descriptor(project_key, _owner(user))
     return {
         "project_id": project_key,
         "step": {
@@ -324,6 +380,11 @@ def list_project_exports_endpoint(
             "download_url": f"/projects/{project_key}/exports/step/{digest}",
         },
         "mesh_exports": mesh_exports,
+        "firmware": (
+            {key: value for key, value in firmware_descriptor.items() if key != "_content"}
+            if firmware_descriptor
+            else None
+        ),
         "printers": ender_exports.capabilities() if ender_exports.enabled() else demo_printer_capabilities(),
     }
 
@@ -344,6 +405,46 @@ def download_project_step_endpoint(
         content,
         media_type=STEP_MEDIA_TYPE,
         headers={"Content-Disposition": 'attachment; filename="assembly.step"', "Cache-Control": "private, no-store"},
+    )
+
+
+@router.get("/exports/firmware/{sha256}")
+def download_project_firmware_endpoint(
+    project_id: UUID,
+    sha256: str,
+    user: UserContext = Depends(require_user_context),
+) -> Response:
+    """Download the authenticated project's content-addressed firmware scaffold zip."""
+
+    project_key = str(project_id)
+    descriptor = _firmware_export_descriptor(project_key, _owner(user))
+    digest = sha256.strip().lower()
+    if descriptor is None or digest != descriptor["sha256"]:
+        raise _export_error(
+            status.HTTP_404_NOT_FOUND,
+            "firmware_not_found",
+            "The requested firmware artifact is not attached to this project.",
+        )
+    content = descriptor["_content"]
+    if hashlib.sha256(content).hexdigest() != digest:
+        raise _export_error(
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            "firmware_integrity_failed",
+            "The firmware artifact failed its integrity check.",
+        )
+    try:
+        # Best-effort cache of the regenerated zip; generation is deterministic,
+        # so a storage outage never blocks the download.
+        ProjectArtifactStorage().put(project_key, digest, content, FIRMWARE_MEDIA_TYPE)
+    except (ProjectArtifactStorageError, OSError, ValueError):
+        pass
+    return Response(
+        content,
+        media_type=FIRMWARE_MEDIA_TYPE,
+        headers={
+            "Content-Disposition": f'attachment; filename="{descriptor["filename"]}"',
+            "Cache-Control": "private, no-store",
+        },
     )
 
 
