@@ -330,6 +330,26 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
                 hosts = {c.id for c in system.channels + system.chambers}
                 if link.source.object_id not in compartments or link.target.object_id not in hosts:
                     add("host_type", link.link_id, "Expected a biological compartment and fluidic channel/chamber.")
+    # Declared thermal source references require explicit composition links.
+    # Local ThermalIR validity remains independent of provider availability.
+    for thermal_artifact_id, thermal_doc in documents.items():
+        if thermal_doc.domain != "thermal":
+            continue
+        for load in thermal_doc.loads:
+            for origin in load.references:
+                if not any(
+                    link.kind == "thermal_source"
+                    and link.source.artifact_id == thermal_artifact_id
+                    and link.source.object_id == load.load_id
+                    and link.target.artifact_id == origin.artifact_id
+                    and link.target.object_id == origin.entity_id
+                    and link.target.port_id == origin.port_id
+                    and link.target.revision == origin.revision
+                    for link in bundle.manifest.links
+                ):
+                    add("thermal_link_missing", load.load_id,
+                        f"Declare a revision-pinned thermal_source link for {origin.domain} "
+                        f"'{origin.entity_id}' in '{origin.artifact_id}'.")
     # Existing BiologicalExperiment host IDs are cross-domain, never local failures.
     for artifact_id, doc in documents.items():
         if doc.domain != "biological":
