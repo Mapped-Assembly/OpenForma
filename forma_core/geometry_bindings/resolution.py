@@ -282,7 +282,8 @@ def validate_manifest_against_product(
     bundle = ProductBundle.model_validate(product)
     domain_registry = get_registry(registry)
     report = validate_manifest(manifest)
-    report.input_sha256 = fingerprint({"bindings": manifest, "domain_manifest": bundle.manifest})
+    report.input_sha256 = fingerprint({"bindings": manifest.model_dump(mode="json"),
+                                       "domain_manifest": bundle.manifest.model_dump(mode="json")})
     refs = {ref.artifact_id: ref for ref in bundle.manifest.artifacts}
     for binding in manifest.bindings:
         semantic = binding.semantic
