@@ -1,0 +1,317 @@
+{
+  "artifact_id": "air-to-fuel.process",
+  "revision": 1,
+  "domain": "process",
+  "schema_version": "1.0",
+  "operations": [
+    {
+      "operation_id": "atmosphere",
+      "operation_type": "source",
+      "ports": [
+        {
+          "port_id": "out",
+          "direction": "out",
+          "kind": "material",
+          "phase": "gas"
+        }
+      ]
+    },
+    {
+      "operation_id": "capture",
+      "operation_type": "capture",
+      "ports": [
+        {
+          "port_id": "air_in",
+          "direction": "in",
+          "kind": "material",
+          "phase": "gas"
+        },
+        {
+          "port_id": "co2_out",
+          "direction": "out",
+          "kind": "material",
+          "phase": "gas"
+        }
+      ]
+    },
+    {
+      "operation_id": "water_feed",
+      "operation_type": "source",
+      "ports": [
+        {
+          "port_id": "out",
+          "direction": "out",
+          "kind": "material",
+          "phase": "liquid"
+        }
+      ]
+    },
+    {
+      "operation_id": "electrolyzer",
+      "operation_type": "electrolysis",
+      "ports": [
+        {
+          "port_id": "water_in",
+          "direction": "in",
+          "kind": "material",
+          "phase": "liquid"
+        },
+        {
+          "port_id": "power_in",
+          "direction": "in",
+          "kind": "energy",
+          "quantity_kind": "power"
+        },
+        {
+          "port_id": "h2_out",
+          "direction": "out",
+          "kind": "material",
+          "phase": "gas"
+        },
+        {
+          "port_id": "o2_out",
+          "direction": "out",
+          "kind": "material",
+          "phase": "gas"
+        }
+      ]
+    },
+    {
+      "operation_id": "electricity",
+      "operation_type": "utility",
+      "ports": [
+        {
+          "port_id": "out",
+          "direction": "out",
+          "kind": "energy",
+          "quantity_kind": "power"
+        }
+      ]
+    },
+    {
+      "operation_id": "oxygen_sink",
+      "operation_type": "storage",
+      "ports": [
+        {
+          "port_id": "in",
+          "direction": "in",
+          "kind": "material",
+          "phase": "gas"
+        }
+      ]
+    },
+    {
+      "operation_id": "methanol_reactor",
+      "operation_type": "synthesis",
+      "ports": [
+        {
+          "port_id": "co2_in",
+          "direction": "in",
+          "kind": "material",
+          "phase": "gas"
+        },
+        {
+          "port_id": "h2_in",
+          "direction": "in",
+          "kind": "material",
+          "phase": "gas"
+        },
+        {
+          "port_id": "methanol_out",
+          "direction": "out",
+          "kind": "material",
+          "phase": "liquid"
+        },
+        {
+          "port_id": "water_out",
+          "direction": "out",
+          "kind": "material",
+          "phase": "liquid"
+        }
+      ]
+    },
+    {
+      "operation_id": "water_receiver",
+      "operation_type": "storage",
+      "ports": [
+        {
+          "port_id": "in",
+          "direction": "in",
+          "kind": "material",
+          "phase": "liquid"
+        }
+      ]
+    },
+    {
+      "operation_id": "conversion",
+      "operation_type": "conversion",
+      "ports": [
+        {
+          "port_id": "methanol_in",
+          "direction": "in",
+          "kind": "material",
+          "phase": "liquid"
+        },
+        {
+          "port_id": "product_out",
+          "direction": "out",
+          "kind": "material",
+          "phase": "liquid"
+        }
+      ]
+    },
+    {
+      "operation_id": "product_storage",
+      "operation_type": "storage",
+      "ports": [
+        {
+          "port_id": "in",
+          "direction": "in",
+          "kind": "material",
+          "phase": "liquid"
+        }
+      ]
+    }
+  ],
+  "streams": [
+    {
+      "stream_id": "air_stream",
+      "source": {
+        "operation_id": "atmosphere",
+        "port_id": "out"
+      },
+      "target": {
+        "operation_id": "capture",
+        "port_id": "air_in"
+      },
+      "kind": "material",
+      "phase": "gas"
+    },
+    {
+      "stream_id": "co2_stream",
+      "source": {
+        "operation_id": "capture",
+        "port_id": "co2_out"
+      },
+      "target": {
+        "operation_id": "methanol_reactor",
+        "port_id": "co2_in"
+      },
+      "kind": "material",
+      "phase": "gas"
+    },
+    {
+      "stream_id": "water_stream",
+      "source": {
+        "operation_id": "water_feed",
+        "port_id": "out"
+      },
+      "target": {
+        "operation_id": "electrolyzer",
+        "port_id": "water_in"
+      },
+      "kind": "material",
+      "phase": "liquid"
+    },
+    {
+      "stream_id": "power_stream",
+      "source": {
+        "operation_id": "electricity",
+        "port_id": "out"
+      },
+      "target": {
+        "operation_id": "electrolyzer",
+        "port_id": "power_in"
+      },
+      "kind": "energy"
+    },
+    {
+      "stream_id": "hydrogen_stream",
+      "source": {
+        "operation_id": "electrolyzer",
+        "port_id": "h2_out"
+      },
+      "target": {
+        "operation_id": "methanol_reactor",
+        "port_id": "h2_in"
+      },
+      "kind": "material",
+      "phase": "gas"
+    },
+    {
+      "stream_id": "oxygen_stream",
+      "source": {
+        "operation_id": "electrolyzer",
+        "port_id": "o2_out"
+      },
+      "target": {
+        "operation_id": "oxygen_sink",
+        "port_id": "in"
+      },
+      "kind": "material",
+      "phase": "gas"
+    },
+    {
+      "stream_id": "methanol_stream",
+      "source": {
+        "operation_id": "methanol_reactor",
+        "port_id": "methanol_out"
+      },
+      "target": {
+        "operation_id": "conversion",
+        "port_id": "methanol_in"
+      },
+      "kind": "material",
+      "phase": "liquid"
+    },
+    {
+      "stream_id": "water_product",
+      "source": {
+        "operation_id": "methanol_reactor",
+        "port_id": "water_out"
+      },
+      "target": {
+        "operation_id": "water_receiver",
+        "port_id": "in"
+      },
+      "kind": "material",
+      "phase": "liquid"
+    },
+    {
+      "stream_id": "product_stream",
+      "source": {
+        "operation_id": "conversion",
+        "port_id": "product_out"
+      },
+      "target": {
+        "operation_id": "product_storage",
+        "port_id": "in"
+      },
+      "kind": "material",
+      "phase": "liquid"
+    }
+  ],
+  "balances": [],
+  "scenarios": [
+    {
+      "scenario_id": "reduced_power",
+      "description": "Illustrative 40% reduction in available electrical input; no rate or yield is predicted.",
+      "overrides": [
+        {
+          "operation_id": "electrolyzer",
+          "parameter": "electricity_availability_fraction",
+          "quantity": {
+            "kind": "signal",
+            "value": 0.6,
+            "unit": "1",
+            "claim": {
+              "basis": "illustrative",
+              "rationale": "Synthetic process design perturbation, not an observed or simulated equipment response."
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "evidence": []
+}
