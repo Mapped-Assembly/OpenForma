@@ -95,6 +95,9 @@ def _placement_payload(project: HardwareIntermediateRepresentation) -> list[dict
             "sx": max(1.0, abs(float(placement.size.x_mm))),
             "sy": max(1.0, abs(float(placement.size.y_mm))),
             "sz": max(1.0, abs(float(placement.size.z_mm))),
+            "rx_deg": float(placement.orientation_deg.x_deg),
+            "ry_deg": float(placement.orientation_deg.y_deg),
+            "rz_deg": float(placement.orientation_deg.z_deg),
         }
         for placement in mechanical.component_placements
     ]
@@ -163,14 +166,38 @@ def _cad_source(project: HardwareIntermediateRepresentation) -> str:
     ).lower()
     open_frame = "open" in enclosure_text and "enclosure" not in enclosure_text
     wall = max(1.5, min(3.0, min(width, depth, height) / 12.0))
-    placements = json.dumps(_placement_payload(project), sort_keys=True)
+    placements_data = _placement_payload(project)
+    for placement in placements_data:
+        if abs(placement["rx_deg"]) > 1e-9 or abs(placement["ry_deg"]) > 1e-9:
+            raise CadGenerationError(
+                "Generic envelope CAD only supports Z-axis placement rotations. "
+                "Use explicit OpenCAD geometry for X/Y rotation; never silently discard it."
+            )
+    placements = json.dumps(placements_data, sort_keys=True)
     motion_intents = repr(_motion_intent_payload(project))
-    return """from opencad import Part, Sketch, get_default_context
+    return """import math
+from opencad import Part, Sketch, get_default_context
 
 
 def xy_prism(x, y, z, length, width, height, name):
     profile = Sketch(plane="XY", origin=(0.0, 0.0, z), name=name + " profile")
     profile.rect(length, width, origin=(x, y))
+    return Part(name=name).extrude(profile, depth=height, name=name)
+
+
+def oriented_xy_prism(cx, cy, cz, width, depth, height, rz_deg, name):
+    # Exact authored Z rotation: rotate the four footprint vertices about the
+    # component center before OpenCAD extrusion. This is actual CAD geometry,
+    # not only scene metadata or a preview transform.
+    angle = math.radians(rz_deg)
+    cos_a, sin_a = math.cos(angle), math.sin(angle)
+    local = [(-width/2, -depth/2), (width/2, -depth/2),
+             (width/2, depth/2), (-width/2, depth/2)]
+    vertices = [(cx + x*cos_a - y*sin_a, cy + x*sin_a + y*cos_a)
+                for x,y in local]
+    profile = Sketch(plane="XY", origin=(0.0, 0.0, cz - height/2), name=name + " profile")
+    for i in range(4):
+        profile.line(vertices[i], vertices[(i+1) %% 4])
     return Part(name=name).extrude(profile, depth=height, name=name)
 
 
@@ -285,13 +312,9 @@ for item in PLACEMENTS:
     rail = xy_prism(rail_x, rail_y, -HEIGHT / 2.0 - 0.5, rail_width, rail_depth, max(2.0, min(item["sz"] / 2.0, HEIGHT / 3.0)), item["ref_des"] + " mounting rail")
     model = model.union(rail, name=item["ref_des"] + " rail connected")
 
-    component = xy_prism(
-        item["x"] - item["sx"] / 2.0,
-        item["y"] - item["sy"] / 2.0,
-        item["z"] - item["sz"] / 2.0,
-        item["sx"],
-        item["sy"],
-        item["sz"],
+    component = oriented_xy_prism(
+        item["x"], item["y"], item["z"],
+        item["sx"], item["sy"], item["sz"], item["rz_deg"],
         item["ref_des"] + " component envelope",
     )
     PARTS[item["ref_des"]] = component
