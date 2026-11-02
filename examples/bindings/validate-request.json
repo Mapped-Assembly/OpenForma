@@ -131,7 +131,7 @@
           "artifact_id": "product.mechanical",
           "revision": 1,
           "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-          "entity_id": "M1",
+          "entity_id": "M2",
           "occurrence_path": [
             "assembly",
             "M2"
