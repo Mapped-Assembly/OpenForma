@@ -62,7 +62,7 @@ factors, not density or assumed molecular weight. The documented residual
 convention is:
 
 ```
-inlet - outlet - accumulation - generation + consumption
+inlet + generation - outlet - consumption - accumulation
 ```
 
 `pass`, `fail`, `unknown` and `unsupported` are distinct results.
