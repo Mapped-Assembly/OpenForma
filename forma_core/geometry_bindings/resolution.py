@@ -282,6 +282,7 @@ def validate_manifest_against_product(
     bundle = ProductBundle.model_validate(product)
     domain_registry = get_registry(registry)
     report = validate_manifest(manifest)
+    report.input_sha256 = fingerprint({"bindings": manifest, "domain_manifest": bundle.manifest})
     refs = {ref.artifact_id: ref for ref in bundle.manifest.artifacts}
     for binding in manifest.bindings:
         semantic = binding.semantic
@@ -304,8 +305,14 @@ def validate_manifest_against_product(
         if provider is None or payload is None:
             report.findings.append(Finding(
                 code="semantic_provider_unresolved", location=binding.binding_id,
-                severity="warning",
+                severity="error" if binding.required else "warning",
                 message="Semantic artifact or its owner is unavailable for independent entity validation.",
+            ))
+            continue
+        if fingerprint(payload) != ref.sha256:
+            report.findings.append(Finding(
+                code="semantic_content_mismatch", location=binding.binding_id,
+                message="Semantic payload bytes do not match the pinned domain artifact digest.",
             ))
             continue
         try:
@@ -313,7 +320,7 @@ def validate_manifest_against_product(
         except Exception as exc:
             report.findings.append(Finding(
                 code="semantic_provider_unresolved", location=binding.binding_id,
-                severity="warning",
+                severity="error" if binding.required else "warning",
                 message=f"Owning provider could not index the referenced object: {type(exc).__name__}.",
             ))
             continue
