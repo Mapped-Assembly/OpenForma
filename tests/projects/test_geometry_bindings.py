@@ -45,9 +45,9 @@ class BindingContractTests(unittest.TestCase):
         self.assertEqual("pass", report.requirements[0].status)
         refs = forward_lookup(manifest, domain="mechanical", artifact_id="product.mechanical",
                               entity_id="M1")
-        self.assertEqual(3, len(refs))
+        self.assertEqual(2, len(refs))
         scoped = forward_lookup(manifest, domain="mechanical", artifact_id="product.mechanical",
-                                entity_id="M1", occurrence_path=("assembly", "M2"))
+                                entity_id="M2", occurrence_path=("assembly", "M2"))
         self.assertEqual(["occurrence-2-body"], [item.binding_id for item in scoped])
         self.assertEqual(2, len(reverse_lookup(manifest, geometric_entity_id="body")))
 
@@ -156,6 +156,66 @@ class BindingContractTests(unittest.TestCase):
         bad["geometry"]["sha256"] = "sha-1"
         with self.assertRaises(ValidationError):
             BindingManifest.model_validate(bad)
+
+    def test_semantic_objects_are_checked_against_pinned_domain_artifacts(self) -> None:
+        """A real native IR, not a label, must own each referenced occurrence."""
+        from forma_core.domains.base import ComponentView, fingerprint
+        from forma_core.domains.composition import compose_product
+        from forma_core.geometry_bindings.resolution import validate_manifest_against_product
+        from forma_core.mechanics.models import MechanicalIR, MechanicalPart
+
+        doc = MechanicalIR(
+            artifact_id="product.mechanical", revision=1,
+            parts=[MechanicalPart(part_definition_id="asymmetric-part")],
+            components=[
+                ComponentView(object_id="M1", ref_des="A1",
+                              part_definition_id="asymmetric-part"),
+                ComponentView(object_id="M2", ref_des="A2",
+                              part_definition_id="asymmetric-part"),
+            ],
+        )
+        product = compose_product("rotated-asymmetric", [doc])
+        manifest = load("rotated-component.json")
+        for binding in manifest.bindings:
+            binding.semantic.sha256 = fingerprint(doc)
+        report = validate_manifest_against_product(manifest, product)
+        self.assertTrue(report.is_valid, report.model_dump())
+        self.assertEqual([], report.findings)
+
+        changed = manifest.model_copy(deep=True)
+        changed.bindings[-1].semantic.entity_id = "missing"
+        self.assertIn("semantic_entity_missing", [
+            finding.code for finding in validate_manifest_against_product(
+                changed, product).findings
+        ])
+
+        changed = manifest.model_copy(deep=True)
+        changed.bindings[0].semantic.sha256 = "0" * 64
+        self.assertIn("semantic_revision_mismatch", [
+            finding.code for finding in validate_manifest_against_product(
+                changed, product).findings
+        ])
+
+        tampered = product.model_copy(deep=True)
+        tampered.artifacts[doc.artifact_id]["components"][0]["ref_des"] = "changed-without-revision"
+        self.assertIn("semantic_content_mismatch", [
+            finding.code for finding in validate_manifest_against_product(
+                manifest, tampered).findings
+        ])
+
+        command = {
+            "action": "validate-product",
+            "manifest": manifest.model_dump(mode="json"),
+            "product": product.model_dump(mode="json"),
+        }
+        direct = call_domain_tool("bindings", command)
+        self.assertTrue(direct["is_valid"])
+        process = subprocess.run(
+            [sys.executable, "-m", "forma_core", "domains", "bindings", "-"],
+            input=json.dumps(command), text=True, capture_output=True, check=False,
+        )
+        self.assertEqual(0, process.returncode, process.stderr)
+        self.assertEqual(direct, json.loads(process.stdout))
 
     def test_legacy_placements_are_explicitly_unverified(self) -> None:
         """Old MechanicalPlacement data provides envelopes, not exact STEP faces."""
