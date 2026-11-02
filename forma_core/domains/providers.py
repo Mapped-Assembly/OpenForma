@@ -16,7 +16,7 @@ from .base import Domain, DomainModel, Finding, Text, unique
 
 Revision = Annotated[int, Field(ge=1)] | Text
 Digest = Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
-NATIVE_DOMAINS = frozenset({"mechanical", "electrical", "biological", "fluidic", "chemical", "process"})
+NATIVE_DOMAINS = frozenset({"mechanical", "electrical", "biological", "fluidic", "chemical", "process", "thermal"})
 NATIVE_PROVIDER = "openforma.native"
 
 
