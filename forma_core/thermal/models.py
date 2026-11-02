@@ -131,6 +131,8 @@ class ThermalNode(DomainModel):
     ports: list[ThermalPort] = Field(default_factory=lambda: [ThermalPort(port_id="heat")])
     capacity: ThermalQuantity | None = None
     initial_temperature: ThermalQuantity | None = None
+    target_temperature: ThermalQuantity | None = None
+    maximum_temperature: ThermalQuantity | None = None
     material_reference: Text | None = None
     description: Text | None = None
 
@@ -140,8 +142,20 @@ class ThermalNode(DomainModel):
         unique([p.port_id for p in self.ports], "thermal port ID")
         if self.capacity is not None and self.capacity.kind != "capacity":
             raise ValueError("Thermal node capacity must use J/K.")
-        if self.initial_temperature is not None and self.initial_temperature.kind != "temperature":
-            raise ValueError("Initial temperature must be absolute.")
+        for label, quantity in (
+            ("initial", self.initial_temperature),
+            ("target", self.target_temperature),
+            ("maximum", self.maximum_temperature),
+        ):
+            if quantity is not None and quantity.kind != "temperature":
+                raise ValueError(f"{label} temperature must be absolute.")
+        if self.target_temperature is not None and self.maximum_temperature is not None:
+            target = (self.target_temperature.value if self.target_temperature.unit == "K"
+                      else self.target_temperature.value + 273.15)
+            maximum = (self.maximum_temperature.value if self.maximum_temperature.unit == "K"
+                       else self.maximum_temperature.value + 273.15)
+            if target > maximum:
+                raise ValueError("Target temperature exceeds declared design maximum.")
         return self
 
 
@@ -300,11 +314,18 @@ class ThermalIR(DomainDocument):
         loads = {item.load_id: item for item in self.loads}
         sources = {item.source_id for item in self.evidence}
         claims = [item.claim for item in self.edges + self.boundaries + self.loads + self.properties]
-        claims += [q.claim for q in (
-            [item.heat_rate for item in self.loads if item.heat_rate is not None] +
+        quantities = (
+            [q for node in self.nodes for q in (
+                node.capacity, node.initial_temperature, node.target_temperature,
+                node.maximum_temperature) if q is not None] +
+            [q for edge in self.edges for q in (
+                edge.resistance, edge.conductance) if q is not None] +
+            [load.heat_rate for load in self.loads if load.heat_rate is not None] +
             [item.quantity for item in self.boundaries if item.quantity is not None] +
-            [item.quantity for item in self.properties]
-        )]
+            [q for item in self.properties for q in (
+                item.quantity, item.min_temperature, item.max_temperature) if q is not None]
+        )
+        claims.extend(q.claim for q in quantities)
         for claim in claims:
             if set(claim.source_ids) - sources:
                 raise ValueError("Thermal claim references an unknown evidence source.")
