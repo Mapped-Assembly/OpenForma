@@ -1,0 +1,51 @@
+[
+  {
+    "brief": "Passive mechanical bracket",
+    "scope": {
+      "physical_structure": true
+    },
+    "expected": [
+      "mechanical"
+    ]
+  },
+  {
+    "brief": "Motorized mechanical assembly, including its wiring",
+    "scope": {
+      "physical_structure": true,
+      "mechanical_motion": true,
+      "wiring": true
+    },
+    "expected": [
+      "mechanical",
+      "electrical"
+    ]
+  },
+  {
+    "brief": "Passive organ-on-chip body with a fluid network and biological experiment",
+    "scope": {
+      "physical_structure": true,
+      "fluid_network": true,
+      "biological_experiment": true
+    },
+    "expected": [
+      "mechanical",
+      "biological",
+      "fluidic"
+    ]
+  },
+  {
+    "brief": "Same organ-on-chip system including electrically controlled pumping hardware",
+    "scope": {
+      "physical_structure": true,
+      "fluid_network": true,
+      "biological_experiment": true,
+      "electrical_control": true
+    },
+    "expected": [
+      "mechanical",
+      "electrical",
+      "biological",
+      "fluidic"
+    ]
+  }
+]

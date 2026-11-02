@@ -20,6 +20,7 @@ from forma_core.opencode.capabilities import ConnectorCapability
 from forma_core.opencode.models import (
     McpJsonRpcRequest,
     McpToolArguments,
+    DomainToolArguments,
     GenerateImageArguments,
     McpToolCallParams,
     ProjectToolResult,
@@ -60,6 +61,22 @@ def opencode_mcp_tools() -> list[dict[str, object]]:
         "additionalProperties": False,
     }
     return library_tools() + [
+        {
+            "name": "forma.opencode.domains",
+            "description": (
+                "Plan and generate independent MechanicalIR, ElectricalIR, BiologicalIR and FluidicIR artifacts. "
+                "Stateless: returns portable JSON without updating the hosted legacy project. "
+                "Use schema with {domain} to discover a domain document and its required context. "
+                "Plan payload: {product_id, brief, scope: {physical_structure, mechanical_motion, wiring, "
+                "electrical_control, fluid_network, biological_experiment}, contexts: {domain: context}}. "
+                "Generate: {plan, designs: {domain: separately authored document fields}, existing?, inputs?, links?}. "
+                "Validate takes a product bundle; validate-domain takes a standalone IR. "
+                "Import-hardware: {product_id, hardware_ir}. Export-hardware: {product, legacy_seed?, allow_lossy?}. "
+                "Missing inputs block only dependent domains. Check local/composition findings separately; "
+                "export findings must be inspected before using the payload in the existing compile_project tool."
+            ),
+            "inputSchema": DomainToolArguments.model_json_schema(),
+        },
         {
             "name": "forma.opencode.create_project",
             "description": "Initialize a missing private project. If a project already exists, return it unchanged. Never use this to reset or resume a design.",
@@ -158,10 +175,18 @@ async def _handle_request(request: McpJsonRpcRequest, capability: ConnectorCapab
     return _result(request_id, response)
 
 
-async def _call_tool(name: str, arguments: McpToolArguments | GenerateImageArguments, capability: ConnectorCapability) -> dict[str, object]:
+async def _call_tool(name: str, arguments: McpToolArguments | GenerateImageArguments | DomainToolArguments, capability: ConnectorCapability) -> dict[str, object]:
     allowed = {tool["name"] for tool in opencode_mcp_tools()}
     if name not in allowed:
         raise PermissionError("The requested tool is not part of the project-only surface.")
+    if name == "forma.opencode.domains":
+        from forma_core.domains.tools import call_domain_tool
+        if not isinstance(arguments, DomainToolArguments):
+            raise ValueError("Domain operation arguments are required.")
+        payload = json.loads(arguments.payload)
+        if not isinstance(payload, dict):
+            raise ValueError("Domain payload must be a JSON object.")
+        return await run_in_threadpool(call_domain_tool, arguments.operation, payload)
     if name.startswith("forma.opencode.asset_"):
         if not isinstance(arguments, AssetToolArguments):
             raise ValueError("Asset arguments are required.")

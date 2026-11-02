@@ -121,6 +121,31 @@ class OpenCodeMcpModelTests(unittest.TestCase):
 
 
 class OpenCodeMcpHttpTests(unittest.TestCase):
+    def test_independent_domains_generate_and_validate_without_hosted_write(self) -> None:
+        """The authenticated MCP surface returns composed artifacts without a legacy write."""
+        from tests.projects.test_domain_irs import fixture_input
+        with patch("apps.api.opencode_mcp._persist_mcp_compile") as persist:
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": "domains", "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": "generate", "payload": json.dumps(fixture_input()),
+                }},
+            })
+            self.assertEqual(200, response.status_code, response.text)
+            result = response.json()["result"]
+            self.assertFalse(result.get("isError"), result)
+            bundle = json.loads(result["content"][0]["text"])
+            self.assertEqual("forma.product-domains", bundle["format"])
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": "domains-check", "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": "validate", "payload": json.dumps(bundle),
+                }},
+            })
+            validation = json.loads(response.json()["result"]["content"][0]["text"])
+            self.assertTrue(validation["is_valid"])
+            persist.assert_not_called()
+
     def test_nested_authoring_errors_are_actionable_and_do_not_echo_secrets(self) -> None:
         cases = (
             ({"overview": {"title": "SECRET_CANARY"}}, ["project_ir", "overview", "description"]),

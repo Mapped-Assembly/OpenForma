@@ -261,6 +261,14 @@ class McpToolArguments(BaseModel):
     project_ir: JsonValue = None
 
 
+class DomainToolArguments(BaseModel):
+    """JSON-text domain operation boundary compatible with provider MCP adapters."""
+
+    model_config = ConfigDict(extra="forbid")
+    operation: Literal["plan", "generate", "validate", "validate-domain", "schema", "import-hardware", "export-hardware"]
+    payload: str = Field(min_length=2, max_length=2_000_000)
+
+
 class GenerateImageArguments(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
@@ -339,13 +347,14 @@ class McpToolsListParams(McpRequestParams):
 
 class McpToolCallParams(McpRequestParams):
     name: str | None = None
-    arguments: McpToolArguments | GenerateImageArguments | AssetToolArguments = Field(default_factory=McpToolArguments)
+    arguments: McpToolArguments | GenerateImageArguments | AssetToolArguments | DomainToolArguments = Field(default_factory=McpToolArguments)
 
     @field_validator("arguments", mode="before")
     @classmethod
-    def validate_tool_arguments(cls, value: object, info: ValidationInfo) -> McpToolArguments | GenerateImageArguments:
+    def validate_tool_arguments(cls, value: object, info: ValidationInfo) -> McpToolArguments | GenerateImageArguments | AssetToolArguments | DomainToolArguments:
         name = info.data.get("name") or ""
-        model = (AssetToolArguments if name.startswith("forma.opencode.asset_") else
+        model = (DomainToolArguments if name == "forma.opencode.domains" else
+                 AssetToolArguments if name.startswith("forma.opencode.asset_") else
                  GenerateImageArguments if name == "forma.opencode.generate_image" else McpToolArguments)
         if isinstance(value, BaseModel):
             value = value.model_dump()

@@ -1,0 +1,180 @@
+{
+  "hardware_ir_version": "0.2",
+  "overview": {
+    "title": "Low-voltage motor fixture",
+    "description": "Synthetic adapter test, not a fabrication release.",
+    "difficulty": "Beginner",
+    "category": "Robotics"
+  },
+  "part_definitions": [
+    {
+      "part_definition_id": "motor-part",
+      "part_number": "TEST-MOTOR",
+      "name": "Motor",
+      "category": "Actuator",
+      "dimensions_mm": {
+        "length": 20
+      },
+      "pins": [
+        {
+          "pin_id": "VCC",
+          "name": "Supply",
+          "pin_type": "Power",
+          "voltage": 5
+        },
+        {
+          "pin_id": "GND",
+          "name": "Return",
+          "pin_type": "Ground",
+          "voltage": 0
+        }
+      ]
+    },
+    {
+      "part_definition_id": "supply-part",
+      "part_number": "TEST-SUPPLY",
+      "name": "Supply",
+      "category": "Power",
+      "pins": [
+        {
+          "pin_id": "VCC",
+          "name": "Supply",
+          "pin_type": "Power",
+          "voltage": 5,
+          "power_role": "source"
+        },
+        {
+          "pin_id": "GND",
+          "name": "Return",
+          "pin_type": "Ground",
+          "voltage": 0
+        }
+      ]
+    },
+    {
+      "part_definition_id": "bracket-part",
+      "part_number": "TEST-BRACKET",
+      "name": "Bracket",
+      "category": "Mechanical",
+      "dimensions_mm": {
+        "width": 30,
+        "height": 20,
+        "thickness": 3
+      }
+    }
+  ],
+  "components": [
+    {
+      "ref_des": "M1",
+      "part_definition_id": "motor-part",
+      "rationale": "Moves the assembly"
+    },
+    {
+      "ref_des": "P1",
+      "part_definition_id": "supply-part",
+      "rationale": "Supplies the motor"
+    },
+    {
+      "ref_des": "B1",
+      "part_definition_id": "bracket-part",
+      "rationale": "Supports the motor"
+    }
+  ],
+  "nets": [
+    {
+      "net_id": "VCC",
+      "name": "VCC",
+      "net_type": "Power",
+      "voltage": 5,
+      "pins": [
+        {
+          "ref_des": "P1",
+          "pin_id": "VCC"
+        },
+        {
+          "ref_des": "M1",
+          "pin_id": "VCC"
+        }
+      ]
+    },
+    {
+      "net_id": "GND",
+      "name": "GND",
+      "net_type": "Ground",
+      "voltage": 0,
+      "pins": [
+        {
+          "ref_des": "P1",
+          "pin_id": "GND"
+        },
+        {
+          "ref_des": "M1",
+          "pin_id": "GND"
+        }
+      ]
+    }
+  ],
+  "power_rails": [
+    {
+      "rail_id": "5V",
+      "voltage": 5,
+      "max_current_capacity_ma": 500,
+      "source_component": "P1"
+    }
+  ],
+  "estimated_current_draw_ma": 120,
+  "mechanical": {
+    "enclosure_type": "Open frame",
+    "mounting_guidance": "Attach motor to bracket.",
+    "manufacturability_rating": "Easy",
+    "component_placements": [
+      {
+        "ref_des": "M1",
+        "position": {
+          "x_mm": 0,
+          "y_mm": 0,
+          "z_mm": 6.5
+        },
+        "size": {
+          "x_mm": 20,
+          "y_mm": 10,
+          "z_mm": 10
+        }
+      }
+    ],
+    "cad_operations": [
+      {
+        "shape": "box",
+        "operation": "add",
+        "size": {
+          "x_mm": 30,
+          "y_mm": 20,
+          "z_mm": 3
+        }
+      }
+    ]
+  },
+  "assembly": [
+    {
+      "step_num": 1,
+      "title": "Mount",
+      "description": "Attach motor to bracket.",
+      "affected_components": [
+        "M1",
+        "B1"
+      ]
+    }
+  ],
+  "assembly_metadata": {
+    "fixture": "synthetic",
+    "custom_metadata": {
+      "retained": true
+    }
+  },
+  "constraints": [
+    "Synthetic low-voltage fixture only"
+  ],
+  "fabrication_notes": [
+    "No manufacturing qualification implied"
+  ]
+}

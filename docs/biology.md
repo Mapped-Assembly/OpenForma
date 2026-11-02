@@ -1,5 +1,12 @@
 # Biological experiment interface
 
+## Independent domain interface
+
+`forma_core.biology.ir.BiologicalIR` provides a versioned envelope around the
+existing `BiologicalExperiment` contract described below. It adds no biological
+simulation. See [Independent domain IRs](domain-irs.md) for independent authoring
+and separately validated fluidic relationships.
+
 Forma's biological layer is an application-facing metadata contract that composes
 with the existing reusable `FluidicSystem`. It records the biological question,
 compartments, exposures, controls, endpoints, sampling, observations, external

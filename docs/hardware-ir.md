@@ -1,5 +1,12 @@
 # Hardware Intermediate Representation
 
+## Domain migration
+
+New domain authoring can use standalone MechanicalIR, ElectricalIR, BiologicalIR
+and FluidicIR. See [Independent domain IRs](domain-irs.md) for selection, context
+isolation, composition, public CLI/MCP operations and loss-reporting adapters.
+The HardwareIR format documented below remains the legacy compatibility path.
+
 Forma’s **Hardware Intermediate Representation** is a typed, versioned JSON schema built with Pydantic. It is the single source of truth for generated projects and is intentionally structured for validation, UI rendering, and future export formats.
 
 ## Why a typed Intermediate Representation?
