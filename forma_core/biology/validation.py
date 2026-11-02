@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict
 
-from forma_core.fluidics.models import FluidicSystem
+if TYPE_CHECKING:
+    from forma_core.fluidics.models import FluidicSystem
 
 from .models import BiologicalExperiment
 

@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "cases": [
+    {
+      "case_id": "passive-bracket",
+      "brief": "Design a passive mounting bracket for a shelf. Specify its geometry and manufacturing constraints. No electronics or moving parts are included.",
+      "expected_domains": ["mechanical"]
+    },
+    {
+      "case_id": "motorized-assembly",
+      "brief": "Design a motorized mechanical assembly, including its mounting, motion constraints and wiring. Supply and load specifications still need to be gathered.",
+      "expected_domains": ["mechanical", "electrical"]
+    },
+    {
+      "case_id": "passive-organ-chip",
+      "brief": "Design a passive organ-on-chip body with a fluid network and a biological experiment. Include the chip geometry, fluid channels, biological compartments and measurements. External pumping and all electrical hardware are outside scope.",
+      "expected_domains": ["mechanical", "fluidic", "biological"]
+    },
+    {
+      "case_id": "controlled-organ-chip",
+      "brief": "Design an organ-on-chip system including the chip body, fluid channels, biological experiment, and electrically controlled pumping hardware with its wiring and mechanical mounts.",
+      "expected_domains": ["mechanical", "electrical", "fluidic", "biological"]
+    },
+    {
+      "case_id": "motor-mount-only",
+      "brief": "Design only a passive mount for an existing electric motor. Include mounting geometry and mechanical loads. The motor, its internal mechanism, its wiring and controller are existing equipment outside this design scope.",
+      "expected_domains": ["mechanical"]
+    },
+    {
+      "case_id": "wiring-only",
+      "brief": "Design only the electrical connections and power rails between an existing 5 V supply, controller and sensor. Exclude enclosure geometry, mechanical mounting and physical cable routing.",
+      "expected_domains": ["electrical"]
+    },
+    {
+      "case_id": "gravity-flow-only",
+      "brief": "Design only a gravity-fed water network: reservoir connections, tubing topology and flow constraints. The supporting structure is fixed and outside scope. There are no electric pumps or biological experiments.",
+      "expected_domains": ["fluidic"]
+    },
+    {
+      "case_id": "software-only",
+      "brief": "Build an inventory dashboard for purchased equipment. This is software only; do not design, simulate or modify any physical, electrical, fluidic or biological system.",
+      "expected_domains": []
+    }
+  ]
+}

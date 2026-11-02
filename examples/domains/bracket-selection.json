@@ -1,0 +1,18 @@
+{
+  "product_id": "bracket",
+  "brief": "Design a passive shelf bracket. No electronics.",
+  "decision": {
+    "request_sha256": "c275c6b6cc510d768c8fdc44ae3965f5a11981da87034e48c0ca1d100f2af566",
+    "scope": {
+      "physical_structure": true,
+      "mechanical_motion": false,
+      "wiring": false,
+      "electrical_control": false,
+      "fluid_network": false,
+      "biological_experiment": false
+    },
+    "reasons": {
+      "mechanical": "Designing the shelf bracket requires geometry and mounting; the brief explicitly excludes electronics."
+    }
+  }
+}

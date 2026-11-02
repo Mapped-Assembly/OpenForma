@@ -17,6 +17,10 @@ on:
       - "apps/api/Dockerfile"
       - "forma_core/opencode/**"
       - "forma_core/workspaces/projects/**"
+      - "forma_core/domains/**"
+      - "forma_core/mechanics/**"
+      - "forma_core/electronics/**"
+      - "tests/projects/test_domain_irs.py"
       - "tests/opencode/**"
       - "tests/projects/test_*cad*.py"
       - "tests/projects/test_mechanism_benchmarks.py"
@@ -46,6 +50,6 @@ jobs:
       - run: python -m pip install -r apps/api/requirements.txt pytest "opencad[occt] @ git+https://github.com/caid-technologies/OpenCAD.git@1c417752eb42d29b951784e80f65ac79c3fb6e0e#subdirectory=packages/opencad"
       - run: python .agents/skills/forma-hardware/scripts/cad.py check
       - run: python -m pytest tests/providers/test_image_providers.py tests/api/test_mcp_agent_compatibility.py tests/api/test_hosted_chat_maintenance.py -q
-      - run: python -m pytest tests/opencode tests/projects/test_cad_generation.py tests/projects/test_solid_cad.py tests/projects/test_mechanism_benchmarks.py tests/projects/test_gear_cad.py tests/projects/test_demo_printer_exports.py -q
+      - run: python -m pytest tests/opencode tests/projects/test_domain_irs.py tests/projects/test_cad_generation.py tests/projects/test_solid_cad.py tests/projects/test_mechanism_benchmarks.py tests/projects/test_gear_cad.py tests/projects/test_demo_printer_exports.py -q
 
       - run: python -m pytest tests/integrations/test_component_assets.py tests/integrations/test_project_artifacts.py -q

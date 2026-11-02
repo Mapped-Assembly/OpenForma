@@ -92,6 +92,7 @@ class OpenCodeBridgeTests(unittest.IsolatedAsyncioTestCase):
             "forma.opencode.compile_project",
             "forma.opencode.validate_project",
             "forma.opencode.generate_image",
+            "forma.opencode.domains",
             "forma.opencode.asset_search",
             "forma.opencode.asset_inspect",
             "forma.opencode.asset_register",

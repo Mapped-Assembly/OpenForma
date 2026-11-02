@@ -20,6 +20,7 @@ from forma_core.opencode.capabilities import ConnectorCapability
 from forma_core.opencode.models import (
     McpJsonRpcRequest,
     McpToolArguments,
+    DomainToolArguments,
     GenerateImageArguments,
     McpToolCallParams,
     ProjectToolResult,
@@ -60,6 +61,29 @@ def opencode_mcp_tools() -> list[dict[str, object]]:
         "additionalProperties": False,
     }
     return library_tools() + [
+        {
+            "name": "forma.opencode.domains",
+            "description": (
+                "Plan and generate independent MechanicalIR, ElectricalIR, BiologicalIR and FluidicIR artifacts. "
+                "Stateless: returns portable JSON without updating the hosted legacy project. "
+                "Registry with {} discovers native and externally owned provider capabilities. "
+                "SpaceIR is reserved for OpenIndustries and unavailable until its provider is registered. "
+                "Use schema with {domain} to discover a domain document and its required context. "
+                "Plan accepts {product_id, brief, contexts?}. By default it returns awaiting_selection with "
+                "project, request_sha256, domain catalog and decision_schema. You are the selecting agent: "
+                "interpret the brief, then call plan with the returned project fields plus decision: "
+                "{request_sha256, registry_sha256, scope: all six capability booleans plus optional domains: [domain_id], reasons: {selected_domain: reason}}. "
+                "This path needs no server-side LLM or provider credentials. Explicit scope also works directly. "
+                "Only selection_mode: provider opts into an internal LLM, with optional provider/model. "
+                "Generate: {plan, designs: {domain: separately authored native document fields}, references?, existing?, inputs?, links?}. "
+                "Compose accepts {product_id, documents?, references?, links?, plan?}; external artifacts remain pinned references. "
+                "Validate takes a product bundle; validate-domain takes a standalone native IR or {reference, artifact} for an external provider. "
+                "Import-hardware: {product_id, hardware_ir}. Export-hardware: {product, legacy_seed?, allow_lossy?}. "
+                "Missing inputs block only dependent domains. Check local/composition findings separately; "
+                "export findings must be inspected before using the payload in the existing compile_project tool."
+            ),
+            "inputSchema": DomainToolArguments.model_json_schema(),
+        },
         {
             "name": "forma.opencode.create_project",
             "description": "Initialize a missing private project. If a project already exists, return it unchanged. Never use this to reset or resume a design.",
@@ -158,10 +182,18 @@ async def _handle_request(request: McpJsonRpcRequest, capability: ConnectorCapab
     return _result(request_id, response)
 
 
-async def _call_tool(name: str, arguments: McpToolArguments | GenerateImageArguments, capability: ConnectorCapability) -> dict[str, object]:
+async def _call_tool(name: str, arguments: McpToolArguments | GenerateImageArguments | DomainToolArguments, capability: ConnectorCapability) -> dict[str, object]:
     allowed = {tool["name"] for tool in opencode_mcp_tools()}
     if name not in allowed:
         raise PermissionError("The requested tool is not part of the project-only surface.")
+    if name == "forma.opencode.domains":
+        from forma_core.domains.tools import call_domain_tool
+        if not isinstance(arguments, DomainToolArguments):
+            raise ValueError("Domain operation arguments are required.")
+        payload = json.loads(arguments.payload)
+        if not isinstance(payload, dict):
+            raise ValueError("Domain payload must be a JSON object.")
+        return await run_in_threadpool(call_domain_tool, arguments.operation, payload)
     if name.startswith("forma.opencode.asset_"):
         if not isinstance(arguments, AssetToolArguments):
             raise ValueError("Asset arguments are required.")

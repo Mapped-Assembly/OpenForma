@@ -121,6 +121,124 @@ class OpenCodeMcpModelTests(unittest.TestCase):
 
 
 class OpenCodeMcpHttpTests(unittest.TestCase):
+    def test_external_domain_registry_and_composition_over_mcp(self) -> None:
+        """Application-registered providers work through HTTP without loading OpenIndustries."""
+        from tests.projects.test_external_domain_providers import external_registry, mixed_bundle
+        from forma_core.domains.planning import ProductScope
+        registry, provider = external_registry()
+
+        def invoke(operation: str, payload: dict) -> dict:
+            """Call the existing authenticated MCP surface with an external-domain operation."""
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": operation, "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": operation, "payload": json.dumps(payload),
+                }},
+            })
+            self.assertEqual(200, response.status_code, response.text)
+            result = response.json()["result"]
+            self.assertFalse(result.get("isError"), result)
+            return json.loads(result["content"][0]["text"])
+
+        with patch("forma_core.domains.tools.get_registry", return_value=registry), patch(
+            "apps.api.opencode_mcp._persist_mcp_compile",
+        ) as persist:
+            self.assertEqual("tests.space", invoke("registry", {})["domains"]["space"]["provider_id"])
+            request = invoke("plan", {"product_id": "p", "brief": "Map a lab"})
+            plan = invoke("plan", {**request["project"], "decision": {
+                "request_sha256": request["request_sha256"], "registry_sha256": request["registry_sha256"],
+                "scope": ProductScope(domains=["space"]).model_dump(), "reasons": {"space": "Map the lab."},
+            }})
+            self.assertEqual(["space"], [t["domain"] for t in plan["tasks"]])
+            bundle = mixed_bundle(provider)
+            composed = invoke("compose", {"product_id": "product", "documents": list(bundle.artifacts.values()),
+                "references": [provider.reference().model_dump()], "links": [l.model_dump() for l in bundle.manifest.links]})
+            self.assertTrue(invoke("validate", composed)["is_valid"])
+            self.assertNotIn(provider.reference().artifact_id, composed["artifacts"])
+            persist.assert_not_called()
+
+    def test_domain_agent_handoff_generates_and_validates_without_provider(self) -> None:
+        """The calling MCP agent selects domains and authors IRs without a server-side model."""
+        from tests.projects.test_domain_irs import fixture_input
+
+        def invoke(operation: str, payload: dict) -> dict:
+            """Exchange one JSON request through the authenticated HTTP MCP route."""
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": operation, "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": operation, "payload": json.dumps(payload),
+                }},
+            })
+            self.assertEqual(200, response.status_code, response.text)
+            result = response.json()["result"]
+            self.assertFalse(result.get("isError"), result)
+            return json.loads(result["content"][0]["text"])
+
+        fixture = fixture_input()
+        with patch("forma_core.domains.agents.configured_selector", side_effect=AssertionError("Provider called")), patch(
+            "apps.api.opencode_mcp._persist_mcp_compile",
+        ) as persist:
+            request = invoke("plan", {
+                "product_id": fixture["plan"]["product_id"], "brief": fixture["plan"]["brief"],
+                "contexts": {task["domain"]: task["context"] for task in fixture["plan"]["tasks"]},
+            })
+            self.assertEqual("awaiting_selection", request["status"])
+            fixture["plan"] = invoke("plan", {**request["project"], "decision": {
+                "request_sha256": request["request_sha256"], "scope": fixture["plan"]["scope"],
+                "reasons": {"mechanical": "The motor needs an assembly.", "electrical": "Its wiring is in scope."},
+            }})
+            self.assertEqual(["mechanical", "electrical"], [task["domain"] for task in fixture["plan"]["tasks"]])
+            bundle = invoke("generate", fixture)
+            self.assertTrue(invoke("validate", bundle)["is_valid"])
+            persist.assert_not_called()
+
+    def test_domain_plan_can_explicitly_opt_into_provider_selection(self) -> None:
+        """The optional internal selector is still available with explicit provider mode."""
+        from unittest.mock import Mock
+        from forma_core.domains.agents import InferredProductScope
+        from forma_core.domains.planning import ProductScope
+        provider = Mock()
+        provider.generate_structured.return_value = InferredProductScope(**ProductScope(physical_structure=True).model_dump())
+        with patch("forma_core.domains.agents.configured_selector", return_value=provider):
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": "scope-inference", "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": "plan", "payload": json.dumps({"product_id": "p", "brief": "Design a passive bracket.",
+                                                                 "selection_mode": "provider"}),
+                }},
+            })
+        self.assertEqual(200, response.status_code, response.text)
+        result = response.json()["result"]
+        self.assertFalse(result.get("isError"), result)
+        plan = json.loads(result["content"][0]["text"])
+        self.assertEqual(["mechanical"], [task["domain"] for task in plan["tasks"]])
+        provider.generate_structured.assert_called_once()
+
+    def test_independent_domains_generate_and_validate_without_hosted_write(self) -> None:
+        """The authenticated MCP surface returns composed artifacts without a legacy write."""
+        from tests.projects.test_domain_irs import fixture_input
+        with patch("apps.api.opencode_mcp._persist_mcp_compile") as persist:
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": "domains", "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": "generate", "payload": json.dumps(fixture_input()),
+                }},
+            })
+            self.assertEqual(200, response.status_code, response.text)
+            result = response.json()["result"]
+            self.assertFalse(result.get("isError"), result)
+            bundle = json.loads(result["content"][0]["text"])
+            self.assertEqual("forma.product-domains", bundle["format"])
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": "domains-check", "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": "validate", "payload": json.dumps(bundle),
+                }},
+            })
+            validation = json.loads(response.json()["result"]["content"][0]["text"])
+            self.assertTrue(validation["is_valid"])
+            persist.assert_not_called()
+
     def test_nested_authoring_errors_are_actionable_and_do_not_echo_secrets(self) -> None:
         cases = (
             ({"overview": {"title": "SECRET_CANARY"}}, ["project_ir", "overview", "description"]),
