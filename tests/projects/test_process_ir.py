@@ -96,6 +96,25 @@ class ProcessIRTests(unittest.TestCase):
         doc = ProcessIR.model_validate(raw)
         self.assertEqual("unsupported", analyze_process(doc).balance_results[0].status)
 
+    def test_positive_generation_and_consumption_signs(self) -> None:
+        """Declared sources add material; declared sinks remove it."""
+        raw = load("process-irrigation.json")
+        raw["streams"][0]["quantity"]["value"] = 0.8
+        raw["streams"][1]["quantity"]["value"] = 1.2
+        raw["balances"][0]["generation"] = {
+            "kind": "mass_rate", "value": 0.4, "unit": "kg/h"
+        }
+        doc = ProcessIR.model_validate(raw)
+        self.assertEqual("pass", analyze_process(doc).balance_results[0].status)
+        raw["streams"][0]["quantity"]["value"] = 1.2
+        raw["streams"][1]["quantity"]["value"] = 0.8
+        raw["balances"][0]["generation"]["value"] = 0
+        raw["balances"][0]["consumption"] = {
+            "kind": "mass_rate", "value": 0.4, "unit": "kg/h"
+        }
+        doc = ProcessIR.model_validate(raw)
+        self.assertEqual("pass", analyze_process(doc).balance_results[0].status)
+
     def test_cycles_are_legal_recycle_flows(self) -> None:
         """A process recycle is not an orchestrator task-dependency error."""
         raw = load("process-irrigation.json")
