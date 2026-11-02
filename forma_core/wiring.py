@@ -14,6 +14,10 @@ from forma_core.workspaces.projects.models import (
     ValidationIssue,
 )
 
+# Categories whose pins participate in controller-side pin mappings (see derive_pin_mappings).
+CONTROLLER_CATEGORIES = {"microcontroller", "mcu", "single-board computer", "sbc"}
+
+
 
 class EndpointCatalogEntry(BaseModel):
     """A stable, model-facing identifier for one declared component pin."""
@@ -302,7 +306,7 @@ def derive_pin_mappings(
     controller_refs = {
         component.ref_des
         for component in components
-        if component.category.strip().lower() in {"microcontroller", "mcu", "single-board computer", "sbc"}
+        if component.category.strip().lower() in CONTROLLER_CATEGORIES
     }
     mappings: List[PinMappingEntry] = []
     for net in nets:

@@ -49,6 +49,7 @@ from forma_core.jobs.context import (
 )
 from forma_core.jobs.source_usage import normalize_source_usage
 from forma_core.llm import get_llm_runtime_debug_config
+from forma_core.firmware import UnknownBoardError, generate_firmware
 from forma_core.workspaces.projects.models import (
     ComponentInstance,
     ConnectionNet,
@@ -2047,6 +2048,26 @@ def _mcp_tools() -> List[Dict[str, Any]]:
             },
         },
         {
+            "name": "forma.generate_firmware",
+            "description": (
+                "Deterministically generate a compilable PlatformIO firmware scaffold (pin defines, bus "
+                "initialization, driver stubs, build config) from Forma Hardware IR. The optional IR "
+                "'firmware' field pins the board; otherwise the board is inferred from the controller "
+                "part number. Returns scaffold files and non-blocking warnings — a starting point, not "
+                "finished control logic."
+            ),
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "project_ir": {
+                        "type": "object",
+                        "description": "Forma Hardware IR authored by the calling agent.",
+                    },
+                },
+                "required": ["project_ir"],
+            },
+        },
+        {
             "name": "forma.generate_project",
             "description": "Generate a Forma Hardware IR package, Mermaid diagram, and SVG schematic.",
             "inputSchema": {
@@ -2505,6 +2526,19 @@ async def _call_mcp_tool(
             "validation": project.validation.model_dump(mode="json"),
             "mermaid_code": generate_mermaid_chart(project),
             "svg_schematic": generate_svg_schematic(project),
+        }
+
+    if tool_name == "forma.generate_firmware":
+        # Pure deterministic generation: no persistence, no LLM, no side effects.
+        project = HardwareIntermediateRepresentation.model_validate(arguments.get("project_ir"))
+        try:
+            scaffold = generate_firmware(project)
+        except UnknownBoardError as exc:
+            raise ValueError("project_ir names a firmware board with no PlatformIO mapping.") from exc
+        return {
+            "target": scaffold.target.model_dump(mode="json") if scaffold.target else None,
+            "files": scaffold.files,
+            "warnings": scaffold.warnings,
         }
 
     if tool_name == "forma.a2a.send_message":

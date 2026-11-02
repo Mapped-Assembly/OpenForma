@@ -12,6 +12,7 @@ from apps.api import a2a
 from apps.api.a2a import A2AMessage, MCP_DEFAULT_PROTOCOL_VERSION, _persist_mcp_compile, handle_mcp_json_rpc
 from apps.api.auth import UserContext
 from apps.api.main import app
+from forma_core.firmware import FirmwareTarget, esp32_example_ir
 from forma_core.workspaces.projects import ProjectStateError
 from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
 
@@ -107,6 +108,77 @@ class McpAgentCompatibilityTests(unittest.IsolatedAsyncioTestCase):
         compiler = next(tool for tool in tools if tool["name"] == "forma.compile_project")
         authoring_agents = compiler["inputSchema"]["properties"]["authoring_agent"]["enum"]
         self.assertIn("nemoclaw", authoring_agents)
+
+    async def test_tools_include_firmware_generator(self) -> None:
+        response = await handle_mcp_json_rpc(
+            {"jsonrpc": "2.0", "id": 3, "method": "tools/list"}
+        )
+
+        tools = response["result"]["tools"]
+        names = [tool["name"] for tool in tools]
+        self.assertIn("forma.generate_firmware", names)
+        generator = next(tool for tool in tools if tool["name"] == "forma.generate_firmware")
+        self.assertEqual(["project_ir"], generator["inputSchema"]["required"])
+
+    async def test_generate_firmware_returns_scaffold_files_and_warnings(self) -> None:
+        response = await handle_mcp_json_rpc(
+            {
+                "jsonrpc": "2.0",
+                "id": 10,
+                "method": "tools/call",
+                "params": {
+                    "name": "forma.generate_firmware",
+                    "arguments": {"project_ir": esp32_example_ir().model_dump(mode="json")},
+                },
+            }
+        )
+
+        self.assertNotIn("error", response)
+        result = response["result"]["structuredContent"]
+        self.assertEqual("esp32dev", result["target"]["board_id"])
+        self.assertEqual(
+            sorted(["platformio.ini", "include/pins.h", "src/main.cpp", "README.md"]),
+            sorted(result["files"]),
+        )
+        self.assertEqual([], result["warnings"])
+        self.assertIn("#define PIN_SDA 21", result["files"]["include/pins.h"])
+
+    async def test_generate_firmware_honors_pinned_ir_target(self) -> None:
+        ir = esp32_example_ir()
+        ir.firmware = FirmwareTarget(board_id="esp32dev", platform="espressif32")
+        response = await handle_mcp_json_rpc(
+            {
+                "jsonrpc": "2.0",
+                "id": 11,
+                "method": "tools/call",
+                "params": {
+                    "name": "forma.generate_firmware",
+                    "arguments": {"project_ir": ir.model_dump(mode="json")},
+                },
+            }
+        )
+
+        result = response["result"]["structuredContent"]
+        self.assertEqual("espressif32", result["target"]["platform"])
+
+    async def test_generate_firmware_unknown_board_is_sanitized(self) -> None:
+        ir = esp32_example_ir()
+        ir.firmware = FirmwareTarget(board_id="not_a_board", platform="nowhere")
+        response = await handle_mcp_json_rpc(
+            {
+                "jsonrpc": "2.0",
+                "id": 12,
+                "method": "tools/call",
+                "params": {
+                    "name": "forma.generate_firmware",
+                    "arguments": {"project_ir": ir.model_dump(mode="json")},
+                },
+            }
+        )
+
+        self.assertEqual(-32000, response["error"]["code"])
+        self.assertEqual("mcp_tool_failed", response["error"]["data"]["code"])
+        self.assertNotIn("not_a_board", response["error"]["message"])
 
     async def test_compile_project_persists_public_project_and_returns_identity(self) -> None:
         with patch("apps.api.a2a.get_project_identity", return_value=None), patch(

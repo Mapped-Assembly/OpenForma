@@ -5,6 +5,7 @@ import re
 from forma_core.workspaces.projects.mechanism_benchmarks import MechanismBenchmark
 from forma_core.workspaces.projects.solid_cad import CadOperation
 from forma_core.fluidics.models import FluidicSystem
+from forma_core.firmware.models import FirmwareTarget
 
 # ==========================================
 # 1. Base / Seed Component Database Schemas
@@ -530,6 +531,7 @@ def component_detail_payload(component: ComponentInstance) -> Dict[str, Any]:
         "pins": [pin.model_dump(mode="json") for pin in component.pins],
     }
 
+
 class HardwareIntermediateRepresentation(BaseModel):
     """The master typed document capturing the entire generated hardware design."""
     hardware_ir_version: str = Field("0.2", description="Structured schema version")
@@ -545,6 +547,13 @@ class HardwareIntermediateRepresentation(BaseModel):
     assembly: List[AssemblyStep] = Field(default_factory=list, description="Step-by-step physical build instruction package")
     mechanical: Optional[MechanicalNotes] = Field(None, description="Enclosure and fabrications specifications")
     fluidic_system: FluidicSystem | None = Field(None, description="Optional fluid network: channels, chambers, reservoirs, pumps, valves, outlets and optional membrane interfaces.")
+    firmware: FirmwareTarget | None = Field(
+        None,
+        description=(
+            "Optional pinned PlatformIO firmware target for scaffold generation. "
+            "When absent, the board is inferred from the controller component's part number."
+        ),
+    )
     cad_model: Optional[Any] = Field(
         None,
         description=(
