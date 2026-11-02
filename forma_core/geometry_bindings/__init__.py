@@ -8,6 +8,7 @@ from .models import Binding, BindingManifest, GeometryArtifact, GeometryEntity, 
 from .resolution import (
     BindingReport, apply_pose, axis_bounds, composed_pose, forward_lookup,
     invalidate_geometry, reverse_lookup, rotate_xyz, validate_manifest,
+    validate_manifest_against_product,
 )
 
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     "GeometryEntity", "GeometryRequirement", "Pose", "SemanticRef",
     "apply_pose", "axis_bounds", "composed_pose", "forward_lookup",
     "invalidate_geometry", "reverse_lookup", "rotate_xyz", "validate_manifest",
+    "validate_manifest_against_product",
 ]
