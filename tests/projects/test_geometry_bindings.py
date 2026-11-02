@@ -227,9 +227,9 @@ class BindingContractTests(unittest.TestCase):
         function_source = ast.get_source_segment(full_source, func)
         self.assertIsNotNone(function_source)
         snippet = (
-            "import math\\nfrom opencad import Part, Sketch\\n\\n"
+            "import math\nfrom opencad import Part, Sketch\n\n"
             + function_source +
-            "\\n\\nmodel = oriented_xy_prism(100,50,0,40,20,10,90,'fixture')\\nmodel\\n"
+            "\n\nmodel = oriented_xy_prism(100,50,0,40,20,10,90,'fixture')\nmodel\n"
         )
         with TemporaryDirectory() as root:
             source = Path(root) / "rotated.py"
