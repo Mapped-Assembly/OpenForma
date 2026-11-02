@@ -1,0 +1,70 @@
+{
+  "artifact_id": "greenhouse-screening.thermal",
+  "revision": 1,
+  "domain": "thermal",
+  "schema_version": "1.0",
+  "nodes": [
+    {
+      "node_id": "greenhouse",
+      "kind": "zone",
+      "description": "Well-mixed greenhouse volume (conceptual)"
+    },
+    {
+      "node_id": "outdoors",
+      "kind": "boundary"
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "building-envelope",
+      "source_node_id": "greenhouse",
+      "target_node_id": "outdoors",
+      "mechanism": "conduction"
+    }
+  ],
+  "boundaries": [
+    {
+      "boundary_id": "outdoor-temp",
+      "node_id": "outdoors",
+      "kind": "fixed_temperature",
+      "quantity": {
+        "kind": "temperature",
+        "value": 10,
+        "unit": "degC",
+        "claim": {
+          "basis": "illustrative",
+          "rationale": "Synthetic outdoors, not a weather measurement."
+        }
+      }
+    }
+  ],
+  "loads": [
+    {
+      "load_id": "lighting",
+      "node_id": "greenhouse",
+      "direction": "source",
+      "origin": "illustrative",
+      "heat_rate": {
+        "kind": "heat_rate",
+        "value": 50,
+        "unit": "W",
+        "claim": {
+          "basis": "illustrative",
+          "rationale": "No measured fixture or lamp-loss model."
+        }
+      }
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "greenhouse-screen",
+      "zone_node_id": "greenhouse",
+      "ambient_node_id": "outdoors",
+      "edge_id": "building-envelope",
+      "load_ids": [
+        "lighting"
+      ]
+    }
+  ],
+  "evidence": []
+}
