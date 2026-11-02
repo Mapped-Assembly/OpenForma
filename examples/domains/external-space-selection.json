@@ -1,0 +1,16 @@
+{
+  "product_id": "motor-in-lab",
+  "brief": "Design a motor mount and compose its placement with the laboratory's independently owned spatial representation.",
+  "scope": {
+    "physical_structure": true,
+    "domains": ["space"]
+  },
+  "contexts": {
+    "mechanical": {
+      "scope": "Design the passive motor mounting structure only.",
+      "geometric_requirements": ["Use the specified motor face and mounting-hole pattern."],
+      "loads": ["Load specification remains to be supplied before physical qualification."],
+      "manufacturing_constraints": ["Manufacturing process remains to be selected."]
+    }
+  }
+}

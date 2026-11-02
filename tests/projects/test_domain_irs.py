@@ -270,9 +270,9 @@ class ExternalSelectionTests(unittest.TestCase):
             self.assertEqual("awaiting_selection", request["status"])
             self.assertEqual("plan", request["submit_operation"])
             schema = request["decision_schema"]["$defs"]["CompleteProductScope"]
-            self.assertEqual(set(ProductScope.model_fields), set(schema["required"]))
+            self.assertEqual(set(ProductScope.model_fields) - {"domains"}, set(schema["required"]))
             self.assertTrue(all(field["description"] for field in schema["properties"].values()))
-            self.assertEqual({"mechanical", "electrical", "biological", "fluidic"}, set(request["domains"]))
+            self.assertEqual({"mechanical", "electrical", "biological", "fluidic", "space"}, set(request["domains"]))
             with self.assertRaises(ValidationError):
                 ProductPlan.model_validate(request)
             reasons = {"mechanical": "Mount and assemble the motor.", "electrical": "The brief includes motor wiring."}
@@ -431,7 +431,9 @@ class DescriptionSelectionTests(unittest.TestCase):
             prompt, schema = call.args
             self.assertIn(case.brief, prompt)
             self.assertNotIn("expected_domains", prompt)
-            self.assertNotIn(json.dumps(case.expected_domains), prompt)
+            # Empty capability lists in the registry are not leaked benchmark labels.
+            if case.expected_domains:
+                self.assertNotIn(json.dumps(case.expected_domains), prompt)
             self.assertIs(InferredProductScope, schema)
 
 

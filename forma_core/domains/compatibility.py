@@ -13,6 +13,7 @@ from .composition import (
     ProductManifest, validate_product,
 )
 from .registry import validate_domain
+from .providers import DomainRegistry, NATIVE_PROVIDER
 
 
 class HardwareExport(DomainModel):
@@ -115,6 +116,7 @@ def export_hardware_ir(
     *,
     legacy_seed: dict[str, Any] | None = None,
     allow_lossy: bool = False,
+    registry: DomainRegistry | None = None,
 ) -> HardwareExport:
     """Export through the compatibility format, refusing unacknowledged losses.
 
@@ -133,8 +135,9 @@ def export_hardware_ir(
     if record is not None and set(record.domain_baselines) - set(current):
         return HardwareExport(findings=[Finding(code="removed_domain", location="artifacts",
                                                message="Explicitly reconcile removed domains with the legacy source before exporting.")])
-    unchanged = record is not None and current == record.domain_baselines
-    report = validate_product(bundle)
+    external_refs = [r for r in bundle.manifest.artifacts if r.provider_id != NATIVE_PROVIDER]
+    unchanged = record is not None and current == record.domain_baselines and not external_refs
+    report = validate_product(bundle, registry=registry)
     # Structural composition failures must never be bypassed by allow_lossy.
     if report.composition:
         return HardwareExport(findings=report.composition)
@@ -145,6 +148,9 @@ def export_hardware_ir(
         findings.append(Finding(code="incomplete_plan", location="plan", message="Selected domain work remains blocked or incomplete."))
     if any(f.severity == "error" for f in findings):
         return HardwareExport(findings=findings)
+    findings.extend(Finding(code="unrepresentable", location=ref.artifact_id,
+        message=f"HardwareIR cannot represent external {ref.domain} artifacts; the pinned reference remains in the product manifest.")
+        for ref in external_refs)
     source = deepcopy(record.source if record else (legacy_seed or {}))
     legacy = HardwareIntermediateRepresentation.model_validate(source)
     payload = legacy.model_dump(mode="json")
@@ -155,7 +161,10 @@ def export_hardware_ir(
     definitions = {p["part_definition_id"]: p for p in payload["part_definitions"]}
     components = {c["ref_des"]: c for c in payload["components"]}
     object_ids: dict[str, str] = {}
-    for document in bundle.artifacts.values():
+    native_ids = {ref.artifact_id for ref in bundle.manifest.artifacts if ref.provider_id == NATIVE_PROVIDER}
+    for artifact_id, document in bundle.artifacts.items():
+        if artifact_id not in native_ids:
+            continue
         domain = document["domain"]
         if domain in {"mechanical", "electrical"}:
             for component in document["components"]:

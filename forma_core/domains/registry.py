@@ -9,6 +9,10 @@ from typing import Any
 from pydantic import BaseModel, ValidationError
 
 from .base import Domain, Finding, canonical_json
+from .providers import (
+    ArtifactIdentity, ArtifactReference, ContextRequirement, DomainRegistry,
+    NATIVE_PROVIDER, ProviderMetadata, SchemaSupport,
+)
 
 CONTRACTS: dict[Domain, tuple[str, str, str]] = {
     "mechanical": ("forma_core.mechanics.models", "MechanicalIR", "MechanicalContext"),
@@ -101,3 +105,80 @@ def entities(document: BaseModel) -> dict[str, set[str]]:
         "compartments", "exposures", "controls", "endpoints", "sampling_points",
         "datasets", "observations", "reference_outcomes",
     ) for e in getattr(document.experiment, field)}
+
+
+class NativeProvider:
+    """Lazy adapter for existing native schemas; authoring stays in generation.py."""
+
+    def __init__(self, metadata: ProviderMetadata) -> None:
+        """Retain only metadata until a caller requests a native operation."""
+        self.metadata = metadata
+
+    def validate_context(self, context: dict[str, Any]) -> list[str]:
+        """Delegate detailed context validation to the existing native contract."""
+        try:
+            domain_model(self.metadata.domain, context=True).model_validate(context)
+        except ValidationError as exc:
+            return [f"{'.'.join(map(str, e['loc']))}: {e['msg']}" for e in exc.errors()]
+        return []
+
+    def validate(self, payload: dict[str, Any], reference: ArtifactReference) -> list[Finding]:
+        """Run the existing local rules without composition or external providers."""
+        return validate_domain(payload)
+
+    def describe(self, payload: dict[str, Any], reference: ArtifactReference) -> ArtifactIdentity:
+        """Read native envelope metadata without changing its wire format."""
+        return ArtifactIdentity(artifact_id=payload["artifact_id"], domain=payload["domain"],
+                                schema_id=f"openforma.{payload['domain']}",
+                                schema_version=payload["schema_version"], revision=payload["revision"])
+
+    def entities(self, payload: dict[str, Any], reference: ArtifactReference) -> dict[str, set[str]]:
+        """Expose native entity/port identities through the generic provider API."""
+        return entities(parse_domain(payload))
+
+    def resolve(self, reference: ArtifactReference) -> dict[str, Any] | None:
+        """Native bundle payloads are supplied by callers, not fetched from URLs."""
+        return None
+
+    def discover(self, query: dict[str, Any]) -> list[ArtifactReference]:
+        """No native artifact catalog service is implemented in this adapter."""
+        raise NotImplementedError("Native artifact discovery is not provided.")
+
+    def author(self, request: dict[str, Any]) -> ArtifactReference:
+        """Native authoring remains the existing caller-supplied generation API."""
+        raise NotImplementedError("Use generate_product with a caller-supplied native author.")
+
+
+def create_registry() -> DomainRegistry:
+    """Register native capabilities and reserve SpaceIR without importing its schema."""
+    registry = DomainRegistry()
+    scopes = {"mechanical": ["physical_structure", "mechanical_motion"],
+              "electrical": ["wiring", "electrical_control"],
+              "biological": ["biological_experiment"], "fluidic": ["fluid_network"]}
+    required = {"mechanical": ["scope", "geometric_requirements", "loads", "manufacturing_constraints"],
+                "electrical": ["scope", "supply_requirements", "load_requirements", "interface_requirements"],
+                "biological": ["scope", "biological_question", "experimental_conditions", "evidence_sources"],
+                "fluidic": ["scope", "fluid_properties", "operating_conditions", "flow_requirements"]}
+    for domain, (_, name, _) in CONTRACTS.items():
+        metadata = ProviderMetadata(domain=domain, ir_type=name, owner="OpenForma",
+            provider_id=NATIVE_PROVIDER, provider_version="1.0",
+            schemas=[SchemaSupport(schema_id=f"openforma.{domain}", versions=["1.0"])],
+            validation=True, any_scope=scopes[domain],
+            required_context=[ContextRequirement(name=field, description=f"Native {domain} context: {field}.") for field in required[domain]],
+            reference_types=["same_object", "spatial", "hosted_by"],
+            fact_authorities=[fact for fact, owner in FACT_OWNERS.items() if owner == domain],
+            limitations=["Native authoring uses generate_product with caller-supplied designs; no provider-hosted author or resolver."])
+        registry.register(metadata, NativeProvider(metadata))
+    registry.register(ProviderMetadata(domain="space", ir_type="SpaceIR", owner="OpenIndustries",
+        provider_id="openindustries.space", provider_version="unregistered", availability="unavailable",
+        limitations=["Reserved external domain; no SpaceIR schema or implementation is supplied by OpenForma.",
+                     "Schema identifiers, versions and required context will be advertised by the owning provider."]))
+    return registry
+
+
+DEFAULT_REGISTRY = create_registry()
+
+
+def get_registry(registry: DomainRegistry | None = None) -> DomainRegistry:
+    """Use an injected registry or the process's explicitly configured defaults."""
+    return registry if registry is not None else DEFAULT_REGISTRY

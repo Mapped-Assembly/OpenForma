@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import Any, Callable, Literal
 
-from pydantic import Field, StrictBool, ValidationError, model_validator
+from pydantic import Field, StrictBool, model_validator
 
 from .base import Domain, DomainModel, Text, unique
-from .registry import CONTRACTS, domain_model
+from .providers import ContextRequirement, DomainDependency, DomainRegistry, ProviderMetadata
+from .registry import get_registry
 
 
 class ProductScope(DomainModel):
@@ -23,6 +25,7 @@ class ProductScope(DomainModel):
     electrical_control: bool = Field(False, description="Include electrically controlled equipment and its electrical interfaces.")
     fluid_network: bool = Field(False, description="Design fluid routing, channels, piping, flow or pressure constraints.")
     biological_experiment: bool = Field(False, description="Include biological compartments, experiments, exposures or measurements.")
+    domains: list[Domain] = Field(default_factory=list, description="Additional explicitly requested domains from the advertised registry, including external domains.")
 
 
 class CompleteProductScope(ProductScope):
@@ -45,6 +48,10 @@ class DomainTask(DomainModel):
     missing_inputs: list[str] = Field(default_factory=list)
     status: Literal["ready", "blocked", "generated", "invalid", "failed"] = "ready"
     errors: list[str] = Field(default_factory=list)
+    provider: ProviderMetadata | None = None
+    required_context: list[ContextRequirement] = Field(default_factory=list)
+    dependencies: list[DomainDependency] = Field(default_factory=list)
+    unresolved_dependencies: list[str] = Field(default_factory=list)
 
 
 class ProductPlan(DomainModel):
@@ -63,13 +70,17 @@ class ProductPlan(DomainModel):
         return self
 
 
-def context_errors(domain: Domain, context: dict[str, Any]) -> list[str]:
+def context_errors(domain: Domain, context: dict[str, Any], *, registry: DomainRegistry | None = None) -> list[str]:
     """Validate only this domain's context and report missing or malformed inputs."""
-    try:
-        domain_model(domain, context=True).model_validate(context)
-    except ValidationError as exc:
-        return [f"{'.'.join(map(str, e['loc']))}: {e['msg']}" for e in exc.errors()]
-    return []
+    registry = get_registry(registry)
+    metadata, provider = registry.metadata(domain), registry.provider(domain)
+    if provider is not None:
+        try:
+            return provider.validate_context(deepcopy(context))
+        except Exception as exc:
+            return [f"Provider context validation unavailable: {exc}"]
+    return [f"{item.name}: required context missing" for item in (metadata.required_context if metadata else [])
+            if item.required and (item.name not in context or context[item.name] in (None, "", []))]
 
 
 def select_domains(
@@ -79,6 +90,7 @@ def select_domains(
     scope: ProductScope | None = None,
     selector: Callable[[str], ProductScope] | None = None,
     contexts: dict[Domain, dict[str, Any]] | None = None,
+    registry: DomainRegistry | None = None,
 ) -> ProductPlan:
     """Compile an agent's scope into S(P), preserving required but blocked domains.
 
@@ -91,26 +103,38 @@ def select_domains(
             raise ValueError("Supply a ProductScope or an agent selector for the product brief.")
         scope = selector(brief)
     scope = ProductScope.model_validate(scope)
+    registry = get_registry(registry)
+    catalog = registry.catalog()
     contexts = contexts or {}
-    unknown = set(contexts) - set(CONTRACTS)
+    unknown = (set(contexts) | set(scope.domains)) - set(catalog)
     if unknown:
         raise ValueError(f"Unknown context domains: {sorted(unknown)}")
-    reasons = {
-        "mechanical": (scope.physical_structure or scope.mechanical_motion,
-                       "Requested physical structure or mechanical motion requires MechanicalIR."),
-        "electrical": (scope.wiring or scope.electrical_control,
-                       "Requested wiring or electrical control requires ElectricalIR."),
-        "biological": (scope.biological_experiment,
-                       "Requested biological experiment requires BiologicalIR."),
-        "fluidic": (scope.fluid_network,
-                    "Requested fluid network requires FluidicIR."),
-    }
+    flags = scope.model_dump()
+    selected = {domain for domain, info in catalog.items()
+                if domain in scope.domains or any(flags.get(flag) is True for flag in info["any_scope"])}
+    reasons = {domain: f"Requested scope requires {catalog[domain]['ir_type']}." for domain in selected}
+    pending = [domain for domain in catalog if domain in selected]
+    while pending:
+        domain = pending.pop()
+        for dependency in catalog[domain]["dependencies"]:
+            target = dependency["domain"]
+            if dependency["required"] and target in catalog and target not in selected:
+                selected.add(target)
+                reasons[target] = f"{domain} requires {target} through {dependency['relationship']}."
+                pending.append(target)
     tasks = []
-    for domain, (required, reason) in reasons.items():
-        if not required:
+    for domain in catalog:
+        if domain not in selected:
             continue
+        metadata = registry.metadata(domain)
+        assert metadata is not None
         context = contexts.get(domain, {})
-        missing = context_errors(domain, context)
-        tasks.append(DomainTask(domain=domain, reason=reason, context=context,
-                                missing_inputs=missing, status="blocked" if missing else "ready"))
+        missing = context_errors(domain, context, registry=registry)
+        unresolved = [f"Provider for '{domain}' is unavailable."] if registry.provider(domain) is None else []
+        unresolved += [f"Required domain '{d.domain}' ({d.relationship}) is unavailable."
+                       for d in metadata.dependencies if d.required and registry.provider(d.domain) is None]
+        tasks.append(DomainTask(domain=domain, reason=reasons[domain], context=context,
+            provider=metadata, required_context=metadata.required_context, dependencies=metadata.dependencies,
+            unresolved_dependencies=unresolved, missing_inputs=missing,
+            status="blocked" if missing or unresolved else "ready"))
     return ProductPlan(product_id=product_id, brief=brief, scope=scope, tasks=tasks)

@@ -11,6 +11,8 @@ from .generation import DomainAuthor, GenerationRequest
 from .planning import CompleteProductScope as InferredProductScope
 from .planning import ProductPlan, ProductScope, select_domains
 from .registry import domain_model
+from .registry import get_registry
+from .providers import DomainRegistry
 
 
 class StructuredProvider(Protocol):
@@ -27,6 +29,7 @@ def plan_with_agent(
     brief: str,
     *,
     contexts: dict[Domain, dict[str, Any]] | None = None,
+    registry: DomainRegistry | None = None,
 ) -> ProductPlan:
     """Ask the agent to interpret scope, then deterministically select domain types."""
     def selector(text: str) -> ProductScope:
@@ -38,13 +41,15 @@ def plan_with_agent(
             "Respect exclusions: a passive chip with external pumping excluded needs no electrical control; "
             "including wiring or electrically controlled pumping does. Missing specifications never remove "
             "a required capability. A software-only project can select no physical domains. "
-            "Do not substitute workflow stages for engineering domains.\nBrief:\n" + text
+            "Do not substitute workflow stages for engineering domains. "
+            "Use domains for required registry domains beyond the six legacy capabilities, even if unavailable.\n"
+            "Domain registry:\n" + canonical_json(get_registry(registry).catalog()) + "\nBrief:\n" + text
         )
         value = provider.generate_structured(prompt, InferredProductScope)
         payload = value.model_dump(exclude_unset=True) if isinstance(value, BaseModel) else value
         inferred = InferredProductScope.model_validate(payload)
         return ProductScope.model_validate(inferred.model_dump())
-    return select_domains(product_id, brief, selector=selector, contexts=contexts)
+    return select_domains(product_id, brief, selector=selector, contexts=contexts, registry=registry)
 
 
 def configured_selector(provider_name: str | None = None, model_name: str | None = None) -> StructuredProvider:

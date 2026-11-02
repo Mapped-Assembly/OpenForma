@@ -8,7 +8,7 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-Domain = Literal["mechanical", "electrical", "biological", "fluidic"]
+Domain = Annotated[str, Field(pattern=r"^[a-z][a-z0-9_.-]*$")]
 Text = Annotated[str, Field(min_length=1)]
 
 

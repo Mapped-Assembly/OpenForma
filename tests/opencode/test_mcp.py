@@ -121,6 +121,42 @@ class OpenCodeMcpModelTests(unittest.TestCase):
 
 
 class OpenCodeMcpHttpTests(unittest.TestCase):
+    def test_external_domain_registry_and_composition_over_mcp(self) -> None:
+        """Application-registered providers work through HTTP without loading OpenIndustries."""
+        from tests.projects.test_external_domain_providers import external_registry, mixed_bundle
+        from forma_core.domains.planning import ProductScope
+        registry, provider = external_registry()
+
+        def invoke(operation: str, payload: dict) -> dict:
+            """Call the existing authenticated MCP surface with an external-domain operation."""
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": operation, "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": operation, "payload": json.dumps(payload),
+                }},
+            })
+            self.assertEqual(200, response.status_code, response.text)
+            result = response.json()["result"]
+            self.assertFalse(result.get("isError"), result)
+            return json.loads(result["content"][0]["text"])
+
+        with patch("forma_core.domains.tools.get_registry", return_value=registry), patch(
+            "apps.api.opencode_mcp._persist_mcp_compile",
+        ) as persist:
+            self.assertEqual("tests.space", invoke("registry", {})["domains"]["space"]["provider_id"])
+            request = invoke("plan", {"product_id": "p", "brief": "Map a lab"})
+            plan = invoke("plan", {**request["project"], "decision": {
+                "request_sha256": request["request_sha256"], "registry_sha256": request["registry_sha256"],
+                "scope": ProductScope(domains=["space"]).model_dump(), "reasons": {"space": "Map the lab."},
+            }})
+            self.assertEqual(["space"], [t["domain"] for t in plan["tasks"]])
+            bundle = mixed_bundle(provider)
+            composed = invoke("compose", {"product_id": "product", "documents": list(bundle.artifacts.values()),
+                "references": [provider.reference().model_dump()], "links": [l.model_dump() for l in bundle.manifest.links]})
+            self.assertTrue(invoke("validate", composed)["is_valid"])
+            self.assertNotIn(provider.reference().artifact_id, composed["artifacts"])
+            persist.assert_not_called()
+
     def test_domain_agent_handoff_generates_and_validates_without_provider(self) -> None:
         """The calling MCP agent selects domains and authors IRs without a server-side model."""
         from tests.projects.test_domain_irs import fixture_input

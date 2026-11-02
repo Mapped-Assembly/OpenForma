@@ -1,8 +1,9 @@
 # Independent domain IRs
 
 Issue #20 replaces HardwareIR as the required entry point for **new domain
-authoring**. A product selects a subset of MechanicalIR, ElectricalIR,
-BiologicalIR and FluidicIR. Each document has an artifact ID, revision, schema
+authoring**. A product selects from a registry of independently owned domain
+representations, including native MechanicalIR, ElectricalIR, BiologicalIR and
+FluidicIR. Each native document has an artifact ID, revision, schema
 version, serialization, authoring context and local validation. A product
 manifest references those artifacts and separately validates their relationships.
 
@@ -11,6 +12,158 @@ This is an additive migration. The hosted legacy generator/editor and existing
 `forma_core.domains`, `forma-core domains`, or `forma.opencode.domains`. There is
 no database flag-day migration and no requirement to instantiate HardwareIR
 when authoring or validating an individual domain.
+
+## Ownership, providers and composition
+
+| System | Responsibility |
+| --- | --- |
+| OpenForma | Product/subsystem design and its native engineering domain IRs |
+| OpenIndustries | SpaceIR, scene compilation, visualization and operational runtime |
+| Domain registry | Discoverable IR types, ownership and provider capabilities |
+| Composition layer | Domain selection, artifact references, dependency resolution and cross-domain validation |
+
+An **IR definition** owns its independently versioned schema and semantics. A
+**domain provider** implements authoring, loading, local validation and identity
+inspection for that definition. **Orchestration/composition** chooses which
+representations are required and references their artifacts; it does not acquire
+ownership of their schemas. A domain provider is distinct from the optional LLM
+provider used by `selection_mode: "provider"`.
+
+`providers.py` defines a schema-independent `DomainProvider` protocol and
+`ProviderMetadata`. Metadata advertises the stable domain ID, IR owner,
+provider ID/version, supported schema IDs/versions, authoring/validation/
+resolution/discovery capabilities, required context, relationship types, fact
+authorities, explicit domain dependencies, availability and limitations. There
+is no universal document model that external IRs must inherit. External payloads
+need not even use OpenForma's envelope field names: `describe()` extracts their
+identity and `entities()` exposes stable entity/port identifiers.
+
+`DomainRegistry` holds one explicitly configured provider per domain. Register
+an adapter with `register(metadata, provider)`; replace an existing reservation
+only with `replace=True`. Advertisements for absent providers are permitted when
+marked unavailable. Schema discovery/selection reads metadata without importing
+domain implementations. Native schemas continue to load lazily through the
+existing adapters; their document wire formats are unchanged.
+
+A provider can be a local package adapter or a proxy to an independently deployed
+service. The interface passes JSON and references, not Python IR classes. This
+change implements the registry/adapter boundary only: it does not implement a
+network transport, dynamic package loading, remote credentials or service startup.
+Registrations are trusted application configuration, not client-supplied code or
+URLs. Composition never fetches a reference URL directly; only an explicitly
+registered provider can resolve it.
+
+### SpaceIR belongs to OpenIndustries
+
+The default catalog reserves `space`, owned by **OpenIndustries**, with provider
+ID `openindustries.space`, version `unregistered`, no advertised schemas and
+unavailable status. This is an ownership reservation, not a SpaceIR definition.
+`schema({"domain": "space"})` reports external-provider metadata and null document
+and context schemas. OpenForma does not import OpenIndustries or copy its internals.
+
+The future owner's responsibilities include coordinate frames/transforms,
+regions/volumes, boundaries/openings, topology, placement/occupancy envelopes,
+spatial constraints, source evidence and uncertainty. None of those semantics
+are added to MechanicalIR by this change. Existing component placements remain
+mechanical design facts; site topology belongs to SpaceIR.
+
+An OpenIndustries provider can integrate by advertising its own schema IDs,
+versions and context requirements, implementing the provider protocol (locally
+or as a service proxy), then replacing the reservation in the application's
+registry. No native MechanicalIR/ElectricalIR/BiologicalIR/FluidicIR schema needs
+to change. Provider-hosted authoring returns a pinned `ArtifactReference`;
+OpenForma's current generator accepts that reference instead of authoring the
+foreign document. Native authoring continues through the existing callback or
+supplied-design path. Accordingly, the native registry adapters advertise local
+validation but not provider-hosted authoring or a remote artifact catalog.
+
+### References across repositories
+
+`ArtifactReference` preserves domain, provider identity/version, schema ID/version,
+stable artifact ID, optional owner-defined revision, canonical-JSON SHA-256,
+optional locator, and provenance. Revisions can be integers or opaque strings;
+content-addressed external artifacts need no invented revision. Native legacy
+references lacking the new provider/schema fields receive explicit native-adapter
+defaults on read. External references must supply those fields.
+
+Link endpoints pin entity/port IDs and a revision or digest, with applicable
+units and named coordinate frames. Links retain relationship type, declared fact
+authority and provenance. Artifact IDs should be globally stable, preferably
+owner-namespaced. Providers verify the actual document identity; the manifest is
+not a substitute for the owner's validation.
+
+The manifest contains references. A portable bundle may carry independently
+serialized native artifacts or an explicit external cache, but resolution never
+copies foreign documents into the bundle automatically, and HardwareIR never
+absorbs them. `compose` accepts native `documents` plus external `references` and
+`links`. `validate-domain` accepts the original native payload or, for an external
+IR, `{"reference": ..., "artifact": ...}`. A provider outage returns unresolved
+status and `is_valid: null` for the latter; it is not evidence of invalid local
+semantics. `validate` separately reports `local`, `composition` and
+`blocked_domains`. Missing providers/artifacts, unsupported provider/schema
+versions, digest drift and broken links are composition diagnostics. Native
+local validity remains independently inspectable, including during native updates.
+
+External artifacts cannot be silently exported through HardwareIR. A resolved,
+valid external reference produces an `unrepresentable` finding and requires
+`allow_lossy` for a native-only compatibility export. Unresolved dependencies or
+broken composition cannot be bypassed with that flag. The original external
+reference and any cached bytes remain intact in the product bundle.
+
+### Registry-based selection
+
+Given product/task `P`, requested scope `C` and advertised registry `I`, selection
+computes `S(P,C) ⊆ I`. The six existing scope booleans remain supported and map
+through registry metadata. `scope.domains` explicitly requests other registered
+domains, including required but unavailable ones. Provider-declared required
+dependencies are selected transitively when registered; absent dependencies are
+reported explicitly. Unavailability never silently removes a selected domain.
+
+Each task includes selection reason, required context declarations, missing
+inputs, provider availability/capabilities, dependencies and unresolved dependency
+messages. Unknown domain IDs require registration, including an unavailable
+advertisement if the implementation is not installed. Unselected domains create
+no placeholder documents.
+
+`registry({})` exposes the catalog through SDK/CLI/MCP. The agent handoff adds
+`registry_sha256`, binding decisions to the advertised capabilities. Submit it
+with `request_sha256`; it is required when `scope.domains` is nonempty. Old
+native-only decisions retain their original project digest behavior. Neither
+digest is an authentication token. Application configuration can inject a
+registry into `select_domains`, `generate_product`, `validate_product`,
+`export_hardware_ir` and `call_domain_tool`.
+
+For example, this deterministic public request selects mechanics and the
+currently unavailable spatial domain without loading OpenIndustries:
+
+```bash
+python -m forma_core domains plan examples/domains/external-space-selection.json
+```
+
+The selecting caller sees blocked work, required context and the unavailable
+SpaceIR provider. It can still author/validate mechanics independently. To
+compose a future resolved artifact, pass the reference returned by its owning
+provider to `compose` or `generate.references`; do not invent an external schema
+or submit its fields through the native `designs` mapping.
+
+### Limits of this extension
+
+- One active provider and one artifact per domain per product; multiple-provider
+  routing, provider negotiation and multi-artifact domains are deferred.
+- JSON artifacts and canonical-JSON SHA-256; binary artifact adapters are deferred.
+- External authoring/discovery is invoked by the owning caller/provider. Automatic
+  orchestration of those operations, and generation-time field projections from
+  foreign artifacts, are deferred. Such projections remain explicitly blocked.
+- Provider-declared relationship types receive identity/availability checks.
+  Existing `same_object`, `spatial` and biological `hosted_by` checks remain;
+  arbitrary relationship semantics and frame-transform evaluation are deferred.
+  Spatial checks still require explicit mm/m units and matching frames, reporting
+  an unresolved transform rather than silently converting coordinates.
+- No SpaceIR implementation, scene compiler, new simulator, remote plugin
+  runtime or circular OpenForma/OpenIndustries dependency is introduced.
+
+The lightweight provider in `tests/projects/test_external_domain_providers.py`
+uses a deliberately unrelated JSON envelope. It is not a proposed SpaceIR schema.
 
 ## Contracts and authority
 
@@ -74,7 +227,7 @@ Every current HardwareIR top-level field has an explicit migration disposition:
 
 ## Selection and missing context
 
-The available domain set is `I`; scope selection produces `S(P) ⊆ I`. Scope
+The advertised domain set is `I`; scope selection produces `S(P,C) ⊆ I`. Scope
 describes **requested engineering work**. A motor appearing in a rendering does
 not automatically request a wiring design. The agent reads the brief and returns
 `ProductScope`; deterministic selection maps that scope to domain types and
@@ -290,7 +443,7 @@ Independent schemas also support direct `model_dump_json` / `model_validate_json
 Run regression coverage with:
 
 ```bash
-python -m pytest tests/projects/test_domain_irs.py tests/projects/test_component_instances.py tests/projects/test_wiring_compiler.py tests/projects/test_biology.py tests/projects/test_fluidics.py tests/projects/test_cad_generation.py tests/opencode/test_mcp.py -q
+python -m pytest tests/projects/test_domain_irs.py tests/projects/test_external_domain_providers.py tests/projects/test_component_instances.py tests/projects/test_wiring_compiler.py tests/projects/test_biology.py tests/projects/test_fluidics.py tests/projects/test_cad_generation.py tests/opencode/test_mcp.py -q
 ```
 
 Further migration work for #2/#17 can move hosted persistence, editors and

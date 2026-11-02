@@ -4,42 +4,43 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, TypeAdapter, model_validator
 
 from .base import Domain, DomainModel, Finding, Text, fingerprint, unique
 from .planning import ProductPlan
-from .registry import FACT_OWNERS, entities, parse_domain, validate_domain
-
-
-class ArtifactReference(DomainModel):
-    """An exact version of a separately serialized domain artifact."""
-
-    artifact_id: Text
-    domain: Domain
-    schema_version: Text
-    revision: int = Field(ge=1)
-    sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+from .providers import ArtifactIdentity, ArtifactReference, Digest, DomainRegistry, NATIVE_PROVIDER, Revision
+from .registry import entities, get_registry, parse_domain
+from copy import deepcopy
 
 
 class LinkEndpoint(DomainModel):
     """An object/port in a pinned artifact revision, with explicit spatial context."""
 
     artifact_id: Text
-    revision: int = Field(ge=1)
+    revision: Revision | None = None
     object_id: Text
     port_id: Text | None = None
     units: Text | None = None
     frame: Text | None = None
+    sha256: Digest | None = None
+
+    @model_validator(mode="after")
+    def pinned_identity(self) -> LinkEndpoint:
+        """Endpoints must pin a revision or digest, including content-addressed artifacts."""
+        if self.revision is None and self.sha256 is None:
+            raise ValueError("Link endpoints require a revision or content fingerprint.")
+        return self
 
 
 class DomainLink(DomainModel):
     """A separately validated relationship; it does not change local domain validity."""
 
     link_id: Text
-    kind: Literal["same_object", "hosted_by", "spatial"]
+    kind: Text
     source: LinkEndpoint
     target: LinkEndpoint
     fact_owners: dict[str, Domain] = Field(default_factory=dict)
+    provenance: dict[str, Any] = Field(default_factory=dict)
 
 
 class ProductManifest(DomainModel):
@@ -103,6 +104,7 @@ def compose_product(
     *,
     links: list[DomainLink] | None = None,
     plan: ProductPlan | None = None,
+    references: list[ArtifactReference] | None = None,
 ) -> ProductBundle:
     """Create exact references without placeholders for omitted/blocked domains."""
     payloads = [document.model_dump(mode="json") for document in documents]
@@ -110,15 +112,18 @@ def compose_product(
         artifact_id=p["artifact_id"], domain=p["domain"], schema_version=p["schema_version"],
         revision=p["revision"], sha256=fingerprint(p),
     ) for p in payloads]
-    return ProductBundle(manifest=ProductManifest(product_id=product_id, artifacts=refs, links=links or []),
+    return ProductBundle(manifest=ProductManifest(product_id=product_id, artifacts=refs + (references or []), links=links or []),
                          artifacts={p["artifact_id"]: p for p in payloads}, plan=plan)
 
 
-def validate_product(bundle: ProductBundle) -> ProductValidation:
+def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None = None) -> ProductValidation:
     """Check artifact integrity and links without turning link errors into local errors."""
     result = ProductValidation()
+    registry = get_registry(registry)
     documents: dict[str, BaseModel] = {}
+    identities: dict[str, ArtifactIdentity] = {}
     indexes: dict[str, dict[str, set[str]]] = {}
+    references = {ref.artifact_id: ref for ref in bundle.manifest.artifacts}
 
     def add(code: str, location: str, message: str) -> None:
         """Append a composition finding while preserving all independent checks."""
@@ -128,20 +133,45 @@ def validate_product(bundle: ProductBundle) -> ProductValidation:
     for extra in sorted(bundle.artifacts.keys() - expected):
         add("unreferenced_artifact", extra, "Artifact is absent from the composition manifest.")
     for ref in bundle.manifest.artifacts:
+        provider_errors = registry.reference_errors(ref)
+        if provider_errors:
+            result.composition.extend(provider_errors)
+            continue
+        provider = registry.provider(ref.domain)
+        metadata = registry.metadata(ref.domain)
+        assert provider is not None and metadata is not None
         payload = bundle.artifacts.get(ref.artifact_id)
+        if payload is None and metadata.resolution:
+            try:
+                payload = provider.resolve(ref.model_copy(deep=True))
+            except Exception as exc:
+                add("provider_resolution", ref.artifact_id, f"Artifact resolution failed: {exc}")
+                continue
         if payload is None:
             add("missing_artifact", ref.artifact_id, "Referenced artifact is unavailable.")
             continue
-        for key in ("artifact_id", "domain", "schema_version", "revision"):
-            if payload.get(key) != getattr(ref, key):
-                add("artifact_metadata", ref.artifact_id, f"Artifact {key} differs from its manifest reference.")
-        if fingerprint(payload) != ref.sha256:
-            add("artifact_hash", ref.artifact_id, "Artifact content differs from the pinned revision digest.")
-        result.local[ref.artifact_id] = validate_domain(payload)
+        payload = deepcopy(payload)
         try:
-            documents[ref.artifact_id] = parse_domain(payload)
-            indexes[ref.artifact_id] = entities(documents[ref.artifact_id])
-        except ValueError:
+            if fingerprint(payload) != ref.sha256:
+                add("artifact_hash", ref.artifact_id, "Artifact content differs from the pinned revision digest.")
+            result.local[ref.artifact_id] = registry.validate_artifact(payload, ref)
+            if any(f.severity == "error" for f in result.local[ref.artifact_id]):
+                continue
+            identity = ArtifactIdentity.model_validate(provider.describe(deepcopy(payload), ref.model_copy(deep=True)))
+            mismatch = False
+            for key in type(identity).model_fields:
+                if getattr(identity, key) != getattr(ref, key):
+                    mismatch = True
+                    add("artifact_metadata", ref.artifact_id, f"Artifact {key} differs from its manifest reference.")
+            if mismatch:
+                continue
+            index = TypeAdapter(dict[str, set[Text]]).validate_python(provider.entities(deepcopy(payload), ref.model_copy(deep=True)))
+            identities[ref.artifact_id] = identity
+            indexes[ref.artifact_id] = index
+            if ref.provider_id == NATIVE_PROVIDER:
+                documents[ref.artifact_id] = parse_domain(payload)
+        except Exception as exc:
+            add("provider_validation", ref.artifact_id, f"Provider could not complete validation/indexing: {exc}")
             continue
     if bundle.plan is not None:
         if bundle.plan.product_id != bundle.manifest.product_id:
@@ -152,17 +182,22 @@ def validate_product(bundle: ProductBundle) -> ProductValidation:
             add("unselected_domain", domain, "Artifact was not selected by the product plan.")
         for task in bundle.plan.tasks:
             if task.domain not in actual or task.status != "generated":
-                result.blocked_domains[task.domain] = task.missing_inputs or task.errors or ["Domain has not been generated."]
+                result.blocked_domains[task.domain] = task.missing_inputs or task.unresolved_dependencies or task.errors or ["Domain has not been generated."]
+            for dependency in task.dependencies:
+                if dependency.required and (dependency.domain not in actual or registry.provider(dependency.domain) is None):
+                    add("unresolved_dependency", task.domain, f"Required domain '{dependency.domain}' ({dependency.relationship}) is unresolved.")
     for link in bundle.manifest.links:
         resolved = True
         for endpoint in (link.source, link.target):
-            doc = documents.get(endpoint.artifact_id)
+            doc = identities.get(endpoint.artifact_id)
             if doc is None:
                 add("link_artifact", link.link_id, f"Unavailable artifact '{endpoint.artifact_id}'.")
                 resolved = False
                 continue
-            if doc.revision != endpoint.revision:
+            if endpoint.revision is not None and doc.revision != endpoint.revision:
                 add("link_revision", link.link_id, "Linked artifact revision changed; recheck this relationship.")
+            if endpoint.sha256 is not None and endpoint.sha256 != references[endpoint.artifact_id].sha256:
+                add("link_hash", link.link_id, "Endpoint digest differs from the pinned artifact reference.")
             ports = indexes[endpoint.artifact_id].get(endpoint.object_id)
             if ports is None:
                 add("link_object", link.link_id, f"Unknown object '{endpoint.object_id}'.")
@@ -171,19 +206,24 @@ def validate_product(bundle: ProductBundle) -> ProductValidation:
                 add("link_port", link.link_id, f"Unknown port '{endpoint.port_id}'.")
         if not resolved:
             continue
-        source = documents[link.source.artifact_id]
-        target = documents[link.target.artifact_id]
+        source = identities[link.source.artifact_id]
+        target = identities[link.target.artifact_id]
         if source.domain == target.domain:
             add("link_domain", link.link_id, "A cross-domain link must reference distinct domains.")
         for fact, owner in link.fact_owners.items():
-            if FACT_OWNERS.get(fact) != owner or owner not in {source.domain, target.domain}:
+            metadata = registry.metadata(owner)
+            if metadata is None or fact not in metadata.fact_authorities or owner not in {source.domain, target.domain}:
                 add("fact_ownership", link.link_id, f"Unsupported or conflicting authority for '{fact}'.")
+        for domain in (source.domain, target.domain):
+            metadata = registry.metadata(domain)
+            if metadata is None or link.kind not in metadata.reference_types:
+                add("relationship_type", link.link_id, f"Provider for '{domain}' does not advertise '{link.kind}'.")
         if link.kind == "same_object":
             if link.source.object_id != link.target.object_id:
                 add("physical_identity", link.link_id, "Shared physical views must preserve the same object_id.")
-            if source.domain in {"mechanical", "electrical"} and target.domain in {"mechanical", "electrical"}:
-                left = next(c for c in source.components if c.object_id == link.source.object_id)
-                right = next(c for c in target.components if c.object_id == link.target.object_id)
+            if source.domain in {"mechanical", "electrical"} and target.domain in {"mechanical", "electrical"} and source.artifact_id in documents and target.artifact_id in documents:
+                left = next(c for c in documents[source.artifact_id].components if c.object_id == link.source.object_id)
+                right = next(c for c in documents[target.artifact_id].components if c.object_id == link.target.object_id)
                 if left.part_definition_id != right.part_definition_id:
                     add("part_identity", link.link_id, "Shared object views reference different part definitions.")
         if link.kind == "spatial":
@@ -192,11 +232,12 @@ def validate_product(bundle: ProductBundle) -> ProductValidation:
             elif link.source.units != link.target.units or link.source.frame != link.target.frame:
                 add("spatial_transform", link.link_id, "Different units/frames require an external transform; no implicit conversion.")
         if link.kind == "hosted_by":
-            if source.domain != "biological" or target.domain != "fluidic":
+            if source.domain != "biological" or target.domain != "fluidic" or source.artifact_id not in documents or target.artifact_id not in documents:
                 add("host_domains", link.link_id, "Hosted-by links run from a biological compartment to a fluidic host.")
             else:
-                compartments = {c.id for c in source.experiment.compartments}
-                hosts = {c.id for c in target.system.channels + target.system.chambers}
+                compartments = {c.id for c in documents[source.artifact_id].experiment.compartments}
+                system = documents[target.artifact_id].system
+                hosts = {c.id for c in system.channels + system.chambers}
                 if link.source.object_id not in compartments or link.target.object_id not in hosts:
                     add("host_type", link.link_id, "Expected a biological compartment and fluidic channel/chamber.")
     # Existing BiologicalExperiment host IDs are cross-domain, never local failures.
