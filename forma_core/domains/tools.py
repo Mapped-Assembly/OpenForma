@@ -82,11 +82,14 @@ class ExportInput(DomainModel):
     allow_lossy: bool = False
 
 
-Operation = Literal["plan", "generate", "compose", "registry", "validate", "validate-domain", "import-hardware", "export-hardware", "schema"]
+Operation = Literal["plan", "generate", "compose", "registry", "validate", "validate-domain", "import-hardware", "export-hardware", "schema", "bindings"]
 
 
 def call_domain_tool(operation: Operation, payload: dict[str, Any], *, registry: DomainRegistry | None = None) -> dict[str, Any]:
     """Execute a stateless operation; no hosted revision or file is implicitly changed."""
+    if operation == "bindings":
+        from forma_core.geometry_bindings.tools import binding_tool
+        return binding_tool(payload)
     registry = get_registry(registry)
     if operation == "registry":
         if payload:

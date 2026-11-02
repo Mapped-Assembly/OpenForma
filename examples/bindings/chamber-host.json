@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "product_id": "chip-host",
+  "geometry": {
+    "artifact_id": "fixture.cad",
+    "revision": 1,
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "format": "synthetic",
+    "producer": "synthetic-geometry-fixture",
+    "producer_version": "1.0",
+    "frame": "assembly",
+    "units": "mm",
+    "handedness": "right"
+  },
+  "entities": [
+    {
+      "entity_id": "fluid-volume",
+      "selector": "volume/chamber-1",
+      "kind": "region",
+      "anchor": [
+        0,
+        0,
+        0
+      ],
+      "bounds_mm": [
+        10,
+        5,
+        2
+      ],
+      "fidelity": "simplified",
+      "source": "authored",
+      "verified_from_artifact": true
+    },
+    {
+      "entity_id": "solid-housing",
+      "selector": "body/housing",
+      "kind": "body",
+      "anchor": [
+        0,
+        0,
+        0
+      ],
+      "bounds_mm": [
+        20,
+        10,
+        5
+      ],
+      "fidelity": "simplified",
+      "source": "authored",
+      "verified_from_artifact": true
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "fluid-chamber",
+      "semantic": {
+        "domain": "fluidic",
+        "artifact_id": "chip.fluidic",
+        "revision": 1,
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "entity_id": "chamber1",
+        "occurrence_path": [
+          "chip",
+          "chamber1"
+        ],
+        "part_definition_id": "asymmetric-part",
+        "label": "chamber1"
+      },
+      "selector": "volume/chamber-1",
+      "role": "fluid_boundary",
+      "method": "named_feature",
+      "resolution": "resolved",
+      "fidelity": "simplified",
+      "source": "authored"
+    },
+    {
+      "binding_id": "biological-compartment",
+      "semantic": {
+        "domain": "biological",
+        "artifact_id": "chip.biological",
+        "revision": 1,
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "entity_id": "compartment1",
+        "occurrence_path": [
+          "chip",
+          "compartment1"
+        ],
+        "part_definition_id": "asymmetric-part",
+        "label": "compartment1"
+      },
+      "selector": "volume/chamber-1",
+      "role": "biological_host",
+      "method": "named_feature",
+      "resolution": "resolved",
+      "fidelity": "simplified",
+      "source": "authored"
+    }
+  ],
+  "requirements": [],
+  "evidence": {
+    "note": "Synthetic region for host association, not a biological predictive model"
+  }
+}

@@ -64,7 +64,7 @@ def opencode_mcp_tools() -> list[dict[str, object]]:
         {
             "name": "forma.opencode.domains",
             "description": (
-                "Plan and generate independent MechanicalIR, ElectricalIR, BiologicalIR and FluidicIR artifacts. "
+                "Plan and generate independent native domain IR artifacts, including ChemicalIR, ProcessIR and ThermalIR. "
                 "Stateless: returns portable JSON without updating the hosted legacy project. "
                 "Registry with {} discovers native and externally owned provider capabilities. "
                 "SpaceIR is reserved for OpenIndustries and unavailable until its provider is registered. "
@@ -78,6 +78,8 @@ def opencode_mcp_tools() -> list[dict[str, object]]:
                 "Generate: {plan, designs: {domain: separately authored native document fields}, references?, existing?, inputs?, links?}. "
                 "Compose accepts {product_id, documents?, references?, links?, plan?}; external artifacts remain pinned references. "
                 "Validate takes a product bundle; validate-domain takes a standalone native IR or {reference, artifact} for an external provider. "
+                "Bindings accepts {action: schema}, {action: validate|validate-product|forward|reverse|invalidate, manifest, ...} and "
+                "{action: legacy, input} for explicitly unverified placement envelopes. "
                 "Import-hardware: {product_id, hardware_ir}. Export-hardware: {product, legacy_seed?, allow_lossy?}. "
                 "Missing inputs block only dependent domains. Check local/composition findings separately; "
                 "export findings must be inspected before using the payload in the existing compile_project tool."
