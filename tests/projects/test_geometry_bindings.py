@@ -211,9 +211,13 @@ class BindingContractTests(unittest.TestCase):
         from forma_core.workspaces.projects.cad_generation import (
             _adapter_path, _cad_source, _run_adapter, _stl_mesh,
         )
-        from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
+        from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation, ComponentInstance
 
-        project = HardwareIntermediateRepresentation(mechanical=MechanicalNotes(
+        project = HardwareIntermediateRepresentation(
+            components=[ComponentInstance(ref_des="C1", part_number="TEST-C1",
+                                          name="Rotated body", category="Mechanical",
+                                          rationale="Synthetic native CAD fixture")],
+            mechanical=MechanicalNotes(
             enclosure_type="Open frame", mounting_guidance="Test", manufacturability_rating="Easy",
             component_placements=[MechanicalPlacement(
                 ref_des="C1", position=MechanicalVector3(x_mm=100, y_mm=50, z_mm=0),
@@ -282,9 +286,13 @@ class BindingContractTests(unittest.TestCase):
             MechanicalNotes, MechanicalPlacement, MechanicalVector3, MechanicalRotation3,
         )
         from forma_core.workspaces.projects.cad_generation import _cad_source, _placement_payload, CadGenerationError
-        from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
+        from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation, ComponentInstance
 
-        project = HardwareIntermediateRepresentation(mechanical=MechanicalNotes(
+        project = HardwareIntermediateRepresentation(
+            components=[ComponentInstance(ref_des="U1", part_number="TEST-U1",
+                                          name="Rotated envelope", category="Mechanical",
+                                          rationale="Synthetic CAD rotation fixture")],
+            mechanical=MechanicalNotes(
             enclosure_type="Open frame", mounting_guidance="Test", manufacturability_rating="Easy",
             component_placements=[MechanicalPlacement(
                 ref_des="U1", position=MechanicalVector3(x_mm=100, y_mm=50, z_mm=0),
