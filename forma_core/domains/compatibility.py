@@ -208,6 +208,9 @@ def export_hardware_ir(
         elif domain == "biological":
             findings.append(Finding(code="unrepresentable", location=document["artifact_id"],
                                     message="HardwareIR has no BiologicalExperiment field; export BiologicalIR separately."))
+        elif domain == "chemical":
+            findings.append(Finding(code="unrepresentable", location=document["artifact_id"],
+                                    message="HardwareIR cannot encode ChemicalIR; export chemistry separately."))
     # Missing identity data is not a lossy-conversion option.
     if any(f.code in {"inventory_context", "identity_conflict", "shared_fact_conflict"} for f in findings):
         return HardwareExport(findings=findings)
