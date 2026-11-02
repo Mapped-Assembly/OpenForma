@@ -92,8 +92,9 @@ def _geometry_bounds(manifest: BindingManifest, target: GeometryEntity, binding:
     """Transform a known envelope without pretending to have exact solid geometry."""
     if target.bounds_mm is None:
         return None
-    scale = 1000.0 if manifest.geometry.units == "m" else 1.0
-    return axis_bounds(tuple(v * scale for v in target.bounds_mm), binding.occurrence_pose)  # type: ignore[arg-type]
+    # GeometryEntity.bounds_mm is explicitly millimetres regardless of the
+    # artifact's anchor unit. Never scale it a second time for metre scenes.
+    return axis_bounds(target.bounds_mm, binding.occurrence_pose)
 
 
 def resolve_binding(manifest: BindingManifest, binding: Binding) -> BindingResult:
@@ -251,6 +252,8 @@ def validate_manifest(manifest: BindingManifest) -> BindingReport:
 
 def invalidate_geometry(manifest: BindingManifest, *, new_revision: int, new_sha256: str) -> BindingManifest:
     """Invalidate all geometry bindings after a new CAD revision; no stale reuse."""
+    if new_revision <= manifest.geometry.revision or new_sha256 == manifest.geometry.sha256:
+        raise ValueError("Geometry invalidation requires a newer revision and a changed digest.")
     changed = manifest.model_copy(deep=True)
     changed.geometry.revision = new_revision
     changed.geometry.sha256 = new_sha256
