@@ -132,6 +132,30 @@ class ProcessIRTests(unittest.TestCase):
         self.assertTrue(call_domain_tool("validate-domain", raw)["is_valid"])
         self.assertEqual("pass", analyze_process(doc).balance_results[0].status)
 
+    def test_declarative_steps_are_acyclic_even_with_recycle_flows(self) -> None:
+        """Workflow prerequisites form a DAG independently of process topology."""
+        raw = load("process-irrigation.json")
+        self.assertEqual(["start_transfer", "deliver"],
+                         [step.step_id for step in ProcessIR.model_validate(raw).steps])
+        raw["operations"][0]["ports"].append({
+            "port_id": "return", "direction": "in", "kind": "material",
+            "quantity_kind": "mass_rate", "phase": "liquid",
+        })
+        raw["streams"].append({
+            "stream_id": "recycle",
+            "source": {"operation_id": "crop_bed", "port_id": "drain"},
+            "target": {"operation_id": "reservoir", "port_id": "return"},
+            "kind": "material",
+        })
+        document = ProcessIR.model_validate(raw)
+        self.assertEqual([["crop_bed", "pump", "reservoir"]], process_recycles(document))
+        raw["steps"][0]["depends_on"] = ["deliver"]
+        with self.assertRaises((ValidationError, ValueError)):
+            ProcessIR.model_validate(raw)
+        raw["steps"][0]["depends_on"] = ["not-a-step"]
+        with self.assertRaises((ValidationError, ValueError)):
+            ProcessIR.model_validate(raw)
+
     def test_topology_rejects_bad_references_types_and_units(self) -> None:
         """Port direction/kind/dimensions and IDs are structural constraints."""
         cases = []
