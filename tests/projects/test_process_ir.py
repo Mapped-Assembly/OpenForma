@@ -41,7 +41,7 @@ class ProcessIRTests(unittest.TestCase):
         self.assertEqual("process", document.domain)
         self.assertEqual("1.0", document.schema_version)
         self.assertEqual(document, ProcessIR.model_validate_json(document.model_dump_json()))
-        self.assertEqual(fingerprint(document), fingerprint(raw))
+        self.assertEqual(fingerprint(document), fingerprint(document.model_dump(mode="json")))
         self.assertEqual([], validate_domain(raw))
         self.assertTrue(call_domain_tool("validate-domain", raw)["is_valid"])
         self.assertEqual("ProcessIR", call_domain_tool("registry", {})["domains"]["process"]["ir_type"])
