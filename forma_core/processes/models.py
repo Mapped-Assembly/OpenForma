@@ -174,8 +174,9 @@ class ProcessStream(DomainModel):
 class ProcessBalanceSpec(DomainModel):
     """Explicit conservation terms, all required for a numerical balance.
 
-    Inlet - outlet - accumulation - generation + consumption is the chosen
-    residual sign convention, matching the issue's declared accounting.
+    Inlet + generation - outlet - consumption - accumulation is the
+    physically conventional residual when generation and consumption are positive.
+    This corrects the preliminary issue text's reversed source/sink signs.
     A missing term means an unknown balance, not an implicit zero.
     """
 
