@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0",
+  "product_id": "rotated-asymmetric",
+  "geometry": {
+    "artifact_id": "fixture.cad",
+    "revision": 1,
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "format": "synthetic",
+    "producer": "synthetic-geometry-fixture",
+    "producer_version": "1.0",
+    "frame": "assembly",
+    "units": "mm",
+    "handedness": "right"
+  },
+  "entities": [
+    {
+      "entity_id": "body",
+      "selector": "body/a",
+      "kind": "body",
+      "anchor": [
+        0,
+        0,
+        0
+      ],
+      "bounds_mm": [
+        40,
+        20,
+        10
+      ],
+      "fidelity": "simplified",
+      "source": "authored",
+      "verified_from_artifact": true
+    },
+    {
+      "entity_id": "point-east",
+      "selector": "datum/east",
+      "kind": "datum",
+      "anchor": [
+        20,
+        0,
+        0
+      ],
+      "normal": [
+        1,
+        0,
+        0
+      ],
+      "fidelity": "detailed",
+      "source": "authored",
+      "verified_from_artifact": true
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "occurrence-1-body",
+      "semantic": {
+        "domain": "mechanical",
+        "artifact_id": "product.mechanical",
+        "revision": 1,
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "entity_id": "M1",
+        "occurrence_path": [
+          "assembly",
+          "M1"
+        ],
+        "part_definition_id": "asymmetric-part",
+        "label": "M1"
+      },
+      "selector": "body/a",
+      "role": "physical_body",
+      "method": "named_feature",
+      "required": true,
+      "resolution": "resolved",
+      "fidelity": "simplified",
+      "source": "authored",
+      "occurrence_pose": {
+        "translation_mm": [
+          100,
+          50,
+          0
+        ],
+        "euler_xyz_deg": [
+          0,
+          0,
+          90
+        ]
+      }
+    },
+    {
+      "binding_id": "occurrence-1-datum",
+      "semantic": {
+        "domain": "mechanical",
+        "artifact_id": "product.mechanical",
+        "revision": 1,
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "entity_id": "M1",
+        "occurrence_path": [
+          "assembly",
+          "M1"
+        ],
+        "feature_id": "east",
+        "part_definition_id": "asymmetric-part",
+        "label": "M1"
+      },
+      "selector": "datum/east",
+      "role": "feature",
+      "method": "named_feature",
+      "required": true,
+      "resolution": "resolved",
+      "fidelity": "detailed",
+      "source": "authored",
+      "occurrence_pose": {
+        "translation_mm": [
+          100,
+          50,
+          0
+        ],
+        "euler_xyz_deg": [
+          0,
+          0,
+          90
+        ]
+      }
+    },
+    {
+      "binding_id": "occurrence-2-body",
+      "semantic": {
+        "domain": "mechanical",
+        "artifact_id": "product.mechanical",
+        "revision": 1,
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "entity_id": "M1",
+        "occurrence_path": [
+          "assembly",
+          "M2"
+        ],
+        "part_definition_id": "asymmetric-part",
+        "label": "M1"
+      },
+      "selector": "body/a",
+      "role": "physical_body",
+      "method": "named_feature",
+      "required": true,
+      "resolution": "resolved",
+      "fidelity": "simplified",
+      "source": "authored",
+      "occurrence_pose": {
+        "translation_mm": [
+          -100,
+          50,
+          0
+        ],
+        "euler_xyz_deg": [
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "requirements": [
+    {
+      "requirement_id": "feature-offset",
+      "kind": "axis_offset",
+      "source_binding_id": "occurrence-1-body",
+      "target_binding_id": "occurrence-1-datum",
+      "axis": "y",
+      "offset_mm": 20,
+      "tolerance_mm": 0.001
+    }
+  ],
+  "evidence": {
+    "source": "Synthetic pose fixture; coordinates are not CAD-verified physical claims"
+  }
+}
