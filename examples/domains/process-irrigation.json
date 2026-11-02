@@ -1,0 +1,147 @@
+{
+  "artifact_id": "irrigation.process",
+  "revision": 1,
+  "domain": "process",
+  "schema_version": "1.0",
+  "operations": [
+    {
+      "operation_id": "reservoir",
+      "operation_type": "storage",
+      "ports": [
+        {
+          "port_id": "out",
+          "direction": "out",
+          "kind": "material",
+          "quantity_kind": "mass_rate",
+          "phase": "liquid"
+        }
+      ]
+    },
+    {
+      "operation_id": "pump",
+      "operation_type": "transfer",
+      "ports": [
+        {
+          "port_id": "in",
+          "direction": "in",
+          "kind": "material",
+          "quantity_kind": "mass_rate",
+          "phase": "liquid"
+        },
+        {
+          "port_id": "out",
+          "direction": "out",
+          "kind": "material",
+          "quantity_kind": "mass_rate",
+          "phase": "liquid"
+        }
+      ]
+    },
+    {
+      "operation_id": "crop_bed",
+      "operation_type": "distribution",
+      "ports": [
+        {
+          "port_id": "in",
+          "direction": "in",
+          "kind": "material",
+          "quantity_kind": "mass_rate",
+          "phase": "liquid"
+        },
+        {
+          "port_id": "drain",
+          "direction": "out",
+          "kind": "material",
+          "quantity_kind": "mass_rate",
+          "phase": "liquid"
+        }
+      ]
+    }
+  ],
+  "streams": [
+    {
+      "stream_id": "feed",
+      "source": {
+        "operation_id": "reservoir",
+        "port_id": "out"
+      },
+      "target": {
+        "operation_id": "pump",
+        "port_id": "in"
+      },
+      "kind": "material",
+      "phase": "liquid",
+      "quantity": {
+        "kind": "mass_rate",
+        "value": 1.2,
+        "unit": "kg/h",
+        "claim": {
+          "basis": "illustrative",
+          "rationale": "Synthetic declared rate for reproducible conservation test."
+        }
+      }
+    },
+    {
+      "stream_id": "irrigation",
+      "source": {
+        "operation_id": "pump",
+        "port_id": "out"
+      },
+      "target": {
+        "operation_id": "crop_bed",
+        "port_id": "in"
+      },
+      "kind": "material",
+      "phase": "liquid",
+      "quantity": {
+        "kind": "mass_rate",
+        "value": 1.2,
+        "unit": "kg/h",
+        "claim": {
+          "basis": "illustrative",
+          "rationale": "Synthetic declared rate for reproducible conservation test."
+        }
+      }
+    }
+  ],
+  "balances": [
+    {
+      "balance_id": "pump_mass",
+      "operation_id": "pump",
+      "quantity_kind": "mass_rate",
+      "accumulation": {
+        "kind": "mass_rate",
+        "value": 0,
+        "unit": "kg/s"
+      },
+      "generation": {
+        "kind": "mass_rate",
+        "value": 0,
+        "unit": "kg/s"
+      },
+      "consumption": {
+        "kind": "mass_rate",
+        "value": 0,
+        "unit": "kg/s"
+      }
+    }
+  ],
+  "scenarios": [],
+  "evidence": [],
+  "steps": [
+    {
+      "step_id": "start_transfer",
+      "operation_id": "pump",
+      "preconditions": [
+        "Pump and source are ready"
+      ]
+    },
+    {
+      "step_id": "deliver",
+      "operation_id": "crop_bed",
+      "depends_on": [
+        "start_transfer"
+      ]
+    }
+  ]
+}

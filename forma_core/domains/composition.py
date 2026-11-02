@@ -232,6 +232,43 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
                     if endpoint.object_id not in expected:
                         add("chemical_link_type", link.link_id,
                             f"{link.kind} must reference a chemical {'species' if link.kind == 'uses_species' else 'reaction'} entity.")
+        if link.kind in {"uses_equipment", "uses_electrical_port", "uses_fluidic_port",
+                         "uses_thermal_interface"}:
+            target_domain = {
+                "uses_equipment": "mechanical",
+                "uses_electrical_port": "electrical",
+                "uses_fluidic_port": "fluidic",
+                "uses_thermal_interface": "thermal",
+            }[link.kind]
+            if source.domain != "process" or target.domain != target_domain:
+                add("process_link_domain", link.link_id,
+                    f"{link.kind} must run from ProcessIR to {target_domain}.")
+            else:
+                process = documents.get(link.source.artifact_id)
+                if process is not None:
+                    operation = next((item for item in process.operations
+                                      if item.operation_id == link.source.object_id), None)
+                    if operation is None:
+                        add("process_link_operation", link.link_id,
+                            "An equipment/utility binding must originate at a process operation.")
+                    else:
+                        port = next((item for item in operation.ports
+                                     if item.port_id == link.source.port_id), None)
+                        if link.kind == "uses_equipment" and link.source.port_id is not None:
+                            add("process_link_port", link.link_id,
+                                "A mechanical equipment binding targets a whole operation, not one port.")
+                        if link.kind in {"uses_electrical_port", "uses_thermal_interface"} and (
+                                port is None or port.kind != "energy"):
+                            add("process_link_port", link.link_id,
+                                "Electrical/thermal interfaces must originate at an energy port.")
+                        if link.kind == "uses_fluidic_port" and (
+                                port is None or port.kind != "material"):
+                            add("process_link_port", link.link_id,
+                                "Fluidic interfaces must originate at a material port.")
+                if link.kind in {"uses_electrical_port", "uses_fluidic_port", "uses_thermal_interface"} and (
+                        link.target.port_id is None):
+                    add("process_link_port", link.link_id,
+                        "The referenced external interface must have an explicit typed port.")
         if link.kind == "same_object":
             if link.source.object_id != link.target.object_id:
                 add("physical_identity", link.link_id, "Shared physical views must preserve the same object_id.")
