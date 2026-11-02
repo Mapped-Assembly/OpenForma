@@ -20,6 +20,7 @@ CONTRACTS: dict[Domain, tuple[str, str, str]] = {
     "biological": ("forma_core.biology.ir", "BiologicalIR", "BiologicalContext"),
     "fluidic": ("forma_core.fluidics.ir", "FluidicIR", "FluidicContext"),
     "chemical": ("forma_core.chemistry.models", "ChemicalIR", "ChemicalContext"),
+    "process": ("forma_core.processes.models", "ProcessIR", "ProcessContext"),
 }
 
 # A field has one domain authority even when a physical object has several views.
@@ -31,6 +32,8 @@ FACT_OWNERS: dict[str, Domain] = {
     "flow": "fluidic", "fluid_network": "fluidic",
     "chemical.species": "chemical", "chemical.reaction": "chemical",
     "chemical.composition": "chemical",
+    "process.topology": "process", "process.stream": "process",
+    "process.operation": "process",
 }
 
 
@@ -78,6 +81,9 @@ def validate_domain(payload: dict[str, Any] | BaseModel) -> list[Finding]:
     if domain == "chemical":
         from forma_core.chemistry.validation import validate_chemical
         return validate_chemical(document)
+    if domain == "process":
+        from forma_core.processes.validation import validate_process
+        return validate_process(document)
     if domain == "fluidic":
         from forma_core.fluidics.validation import validate_fluidic_system
         return [Finding(code=i.code, location=i.entity_id, message=i.message)
@@ -103,6 +109,11 @@ def entities(document: BaseModel) -> dict[str, set[str]]:
         parts = {p.part_definition_id: p for p in document.parts}
         return {c.object_id: ({p.pin_id for p in parts[c.part_definition_id].pins}
                              if domain == "electrical" else set()) for c in document.components}
+    if domain == "process":
+        return {operation.operation_id: {port.port_id for port in operation.ports}
+                for operation in document.operations} | {
+            stream.stream_id: set() for stream in document.streams
+        }
     if domain == "chemical":
         return {item.species_id: set() for item in document.species} | {
             item.mixture_id: set() for item in document.mixtures
@@ -167,12 +178,13 @@ def create_registry() -> DomainRegistry:
     scopes = {"mechanical": ["physical_structure", "mechanical_motion"],
               "electrical": ["wiring", "electrical_control"],
               "biological": ["biological_experiment"], "fluidic": ["fluid_network"],
-              "chemical": []}
+              "chemical": [], "process": []}
     required = {"mechanical": ["scope", "geometric_requirements", "loads", "manufacturing_constraints"],
                 "electrical": ["scope", "supply_requirements", "load_requirements", "interface_requirements"],
                 "biological": ["scope", "biological_question", "experimental_conditions", "evidence_sources"],
                 "fluidic": ["scope", "fluid_properties", "operating_conditions", "flow_requirements"],
-                "chemical": ["scope", "chemical_requirements", "evidence_requirements"]}
+                "chemical": ["scope", "chemical_requirements", "evidence_requirements"],
+                "process": ["scope", "process_requirements", "stream_requirements", "evidence_requirements"]}
     for domain, (_, name, _) in CONTRACTS.items():
         metadata = ProviderMetadata(domain=domain, ir_type=name, owner="OpenForma",
             provider_id=NATIVE_PROVIDER, provider_version="1.0",
@@ -180,6 +192,7 @@ def create_registry() -> DomainRegistry:
             validation=True, any_scope=scopes[domain],
             required_context=[ContextRequirement(name=field, description=f"Native {domain} context: {field}.") for field in required[domain]],
             reference_types=(["uses_species", "uses_reaction"] if domain == "chemical"
+                             else ["uses_species", "uses_reaction", "spatial", "same_object"] if domain == "process"
                              else ["same_object", "spatial", "hosted_by"]),
             fact_authorities=[fact for fact, owner in FACT_OWNERS.items() if owner == domain],
             limitations=["Native authoring uses generate_product with caller-supplied designs; no provider-hosted author or resolver."])
