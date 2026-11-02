@@ -1,0 +1,184 @@
+{
+  "schema_version": "1.0",
+  "product_id": "panel-connector",
+  "geometry": {
+    "artifact_id": "fixture.cad",
+    "revision": 1,
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "format": "synthetic",
+    "producer": "synthetic-geometry-fixture",
+    "producer_version": "1.0",
+    "frame": "assembly",
+    "units": "mm",
+    "handedness": "right"
+  },
+  "entities": [
+    {
+      "entity_id": "panel-face",
+      "selector": "face/panel",
+      "kind": "face",
+      "anchor": [
+        0,
+        0,
+        0
+      ],
+      "normal": [
+        0,
+        0,
+        1
+      ],
+      "fidelity": "detailed",
+      "source": "authored",
+      "verified_from_artifact": true
+    },
+    {
+      "entity_id": "connector-face",
+      "selector": "face/mate",
+      "kind": "face",
+      "anchor": [
+        0,
+        0,
+        0
+      ],
+      "normal": [
+        0,
+        0,
+        -1
+      ],
+      "fidelity": "detailed",
+      "source": "authored",
+      "verified_from_artifact": true
+    },
+    {
+      "entity_id": "connector-envelope",
+      "selector": "component-envelope",
+      "kind": "mesh_group",
+      "anchor": [
+        0,
+        0,
+        0
+      ],
+      "bounds_mm": [
+        25,
+        10,
+        8
+      ],
+      "fidelity": "envelope",
+      "source": "authored",
+      "verified_from_artifact": true
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "panel",
+      "semantic": {
+        "domain": "mechanical",
+        "artifact_id": "panel.mechanical",
+        "revision": 1,
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "entity_id": "panel",
+        "occurrence_path": [
+          "assembly",
+          "panel"
+        ],
+        "feature_id": "face",
+        "part_definition_id": "asymmetric-part",
+        "label": "panel"
+      },
+      "selector": "face/panel",
+      "role": "mounting_face",
+      "method": "named_feature",
+      "resolution": "resolved",
+      "fidelity": "detailed",
+      "source": "supplied_cad",
+      "occurrence_pose": {
+        "translation_mm": [
+          0,
+          0,
+          0
+        ],
+        "euler_xyz_deg": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "binding_id": "connector",
+      "semantic": {
+        "domain": "electrical",
+        "artifact_id": "panel.electrical",
+        "revision": 1,
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "entity_id": "connector",
+        "occurrence_path": [
+          "assembly",
+          "connector"
+        ],
+        "feature_id": "mate",
+        "part_definition_id": "asymmetric-part",
+        "label": "connector"
+      },
+      "selector": "face/mate",
+      "role": "mating_interface",
+      "method": "named_feature",
+      "resolution": "resolved",
+      "fidelity": "detailed",
+      "source": "supplied_cad",
+      "occurrence_pose": {
+        "translation_mm": [
+          0,
+          0,
+          0
+        ],
+        "euler_xyz_deg": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "binding_id": "approximate-pin",
+      "semantic": {
+        "domain": "electrical",
+        "artifact_id": "panel.electrical",
+        "revision": 1,
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "entity_id": "connector",
+        "occurrence_path": [
+          "assembly",
+          "connector"
+        ],
+        "feature_id": "vcc",
+        "part_definition_id": "asymmetric-part",
+        "label": "connector"
+      },
+      "selector": "component-envelope",
+      "role": "pin",
+      "method": "approximate",
+      "resolution": "resolved",
+      "fidelity": "envelope",
+      "source": "agent_estimate",
+      "required": false
+    }
+  ],
+  "requirements": [
+    {
+      "requirement_id": "flush",
+      "kind": "coincident",
+      "source_binding_id": "panel",
+      "target_binding_id": "connector",
+      "tolerance_mm": 0.1,
+      "tolerance_deg": 2
+    },
+    {
+      "requirement_id": "normal",
+      "kind": "aligned",
+      "source_binding_id": "panel",
+      "target_binding_id": "connector",
+      "tolerance_deg": 2
+    }
+  ]
+}
