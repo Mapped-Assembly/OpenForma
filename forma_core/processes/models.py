@@ -205,6 +205,16 @@ class ProcessScenario(DomainModel):
     claim: ProcessClaim = Field(default_factory=ProcessClaim)
 
 
+class ProcessStep(DomainModel):
+    """A declarative intended workflow step; it never commands a live runtime."""
+
+    step_id: Text
+    operation_id: Text
+    depends_on: list[Text] = Field(default_factory=list)
+    preconditions: list[Text] = Field(default_factory=list)
+    description: Text | None = None
+
+
 class ProcessIR(DomainDocument):
     """Standalone process topology and declared flows with no implicit execution."""
 
@@ -213,6 +223,7 @@ class ProcessIR(DomainDocument):
     operations: list[ProcessOperation] = Field(min_length=1)
     streams: list[ProcessStream] = Field(default_factory=list)
     balances: list[ProcessBalanceSpec] = Field(default_factory=list)
+    steps: list[ProcessStep] = Field(default_factory=list)
     scenarios: list[ProcessScenario] = Field(default_factory=list)
     evidence: list[ProcessEvidence] = Field(default_factory=list)
 
@@ -222,6 +233,7 @@ class ProcessIR(DomainDocument):
         unique([o.operation_id for o in self.operations], "process operation ID")
         unique([s.stream_id for s in self.streams], "process stream ID")
         unique([b.balance_id for b in self.balances], "process balance ID")
+        unique([step.step_id for step in self.steps], "process workflow step ID")
         unique([s.scenario_id for s in self.scenarios], "process scenario ID")
         unique(
             [o.operation_id for o in self.operations] + [s.stream_id for s in self.streams],
@@ -269,6 +281,31 @@ class ProcessIR(DomainDocument):
             for term in (balance.accumulation, balance.generation, balance.consumption):
                 if term is not None and term.kind != balance.quantity_kind:
                     raise ValueError("Balance term's dimensional kind disagrees with its balance.")
+        step_ids = {step.step_id for step in self.steps}
+        step_edges = {step.step_id: set(step.depends_on) for step in self.steps}
+        for step in self.steps:
+            if step.operation_id not in operations:
+                raise ValueError("Process workflow step references an unknown operation.")
+            unique(step.depends_on, "step dependencies")
+            if not set(step.depends_on) <= step_ids:
+                raise ValueError("Process workflow step has an unknown dependency.")
+        visited: set[str] = set()
+        active: set[str] = set()
+
+        def visit(step_id: str) -> None:
+            """Reject workflow dependency cycles without banning flowsheet recycles."""
+            if step_id in active:
+                raise ValueError("Process workflow steps contain a dependency cycle.")
+            if step_id in visited:
+                return
+            active.add(step_id)
+            for dependency in sorted(step_edges[step_id]):
+                visit(dependency)
+            active.remove(step_id)
+            visited.add(step_id)
+
+        for step_id in sorted(step_ids):
+            visit(step_id)
         for scenario in self.scenarios:
             unique([f"{entry.operation_id}:{entry.parameter}" for entry in scenario.overrides],
                    "scenario parameter override")
