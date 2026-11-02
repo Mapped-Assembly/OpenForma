@@ -130,6 +130,17 @@ def evaluate_case(document: ThermalIR, case: SteadyStateCase) -> ThermalEvaluati
     if zone_k < 0:
         return outcome("fail", "Predicted zone temperature is below absolute zero.",
                        ambient_temperature_kelvin=str(ambient_k), net_heat_w=str(net))
+    if node.maximum_temperature is not None:
+        maximum_k = temperature_kelvin(node.maximum_temperature)
+        if zone_k > maximum_k:
+            return outcome(
+                "fail", "Predicted screening temperature exceeds the declared design maximum; "
+                "this is not a legal or safety qualification.",
+                ambient_temperature_kelvin=str(ambient_k),
+                zone_temperature_kelvin=str(zone_k),
+                zone_temperature_celsius=str(zone_k - Decimal("273.15")),
+                net_heat_w=str(net),
+            )
     transferred = (zone_k - ambient_k) / resistance
     residual = net - transferred
     result = "pass" if abs(residual) <= Decimal(str(case.tolerance_w)) else "fail"
