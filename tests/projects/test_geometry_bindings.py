@@ -238,6 +238,34 @@ class BindingContractTests(unittest.TestCase):
             source.write_text(snippet, encoding="utf-8")
             self.assertTrue(_run_adapter(_adapter_path(), source, step)["valid"])
             self.assertTrue(step.is_file() and step.stat().st_size > 200)
+            from hashlib import sha256
+            from forma_core.geometry_bindings.cad_adapter import (
+                GeometryInspectionError, inspect_single_step_body,
+            )
+            from forma_core.geometry_bindings.models import SemanticRef
+            pinned = GeometryArtifact(
+                artifact_id="fixture.step", revision=1, sha256=sha256(step.read_bytes()).hexdigest(),
+                format="step", producer="OpenCAD", producer_version="0.2.4",
+                frame="assembly", units="mm",
+            )
+            bound = inspect_single_step_body(
+                step, product_id="fixture", geometry=pinned,
+                semantic=SemanticRef(
+                    domain="mechanical", artifact_id="fixture.mechanical", revision=1,
+                    sha256="b" * 64, entity_id="M1", occurrence_path=("assembly", "M1"),
+                ),
+            )
+            self.assertTrue(validate_manifest(bound).is_valid)
+            self.assertEqual(1, len(reverse_lookup(bound, geometric_entity_id="body-0")))
+            self.assertEqual("detailed", bound.bindings[0].fidelity)
+            for actual, expected in zip(bound.entities[0].bounds_mm, (20, 40, 10)):
+                self.assertAlmostEqual(expected, actual, delta=0.2)
+            with self.assertRaises(GeometryInspectionError):
+                inspect_single_step_body(
+                    step, product_id="fixture", geometry=pinned.model_copy(update={
+                        "sha256": "a" * 64,
+                    }), semantic=bound.bindings[0].semantic,
+                )
             self.assertTrue(_run_adapter(_adapter_path(), source, stl)["valid"])
             mesh = _stl_mesh(stl)
             coords = mesh["vertices"]
