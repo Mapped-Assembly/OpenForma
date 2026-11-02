@@ -29,7 +29,10 @@ registry discovery, pass a file containing `{}` to the `registry` operation.
 ## Separation of design and evaluation
 
 The document contains independent versioned information:
-- Thermal nodes and stable heat ports, including optional lumped capacity.
+- Thermal nodes and stable heat ports, including optional lumped capacity,
+  initial temperature, target temperature and design-maximum temperature.
+  A bounded prediction exceeding the specified maximum is a failed *design*
+  check, not a legal, regulatory or safety verdict.
 - Heat-transfer edges: `lumped`, `conduction`, `convection` or `radiation`.
   Edges may carry a declared effective K/W resistance or W/K conductance.
 - Fixed-temperature, prescribed-heat, or adiabatic boundaries.
@@ -101,8 +104,9 @@ It is not a simulated greenhouse microclimate.
 - `thermal_source`: ThermalIR heat-load entity → a pinned reaction, process
   operation, mechanical equipment occurrence, or electrical/fluidic port.
   The load records the external `domain`, `artifact_id`, entity/port ID,
-  schema_version, revision and SHA-256 digest. Composition verifies both ends,
-  entity type where supported and exact pinning; it never reparses chemistry
+  schema_version, revision and SHA-256 digest. Composition requires a matching
+  explicit `thermal_source` link for **each** pinned input and verifies both
+  ends, entity type where supported and exact pinning; it never reparses chemistry
   inside thermal-local validation.
 - ThermalIR fact authority is qualified (`thermal.network`,
   `thermal.heat_transfer`, `thermal.heat_duty`, `thermal.temperature`).
