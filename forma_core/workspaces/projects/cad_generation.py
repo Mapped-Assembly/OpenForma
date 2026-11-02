@@ -61,17 +61,22 @@ def _project_dimensions(project: HardwareIntermediateRepresentation) -> tuple[fl
 
     placements = mechanical.component_placements if mechanical is not None else []
     if placements:
-        bounds = [
-            (
-                float(placement.position.x_mm) - abs(float(placement.size.x_mm)) / 2.0,
-                float(placement.position.x_mm) + abs(float(placement.size.x_mm)) / 2.0,
-                float(placement.position.y_mm) - abs(float(placement.size.y_mm)) / 2.0,
-                float(placement.position.y_mm) + abs(float(placement.size.y_mm)) / 2.0,
-                float(placement.position.z_mm) - abs(float(placement.size.z_mm)) / 2.0,
-                float(placement.position.z_mm) + abs(float(placement.size.z_mm)) / 2.0,
+        from forma_core.geometry_bindings.models import Pose
+        from forma_core.geometry_bindings.resolution import axis_bounds
+
+        bounds = []
+        for placement in placements:
+            dimensions = axis_bounds(
+                (abs(float(placement.size.x_mm)), abs(float(placement.size.y_mm)),
+                 abs(float(placement.size.z_mm))),
+                Pose(euler_xyz_deg=(float(placement.orientation_deg.x_deg),
+                                    float(placement.orientation_deg.y_deg),
+                                    float(placement.orientation_deg.z_deg))),
             )
-            for placement in placements
-        ]
+            center = (placement.position.x_mm, placement.position.y_mm, placement.position.z_mm)
+            bounds.append(tuple(value for axis in range(3)
+                                for value in (center[axis] - dimensions[axis] / 2.0,
+                                              center[axis] + dimensions[axis] / 2.0)))
         return tuple(
             max(20.0, max(item[index + 1] for item in bounds) - min(item[index] for item in bounds) + 12.0)
             for index in (0, 2, 4)
