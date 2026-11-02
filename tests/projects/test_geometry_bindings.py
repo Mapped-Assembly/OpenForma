@@ -200,6 +200,54 @@ class BindingContractTests(unittest.TestCase):
             operation="bindings", payload=json.dumps(request)).operation)
         self.assertIn("forma.opencode.domains", [tool["name"] for tool in opencode_mcp_tools()])
 
+    @unittest.skipUnless(__import__("os").environ.get("FORMA_CAD_RUN_INTEGRATION_TESTS") == "true",
+                         "Native OpenCAD/OCCT integration gate")
+    def test_real_opencad_rotated_asymmetric_body_exports_step_and_stl(self) -> None:
+        """Prove a real OCCT-built/exported component obeys the same Z pose."""
+        from tempfile import TemporaryDirectory
+        from forma_core.mechanics.primitives import (
+            MechanicalNotes, MechanicalPlacement, MechanicalVector3, MechanicalRotation3,
+        )
+        from forma_core.workspaces.projects.cad_generation import (
+            _adapter_path, _cad_source, _run_adapter, _stl_mesh,
+        )
+        from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
+
+        project = HardwareIntermediateRepresentation(mechanical=MechanicalNotes(
+            enclosure_type="Open frame", mounting_guidance="Test", manufacturability_rating="Easy",
+            component_placements=[MechanicalPlacement(
+                ref_des="C1", position=MechanicalVector3(x_mm=100, y_mm=50, z_mm=0),
+                size=MechanicalVector3(x_mm=40, y_mm=20, z_mm=10),
+                orientation_deg=MechanicalRotation3(z_deg=90),
+            )],
+        ))
+        full_source = _cad_source(project)
+        func = next(node for node in ast.parse(full_source).body
+                    if isinstance(node, ast.FunctionDef) and node.name == "oriented_xy_prism")
+        function_source = ast.get_source_segment(full_source, func)
+        self.assertIsNotNone(function_source)
+        snippet = (
+            "import math\\nfrom opencad import Part, Sketch\\n\\n"
+            + function_source +
+            "\\n\\nmodel = oriented_xy_prism(100,50,0,40,20,10,90,'fixture')\\nmodel\\n"
+        )
+        with TemporaryDirectory() as root:
+            source = Path(root) / "rotated.py"
+            step = Path(root) / "rotated.step"
+            stl = Path(root) / "rotated.stl"
+            source.write_text(snippet, encoding="utf-8")
+            self.assertTrue(_run_adapter(_adapter_path(), source, step)["valid"])
+            self.assertTrue(step.is_file() and step.stat().st_size > 200)
+            self.assertTrue(_run_adapter(_adapter_path(), source, stl)["valid"])
+            mesh = _stl_mesh(stl)
+            coords = mesh["vertices"]
+            bounds = [(min(coords[i::3]), max(coords[i::3])) for i in range(3)]
+            for (minimum, maximum), expected in zip(
+                bounds, ((90, 110), (30, 70), (-5, 5))
+            ):
+                self.assertAlmostEqual(expected[0], minimum, delta=0.5)
+                self.assertAlmostEqual(expected[1], maximum, delta=0.5)
+
     def test_cad_template_includes_rotation_not_just_preview(self) -> None:
         """Generic OpenCAD source rotates actual Sketch vertices, not just metadata."""
         from forma_core.mechanics.primitives import (
