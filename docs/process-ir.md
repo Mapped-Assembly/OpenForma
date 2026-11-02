@@ -44,9 +44,13 @@ Composition uses `ArtifactReference` and `DomainLink` from the existing
 domain system. `uses_reaction` and `uses_species` connect process operation
 or stream entities to *version-pinned ChemicalIR* reaction/species entities.
 ChemicalIR remains authoritative for reaction identities and formulas. Revisions,
-object types and source hashes are checked at the composition boundary. Other
-equipment/space providers may register additional relationship types without
-changing the ProcessIR document.
+object types and source hashes are checked at the composition boundary.
+The `uses_equipment` (MechanicalIR), `uses_electrical_port` (ElectricalIR),
+and `uses_fluidic_port` (FluidicIR) relationships additionally check expected
+owner-domain and whether the process source is an operation, energy port,
+or material port as appropriate. `uses_thermal_interface` is reserved for
+a future ThermalIR provider; it is not an assertion that ThermalIR exists.
+These relationships are composition artifacts, not schema dependencies.
 
 The `ProcessIR` package must remain usable without ChemicalIR, FluidicIR,
 MechanicalIR, ElectricalIR, ThermalIR or SpaceIR. Missing external evidence or
