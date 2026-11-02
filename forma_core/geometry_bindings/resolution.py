@@ -262,3 +262,71 @@ def invalidate_geometry(manifest: BindingManifest, *, new_revision: int, new_sha
         if binding.resolution == "resolved":
             binding.resolution = "stale"
     return changed
+
+
+def validate_manifest_against_product(
+    manifest: BindingManifest,
+    product: object,
+    *,
+    registry: object | None = None,
+) -> BindingReport:
+    """Validate pinned semantic object identities against a separate product bundle.
+
+    A valid geometry target is not enough: an entity must exist in its declared
+    owning domain artifact at the pinned revision and SHA. This does not alter
+    independent local domain validity or infer geometry from semantic names.
+    """
+    from forma_core.domains.composition import ProductBundle
+    from forma_core.domains.registry import get_registry
+
+    bundle = ProductBundle.model_validate(product)
+    domain_registry = get_registry(registry)
+    report = validate_manifest(manifest)
+    refs = {ref.artifact_id: ref for ref in bundle.manifest.artifacts}
+    for binding in manifest.bindings:
+        semantic = binding.semantic
+        ref = refs.get(semantic.artifact_id)
+        if ref is None:
+            report.findings.append(Finding(
+                code="semantic_artifact_missing", location=binding.binding_id,
+                message="Referenced semantic domain artifact is absent from the product bundle.",
+            ))
+            continue
+        if (ref.domain != semantic.domain or ref.revision != semantic.revision
+                or ref.sha256 != semantic.sha256):
+            report.findings.append(Finding(
+                code="semantic_revision_mismatch", location=binding.binding_id,
+                message="Semantic domain, revision or SHA-256 differs from the product manifest.",
+            ))
+            continue
+        provider = domain_registry.provider(ref.domain)
+        payload = bundle.artifacts.get(ref.artifact_id)
+        if provider is None or payload is None:
+            report.findings.append(Finding(
+                code="semantic_provider_unresolved", location=binding.binding_id,
+                severity="warning",
+                message="Semantic artifact or its owner is unavailable for independent entity validation.",
+            ))
+            continue
+        try:
+            index = provider.entities(payload, ref)
+        except Exception as exc:
+            report.findings.append(Finding(
+                code="semantic_provider_unresolved", location=binding.binding_id,
+                severity="warning",
+                message=f"Owning provider could not index the referenced object: {type(exc).__name__}.",
+            ))
+            continue
+        if semantic.entity_id not in index:
+            report.findings.append(Finding(
+                code="semantic_entity_missing", location=binding.binding_id,
+                message="Semantic entity ID is not present in its pinned owning domain artifact.",
+            ))
+        elif semantic.feature_id is not None and index[semantic.entity_id] and (
+                semantic.feature_id not in index[semantic.entity_id]):
+            report.findings.append(Finding(
+                code="semantic_port_missing", location=binding.binding_id,
+                message="Typed semantic feature/port ID is absent from the owning provider index.",
+            ))
+    report.is_valid = not any(f.severity == "error" for f in report.findings)
+    return report
