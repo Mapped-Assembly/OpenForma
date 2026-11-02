@@ -26,7 +26,7 @@ def run(args: argparse.Namespace) -> int:
             sys.stdout.write(content)
     if args.operation == "generate":
         return 0 if validate_product(ProductBundle.model_validate(result)).is_valid else 1
-    if args.operation.startswith("validate") or (args.operation == "bindings" and payload.get("action") == "validate"):
+    if args.operation.startswith("validate") or (args.operation == "bindings" and payload.get("action") in {"validate", "validate-product"}):
         return 0 if result["is_valid"] else 1
     if args.operation == "export-hardware":
         return 0 if result["payload"] is not None else 1
