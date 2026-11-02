@@ -111,8 +111,8 @@ def evaluate_balance(document: ProcessIR, spec: ProcessBalanceSpec) -> BalanceRe
     outgoing = sum((canonical_quantity(s.quantity) for s in streams
                     if s.source.operation_id == spec.operation_id), Decimal(0))
     assert spec.accumulation and spec.generation and spec.consumption
-    residual = (incoming - outgoing - canonical_quantity(spec.accumulation)
-                - canonical_quantity(spec.generation) + canonical_quantity(spec.consumption))
+    residual = (incoming + canonical_quantity(spec.generation) - outgoing
+                - canonical_quantity(spec.consumption) - canonical_quantity(spec.accumulation))
     result = "pass" if abs(residual) <= Decimal("1e-9") else "fail"
     return BalanceResult(balance_id=spec.balance_id, status=result, base_unit=base_unit,
                          residual_base_units=str(residual),
