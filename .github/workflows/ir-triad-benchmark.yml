@@ -1,0 +1,41 @@
+name: IR-TRIAD-01 new-domain benchmark
+
+on:
+  pull_request:
+    paths:
+      - "forma_core/benchmarks/**"
+      - "forma_core/chemistry/**"
+      - "forma_core/processes/**"
+      - "forma_core/thermal/**"
+      - "forma_core/domains/**"
+      - "examples/domains/**"
+      - "tests/projects/test_ir_triad_benchmark.py"
+      - "docs/benchmarks/ir-triad-v1.md"
+      - ".github/workflows/ir-triad-benchmark.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ir-triad:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install benchmark dependencies
+        run: python -m pip install -r apps/api/requirements.txt -e . pytest
+      - name: Run benchmark and save structured report
+        run: python -m forma_core.benchmarks.ir_triad_v1 --output ir-triad-report.json
+      - name: Verify benchmark invariants and CLI reproducibility
+        run: python -m pytest tests/projects/test_ir_triad_benchmark.py -q
+      - name: Publish reproducible report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ir-triad-v1-report
+          path: ir-triad-report.json
+          if-no-files-found: warn
