@@ -73,13 +73,19 @@ created.
   entities refer to a common fluid **region**, not the enclosing solid.
   This does not validate biological transport behavior.
 
-**Synthetic fixtures do not constitute an actual OpenCAD feature-tree
-round-trip or a real UI selection proof.** The current legacy adapter records
-unverified envelope geometry; it never upgrades inferred placement geometry
-to exact body/face claims. A BRep adapter must inspect the actual exported
-feature/shape catalog, preserve lineage where supported and mark split/merged
-faces ambiguous. Downstream OpenIndustries scene import and selectable UI
-proof remain separate work under milestones B/C of #21.
+**Synthetic fixtures are not physical evidence.** Additionally, a native
+OpenCAD integration test builds and exports a truly rotated 40×20×10 mm
+isolated body to STEP and STL. The SDK-only
+`geometry_bindings.cad_adapter.inspect_single_step_body` verifies STEP bytes
+against the pinned SHA-256, imports the real solid through CadQuery/OCCT,
+requires **exactly one solid**, and publishes a verified **body-level** binding
+with inspected bounds. It does not infer exact faces/pins from STEP indexes,
+nor expose arbitrary file reads to hosted MCP.
+
+The legacy adapter still records **unverified** placement envelopes; it never
+upgrades them to exact body/face claims. OpenCAD BRep feature-tree lineage,
+topology-change repair, and downstream OpenIndustries scene import and UI
+selection remain separate milestones B/C of #21.
 
 ## Generic CAD placement correction
 
@@ -94,9 +100,9 @@ claim that label matching creates verified connector features.
 
 ## Next integration gates before closing #21
 
-1. Real OpenCAD BRep/STEP artifact catalog and revision-pinned feature IDs,
-   including a deterministic rotated asymmetric real-export test and
-   confidence/unsupported reporting after topology changes.
+1. Expand the now-verified **single-solid STEP body** adapter to stable
+   OpenCAD BRep feature/face/port selectors and regeneration lineage, with
+   confidence and unsupported reporting after topology changes.
 2. Explicit typed feature requests replacing label heuristics **only in a new
    opt-in path** without breaking older hardware projects.
 3. Wiring same binding sidecar through actual supported CAD export/reimport,
