@@ -6,6 +6,7 @@ on:
       - "forma_core/**"
       - "apps/api/opencode_mcp.py"
       - "tests/projects/test_domain_irs.py"
+      - "tests/projects/test_chemical_ir.py"
       - "tests/projects/test_external_domain_providers.py"
       - "tests/opencode/**"
       - "examples/domains/**"
@@ -24,6 +25,6 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install -r apps/api/requirements.txt -e . pytest
-      - run: python -m pytest tests/projects/test_domain_irs.py tests/projects/test_external_domain_providers.py tests/projects/test_component_instances.py tests/projects/test_wiring_compiler.py tests/projects/test_biology.py tests/projects/test_fluidics.py tests/projects/test_cad_generation.py tests/opencode/test_mcp.py -q
+      - run: python -m pytest tests/projects/test_domain_irs.py tests/projects/test_external_domain_providers.py tests/projects/test_chemical_ir.py tests/projects/test_component_instances.py tests/projects/test_wiring_compiler.py tests/projects/test_biology.py tests/projects/test_fluidics.py tests/projects/test_cad_generation.py tests/opencode/test_mcp.py -q
       - run: python -m forma_core domains generate examples/domains/motor-generation.json --output /tmp/motor-product.json
       - run: python -m forma_core domains validate /tmp/motor-product.json

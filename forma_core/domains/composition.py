@@ -218,6 +218,20 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
             metadata = registry.metadata(domain)
             if metadata is None or link.kind not in metadata.reference_types:
                 add("relationship_type", link.link_id, f"Provider for '{domain}' does not advertise '{link.kind}'.")
+        if link.kind in {"uses_species", "uses_reaction"}:
+            chemical_endpoints = [endpoint for endpoint in (link.source, link.target)
+                                  if identities[endpoint.artifact_id].domain == "chemical"]
+            if len(chemical_endpoints) != 1:
+                add("chemical_link_domain", link.link_id, "Chemical links require exactly one ChemicalIR endpoint.")
+            else:
+                endpoint = chemical_endpoints[0]
+                chemical = documents.get(endpoint.artifact_id)
+                if chemical is not None:
+                    expected = ({item.species_id for item in chemical.species} if link.kind == "uses_species"
+                                else {item.reaction_id for item in chemical.reactions})
+                    if endpoint.object_id not in expected:
+                        add("chemical_link_type", link.link_id,
+                            f"{link.kind} must reference a chemical {'species' if link.kind == 'uses_species' else 'reaction'} entity.")
         if link.kind == "same_object":
             if link.source.object_id != link.target.object_id:
                 add("physical_identity", link.link_id, "Shared physical views must preserve the same object_id.")

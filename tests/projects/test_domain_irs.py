@@ -272,7 +272,7 @@ class ExternalSelectionTests(unittest.TestCase):
             schema = request["decision_schema"]["$defs"]["CompleteProductScope"]
             self.assertEqual(set(ProductScope.model_fields) - {"domains"}, set(schema["required"]))
             self.assertTrue(all(field["description"] for field in schema["properties"].values()))
-            self.assertEqual({"mechanical", "electrical", "biological", "fluidic", "space"}, set(request["domains"]))
+            self.assertEqual({"mechanical", "electrical", "biological", "fluidic", "chemical", "space"}, set(request["domains"]))
             with self.assertRaises(ValidationError):
                 ProductPlan.model_validate(request)
             reasons = {"mechanical": "Mount and assemble the motor.", "electrical": "The brief includes motor wiring."}

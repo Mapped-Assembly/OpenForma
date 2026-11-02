@@ -1,0 +1,137 @@
+{
+  "artifact_id": "air-to-fuel.chemical",
+  "revision": 1,
+  "domain": "chemical",
+  "schema_version": "1.0",
+  "species": [
+    {
+      "species_id": "water",
+      "name": "Water",
+      "formula": "H2O",
+      "charge": 0,
+      "phase": "liquid"
+    },
+    {
+      "species_id": "hydrogen",
+      "name": "Hydrogen",
+      "formula": "H2",
+      "charge": 0,
+      "phase": "gas"
+    },
+    {
+      "species_id": "oxygen",
+      "name": "Oxygen",
+      "formula": "O2",
+      "charge": 0,
+      "phase": "gas"
+    },
+    {
+      "species_id": "carbon_dioxide",
+      "name": "Carbon dioxide",
+      "formula": "CO2",
+      "charge": 0,
+      "phase": "gas"
+    },
+    {
+      "species_id": "methanol",
+      "name": "Methanol",
+      "formula": "CH3OH",
+      "charge": 0,
+      "phase": "liquid"
+    }
+  ],
+  "reactions": [
+    {
+      "reaction_id": "electrolysis",
+      "reactants": [
+        {
+          "species_id": "water",
+          "coefficient": "2"
+        }
+      ],
+      "products": [
+        {
+          "species_id": "hydrogen",
+          "coefficient": "2"
+        },
+        {
+          "species_id": "oxygen",
+          "coefficient": "1"
+        }
+      ],
+      "claim": {
+        "basis": "illustrative",
+        "rationale": "Balanced textbook-style equation; no operational yields or equipment settings inferred.",
+        "source_ids": [
+          "demo"
+        ]
+      }
+    },
+    {
+      "reaction_id": "methanol_synthesis",
+      "reactants": [
+        {
+          "species_id": "carbon_dioxide",
+          "coefficient": "1"
+        },
+        {
+          "species_id": "hydrogen",
+          "coefficient": "3"
+        }
+      ],
+      "products": [
+        {
+          "species_id": "methanol",
+          "coefficient": "1"
+        },
+        {
+          "species_id": "water",
+          "coefficient": "1"
+        }
+      ],
+      "claim": {
+        "basis": "illustrative",
+        "rationale": "Reaction equation only; no catalyst, kinetics, operating pressure or conversion specified.",
+        "source_ids": [
+          "demo"
+        ]
+      }
+    }
+  ],
+  "mixtures": [
+    {
+      "mixture_id": "example_feed",
+      "basis": "mole_fraction",
+      "components": [
+        {
+          "species_id": "carbon_dioxide",
+          "value": 0.25,
+          "unit": "1"
+        },
+        {
+          "species_id": "hydrogen",
+          "value": 0.75,
+          "unit": "1"
+        }
+      ],
+      "complete": true,
+      "claim": {
+        "basis": "illustrative",
+        "rationale": "Synthetic composition, not Aircela feed conditions.",
+        "source_ids": [
+          "demo"
+        ]
+      }
+    }
+  ],
+  "conditions": [],
+  "models": [],
+  "evidence": [
+    {
+      "source_id": "demo",
+      "basis": "illustrative",
+      "title": "Synthetic air-to-fuel design fixture",
+      "rationale": "Authored solely for OpenForma #25 schema and conservation tests. No actual Aircela design or measured rates."
+    }
+  ]
+}
