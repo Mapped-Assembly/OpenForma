@@ -12,6 +12,7 @@ from .models import (
 )
 from .resolution import (
     forward_lookup, invalidate_geometry, reverse_lookup, validate_manifest,
+    validate_manifest_against_product,
 )
 
 
@@ -92,13 +93,17 @@ def binding_tool(payload: dict[str, Any]) -> dict[str, Any]:
         if set(payload) != {"action", "input"}:
             raise ValueError("Legacy adapter requires only action and input.")
         return placement_envelopes(LegacyPlacementInput.model_validate(payload["input"])).model_dump(mode="json")
-    if action not in {"validate", "forward", "reverse", "invalidate"}:
-        raise ValueError("Supported binding actions: schema, legacy, validate, forward, reverse, invalidate.")
+    if action not in {"validate", "validate-product", "forward", "reverse", "invalidate"}:
+        raise ValueError("Supported binding actions: schema, legacy, validate, validate-product, forward, reverse, invalidate.")
     manifest = BindingManifest.model_validate(payload["manifest"])
     if action == "validate":
         if set(payload) != {"action", "manifest"}:
             raise ValueError("Validate accepts only a binding manifest.")
         return validate_manifest(manifest).model_dump(mode="json")
+    if action == "validate-product":
+        if set(payload) != {"action", "manifest", "product"}:
+            raise ValueError("Product-linked validation requires only action, manifest, and product.")
+        return validate_manifest_against_product(manifest, payload["product"]).model_dump(mode="json")
     if action == "forward":
         key = payload["semantic"]
         if not isinstance(key, dict):
