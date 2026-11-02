@@ -78,7 +78,7 @@ def opencode_mcp_tools() -> list[dict[str, object]]:
                 "Generate: {plan, designs: {domain: separately authored native document fields}, references?, existing?, inputs?, links?}. "
                 "Compose accepts {product_id, documents?, references?, links?, plan?}; external artifacts remain pinned references. "
                 "Validate takes a product bundle; validate-domain takes a standalone native IR or {reference, artifact} for an external provider. "
-                "Bindings accepts {action: schema} or {action: validate|forward|reverse|invalidate, manifest, ...} and "
+                "Bindings accepts {action: schema}, {action: validate|validate-product|forward|reverse|invalidate, manifest, ...} and "
                 "{action: legacy, input} for explicitly unverified placement envelopes. "
                 "Import-hardware: {product_id, hardware_ir}. Export-hardware: {product, legacy_seed?, allow_lossy?}. "
                 "Missing inputs block only dependent domains. Check local/composition findings separately; "
