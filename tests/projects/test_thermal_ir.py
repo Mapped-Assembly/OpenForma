@@ -219,7 +219,8 @@ class ThermalIRTests(unittest.TestCase):
         codes = {f.code for f in report.composition}
         self.assertIn("link_revision", codes)
         self.assertIn("thermal_source_reference", codes)
-        self.assertEqual([], report.local[thermal.artifact_id])
+        self.assertFalse(any(f.severity == "error" for f in report.local[thermal.artifact_id]))
+        self.assertIn("thermal_unknown", [f.code for f in report.local[thermal.artifact_id]])
 
         wrong = deepcopy(links)
         wrong[0].target.object_id = "hydrogen"
