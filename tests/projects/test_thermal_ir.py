@@ -109,6 +109,30 @@ class ThermalIRTests(unittest.TestCase):
         self.assertIn("thermal_unknown", [f.code for f in validate_domain(raw)])
         self.assertTrue(call_domain_tool("validate-domain", raw)["is_valid"])
 
+    def test_design_temperature_limit_is_not_a_compliance_verdict(self) -> None:
+        """A declared engineering max is checked without claiming safety approval."""
+        raw = load("thermal-heater.json")
+        raw["nodes"][0]["maximum_temperature"] = {
+            "kind": "temperature", "value": 29, "unit": "degC"
+        }
+        doc = ThermalIR.model_validate(raw)
+        self.assertEqual("fail", analyze_thermal(doc).results[0].status)
+        self.assertIn("thermal_fail", [f.code for f in validate_domain(raw)])
+        raw["nodes"][0]["target_temperature"] = {
+            "kind": "temperature", "value": 35, "unit": "degC"
+        }
+        with self.assertRaises((ValidationError, ValueError)):
+            ThermalIR.model_validate(raw)
+
+    def test_all_thermal_quantity_claims_are_checked(self) -> None:
+        """A thermal resistance cannot claim measurement without source evidence."""
+        raw = load("thermal-heater.json")
+        raw["edges"][0]["resistance"]["claim"] = {
+            "basis": "measured", "source_ids": ["absent"]
+        }
+        with self.assertRaises((ValidationError, ValueError)):
+            ThermalIR.model_validate(raw)
+
     def test_unsupported_conduction_and_greenhouse(self) -> None:
         """No heat-transfer coefficient, emissivity or CFD result is fabricated."""
         raw = load("thermal-greenhouse.json")
@@ -214,6 +238,10 @@ class ThermalIRTests(unittest.TestCase):
         product = compose_product("reactor", [thermal, process, chemical], links=links)
         report = validate_product(product)
         self.assertTrue(report.is_valid, report.model_dump())
+        omitted = validate_product(compose_product(
+            "reactor", [thermal, process, chemical], links=links[1:]))
+        self.assertIn("thermal_link_missing", [f.code for f in omitted.composition])
+        self.assertFalse(any(f.severity == "error" for f in omitted.local[thermal.artifact_id]))
         stale = chemical.model_copy(update={"revision": 2})
         report = validate_product(compose_product("reactor", [thermal, process, stale], links=links))
         codes = {f.code for f in report.composition}
