@@ -81,7 +81,10 @@ The graph supports split/merge, parallel flows, closed paths and explicit
 recycles. Strongly connected components are **reported**, not rejected.
 A downstream numerical solver must establish tear streams, initial conditions
 or its own convergence contract before evaluating recycle loop performance.
-The orchestrator's task DAG is separate and need not inherit flowsheet cycles.
+Optional declarative `ProcessStep` prerequisites form a distinct **acyclic**
+dependency graph. A cycle in that workflow is invalid, while a physical recycle
+in the flowsheet is permitted. These steps are design intent, not runtime jobs
+or actuator commands; the orchestrator's task DAG is separate.
 
 Mixed mass/mole/volume conversions require independently supplied properties
 and supported phase assumptions. There are no implicit chemical yields,
