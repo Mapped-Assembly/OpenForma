@@ -121,6 +121,27 @@ class OpenCodeMcpModelTests(unittest.TestCase):
 
 
 class OpenCodeMcpHttpTests(unittest.TestCase):
+    def test_domain_plan_accepts_a_project_description_without_scope(self) -> None:
+        """The authenticated MCP entry point delegates text-only selection to its provider."""
+        from unittest.mock import Mock
+        from forma_core.domains.agents import InferredProductScope
+        from forma_core.domains.planning import ProductScope
+        provider = Mock()
+        provider.generate_structured.return_value = InferredProductScope(**ProductScope(physical_structure=True).model_dump())
+        with patch("forma_core.domains.agents.configured_selector", return_value=provider):
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": "scope-inference", "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": "plan", "payload": json.dumps({"product_id": "p", "brief": "Design a passive bracket."}),
+                }},
+            })
+        self.assertEqual(200, response.status_code, response.text)
+        result = response.json()["result"]
+        self.assertFalse(result.get("isError"), result)
+        plan = json.loads(result["content"][0]["text"])
+        self.assertEqual(["mechanical"], [task["domain"] for task in plan["tasks"]])
+        provider.generate_structured.assert_called_once()
+
     def test_independent_domains_generate_and_validate_without_hosted_write(self) -> None:
         """The authenticated MCP surface returns composed artifacts without a legacy write."""
         from tests.projects.test_domain_irs import fixture_input

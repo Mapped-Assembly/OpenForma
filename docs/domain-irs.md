@@ -81,7 +81,7 @@ not automatically request a wiring design. The agent reads the brief and returns
 reasons. Offline callers supply the scope directly. There is intentionally no
 keyword-only fallback that silently guesses intent.
 
-The four issue fixtures are in
+The four deterministic scope-mapping fixtures are in
 [`examples/domains/selection-fixtures.json`](../examples/domains/selection-fixtures.json):
 
 | Scope | Selected types |
@@ -157,6 +157,31 @@ work completed; it does not mean physical, manufacturing or safety qualification
 
 ## Offline public workflow
 
+To infer IRs from a project description, omit `scope` from the public `plan`
+operation. It invokes the configured live Forma provider. For example:
+
+```bash
+printf '%s\n' '{"product_id":"bracket","brief":"Design a passive shelf bracket. No electronics."}' | python -m forma_core domains plan -
+```
+
+Optional `provider` and `model` fields select an existing configured provider.
+No scope, expected IR list or context is required for selection. Missing design
+specifications remain visible after selection and block subsequent generation.
+An absent provider returns an explicit error; it never substitutes canned
+results or presents offline mapping as model inference.
+
+The live benchmark contains eight descriptions, including exclusions and a
+software-only project. Expected domain sets are used by the evaluator **after**
+selection and never included in the prompt:
+
+```bash
+python -m forma_core.domains.benchmark examples/domains/selection-benchmark.json
+```
+
+This command reports `blocked` with `inference_performed: false` if live provider
+configuration is unavailable. Unit tests with recorded provider responses verify
+the public flow and harness; they do not measure live model selection accuracy.
+
 ```bash
 python -m forma_core domains generate examples/domains/motor-generation.json --output /tmp/motor-product.json
 python -m forma_core domains validate /tmp/motor-product.json
@@ -172,7 +197,7 @@ All CLI operations read JSON from a path or `-` and optionally write `--output`:
 | Operation | Input |
 | --- | --- |
 | `schema` | `{"domain": "mechanical"}`; returns document and context schemas |
-| `plan` | `{product_id, brief, scope, contexts}` |
+| `plan` | `{product_id, brief, scope?, contexts?, provider?, model?}`; missing scope invokes live selection |
 | `generate` | `{plan, designs, existing?, inputs?, links?, update_domains?}` |
 | `validate` | ProductBundle |
 | `validate-domain` | One standalone domain document |

@@ -17,12 +17,12 @@ class ProductScope(DomainModel):
     wiring design. The selector must respect explicit exclusions in the brief.
     """
 
-    physical_structure: bool = False
-    mechanical_motion: bool = False
-    wiring: bool = False
-    electrical_control: bool = False
-    fluid_network: bool = False
-    biological_experiment: bool = False
+    physical_structure: bool = Field(False, description="Design physical geometry, parts, mounting or an assembly.")
+    mechanical_motion: bool = Field(False, description="Design moving mechanical parts or motion constraints.")
+    wiring: bool = Field(False, description="Design electrical connections, circuits or wiring.")
+    electrical_control: bool = Field(False, description="Include electrically controlled equipment and its electrical interfaces.")
+    fluid_network: bool = Field(False, description="Design fluid routing, channels, piping, flow or pressure constraints.")
+    biological_experiment: bool = Field(False, description="Include biological compartments, experiments, exposures or measurements.")
 
 
 class DomainTask(DomainModel):

@@ -3,17 +3,20 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from contextlib import redirect_stdout
+from io import StringIO
 import json
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from pydantic import ValidationError
 from forma_core.config import config
 
-from forma_core.domains.agents import plan_with_agent, provider_author
+from forma_core.domains.agents import InferredProductScope, plan_with_agent, provider_author
 from forma_core.domains.base import fingerprint
 from forma_core.domains.compatibility import export_hardware_ir, import_hardware_ir
 from forma_core.domains.composition import (
@@ -241,8 +244,8 @@ class SelectionGenerationTests(unittest.TestCase):
             def generate_structured(self, prompt: str, schema_class: type) -> object:
                 """Return explicit fixture decisions without a live model call."""
                 self.prompts.append(prompt)
-                if schema_class is ProductScope:
-                    return ProductScope(physical_structure=True)
+                if schema_class is InferredProductScope:
+                    return InferredProductScope(**ProductScope(physical_structure=True).model_dump())
                 data = request["designs"]["mechanical"]
                 return schema_class(artifact_id="p.mechanical", **data)
 
@@ -252,6 +255,94 @@ class SelectionGenerationTests(unittest.TestCase):
         result = generate_product(plan, provider_author(provider))
         self.assertEqual(["mechanical"], [ref.domain for ref in result.manifest.artifacts])
         self.assertNotIn("ElectricalIR", provider.prompts[-1])
+
+
+class DescriptionSelectionTests(unittest.TestCase):
+    """Public-flow tests with recorded responses; these are not live model evaluations."""
+
+    def test_description_only_public_plan_calls_selector(self) -> None:
+        """An input containing only project identity and description reaches the model."""
+        from unittest.mock import Mock
+        provider = Mock()
+        provider.generate_structured.return_value = InferredProductScope(
+            **ProductScope(physical_structure=True, wiring=True).model_dump())
+        brief = "Build a motorized assembly including mounting and wiring; supply ratings are unknown."
+        with patch("forma_core.domains.agents.configured_selector", return_value=provider) as factory:
+            result = call_domain_tool("plan", {"product_id": "motor", "brief": brief})
+        factory.assert_called_once_with(None, None)
+        provider.generate_structured.assert_called_once()
+        prompt, response_type = provider.generate_structured.call_args.args
+        self.assertIn(brief, prompt)
+        self.assertIs(InferredProductScope, response_type)
+        self.assertEqual(["mechanical", "electrical"], [task["domain"] for task in result["tasks"]])
+        self.assertTrue(all(task["status"] == "blocked" for task in result["tasks"]))
+        self.assertTrue(all(task["reason"] and task["missing_inputs"] for task in result["tasks"]))
+
+    def test_description_only_cli_uses_the_same_public_path(self) -> None:
+        """JSON stdin and provider/model overrides work without a supplied scope."""
+        from unittest.mock import Mock
+        from forma_core.cli.main import main
+        provider = Mock()
+        provider.generate_structured.return_value = InferredProductScope(**ProductScope(physical_structure=True).model_dump())
+        payload = {"product_id": "bracket", "brief": "A passive shelf bracket; no wiring.",
+                   "provider": "gmi", "model": "configured-test-model"}
+        output = StringIO()
+        with patch("sys.stdin", StringIO(json.dumps(payload))), redirect_stdout(output), patch(
+            "forma_core.domains.agents.configured_selector", return_value=provider,
+        ) as factory:
+            self.assertEqual(0, main(["domains", "plan", "-"]))
+        factory.assert_called_once_with("gmi", "configured-test-model")
+        self.assertEqual(["mechanical"], [task["domain"] for task in json.loads(output.getvalue())["tasks"]])
+
+    def test_explicit_scope_does_not_call_a_provider(self) -> None:
+        """Existing offline clients retain a deterministic, network-free mapping path."""
+        with patch("forma_core.domains.agents.configured_selector") as factory:
+            result = call_domain_tool("plan", {"product_id": "bracket", "brief": "A passive bracket",
+                                               "scope": {"physical_structure": True}})
+        factory.assert_not_called()
+        self.assertEqual(["mechanical"], [task["domain"] for task in result["tasks"]])
+
+    def test_unconfigured_provider_is_reported_without_inference(self) -> None:
+        """No live credentials means an explicit failure, never a fabricated selection."""
+        from forma_core.domains.benchmark import main
+        from forma_core.llm_providers import SimulationProvider
+        with patch("forma_core.llm_providers.build_llm_provider", return_value=SimulationProvider()):
+            with self.assertRaisesRegex(RuntimeError, "No inference was performed"):
+                call_domain_tool("plan", {"product_id": "p", "brief": "Design a bracket"})
+            output = StringIO()
+            with redirect_stdout(output):
+                code = main([str(EXAMPLES / "selection-benchmark.json")])
+            self.assertEqual(2, code)
+            report = json.loads(output.getvalue())
+            self.assertEqual("blocked", report["status"])
+            self.assertFalse(report["inference_performed"])
+
+    def test_inference_requires_every_scope_decision(self) -> None:
+        """Malformed provider output cannot silently omit electrical or other domains."""
+        from unittest.mock import Mock
+        provider = Mock()
+        provider.generate_structured.return_value = {"physical_structure": True}
+        with self.assertRaises(ValidationError):
+            plan_with_agent(provider, "p", "Design a bracket")
+
+    def test_benchmark_does_not_leak_answers_and_detects_wrong_selection(self) -> None:
+        """Recorded responses exercise scoring; expected labels are never passed to the model."""
+        from unittest.mock import Mock
+        from forma_core.domains.benchmark import SelectionBenchmark, evaluate_selection
+        benchmark = SelectionBenchmark.model_validate_json((EXAMPLES / "selection-benchmark.json").read_text())
+        provider = Mock()
+        # Deliberately return the wrong empty selection for all physical cases.
+        provider.generate_structured.return_value = InferredProductScope(**ProductScope().model_dump())
+        report = evaluate_selection(provider, benchmark)
+        self.assertEqual(8, provider.generate_structured.call_count)
+        self.assertEqual(1, report["passed"])
+        self.assertEqual("fail", report["status"])
+        for call, case in zip(provider.generate_structured.call_args_list, benchmark.cases):
+            prompt, schema = call.args
+            self.assertIn(case.brief, prompt)
+            self.assertNotIn("expected_domains", prompt)
+            self.assertNotIn(json.dumps(case.expected_domains), prompt)
+            self.assertIs(InferredProductScope, schema)
 
 
 class CompositionTests(unittest.TestCase):

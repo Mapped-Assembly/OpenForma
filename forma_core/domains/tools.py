@@ -6,7 +6,7 @@ from typing import Any, Literal
 
 from pydantic import Field
 
-from .base import Domain, DomainModel
+from .base import Domain, DomainModel, Text
 from .compatibility import export_hardware_ir, import_hardware_ir
 from .composition import DomainLink, ProductBundle, validate_product
 from .generation import DeclaredInput, fixture_author, generate_product
@@ -15,11 +15,13 @@ from .registry import domain_model, validate_domain
 
 
 class PlanInput(DomainModel):
-    """Agent-interpreted scope plus contexts, usable entirely offline."""
+    """Project description for live selection, or explicit scope for offline mapping."""
 
-    product_id: str
-    brief: str
-    scope: ProductScope
+    product_id: Text
+    brief: Text = Field(max_length=12_000)
+    scope: ProductScope | None = None
+    provider: str | None = None
+    model: str | None = None
     contexts: dict[Domain, dict[str, Any]] = Field(default_factory=dict)
 
 
@@ -62,6 +64,10 @@ def call_domain_tool(operation: Operation, payload: dict[str, Any]) -> dict[str,
                 "context": domain_model(domain, context=True).model_json_schema()}
     if operation == "plan":
         request = PlanInput.model_validate(payload)
+        if request.scope is None:
+            from .agents import configured_selector, plan_with_agent
+            return plan_with_agent(configured_selector(request.provider, request.model), request.product_id,
+                                   request.brief, contexts=request.contexts).model_dump(mode="json")
         return select_domains(request.product_id, request.brief, scope=request.scope,
                               contexts=request.contexts).model_dump(mode="json")
     if operation == "generate":
