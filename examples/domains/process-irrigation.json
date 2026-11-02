@@ -127,5 +127,21 @@
     }
   ],
   "scenarios": [],
-  "evidence": []
+  "evidence": [],
+  "steps": [
+    {
+      "step_id": "start_transfer",
+      "operation_id": "pump",
+      "preconditions": [
+        "Pump and source are ready"
+      ]
+    },
+    {
+      "step_id": "deliver",
+      "operation_id": "crop_bed",
+      "depends_on": [
+        "start_transfer"
+      ]
+    }
+  ]
 }
