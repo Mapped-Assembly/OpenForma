@@ -4,25 +4,37 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
-from .base import Domain, DomainModel, Text
+from .base import Domain, DomainModel
 from .compatibility import export_hardware_ir, import_hardware_ir
 from .composition import DomainLink, ProductBundle, validate_product
 from .generation import DeclaredInput, fixture_author, generate_product
 from .planning import ProductPlan, ProductScope, select_domains
 from .registry import domain_model, validate_domain
+from .selection import SelectionDecision, SelectionProject, apply_selection, prepare_selection
 
 
-class PlanInput(DomainModel):
-    """Project description for live selection, or explicit scope for offline mapping."""
+class PlanInput(SelectionProject):
+    """Use the calling agent by default; an internal model is an explicit opt-in."""
 
-    product_id: Text
-    brief: Text = Field(max_length=12_000)
     scope: ProductScope | None = None
+    decision: SelectionDecision | None = None
+    selection_mode: Literal["external", "provider"] = "external"
     provider: str | None = None
     model: str | None = None
-    contexts: dict[Domain, dict[str, Any]] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def unambiguous_selection(self) -> PlanInput:
+        """Never ignore a supplied decision or invoke a model implicitly."""
+        if self.scope is not None and self.decision is not None:
+            raise ValueError("Supply either scope or decision, not both.")
+        if self.selection_mode == "provider":
+            if self.scope is not None or self.decision is not None:
+                raise ValueError("Provider selection cannot be combined with scope or decision.")
+        elif self.provider is not None or self.model is not None:
+            raise ValueError("Set selection_mode='provider' to use provider/model options.")
+        return self
 
 
 class GenerateInput(DomainModel):
@@ -64,10 +76,15 @@ def call_domain_tool(operation: Operation, payload: dict[str, Any]) -> dict[str,
                 "context": domain_model(domain, context=True).model_json_schema()}
     if operation == "plan":
         request = PlanInput.model_validate(payload)
-        if request.scope is None:
+        if request.selection_mode == "provider":
             from .agents import configured_selector, plan_with_agent
             return plan_with_agent(configured_selector(request.provider, request.model), request.product_id,
                                    request.brief, contexts=request.contexts).model_dump(mode="json")
+        project = SelectionProject(product_id=request.product_id, brief=request.brief, contexts=request.contexts)
+        if request.decision is not None:
+            return apply_selection(project, request.decision).model_dump(mode="json")
+        if request.scope is None:
+            return prepare_selection(project)
         return select_domains(request.product_id, request.brief, scope=request.scope,
                               contexts=request.contexts).model_dump(mode="json")
     if operation == "generate":

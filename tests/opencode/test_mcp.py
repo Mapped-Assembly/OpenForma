@@ -121,8 +121,43 @@ class OpenCodeMcpModelTests(unittest.TestCase):
 
 
 class OpenCodeMcpHttpTests(unittest.TestCase):
-    def test_domain_plan_accepts_a_project_description_without_scope(self) -> None:
-        """The authenticated MCP entry point delegates text-only selection to its provider."""
+    def test_domain_agent_handoff_generates_and_validates_without_provider(self) -> None:
+        """The calling MCP agent selects domains and authors IRs without a server-side model."""
+        from tests.projects.test_domain_irs import fixture_input
+
+        def invoke(operation: str, payload: dict) -> dict:
+            """Exchange one JSON request through the authenticated HTTP MCP route."""
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": operation, "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": operation, "payload": json.dumps(payload),
+                }},
+            })
+            self.assertEqual(200, response.status_code, response.text)
+            result = response.json()["result"]
+            self.assertFalse(result.get("isError"), result)
+            return json.loads(result["content"][0]["text"])
+
+        fixture = fixture_input()
+        with patch("forma_core.domains.agents.configured_selector", side_effect=AssertionError("Provider called")), patch(
+            "apps.api.opencode_mcp._persist_mcp_compile",
+        ) as persist:
+            request = invoke("plan", {
+                "product_id": fixture["plan"]["product_id"], "brief": fixture["plan"]["brief"],
+                "contexts": {task["domain"]: task["context"] for task in fixture["plan"]["tasks"]},
+            })
+            self.assertEqual("awaiting_selection", request["status"])
+            fixture["plan"] = invoke("plan", {**request["project"], "decision": {
+                "request_sha256": request["request_sha256"], "scope": fixture["plan"]["scope"],
+                "reasons": {"mechanical": "The motor needs an assembly.", "electrical": "Its wiring is in scope."},
+            }})
+            self.assertEqual(["mechanical", "electrical"], [task["domain"] for task in fixture["plan"]["tasks"]])
+            bundle = invoke("generate", fixture)
+            self.assertTrue(invoke("validate", bundle)["is_valid"])
+            persist.assert_not_called()
+
+    def test_domain_plan_can_explicitly_opt_into_provider_selection(self) -> None:
+        """The optional internal selector is still available with explicit provider mode."""
         from unittest.mock import Mock
         from forma_core.domains.agents import InferredProductScope
         from forma_core.domains.planning import ProductScope
@@ -132,7 +167,8 @@ class OpenCodeMcpHttpTests(unittest.TestCase):
             response = self.client.post("/api/opencode/mcp", json={
                 "jsonrpc": "2.0", "id": "scope-inference", "method": "tools/call",
                 "params": {"name": "forma.opencode.domains", "arguments": {
-                    "operation": "plan", "payload": json.dumps({"product_id": "p", "brief": "Design a passive bracket."}),
+                    "operation": "plan", "payload": json.dumps({"product_id": "p", "brief": "Design a passive bracket.",
+                                                                 "selection_mode": "provider"}),
                 }},
             })
         self.assertEqual(200, response.status_code, response.text)

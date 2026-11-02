@@ -257,18 +257,108 @@ class SelectionGenerationTests(unittest.TestCase):
         self.assertNotIn("ElectricalIR", provider.prompts[-1])
 
 
+class ExternalSelectionTests(unittest.TestCase):
+    """Calling agents can complete the public workflow without any internal provider."""
+
+    def test_handoff_is_discoverable_and_completed_without_provider(self) -> None:
+        """Raw intake returns a contract; submitted decisions preserve independent blocking."""
+        fixture = fixture_input()
+        project = {"product_id": "motor-example", "brief": fixture["plan"]["brief"],
+                   "contexts": {"mechanical": fixture["plan"]["tasks"][0]["context"]}}
+        with patch("forma_core.domains.agents.configured_selector", side_effect=AssertionError("Provider called")):
+            request = call_domain_tool("plan", project)
+            self.assertEqual("awaiting_selection", request["status"])
+            self.assertEqual("plan", request["submit_operation"])
+            schema = request["decision_schema"]["$defs"]["CompleteProductScope"]
+            self.assertEqual(set(ProductScope.model_fields), set(schema["required"]))
+            self.assertTrue(all(field["description"] for field in schema["properties"].values()))
+            self.assertEqual({"mechanical", "electrical", "biological", "fluidic"}, set(request["domains"]))
+            with self.assertRaises(ValidationError):
+                ProductPlan.model_validate(request)
+            reasons = {"mechanical": "Mount and assemble the motor.", "electrical": "The brief includes motor wiring."}
+            plan = call_domain_tool("plan", {**request["project"], "decision": {
+                "request_sha256": request["request_sha256"], "scope": fixture["plan"]["scope"], "reasons": reasons,
+            }})
+            self.assertEqual(["ready", "blocked"], [task["status"] for task in plan["tasks"]])
+            self.assertEqual(reasons, {task["domain"]: task["reason"] for task in plan["tasks"]})
+            product = call_domain_tool("generate", {"plan": plan, "designs": fixture["designs"]})
+            self.assertEqual(["mechanical"], [ref["domain"] for ref in product["manifest"]["artifacts"]])
+
+    def test_changed_inputs_reject_stale_decisions(self) -> None:
+        """Identity, brief and context updates all require the selecting agent to reconsider."""
+        example = read_json(EXAMPLES / "bracket-selection.json")
+        for key, value in [("product_id", "another"), ("brief", "Design the motor wiring."),
+                           ("contexts", {"mechanical": {"scope": "Updated inputs"}})]:
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, "Selection inputs changed"):
+                call_domain_tool("plan", {**example, key: value})
+
+    def test_malformed_or_ambiguous_decisions_are_rejected(self) -> None:
+        """Missing booleans, coerced truth values, bad reasons and mixed modes cannot slip through."""
+        example = read_json(EXAMPLES / "bracket-selection.json")
+        candidates = []
+        incomplete = deepcopy(example)
+        del incomplete["decision"]["scope"]["wiring"]
+        candidates.append(incomplete)
+        coerced = deepcopy(example)
+        coerced["decision"]["scope"]["wiring"] = "false"
+        candidates.append(coerced)
+        for reasons in ({}, {"mechanical": "  "}, {"mechanical": "Bracket", "electrical": "No wiring"}):
+            candidate = deepcopy(example)
+            candidate["decision"]["reasons"] = reasons
+            candidates.append(candidate)
+        candidates.extend([{**example, "scope": {}}, {**example, "selection_mode": "provider"},
+                           {**example, "provider": "simulation"}])
+        for candidate in candidates:
+            with self.subTest(candidate=candidate), self.assertRaises(ValueError):
+                call_domain_tool("plan", candidate)
+
+    def test_software_only_decision_has_no_domain_tasks(self) -> None:
+        """An explicitly empty physical scope is a valid decision, not an inference failure."""
+        request = call_domain_tool("plan", {"product_id": "software", "brief": "A software inventory dashboard."})
+        plan = call_domain_tool("plan", {**request["project"], "decision": {
+            "request_sha256": request["request_sha256"], "scope": ProductScope().model_dump(), "reasons": {},
+        }})
+        self.assertEqual([], plan["tasks"])
+
+    def test_cli_external_round_trip_without_provider(self) -> None:
+        """Separate CLI calls exchange portable JSON and accept the checked-in agent decision."""
+        from forma_core.cli.main import main
+        example = read_json(EXAMPLES / "bracket-selection.json")
+        project = {key: value for key, value in example.items() if key != "decision"}
+        with patch("forma_core.domains.agents.configured_selector", side_effect=AssertionError("Provider called")):
+            prepared = StringIO()
+            with patch("sys.stdin", StringIO(json.dumps(project))), redirect_stdout(prepared):
+                self.assertEqual(0, main(["domains", "plan", "-"]))
+            request = json.loads(prepared.getvalue())
+            self.assertEqual(example["decision"]["request_sha256"], request["request_sha256"])
+            completed = StringIO()
+            with redirect_stdout(completed):
+                self.assertEqual(0, main(["domains", "plan", str(EXAMPLES / "bracket-selection.json")]))
+            self.assertEqual(["mechanical"], [task["domain"] for task in json.loads(completed.getvalue())["tasks"]])
+
+    def test_external_selection_does_not_import_provider_module(self) -> None:
+        """The SDK path works even when provider configuration is unavailable."""
+        script = (
+            "import json, sys; from forma_core.domains.tools import call_domain_tool; "
+            "call_domain_tool('plan', {'product_id': 'p', 'brief': 'A bracket'}); "
+            "call_domain_tool('plan', json.load(open('examples/domains/bracket-selection.json'))); "
+            "assert 'forma_core.llm_providers' not in sys.modules"
+        )
+        subprocess.run([sys.executable, "-c", script], cwd=ROOT, check=True, capture_output=True)
+
+
 class DescriptionSelectionTests(unittest.TestCase):
     """Public-flow tests with recorded responses; these are not live model evaluations."""
 
-    def test_description_only_public_plan_calls_selector(self) -> None:
-        """An input containing only project identity and description reaches the model."""
+    def test_explicit_provider_mode_calls_selector(self) -> None:
+        """Internal inference is available only when the caller explicitly requests it."""
         from unittest.mock import Mock
         provider = Mock()
         provider.generate_structured.return_value = InferredProductScope(
             **ProductScope(physical_structure=True, wiring=True).model_dump())
         brief = "Build a motorized assembly including mounting and wiring; supply ratings are unknown."
         with patch("forma_core.domains.agents.configured_selector", return_value=provider) as factory:
-            result = call_domain_tool("plan", {"product_id": "motor", "brief": brief})
+            result = call_domain_tool("plan", {"product_id": "motor", "brief": brief, "selection_mode": "provider"})
         factory.assert_called_once_with(None, None)
         provider.generate_structured.assert_called_once()
         prompt, response_type = provider.generate_structured.call_args.args
@@ -278,14 +368,14 @@ class DescriptionSelectionTests(unittest.TestCase):
         self.assertTrue(all(task["status"] == "blocked" for task in result["tasks"]))
         self.assertTrue(all(task["reason"] and task["missing_inputs"] for task in result["tasks"]))
 
-    def test_description_only_cli_uses_the_same_public_path(self) -> None:
+    def test_explicit_provider_cli_uses_the_same_public_path(self) -> None:
         """JSON stdin and provider/model overrides work without a supplied scope."""
         from unittest.mock import Mock
         from forma_core.cli.main import main
         provider = Mock()
         provider.generate_structured.return_value = InferredProductScope(**ProductScope(physical_structure=True).model_dump())
         payload = {"product_id": "bracket", "brief": "A passive shelf bracket; no wiring.",
-                   "provider": "gmi", "model": "configured-test-model"}
+                   "selection_mode": "provider", "provider": "gmi", "model": "configured-test-model"}
         output = StringIO()
         with patch("sys.stdin", StringIO(json.dumps(payload))), redirect_stdout(output), patch(
             "forma_core.domains.agents.configured_selector", return_value=provider,
@@ -308,7 +398,7 @@ class DescriptionSelectionTests(unittest.TestCase):
         from forma_core.llm_providers import SimulationProvider
         with patch("forma_core.llm_providers.build_llm_provider", return_value=SimulationProvider()):
             with self.assertRaisesRegex(RuntimeError, "No inference was performed"):
-                call_domain_tool("plan", {"product_id": "p", "brief": "Design a bracket"})
+                call_domain_tool("plan", {"product_id": "p", "brief": "Design a bracket", "selection_mode": "provider"})
             output = StringIO()
             with redirect_stdout(output):
                 code = main([str(EXAMPLES / "selection-benchmark.json")])

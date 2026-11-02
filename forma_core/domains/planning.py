@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Literal
 
-from pydantic import Field, ValidationError, model_validator
+from pydantic import Field, StrictBool, ValidationError, model_validator
 
 from .base import Domain, DomainModel, Text, unique
 from .registry import CONTRACTS, domain_model
@@ -23,6 +23,17 @@ class ProductScope(DomainModel):
     electrical_control: bool = Field(False, description="Include electrically controlled equipment and its electrical interfaces.")
     fluid_network: bool = Field(False, description="Design fluid routing, channels, piping, flow or pressure constraints.")
     biological_experiment: bool = Field(False, description="Include biological compartments, experiments, exposures or measurements.")
+
+
+class CompleteProductScope(ProductScope):
+    """An agent must explicitly decide every capability using JSON booleans."""
+
+    physical_structure: StrictBool = Field(description=ProductScope.model_fields["physical_structure"].description)
+    mechanical_motion: StrictBool = Field(description=ProductScope.model_fields["mechanical_motion"].description)
+    wiring: StrictBool = Field(description=ProductScope.model_fields["wiring"].description)
+    electrical_control: StrictBool = Field(description=ProductScope.model_fields["electrical_control"].description)
+    fluid_network: StrictBool = Field(description=ProductScope.model_fields["fluid_network"].description)
+    biological_experiment: StrictBool = Field(description=ProductScope.model_fields["biological_experiment"].description)
 
 
 class DomainTask(DomainModel):

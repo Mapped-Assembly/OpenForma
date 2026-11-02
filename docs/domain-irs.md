@@ -78,7 +78,9 @@ The available domain set is `I`; scope selection produces `S(P) ⊆ I`. Scope
 describes **requested engineering work**. A motor appearing in a rendering does
 not automatically request a wiring design. The agent reads the brief and returns
 `ProductScope`; deterministic selection maps that scope to domain types and
-reasons. Offline callers supply the scope directly. There is intentionally no
+reasons. The selecting agent can be the calling ChatGPT, Codex, another MCP
+client, a human or a program. OpenForma does not require a server-side LLM.
+Callers can also supply scope directly. There is intentionally no
 keyword-only fallback that silently guesses intent.
 
 The four deterministic scope-mapping fixtures are in
@@ -155,32 +157,76 @@ Manifest SHA-256 fingerprints detect artifacts changed without a matching
 revision reference. `is_valid` means the declared checks passed and selected
 work completed; it does not mean physical, manufacturing or safety qualification.
 
-## Offline public workflow
+## Agent-independent public workflow
 
-To infer IRs from a project description, omit `scope` from the public `plan`
-operation. It invokes the configured live Forma provider. For example:
+The default `plan` operation accepts a project and returns a selection request
+for **the calling agent**. It does not load provider configuration, call another
+model or guess the selection. The same exchange works through Python, CLI and
+`forma.opencode.domains` MCP:
+
+1. Call `plan` with `{product_id, brief, contexts?}`.
+2. Read the returned `project`, domain catalog, capability descriptions and
+   `decision_schema`. Its status is `awaiting_selection`; this is not a plan yet.
+3. Interpret the brief and call `plan` again with the returned project fields
+   plus `decision: {request_sha256, scope, reasons}`. Decide all six booleans,
+   and give a brief-grounded reason for each selected domain.
+4. Use the resulting plan's tasks, reasons and missing inputs to gather context,
+   discover each selected domain's `schema`, author its IR and call `generate`.
+   Call `validate` on the returned bundle.
+
+For example, prepare a bracket project:
 
 ```bash
 printf '%s\n' '{"product_id":"bracket","brief":"Design a passive shelf bracket. No electronics."}' | python -m forma_core domains plan -
 ```
 
-Optional `provider` and `model` fields select an existing configured provider.
-No scope, expected IR list or context is required for selection. Missing design
-specifications remain visible after selection and block subsequent generation.
-An absent provider returns an explicit error; it never substitutes canned
-results or presents offline mapping as model inference.
+[`bracket-selection.json`](../examples/domains/bracket-selection.json) contains a
+complete external-agent response to that exact request. Submit it with:
 
-The live benchmark contains eight descriptions, including exclusions and a
-software-only project. Expected domain sets are used by the evaluator **after**
-selection and never included in the prompt:
+```bash
+python -m forma_core domains plan examples/domains/bracket-selection.json
+```
+
+It selects only MechanicalIR and reports missing geometry, load and manufacturing
+context. The request digest covers normalized identity, brief and contexts;
+changed inputs reject a stale decision. This is a consistency check, not an
+authentication token. The authenticated MCP route retains its existing access
+controls. Decisions require real JSON booleans, all six capability fields, and
+reasons for exactly the selected domains. No selected domains is valid for
+software-only work. OpenForma validates decision structure, not whether an
+agent's interpretation of the brief is correct.
+
+SDK clients use the same stateless tool:
+
+```python
+from forma_core.domains.tools import call_domain_tool
+
+request = call_domain_tool("plan", {"product_id": "product-1", "brief": brief})
+# The calling agent authors decision according to request["decision_schema"].
+plan = call_domain_tool("plan", {**request["project"], "decision": decision})
+```
+
+Existing `{product_id, brief, scope, contexts?}` callers retain the direct,
+deterministic mapping path. There is no implicit fallback to another model.
+An internal Forma provider is optional: explicitly pass
+`selection_mode: "provider"` with optional `provider` and `model`. This mode
+requires existing live credentials and rejects simulation; its errors recommend
+the external-agent path when credentials are absent. Provider settings cannot
+be combined with an external scope or decision.
+
+The optional internal-provider benchmark contains eight descriptions, including
+exclusions and software-only work. Expected domains are scored after selection
+and never included in the prompt:
 
 ```bash
 python -m forma_core.domains.benchmark examples/domains/selection-benchmark.json
 ```
 
-This command reports `blocked` with `inference_performed: false` if live provider
-configuration is unavailable. Unit tests with recorded provider responses verify
-the public flow and harness; they do not measure live model selection accuracy.
+This benchmark reports `blocked` with `inference_performed: false` without live
+provider configuration. Recorded-provider tests verify that optional adapter;
+external-agent tests exercise the actual intake, decision, generation and
+validation exchange while forbidding provider calls. Neither is a general
+accuracy measurement of an agent's interpretation of natural language.
 
 ```bash
 python -m forma_core domains generate examples/domains/motor-generation.json --output /tmp/motor-product.json
@@ -188,16 +234,17 @@ python -m forma_core domains validate /tmp/motor-product.json
 ```
 
 `motor-generation.json` supplies two separately authored domain designs and
-contexts; it makes no model call and creates no unrelated IRs. To use real
-authoring, supply a `DomainAuthor` callback or `provider_author` through the SDK.
-The MCP `generate` operation accepts the same independently authored documents.
+contexts; it makes no model call and creates no unrelated IRs. A calling agent can
+author its own documents and submit them through `generate` using CLI, SDK or MCP.
+SDK users can also supply a `DomainAuthor` callback; `provider_author` is an
+optional internal-provider adapter.
 
 All CLI operations read JSON from a path or `-` and optionally write `--output`:
 
 | Operation | Input |
 | --- | --- |
 | `schema` | `{"domain": "mechanical"}`; returns document and context schemas |
-| `plan` | `{product_id, brief, scope?, contexts?, provider?, model?}`; missing scope invokes live selection |
+| `plan` | `{product_id, brief, contexts?}` returns an external selection request; add `decision` or explicit `scope` to complete it. Optional internal inference requires `selection_mode: "provider"` (plus optional `provider`, `model`). |
 | `generate` | `{plan, designs, existing?, inputs?, links?, update_domains?}` |
 | `validate` | ProductBundle |
 | `validate-domain` | One standalone domain document |

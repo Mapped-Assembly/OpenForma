@@ -8,19 +8,9 @@ from pydantic import BaseModel
 
 from .base import Domain, canonical_json
 from .generation import DomainAuthor, GenerationRequest
+from .planning import CompleteProductScope as InferredProductScope
 from .planning import ProductPlan, ProductScope, select_domains
 from .registry import domain_model
-
-
-class InferredProductScope(ProductScope):
-    """A live selector must decide every capability; omitted fields cannot default to false."""
-
-    physical_structure: bool
-    mechanical_motion: bool
-    wiring: bool
-    electrical_control: bool
-    fluid_network: bool
-    biological_experiment: bool
 
 
 class StructuredProvider(Protocol):
@@ -58,15 +48,15 @@ def plan_with_agent(
 
 
 def configured_selector(provider_name: str | None = None, model_name: str | None = None) -> StructuredProvider:
-    """Resolve a real configured provider for description-only selection, without simulation."""
+    """Resolve an explicitly requested internal provider, without simulation."""
     from forma_core.llm_providers import build_llm_provider, enforce_production_llm_preflight
 
     provider = build_llm_provider(provider_name=provider_name, model_name=model_name)
     if not provider.is_configured or provider.provider_name == "simulation":
         raise RuntimeError(
-            "Description-only domain selection requires a configured live LLM provider. "
-            "Configure your existing Forma provider credentials and optionally supply provider/model, "
-            "or provide an explicit scope for offline mapping. No inference was performed."
+            "Internal provider selection requires a configured live LLM provider. "
+            "Use the default external selection handoff with your calling agent, supply an explicit scope, "
+            "or configure your existing Forma provider credentials. No inference was performed."
         )
     validation = enforce_production_llm_preflight(provider.validate_configured_model(raise_on_strict=True))
     if not validation.live_generation_enabled:
