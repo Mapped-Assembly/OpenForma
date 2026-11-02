@@ -192,7 +192,16 @@ def create_registry() -> DomainRegistry:
             validation=True, any_scope=scopes[domain],
             required_context=[ContextRequirement(name=field, description=f"Native {domain} context: {field}.") for field in required[domain]],
             reference_types=(["uses_species", "uses_reaction"] if domain == "chemical"
-                             else ["uses_species", "uses_reaction", "spatial", "same_object"] if domain == "process"
+                             else ["uses_species", "uses_reaction", "uses_equipment",
+                                   "uses_electrical_port", "uses_fluidic_port",
+                                   "uses_thermal_interface", "spatial", "same_object"]
+                             if domain == "process"
+                             else ["same_object", "spatial", "hosted_by", "uses_equipment"]
+                             if domain == "mechanical"
+                             else ["same_object", "spatial", "hosted_by", "uses_electrical_port"]
+                             if domain == "electrical"
+                             else ["same_object", "spatial", "hosted_by", "uses_fluidic_port"]
+                             if domain == "fluidic"
                              else ["same_object", "spatial", "hosted_by"]),
             fact_authorities=[fact for fact, owner in FACT_OWNERS.items() if owner == domain],
             limitations=["Native authoring uses generate_product with caller-supplied designs; no provider-hosted author or resolver."])
