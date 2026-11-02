@@ -1,0 +1,87 @@
+{
+  "artifact_id": "heater-screening.thermal",
+  "revision": 1,
+  "domain": "thermal",
+  "schema_version": "1.0",
+  "nodes": [
+    {
+      "node_id": "enclosure",
+      "kind": "zone",
+      "description": "Synthetic one-zone enclosure"
+    },
+    {
+      "node_id": "ambient",
+      "kind": "boundary",
+      "description": "Synthetic ambient"
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "resistance-to-room",
+      "source_node_id": "enclosure",
+      "target_node_id": "ambient",
+      "mechanism": "lumped",
+      "resistance": {
+        "kind": "resistance",
+        "value": 0.5,
+        "unit": "K/W",
+        "claim": {
+          "basis": "illustrative",
+          "rationale": "Declared effective resistance for benchmark, not measured hardware."
+        }
+      }
+    }
+  ],
+  "boundaries": [
+    {
+      "boundary_id": "room-temperature",
+      "node_id": "ambient",
+      "kind": "fixed_temperature",
+      "quantity": {
+        "kind": "temperature",
+        "value": 20,
+        "unit": "degC",
+        "claim": {
+          "basis": "illustrative",
+          "rationale": "Synthetic room-temperature fixture."
+        }
+      }
+    }
+  ],
+  "loads": [
+    {
+      "load_id": "heater",
+      "node_id": "enclosure",
+      "direction": "source",
+      "heat_rate": {
+        "kind": "heat_rate",
+        "value": 20,
+        "unit": "W",
+        "claim": {
+          "basis": "illustrative",
+          "rationale": "Synthetic heater dissipation; not inferred from electrical consumption."
+        }
+      },
+      "origin": "illustrative"
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "enclosure-screen",
+      "zone_node_id": "enclosure",
+      "ambient_node_id": "ambient",
+      "edge_id": "resistance-to-room",
+      "load_ids": [
+        "heater"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "source_id": "benchmark",
+      "basis": "illustrative",
+      "title": "OpenForma synthetic thermal benchmark",
+      "rationale": "Explicit 20W/20C/0.5K/W example from issue #27; no real-world validation."
+    }
+  ]
+}

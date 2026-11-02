@@ -269,6 +269,45 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
                         link.target.port_id is None):
                     add("process_link_port", link.link_id,
                         "The referenced external interface must have an explicit typed port.")
+        if link.kind == "thermal_source":
+            if source.domain != "thermal" or target.domain not in {
+                    "chemical", "process", "mechanical", "electrical", "fluidic"}:
+                add("thermal_link_domain", link.link_id,
+                    "Thermal source links must run from ThermalIR to a supported design IR.")
+            else:
+                thermal = documents.get(link.source.artifact_id)
+                load = next((item for item in thermal.loads
+                             if item.load_id == link.source.object_id), None) if thermal else None
+                if load is None or link.source.port_id is not None:
+                    add("thermal_link_load", link.link_id,
+                        "Thermal-source binding must originate at a complete load entity.")
+                else:
+                    matching = [ref for ref in load.references
+                                if ref.domain == target.domain
+                                and ref.artifact_id == link.target.artifact_id
+                                and ref.entity_id == link.target.object_id
+                                and ref.port_id == link.target.port_id
+                                and ref.revision == target.revision
+                                and ref.sha256 == references[link.target.artifact_id].sha256
+                                and ref.schema_version == target.schema_version]
+                    if not matching:
+                        add("thermal_source_reference", link.link_id,
+                            "Thermal load must pin the linked external entity, revision, schema and digest.")
+                    if target.domain == "chemical":
+                        chemical = documents.get(link.target.artifact_id)
+                        if chemical is not None and link.target.object_id not in {
+                                reaction.reaction_id for reaction in chemical.reactions}:
+                            add("thermal_chemical_type", link.link_id,
+                                "Chemical reaction heat must reference a reaction, not a species.")
+                    if target.domain == "process":
+                        process_doc = documents.get(link.target.artifact_id)
+                        if process_doc is not None and link.target.object_id not in {
+                                op.operation_id for op in process_doc.operations}:
+                            add("thermal_process_type", link.link_id,
+                                "Thermal process input must reference a unit operation.")
+                    if target.domain in {"electrical", "fluidic"} and link.target.port_id is None:
+                        add("thermal_port", link.link_id,
+                            "Electrical/fluidic heat sources must name an external port.")
         if link.kind == "same_object":
             if link.source.object_id != link.target.object_id:
                 add("physical_identity", link.link_id, "Shared physical views must preserve the same object_id.")
@@ -291,6 +330,26 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
                 hosts = {c.id for c in system.channels + system.chambers}
                 if link.source.object_id not in compartments or link.target.object_id not in hosts:
                     add("host_type", link.link_id, "Expected a biological compartment and fluidic channel/chamber.")
+    # Declared thermal source references require explicit composition links.
+    # Local ThermalIR validity remains independent of provider availability.
+    for thermal_artifact_id, thermal_doc in documents.items():
+        if thermal_doc.domain != "thermal":
+            continue
+        for load in thermal_doc.loads:
+            for origin in load.references:
+                if not any(
+                    link.kind == "thermal_source"
+                    and link.source.artifact_id == thermal_artifact_id
+                    and link.source.object_id == load.load_id
+                    and link.target.artifact_id == origin.artifact_id
+                    and link.target.object_id == origin.entity_id
+                    and link.target.port_id == origin.port_id
+                    and link.target.revision == origin.revision
+                    for link in bundle.manifest.links
+                ):
+                    add("thermal_link_missing", load.load_id,
+                        f"Declare a revision-pinned thermal_source link for {origin.domain} "
+                        f"'{origin.entity_id}' in '{origin.artifact_id}'.")
     # Existing BiologicalExperiment host IDs are cross-domain, never local failures.
     for artifact_id, doc in documents.items():
         if doc.domain != "biological":

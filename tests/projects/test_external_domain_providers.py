@@ -141,11 +141,11 @@ class ExternalProviderTests(unittest.TestCase):
         self.assertEqual("ready", plan.tasks[1].status)
         self.assertEqual(provider.metadata, plan.tasks[1].provider)
         self.assertEqual("site_id", plan.tasks[1].required_context[0].name)
-        extra = SyntheticProvider("thermal")
+        extra = SyntheticProvider("synthetic_heat")
         registry.register(extra.metadata, extra)
         selected = select_domains("p", "Thermal analysis", registry=registry,
-                                  scope=ProductScope(domains=["thermal"]))
-        self.assertEqual(["thermal"], [t.domain for t in selected.tasks])
+                                  scope=ProductScope(domains=["synthetic_heat"]))
+        self.assertEqual(["synthetic_heat"], [t.domain for t in selected.tasks])
         self.assertEqual(["site_id: required"], selected.tasks[0].missing_inputs)
 
     def test_unavailable_required_domain_is_not_silently_removed(self) -> None:
@@ -161,15 +161,15 @@ class ExternalProviderTests(unittest.TestCase):
     def test_declared_dependency_is_selected_and_unavailability_reported(self) -> None:
         """Dependencies come from provider declarations rather than native domain switches."""
         registry, _ = external_registry()
-        extra = SyntheticProvider("thermal")
+        extra = SyntheticProvider("synthetic_heat")
         extra.metadata.dependencies = [DomainDependency(domain="space", relationship="located_in")]
         registry.register(extra.metadata, extra)
-        plan = select_domains("p", "Analyze a site", scope=ProductScope(domains=["thermal"]), registry=registry)
-        self.assertEqual({"space", "thermal"}, {t.domain for t in plan.tasks})
+        plan = select_domains("p", "Analyze a site", scope=ProductScope(domains=["synthetic_heat"]), registry=registry)
+        self.assertEqual({"space", "synthetic_heat"}, {t.domain for t in plan.tasks})
         absent = registry.metadata("space").model_copy(update={"availability": "unavailable"})
         registry.register(absent, replace=True)
-        plan = select_domains("p", "Analyze a site", scope=ProductScope(domains=["thermal"]), registry=registry)
-        thermal = next(t for t in plan.tasks if t.domain == "thermal")
+        plan = select_domains("p", "Analyze a site", scope=ProductScope(domains=["synthetic_heat"]), registry=registry)
+        thermal = next(t for t in plan.tasks if t.domain == "synthetic_heat")
         self.assertTrue(thermal.unresolved_dependencies)
         self.assertEqual("located_in", thermal.dependencies[0].relationship)
 

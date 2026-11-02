@@ -1,0 +1,77 @@
+{
+  "artifact_id": "reactor-screening.thermal",
+  "revision": 1,
+  "domain": "thermal",
+  "schema_version": "1.0",
+  "nodes": [
+    {
+      "node_id": "reactor",
+      "kind": "zone",
+      "description": "Conceptual methanol reactor"
+    },
+    {
+      "node_id": "ambient",
+      "kind": "boundary"
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "conceptual-loss",
+      "source_node_id": "reactor",
+      "target_node_id": "ambient",
+      "mechanism": "lumped",
+      "resistance": {
+        "kind": "resistance",
+        "value": 1,
+        "unit": "K/W",
+        "claim": {
+          "basis": "illustrative",
+          "rationale": "Arbitrary placeholder for graph-only exercise; not an actual reactor thermal resistance."
+        }
+      }
+    }
+  ],
+  "boundaries": [
+    {
+      "boundary_id": "ambient-temperature",
+      "node_id": "ambient",
+      "kind": "fixed_temperature",
+      "quantity": {
+        "kind": "temperature",
+        "value": 20,
+        "unit": "degC",
+        "claim": {
+          "basis": "illustrative",
+          "rationale": "Synthetic ambient; not sourced operating conditions."
+        }
+      }
+    }
+  ],
+  "loads": [
+    {
+      "load_id": "reaction-heat",
+      "node_id": "reactor",
+      "direction": "source",
+      "heat_rate": null,
+      "origin": "chemical_reaction",
+      "references": [],
+      "calculation_model": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": []
+      }
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "reaction-screen",
+      "zone_node_id": "reactor",
+      "ambient_node_id": "ambient",
+      "edge_id": "conceptual-loss",
+      "load_ids": [
+        "reaction-heat"
+      ]
+    }
+  ],
+  "evidence": []
+}
