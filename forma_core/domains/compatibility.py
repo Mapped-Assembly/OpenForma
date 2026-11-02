@@ -214,6 +214,9 @@ def export_hardware_ir(
         elif domain == "process":
             findings.append(Finding(code="unrepresentable", location=document["artifact_id"],
                                     message="HardwareIR cannot encode ProcessIR; export process design separately."))
+        elif domain == "thermal":
+            findings.append(Finding(code="unrepresentable", location=document["artifact_id"],
+                                    message="HardwareIR cannot encode ThermalIR; export thermal design separately."))
     # Missing identity data is not a lossy-conversion option.
     if any(f.code in {"inventory_context", "identity_conflict", "shared_fact_conflict"} for f in findings):
         return HardwareExport(findings=findings)
