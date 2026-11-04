@@ -121,6 +121,48 @@ class OpenCodeMcpModelTests(unittest.TestCase):
 
 
 class OpenCodeMcpHttpTests(unittest.TestCase):
+    def test_guided_objective_completes_over_one_mcp_operation(self) -> None:
+        """The authenticated tool drives every stage from a brief without fixtures or inference."""
+        from tests.projects.test_generation_interaction import select, context, chemical_design, compose
+
+        def invoke(payload: dict) -> dict:
+            """Use the actual HTTP MCP argument parser and response envelope."""
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": "guided", "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": "generate", "payload": json.dumps(payload)}}})
+            self.assertEqual(200, response.status_code, response.text)
+            envelope = response.json()["result"]
+            self.assertFalse(envelope.get("isError"), envelope)
+            return envelope["structuredContent"]
+
+        with patch("forma_core.domains.agents.configured_selector", side_effect=AssertionError("No second model")), patch(
+                "apps.api.opencode_mcp._persist_mcp_compile") as persist:
+            turn = invoke({"brief": "Represent a chemical reaction and its process."})
+            stages = []
+            for _ in range(8):
+                if turn["status"] == "completed":
+                    break
+                action = turn["next_action"]
+                stages.append(action["kind"])
+                if action["kind"] == "select_domains":
+                    answer = select(["chemical", "process"])
+                elif action["kind"] == "provide_context":
+                    answer = context(turn)
+                elif action["kind"] == "compose":
+                    answer = compose(turn)
+                else:
+                    answer = chemical_design() if action["domain"] == "chemical" else {
+                        "operations": [{"operation_id": "react", "operation_type": "reaction"}]}
+                turn = invoke({"continuation": turn["continuation"],
+                               "submission": turn["submission_template"] | {"response": answer}})
+            self.assertEqual(["select_domains", "provide_context", "provide_context",
+                              "author_artifact", "author_artifact", "compose"], stages)
+            self.assertEqual("completed", turn["status"])
+            self.assertTrue(turn["result"]["validation"]["is_valid"])
+            self.assertEqual(turn, invoke({"continuation": turn["continuation"]}))
+            persist.assert_not_called()
+
     def test_external_domain_registry_and_composition_over_mcp(self) -> None:
         """Application-registered providers work through HTTP without loading OpenIndustries."""
         from tests.projects.test_external_domain_providers import external_registry, mixed_bundle

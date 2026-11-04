@@ -24,6 +24,8 @@ def run(args: argparse.Namespace) -> int:
             Path(args.output).write_text(content, encoding="utf-8")
         else:
             sys.stdout.write(content)
+    if result.get("format") == "forma.generation-turn":
+        return 0 if result["status"] == "awaiting_agent" or result["result"]["status"] == "succeeded" else 1
     if result.get("format") == "forma.engineering-result":
         return 0 if result["status"] == "succeeded" else 1
     if args.operation == "generate":

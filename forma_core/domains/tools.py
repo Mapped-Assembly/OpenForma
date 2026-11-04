@@ -124,10 +124,19 @@ def call_domain_tool(operation: Operation, payload: dict[str, Any], *, registry:
             return prepare_selection(project, registry=registry)
         return select_domains(request.product_id, request.brief, scope=request.scope,
                               contexts=request.contexts, registry=registry).model_dump(mode="json")
+    if operation == "generate" and ("continuation" in payload or (
+            "brief" in payload and payload.get("execution") != "provider"
+            and not (payload.get("decision") is not None and payload.get("designs") is not None))):
+        from .interaction import advance_generation
+        return advance_generation(payload, registry=registry)
     if operation == "generate" and "brief" in payload:
         from .generation import EngineeringRequest, generate_engineering
         from .agents import configured_selector
-        request = EngineeringRequest.model_validate(payload)
+        options = dict(payload)
+        execution = options.pop("execution", None)
+        if execution not in {None, "provider"}:
+            raise ValueError("Only execution='provider' opts into internal model inference.")
+        request = EngineeringRequest.model_validate(options)
         provider = None if request.decision is not None and request.designs is not None else configured_selector()
         return generate_engineering(request, provider=provider, registry=registry).model_dump(mode="json")
     if operation == "generate":

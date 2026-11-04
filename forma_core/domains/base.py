@@ -18,6 +18,15 @@ class DomainModel(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False, str_strip_whitespace=True)
 
 
+class InteractionRequired(Exception):
+    """Pause an existing authoring call for an external agent, without failing it."""
+
+    def __init__(self, action: dict[str, Any]) -> None:
+        """Carry the portable typed action to the transport adapter."""
+        super().__init__("External agent response required.")
+        self.action = action
+
+
 class DomainDocument(DomainModel):
     """Identity and revision metadata, with no other domain's semantics."""
 
