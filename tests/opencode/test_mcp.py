@@ -121,6 +121,37 @@ class OpenCodeMcpModelTests(unittest.TestCase):
 
 
 class OpenCodeMcpHttpTests(unittest.TestCase):
+    def test_bounded_kinetics_discovery_and_evaluation(self) -> None:
+        """Authenticated MCP returns the same prediction as Python without hosted writes."""
+        from tests.projects.test_kinetics import fixture
+        from forma_core.chemistry.kinetics import evaluate_kinetics
+        from forma_core.domains.tools import call_domain_tool
+        document, request = fixture()
+
+        def invoke(payload: dict) -> dict:
+            """Exercise the actual JSON-RPC handler and its typed argument boundary."""
+            response = self.client.post("/api/opencode/mcp", json={
+                "jsonrpc": "2.0", "id": "kinetics", "method": "tools/call",
+                "params": {"name": "forma.opencode.domains", "arguments": {
+                    "operation": "kinetics", "payload": json.dumps(payload),
+                }},
+            })
+            self.assertEqual(200, response.status_code, response.text)
+            result = response.json()["result"]
+            self.assertFalse(result.get("isError"), result)
+            return json.loads(result["content"][0]["text"])
+
+        with patch("forma_core.domains.agents.configured_selector", side_effect=AssertionError("Provider called")), patch(
+            "apps.api.opencode_mcp._persist_mcp_compile",
+        ) as persist:
+            self.assertEqual(call_domain_tool("kinetics", {"action": "schema"}), invoke({"action": "schema"}))
+            payload = {"action": "evaluate", "document": document.model_dump(mode="json"),
+                       "request": request.model_dump(mode="json")}
+            self.assertEqual(evaluate_kinetics(document, request).model_dump(mode="json"), invoke(payload))
+            payload["request"]["rate_constant"] = None
+            self.assertEqual("unknown", invoke(payload)["status"])
+            persist.assert_not_called()
+
     def test_external_domain_registry_and_composition_over_mcp(self) -> None:
         """Application-registered providers work through HTTP without loading OpenIndustries."""
         from tests.projects.test_external_domain_providers import external_registry, mixed_bundle

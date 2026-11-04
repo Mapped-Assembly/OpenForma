@@ -172,8 +172,10 @@ class NativeProvider:
             return [check_reaction_balance(document, item).model_dump(mode="json")
                     for item in document.reactions] + [{
                         "status": "unsupported", "capability": "quantitative_stoichiometry",
-                        "message": "Element/charge balance is supported; molar masses, limiting reagent, "
-                                   "theoretical yield, kinetics and experimental yield are not evaluated.",
+                        "message": "Artifact-only evaluation checks element/charge balance. "
+                                   "Quantitative inputs must be supplied separately; use domains kinetics "
+                                   "with action=schema to discover the bounded kinetic model. "
+                                   "No actual or experimental yield is inferred.",
                     }]
         if reference.domain == "process":
             from forma_core.processes.validation import evaluate_balance
@@ -188,6 +190,13 @@ class NativeProvider:
             return [evaluate_case(document, item).model_dump(mode="json") for item in document.cases] or [{
                 "status": "unknown", "message": "No supported thermal evaluation case was supplied."}]
         return []
+
+    def kinetics(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """Dispatch an explicit chemical evaluation sidecar without altering ChemicalIR."""
+        if self.metadata.domain != "chemical":
+            raise ValueError("Kinetics evaluation belongs to the chemical provider.")
+        from forma_core.chemistry.kinetics_tools import kinetics_tool
+        return kinetics_tool(payload)
 
     def validate(self, payload: dict[str, Any], reference: ArtifactReference) -> list[Finding]:
         """Run the existing local rules without composition or external providers."""

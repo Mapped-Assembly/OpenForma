@@ -265,7 +265,7 @@ class DomainToolArguments(BaseModel):
     """JSON-text domain operation boundary compatible with provider MCP adapters."""
 
     model_config = ConfigDict(extra="forbid")
-    operation: Literal["plan", "generate", "compose", "registry", "validate", "validate-domain", "schema", "import-hardware", "export-hardware", "bindings"]
+    operation: Literal["plan", "generate", "compose", "registry", "validate", "validate-domain", "schema", "import-hardware", "export-hardware", "bindings", "kinetics"]
     payload: str = Field(min_length=2, max_length=2_000_000)
 
 

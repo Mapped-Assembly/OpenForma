@@ -32,6 +32,8 @@ def run(args: argparse.Namespace) -> int:
         return 0 if result["is_valid"] else 1
     if args.operation == "export-hardware":
         return 0 if result["payload"] is not None else 1
+    if args.operation == "kinetics":
+        return 0 if result.get("status", "pass") == "pass" else 1
     return 0
 
 
@@ -39,7 +41,7 @@ def register_parser(subparsers: argparse._SubParsersAction) -> None:
     """Register the additive domains command while leaving legacy commands compatible."""
     parser = subparsers.add_parser("domains", help="Plan, author and compose independent domain IRs.")
     parser.add_argument("operation", choices=["plan", "generate", "compose", "registry", "validate", "validate-domain", "schema",
-                                              "import-hardware", "export-hardware", "bindings"])
+                                              "import-hardware", "export-hardware", "bindings", "kinetics"])
     parser.add_argument("input", help="Input JSON path, or - for stdin.")
     parser.add_argument("--output", help="Output JSON path; product bundles retain immutable revisions.")
     parser.add_argument("--expected-sha256", help="Required current content digest when replacing a product bundle.")
