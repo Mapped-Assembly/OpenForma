@@ -226,6 +226,10 @@ def ensure_supported_hardware_ir_version(
     *,
     supported_versions: set[str] | frozenset[str] | list[str] | None = None,
 ) -> None:
+    nested = document.get("project_ir", document.get("hardware_ir", document))
+    if isinstance(nested, Mapping) and nested.get("format") in {"forma.engineering-result", "forma.product-domains"}:
+        raise ValueError("This legacy HardwareIR transport cannot represent domain artifacts. "
+                         "Use the generation API or portable engineering JSON; no lossy conversion was attempted.")
     version = hardware_ir_version_from_document(document)
     supported = set(supported_versions or SUPPORTED_HARDWARE_IR_VERSIONS)
     if version is not None and version not in supported:

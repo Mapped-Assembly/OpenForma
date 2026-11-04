@@ -697,7 +697,8 @@ def runtime_config_endpoint(user: UserContext = Depends(optional_user_context)):
 async def generate_project_endpoint(request: GenerateProjectRequest, user: UserContext = Depends(require_user_context)):
     """
     Submits a natural language hardware idea and optional multimodal reference image.
-    Runs the 7-agent compilation workflow, circuit safety auditor, and returns a verified Hardware Intermediate Representation, SVG schematic, and Mermaid diagram.
+    Selects independent engineering domains and returns artifacts and scoped checks.
+    Persisted legacy projects retain their compatibility workflow; checks are not physical verification.
     """
     require_hosted_chat_enabled()
     owner_user_id = _require_authenticated_user(user)
@@ -770,7 +771,7 @@ async def generate_project_endpoint(request: GenerateProjectRequest, user: UserC
         )
         raise HTTPException(status_code=400, detail=detail)
 
-    project_id = request.project_id or str(uuid4())
+    project_id = request.project_id or (request.engineering_request or {}).get("product_id") or str(uuid4())
     try:
         ensure_chat_project(
             project_id,
@@ -858,6 +859,7 @@ async def generate_project_endpoint(request: GenerateProjectRequest, user: UserC
                 past_job_context=past_job_context,
                 project_id=project_id,
                 retry_stage=request.retry_stage,
+                engineering_request=request.engineering_request,
             )
         if JOB_STORE.is_cancelled(job_id):
             raise JobCancelledError(f"Job {job_id} was cancelled.")
@@ -878,12 +880,12 @@ async def generate_project_endpoint(request: GenerateProjectRequest, user: UserC
             raise JobCancelledError(f"Job {job_id} was cancelled.")
         response = _attach_generation_timing_metadata(response, job)
         metadata = (response.get("project_ir", {}).get("assembly_metadata") or {})
-        project_id = metadata.get("project_id")
+        project_id = response.get("project_id") or metadata.get("project_id")
         return {
             **response,
             "project_id": project_id,
-            "chat_id": metadata.get("chat_id"),
-            "can_chat": True,
+            "chat_id": response.get("chat_id") or metadata.get("chat_id"),
+            "can_chat": "engineering_result" not in response,
             "job_id": job_id,
             "job": job,
         }
@@ -2571,6 +2573,11 @@ def get_project_endpoint(project_id: str, user: UserContext = Depends(optional_u
     except ProjectReadError as exc:
         raise HTTPException(status_code=404, detail="Project not found.") from exc
 
+    if (getattr(resolved, "project_ir", None) or {}).get("format") == "forma.engineering-result":
+        return {"engineering_result": resolved.project_ir, "project_id": project_id,
+                "chat_id": resolved.chat_id, "can_chat": False,
+                "revision_id": resolved.revision_id, "project_revision": resolved.current_revision}
+
     if resolved.source == "cli":
         owner_user_id = str(user.owner_user_id or "").strip()
         cli_response = _cli_project_response(project_id, owner_user_id)
@@ -3143,6 +3150,8 @@ def iterate_project_endpoint(
     user: UserContext = Depends(require_user_context),
 ):
     """Applies an iteration instruction to an existing project through forma_core."""
+    from forma_core.domains.generation import EngineeringRequest, EngineeringResult
+
     require_hosted_chat_enabled()
     settings = _resolve_user_integrations(user)
     try:
@@ -3154,7 +3163,9 @@ def iterate_project_endpoint(
     if project is not None:
         _require_project_reader(project, user)
         save_owner_user_id = _require_project_owner(project, user) if request.save else None
-        current_ir = HardwareIntermediateRepresentation(**project.hardware_ir)
+        current_ir = (EngineeringResult.model_validate(project.hardware_ir)
+                      if project.hardware_ir.get("format") == "forma.engineering-result"
+                      else HardwareIntermediateRepresentation(**project.hardware_ir))
         project_prompt = project.prompt
         project_chat_id = getattr(project, "chat_id", None)
         project_created_at = project.created_at
@@ -3191,6 +3202,22 @@ def iterate_project_endpoint(
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=exc.as_dict()) from exc
 
     try:
+        if isinstance(current_ir, EngineeringResult):
+            bundle = current_ir.product
+            brief = (bundle.plan.brief if bundle.plan else project_prompt) + "\nRequested revision: " + request.instruction
+            continuation = EngineeringRequest(product_id=project_id, brief=brief, existing=bundle,
+                update_domains={request.namespace} if request.namespace else {r.domain for r in bundle.manifest.artifacts})
+            if request.save:
+                response = build_generation_response(brief, provider=request.provider, model=request.model,
+                    project_id=project_id, owner_user_id=save_owner_user_id, chat_id=project_chat_id, settings=settings,
+                    frontend_job_id=f"iteration-{request.idempotency_key or uuid4().hex}",
+                    engineering_request=continuation.model_dump(mode="json"))
+            else:
+                from forma_core.agents.workflows import generate_project_with_workflow
+                result = generate_project_with_workflow("default", brief, provider_name=request.provider,
+                    model_name=request.model, settings=settings, engineering_request=continuation)
+                response = {"engineering_result": result.model_dump(mode="json"), "project_id": project_id}
+            return {**response, "saved": request.save, "can_chat": False}
         iterator = ProjectIterator(provider_name=request.provider, model_name=request.model, settings=settings)
         revised_ir = iterator.iterate_project(
             current_ir,

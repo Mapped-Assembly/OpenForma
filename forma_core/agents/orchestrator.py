@@ -675,6 +675,16 @@ class HardwarePipelineOrchestrator:
         self.persist_project = persist_project
         self._active_generation_metadata: Dict[str, Any] = {}
 
+    def generate_engineering(self, request: Any) -> Any:
+        """Run the domain-aware control plane with this orchestrator's configured provider."""
+        from forma_core.domains.generation import EngineeringRequest, generate_engineering
+
+        if self.use_simulation:
+            raise ValueError("Domain generation provider is not configured; supply a configured provider or explicit caller-authored designs; "
+                             "no simulated hardware fallback is used.")
+        self.validate_configured_model()
+        return generate_engineering(EngineeringRequest.model_validate(request), provider=self.llm_provider)
+
     def get_debug_config(self, *, raise_on_preflight: bool = True) -> Dict[str, Any]:
         """Return LLM provider resolution details without exposing credentials."""
         validation = self.llm_provider.validate_configured_model(raise_on_strict=False)

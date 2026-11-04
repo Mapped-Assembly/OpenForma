@@ -1,5 +1,6 @@
 """High-level generation API for package consumers."""
 
+from forma_core.domains.generation import EngineeringRequest, EngineeringResult, generate_engineering
 from forma_core.agents.orchestrator import HardwarePipelineOrchestrator
 from forma_core.agents.workflows import (
     generate_project_with_workflow,
@@ -13,6 +14,7 @@ from forma_core.workspaces.projects.objects import FormaProjectObject, build_pro
 from forma_core.video_prompts import VIDEO_PROMPT_NAMESPACES, generate_image_to_video_prompt_from_namespaces
 
 __all__ = [
+    "EngineeringRequest", "EngineeringResult", "generate_engineering",
     "HardwarePipelineOrchestrator",
     "FormaProjectObject",
     "ProjectIterator",

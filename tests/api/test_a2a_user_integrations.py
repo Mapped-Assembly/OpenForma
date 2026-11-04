@@ -103,7 +103,7 @@ class A2AUserIntegrationTests(unittest.TestCase):
                 a2a, "generate_svg_schematic", return_value=""
             ):
                 try:
-                    a2a.build_generation_response(
+                    a2a._build_legacy_generation_response(
                         "test",
                         generate_image=True,
                         owner_user_id="user_123",
@@ -165,7 +165,7 @@ class A2AUserIntegrationTests(unittest.TestCase):
                 a2a, "generate_svg_schematic", return_value=""
             ):
                 try:
-                    a2a.build_generation_response(
+                    a2a._build_legacy_generation_response(
                         "test",
                         generate_image=True,
                         owner_user_id="user_123",

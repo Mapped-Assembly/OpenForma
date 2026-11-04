@@ -1,10 +1,17 @@
 # Architecture
 
-Forma OSS turns prompts into structured hardware projects with two explicit generation strategies. **Regular** is the default one-shot path and preserves the established sequential workflow. **Progressive** is opt-in and resolves the same canonical hardware project at progressively more expensive levels of fidelity so concept work can be reviewed before CAD.
+OpenForma routes new physical-system objectives through the existing domain
+registry, justified domain selection, isolated artifact generation, typed
+composition, local/cross-domain checks and advertised evaluators. See the
+[current-versus-target audit and public contract](unified-generation.md).
 
-## Generation modes
+HardwareIR is a compatibility format for existing projects. The regular and
+progressive strategies below describe that retained hardware workflow, not the
+canonical entry point for new multidisciplinary projects.
 
-### Regular (default)
+## Legacy HardwareIR generation modes
+
+### Regular (legacy default)
 
 Regular generation keeps the existing interaction and execution model:
 

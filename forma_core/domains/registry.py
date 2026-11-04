@@ -56,7 +56,13 @@ def parse_domain(payload: dict[str, Any]) -> BaseModel:
     # must not silently lose those fields even though legacy parsing still can.
     def check_keys(raw: Any, parsed: Any, path: str) -> None:
         """Reject ignored nested fields after parsing reused compatibility types."""
-        if isinstance(raw, dict) and isinstance(parsed, dict):
+        if isinstance(raw, dict) and isinstance(parsed, BaseModel):
+            fields = {field.alias or key: key for key, field in type(parsed).model_fields.items()}
+            for key, value in raw.items():
+                if key not in fields:
+                    raise ValueError(f"Unsupported field '{path}{key}'.")
+                check_keys(value, getattr(parsed, fields[key]), f"{path}{key}.")
+        elif isinstance(raw, dict) and isinstance(parsed, dict):
             for key, value in raw.items():
                 if key not in parsed:
                     raise ValueError(f"Unsupported field '{path}{key}'.")
@@ -64,7 +70,7 @@ def parse_domain(payload: dict[str, Any]) -> BaseModel:
         elif isinstance(raw, list) and isinstance(parsed, list):
             for index, (left, right) in enumerate(zip(raw, parsed)):
                 check_keys(left, right, f"{path}{index}.")
-    check_keys(payload, document.model_dump(mode="json"), "")
+    check_keys(payload, document, "")
     canonical_json(document)  # Also checks finite values inside reused legacy leaf types.
     return document
 
@@ -158,6 +164,31 @@ class NativeProvider:
             return [f"{'.'.join(map(str, e['loc']))}: {e['msg']}" for e in exc.errors()]
         return []
 
+    def evaluate(self, payload: dict[str, Any], reference: ArtifactReference) -> list[dict[str, Any]]:
+        """Dispatch only implemented analyses to their independent domain owners."""
+        document = parse_domain(payload)
+        if reference.domain == "chemical":
+            from forma_core.chemistry.validation import check_reaction_balance
+            return [check_reaction_balance(document, item).model_dump(mode="json")
+                    for item in document.reactions] + [{
+                        "status": "unsupported", "capability": "quantitative_stoichiometry",
+                        "message": "Element/charge balance is supported; molar masses, limiting reagent, "
+                                   "theoretical yield, kinetics and experimental yield are not evaluated.",
+                    }]
+        if reference.domain == "process":
+            from forma_core.processes.validation import evaluate_balance
+            results = [evaluate_balance(document, item).model_dump(mode="json") for item in document.balances]
+            if not document.balances or any(s.batch_quantity is not None for s in document.streams):
+                results.append({"status": "unsupported", "capability": "batch_mass_balance",
+                                "message": "Batch amounts are represented without inventing rates. "
+                                           "No batch conversion/yield evaluator is installed."})
+            return results
+        if reference.domain == "thermal":
+            from forma_core.thermal.validation import evaluate_case
+            return [evaluate_case(document, item).model_dump(mode="json") for item in document.cases] or [{
+                "status": "unknown", "message": "No supported thermal evaluation case was supplied."}]
+        return []
+
     def validate(self, payload: dict[str, Any], reference: ArtifactReference) -> list[Finding]:
         """Run the existing local rules without composition or external providers."""
         return validate_domain(payload)
@@ -202,8 +233,8 @@ def create_registry() -> DomainRegistry:
     for domain, (_, name, _) in CONTRACTS.items():
         metadata = ProviderMetadata(domain=domain, ir_type=name, owner="OpenForma",
             provider_id=NATIVE_PROVIDER, provider_version="1.0",
-            schemas=[SchemaSupport(schema_id=f"openforma.{domain}", versions=["1.0"])],
-            validation=True, any_scope=scopes[domain],
+            schemas=[SchemaSupport(schema_id=f"openforma.{domain}", versions=["1.0", "1.1"] if domain == "process" else ["1.0"])],
+            validation=True, evaluation=domain in {"chemical", "process", "thermal"}, any_scope=scopes[domain],
             required_context=[ContextRequirement(name=field, description=f"Native {domain} context: {field}.") for field in required[domain]],
             reference_types=(["uses_species", "uses_reaction", "thermal_source"] if domain == "chemical"
                              else ["uses_species", "uses_reaction", "uses_equipment",

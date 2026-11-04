@@ -1,0 +1,474 @@
+{
+  "product_id": "bicarbonate-vinegar",
+  "brief": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+  "contexts": {
+    "chemical": {
+      "scope": "Conceptual reaction identity and element/charge conservation; no kinetics, yield or thermal analysis.",
+      "chemical_requirements": [
+        "2 g sodium bicarbonate; 50 mL of 5% vinegar.",
+        "Represent acetic acid, sodium bicarbonate, sodium acetate, water and carbon dioxide.",
+        "Vinegar percentage basis is unspecified; do not infer acid mass or concentration."
+      ],
+      "evidence_requirements": [
+        "User-specified nominal inputs, no experimental observations.",
+        "Molecular reaction is an independently authored conceptual model; complete reaction is an assumption for any theoretical comparison."
+      ]
+    },
+    "process": {
+      "scope": "Conceptual batch mixing and gas evolution, no vessel/wiring design.",
+      "process_requirements": [
+        "Feed reactants, mix/react, represent gas and aqueous residue outputs."
+      ],
+      "stream_requirements": [
+        "Represent 2 g and 50 mL as batch material quantities, not rates.",
+        "Output amounts and reaction duration remain unknown."
+      ],
+      "evidence_requirements": [
+        "Nominal input quantities are specified by the user, not measured.",
+        "5% acidity basis and material conversion are unresolved."
+      ]
+    }
+  },
+  "decision": {
+    "request_sha256": "fc8d2a615995844316186f16209ce183afc12a961703944db3b84cee95257bc2",
+    "registry_sha256": "6ac7a4560850bc42b2490732efd764dcc52c6df15f90d2abca4c36bf1d82bfe9",
+    "scope": {
+      "physical_structure": false,
+      "mechanical_motion": false,
+      "wiring": false,
+      "electrical_control": false,
+      "fluid_network": false,
+      "biological_experiment": false,
+      "domains": [
+        "chemical",
+        "process"
+      ]
+    },
+    "reasons": {
+      "chemical": "The objective requests reactants, products and a balanced CO2-producing chemical reaction.",
+      "process": "The objective requests process operations and typed batch material streams."
+    }
+  },
+  "designs": {
+    "chemical": {
+      "species": [
+        {
+          "species_id": "bicarbonate",
+          "name": "sodium bicarbonate",
+          "formula": "NaHCO3",
+          "charge": 0,
+          "phase": "solid",
+          "claim": {
+            "basis": "assumed",
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        },
+        {
+          "species_id": "acid",
+          "name": "acetic acid",
+          "formula": "C2H4O2",
+          "charge": 0,
+          "phase": "aqueous",
+          "claim": {
+            "basis": "assumed",
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        },
+        {
+          "species_id": "acetate",
+          "name": "sodium acetate",
+          "formula": "C2H3NaO2",
+          "charge": 0,
+          "phase": "aqueous",
+          "claim": {
+            "basis": "assumed",
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        },
+        {
+          "species_id": "water",
+          "name": "water",
+          "formula": "H2O",
+          "charge": 0,
+          "phase": "liquid",
+          "claim": {
+            "basis": "assumed",
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        },
+        {
+          "species_id": "co2",
+          "name": "carbon dioxide",
+          "formula": "CO2",
+          "charge": 0,
+          "phase": "gas",
+          "claim": {
+            "basis": "assumed",
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        }
+      ],
+      "reactions": [
+        {
+          "reaction_id": "acid-bicarbonate",
+          "reactants": [
+            {
+              "species_id": "bicarbonate",
+              "coefficient": "1"
+            },
+            {
+              "species_id": "acid",
+              "coefficient": "1"
+            }
+          ],
+          "products": [
+            {
+              "species_id": "acetate",
+              "coefficient": "1"
+            },
+            {
+              "species_id": "water",
+              "coefficient": "1"
+            },
+            {
+              "species_id": "co2",
+              "coefficient": "1"
+            }
+          ],
+          "claim": {
+            "basis": "assumed",
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        }
+      ],
+      "evidence": [
+        {
+          "source_id": "user-request",
+          "basis": "specified",
+          "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+          "publisher": "User",
+          "locator": "engineering-request.brief",
+          "retrieved_at": "2026-11-04T00:00:00Z",
+          "undated_reason": "User supplied an undated engineering objective; not an experimental record."
+        }
+      ]
+    },
+    "process": {
+      "operations": [
+        {
+          "operation_id": "solid-feed",
+          "operation_type": "feed",
+          "ports": [
+            {
+              "port_id": "out",
+              "direction": "out",
+              "kind": "material",
+              "phase": "solid"
+            }
+          ]
+        },
+        {
+          "operation_id": "vinegar-feed",
+          "operation_type": "feed",
+          "ports": [
+            {
+              "port_id": "out",
+              "direction": "out",
+              "kind": "material",
+              "phase": "aqueous"
+            }
+          ]
+        },
+        {
+          "operation_id": "react",
+          "operation_type": "batch_reaction",
+          "description": "Conceptual acid-bicarbonate mixing; duration, conversion and heat remain unknown.",
+          "ports": [
+            {
+              "port_id": "solid",
+              "direction": "in",
+              "kind": "material",
+              "phase": "solid"
+            },
+            {
+              "port_id": "liquid",
+              "direction": "in",
+              "kind": "material",
+              "phase": "aqueous"
+            },
+            {
+              "port_id": "gas",
+              "direction": "out",
+              "kind": "material",
+              "phase": "gas"
+            },
+            {
+              "port_id": "residue",
+              "direction": "out",
+              "kind": "material",
+              "phase": "aqueous"
+            }
+          ]
+        },
+        {
+          "operation_id": "gas-output",
+          "operation_type": "output",
+          "ports": [
+            {
+              "port_id": "in",
+              "direction": "in",
+              "kind": "material",
+              "phase": "gas"
+            }
+          ]
+        },
+        {
+          "operation_id": "residue-output",
+          "operation_type": "output",
+          "ports": [
+            {
+              "port_id": "in",
+              "direction": "in",
+              "kind": "material",
+              "phase": "aqueous"
+            }
+          ]
+        }
+      ],
+      "streams": [
+        {
+          "stream_id": "solid",
+          "source": {
+            "operation_id": "solid-feed",
+            "port_id": "out"
+          },
+          "target": {
+            "operation_id": "react",
+            "port_id": "solid"
+          },
+          "kind": "material",
+          "phase": "solid",
+          "batch_quantity": {
+            "kind": "mass",
+            "value": 2,
+            "unit": "g",
+            "claim": {
+              "basis": "specified",
+              "source_ids": [
+                "user-request"
+              ]
+            }
+          }
+        },
+        {
+          "stream_id": "vinegar",
+          "source": {
+            "operation_id": "vinegar-feed",
+            "port_id": "out"
+          },
+          "target": {
+            "operation_id": "react",
+            "port_id": "liquid"
+          },
+          "kind": "material",
+          "phase": "aqueous",
+          "batch_quantity": {
+            "kind": "volume",
+            "value": 50,
+            "unit": "mL",
+            "claim": {
+              "basis": "specified",
+              "source_ids": [
+                "user-request"
+              ]
+            }
+          }
+        },
+        {
+          "stream_id": "gas",
+          "source": {
+            "operation_id": "react",
+            "port_id": "gas"
+          },
+          "target": {
+            "operation_id": "gas-output",
+            "port_id": "in"
+          },
+          "kind": "material",
+          "phase": "gas",
+          "batch_quantity": null
+        },
+        {
+          "stream_id": "residue",
+          "source": {
+            "operation_id": "react",
+            "port_id": "residue"
+          },
+          "target": {
+            "operation_id": "residue-output",
+            "port_id": "in"
+          },
+          "kind": "material",
+          "phase": "aqueous",
+          "batch_quantity": null
+        }
+      ],
+      "steps": [
+        {
+          "step_id": "mix",
+          "operation_id": "react",
+          "description": "Describe a conceptual mixing operation; no runtime actuation."
+        }
+      ],
+      "evidence": [
+        {
+          "source_id": "user-request",
+          "basis": "specified",
+          "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+          "publisher": "User",
+          "locator": "engineering-request.brief",
+          "retrieved_at": "2026-11-04T00:00:00Z",
+          "undated_reason": "User supplied an undated engineering objective; not an experimental record."
+        }
+      ],
+      "schema_version": "1.1"
+    }
+  },
+  "links": [
+    {
+      "link_id": "reaction",
+      "kind": "uses_reaction",
+      "source": {
+        "artifact_id": "bicarbonate-vinegar.process",
+        "revision": 1,
+        "object_id": "react"
+      },
+      "target": {
+        "artifact_id": "bicarbonate-vinegar.chemical",
+        "revision": 1,
+        "object_id": "acid-bicarbonate"
+      },
+      "fact_owners": {
+        "chemical.reaction": "chemical"
+      },
+      "provenance": {
+        "basis": "assumed",
+        "rationale": "Conceptual mapping; stream composition/yield is not measured."
+      }
+    },
+    {
+      "link_id": "solid-species",
+      "kind": "uses_species",
+      "source": {
+        "artifact_id": "bicarbonate-vinegar.process",
+        "revision": 1,
+        "object_id": "solid"
+      },
+      "target": {
+        "artifact_id": "bicarbonate-vinegar.chemical",
+        "revision": 1,
+        "object_id": "bicarbonate"
+      },
+      "fact_owners": {
+        "chemical.species": "chemical"
+      },
+      "provenance": {
+        "basis": "assumed",
+        "rationale": "Conceptual mapping; stream composition/yield is not measured."
+      }
+    },
+    {
+      "link_id": "acid-species",
+      "kind": "uses_species",
+      "source": {
+        "artifact_id": "bicarbonate-vinegar.process",
+        "revision": 1,
+        "object_id": "vinegar"
+      },
+      "target": {
+        "artifact_id": "bicarbonate-vinegar.chemical",
+        "revision": 1,
+        "object_id": "acid"
+      },
+      "fact_owners": {
+        "chemical.species": "chemical"
+      },
+      "provenance": {
+        "basis": "assumed",
+        "rationale": "Conceptual mapping; stream composition/yield is not measured."
+      }
+    },
+    {
+      "link_id": "gas-species",
+      "kind": "uses_species",
+      "source": {
+        "artifact_id": "bicarbonate-vinegar.process",
+        "revision": 1,
+        "object_id": "gas"
+      },
+      "target": {
+        "artifact_id": "bicarbonate-vinegar.chemical",
+        "revision": 1,
+        "object_id": "co2"
+      },
+      "fact_owners": {
+        "chemical.species": "chemical"
+      },
+      "provenance": {
+        "basis": "assumed",
+        "rationale": "Conceptual mapping; stream composition/yield is not measured."
+      }
+    },
+    {
+      "link_id": "residue-acetate",
+      "kind": "uses_species",
+      "source": {
+        "artifact_id": "bicarbonate-vinegar.process",
+        "revision": 1,
+        "object_id": "residue"
+      },
+      "target": {
+        "artifact_id": "bicarbonate-vinegar.chemical",
+        "revision": 1,
+        "object_id": "acetate"
+      },
+      "fact_owners": {
+        "chemical.species": "chemical"
+      },
+      "provenance": {
+        "basis": "assumed",
+        "rationale": "Conceptual mapping; stream composition/yield is not measured."
+      }
+    },
+    {
+      "link_id": "residue-water",
+      "kind": "uses_species",
+      "source": {
+        "artifact_id": "bicarbonate-vinegar.process",
+        "revision": 1,
+        "object_id": "residue"
+      },
+      "target": {
+        "artifact_id": "bicarbonate-vinegar.chemical",
+        "revision": 1,
+        "object_id": "water"
+      },
+      "fact_owners": {
+        "chemical.species": "chemical"
+      },
+      "provenance": {
+        "basis": "assumed",
+        "rationale": "Conceptual mapping; stream composition/yield is not measured."
+      }
+    }
+  ],
+  "assumptions": {
+    "chemical": [
+      "Neutral species and the ideal acid-bicarbonate reaction are conceptual modeling assumptions, not observed chemistry."
+    ]
+  },
+  "unknowns": [
+    "The 5% vinegar concentration basis is unspecified; acid mass and limiting reagent are unknown.",
+    "Reaction completion, reaction duration, CO2 collection efficiency and experimental yield are unknown."
+  ]
+}

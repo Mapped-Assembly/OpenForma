@@ -7,11 +7,12 @@ FluidicIR. Each native document has an artifact ID, revision, schema
 version, serialization, authoring context and local validation. A product
 manifest references those artifacts and separately validates their relationships.
 
-This is an additive migration. The hosted legacy generator/editor and existing
-`forma-core generate` command still consume HardwareIR 0.2. New consumers use
-`forma_core.domains`, `forma-core domains`, or `forma.opencode.domains`. There is
-no database flag-day migration and no requirement to instantiate HardwareIR
-when authoring or validating an individual domain.
+New objectives through `/generate`, the Python SDK, CLI and generation workers
+now use the [unified domain control plane](unified-generation.md). Existing
+HardwareIR projects retain their compatibility adapters automatically. The
+low-level `forma_core.domains`, `forma-core domains` and `forma.opencode.domains`
+operations remain independently usable. No HardwareIR is required for a new
+domain product. ChemicalIR, ProcessIR and ThermalIR join the original four domains.
 
 ## Ownership, providers and composition
 

@@ -1,0 +1,948 @@
+{
+  "assumptions": {
+    "chemical": [
+      "Neutral species and the ideal acid-bicarbonate reaction are conceptual modeling assumptions, not observed chemistry."
+    ]
+  },
+  "evaluations": [
+    {
+      "input": {
+        "artifact_id": "bicarbonate-vinegar.chemical",
+        "domain": "chemical",
+        "locator": null,
+        "provenance": {
+          "author": "caller",
+          "context_sha256": "9646f1c0db6f85cd2721aaa27665a3b17c75ff424b2350f7abde118705f9aa23",
+          "request_sha256": "fc8d2a615995844316186f16209ce183afc12a961703944db3b84cee95257bc2"
+        },
+        "provider_id": "openforma.native",
+        "provider_version": "1.0",
+        "revision": 1,
+        "schema_id": "openforma.chemical",
+        "schema_version": "1.0",
+        "sha256": "b6d11a184a23c626c58d150631d9babfdd31eac4e01372f48ef282e5e5f5a532"
+      },
+      "output_sha256": "8c83dcb7dd617f6954cf81883051f6fdae794b294b3962bfe4ab7743aaa56332",
+      "provider_version": "1.0",
+      "results": [
+        {
+          "message": "Element and charge balances pass on the supported formula grammar.",
+          "reaction_id": "acid-bicarbonate",
+          "residuals": {},
+          "status": "pass"
+        },
+        {
+          "capability": "quantitative_stoichiometry",
+          "message": "Element/charge balance is supported; molar masses, limiting reagent, theoretical yield, kinetics and experimental yield are not evaluated.",
+          "status": "unsupported"
+        }
+      ]
+    },
+    {
+      "input": {
+        "artifact_id": "bicarbonate-vinegar.process",
+        "domain": "process",
+        "locator": null,
+        "provenance": {
+          "author": "caller",
+          "context_sha256": "68696848c7ec217f3e6435666529bb85eadbc0d6b640c2d7e1766e18ea684f8a",
+          "request_sha256": "fc8d2a615995844316186f16209ce183afc12a961703944db3b84cee95257bc2"
+        },
+        "provider_id": "openforma.native",
+        "provider_version": "1.0",
+        "revision": 1,
+        "schema_id": "openforma.process",
+        "schema_version": "1.1",
+        "sha256": "6c109a2800f49c6db361c5e76d46e811625f0d62d31eaeb15fd030c3f53949c4"
+      },
+      "output_sha256": "b8df16ece4e03e54880b884a7fbe041dc60d86ac8c4c724ab85abfe153e8af58",
+      "provider_version": "1.0",
+      "results": [
+        {
+          "capability": "batch_mass_balance",
+          "message": "Batch amounts are represented without inventing rates. No batch conversion/yield evaluator is installed.",
+          "status": "unsupported"
+        }
+      ]
+    }
+  ],
+  "format": "forma.engineering-result",
+  "product": {
+    "artifacts": {
+      "bicarbonate-vinegar.chemical": {
+        "artifact_id": "bicarbonate-vinegar.chemical",
+        "conditions": [],
+        "domain": "chemical",
+        "evidence": [
+          {
+            "applicability": null,
+            "basis": "specified",
+            "effective_at": null,
+            "locator": "engineering-request.brief",
+            "published_at": null,
+            "publisher": "User",
+            "rationale": null,
+            "retrieved_at": "2026-11-04T00:00:00Z",
+            "source_id": "user-request",
+            "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+            "uncertainty": null,
+            "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+            "url": null
+          }
+        ],
+        "mixtures": [],
+        "models": [],
+        "reactions": [
+          {
+            "catalyst_species_ids": [],
+            "claim": {
+              "basis": "assumed",
+              "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence.",
+              "source_ids": []
+            },
+            "condition_ids": [],
+            "model_ids": [],
+            "products": [
+              {
+                "coefficient": "1",
+                "species_id": "acetate"
+              },
+              {
+                "coefficient": "1",
+                "species_id": "water"
+              },
+              {
+                "coefficient": "1",
+                "species_id": "co2"
+              }
+            ],
+            "reactants": [
+              {
+                "coefficient": "1",
+                "species_id": "bicarbonate"
+              },
+              {
+                "coefficient": "1",
+                "species_id": "acid"
+              }
+            ],
+            "reaction_id": "acid-bicarbonate",
+            "reversible": false
+          }
+        ],
+        "revision": 1,
+        "schema_version": "1.0",
+        "species": [
+          {
+            "charge": 0,
+            "claim": {
+              "basis": "assumed",
+              "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence.",
+              "source_ids": []
+            },
+            "formula": "NaHCO3",
+            "name": "sodium bicarbonate",
+            "phase": "solid",
+            "registry_id": null,
+            "species_id": "bicarbonate"
+          },
+          {
+            "charge": 0,
+            "claim": {
+              "basis": "assumed",
+              "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence.",
+              "source_ids": []
+            },
+            "formula": "C2H4O2",
+            "name": "acetic acid",
+            "phase": "aqueous",
+            "registry_id": null,
+            "species_id": "acid"
+          },
+          {
+            "charge": 0,
+            "claim": {
+              "basis": "assumed",
+              "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence.",
+              "source_ids": []
+            },
+            "formula": "C2H3NaO2",
+            "name": "sodium acetate",
+            "phase": "aqueous",
+            "registry_id": null,
+            "species_id": "acetate"
+          },
+          {
+            "charge": 0,
+            "claim": {
+              "basis": "assumed",
+              "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence.",
+              "source_ids": []
+            },
+            "formula": "H2O",
+            "name": "water",
+            "phase": "liquid",
+            "registry_id": null,
+            "species_id": "water"
+          },
+          {
+            "charge": 0,
+            "claim": {
+              "basis": "assumed",
+              "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence.",
+              "source_ids": []
+            },
+            "formula": "CO2",
+            "name": "carbon dioxide",
+            "phase": "gas",
+            "registry_id": null,
+            "species_id": "co2"
+          }
+        ]
+      },
+      "bicarbonate-vinegar.process": {
+        "artifact_id": "bicarbonate-vinegar.process",
+        "balances": [],
+        "domain": "process",
+        "evidence": [
+          {
+            "applicability": null,
+            "basis": "specified",
+            "effective_at": null,
+            "locator": "engineering-request.brief",
+            "published_at": null,
+            "publisher": "User",
+            "rationale": null,
+            "retrieved_at": "2026-11-04T00:00:00Z",
+            "source_id": "user-request",
+            "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+            "uncertainty": null,
+            "undated_reason": "User supplied an undated engineering objective; not an experimental record."
+          }
+        ],
+        "operations": [
+          {
+            "capability_version": "conceptual",
+            "claim": {
+              "basis": "unknown",
+              "rationale": null,
+              "source_ids": []
+            },
+            "description": null,
+            "model_fidelity": "conceptual",
+            "operation_id": "solid-feed",
+            "operation_type": "feed",
+            "ports": [
+              {
+                "direction": "out",
+                "kind": "material",
+                "phase": "solid",
+                "port_id": "out",
+                "quantity_kind": null
+              }
+            ]
+          },
+          {
+            "capability_version": "conceptual",
+            "claim": {
+              "basis": "unknown",
+              "rationale": null,
+              "source_ids": []
+            },
+            "description": null,
+            "model_fidelity": "conceptual",
+            "operation_id": "vinegar-feed",
+            "operation_type": "feed",
+            "ports": [
+              {
+                "direction": "out",
+                "kind": "material",
+                "phase": "aqueous",
+                "port_id": "out",
+                "quantity_kind": null
+              }
+            ]
+          },
+          {
+            "capability_version": "conceptual",
+            "claim": {
+              "basis": "unknown",
+              "rationale": null,
+              "source_ids": []
+            },
+            "description": "Conceptual acid-bicarbonate mixing; duration, conversion and heat remain unknown.",
+            "model_fidelity": "conceptual",
+            "operation_id": "react",
+            "operation_type": "batch_reaction",
+            "ports": [
+              {
+                "direction": "in",
+                "kind": "material",
+                "phase": "solid",
+                "port_id": "solid",
+                "quantity_kind": null
+              },
+              {
+                "direction": "in",
+                "kind": "material",
+                "phase": "aqueous",
+                "port_id": "liquid",
+                "quantity_kind": null
+              },
+              {
+                "direction": "out",
+                "kind": "material",
+                "phase": "gas",
+                "port_id": "gas",
+                "quantity_kind": null
+              },
+              {
+                "direction": "out",
+                "kind": "material",
+                "phase": "aqueous",
+                "port_id": "residue",
+                "quantity_kind": null
+              }
+            ]
+          },
+          {
+            "capability_version": "conceptual",
+            "claim": {
+              "basis": "unknown",
+              "rationale": null,
+              "source_ids": []
+            },
+            "description": null,
+            "model_fidelity": "conceptual",
+            "operation_id": "gas-output",
+            "operation_type": "output",
+            "ports": [
+              {
+                "direction": "in",
+                "kind": "material",
+                "phase": "gas",
+                "port_id": "in",
+                "quantity_kind": null
+              }
+            ]
+          },
+          {
+            "capability_version": "conceptual",
+            "claim": {
+              "basis": "unknown",
+              "rationale": null,
+              "source_ids": []
+            },
+            "description": null,
+            "model_fidelity": "conceptual",
+            "operation_id": "residue-output",
+            "operation_type": "output",
+            "ports": [
+              {
+                "direction": "in",
+                "kind": "material",
+                "phase": "aqueous",
+                "port_id": "in",
+                "quantity_kind": null
+              }
+            ]
+          }
+        ],
+        "revision": 1,
+        "scenarios": [],
+        "schema_version": "1.1",
+        "steps": [
+          {
+            "depends_on": [],
+            "description": "Describe a conceptual mixing operation; no runtime actuation.",
+            "operation_id": "react",
+            "preconditions": [],
+            "step_id": "mix"
+          }
+        ],
+        "streams": [
+          {
+            "batch_quantity": {
+              "claim": {
+                "basis": "specified",
+                "rationale": null,
+                "source_ids": [
+                  "user-request"
+                ]
+              },
+              "kind": "mass",
+              "unit": "g",
+              "value": 2.0
+            },
+            "claim": {
+              "basis": "unknown",
+              "rationale": null,
+              "source_ids": []
+            },
+            "kind": "material",
+            "phase": "solid",
+            "quantity": null,
+            "source": {
+              "operation_id": "solid-feed",
+              "port_id": "out"
+            },
+            "stream_id": "solid",
+            "target": {
+              "operation_id": "react",
+              "port_id": "solid"
+            }
+          },
+          {
+            "batch_quantity": {
+              "claim": {
+                "basis": "specified",
+                "rationale": null,
+                "source_ids": [
+                  "user-request"
+                ]
+              },
+              "kind": "volume",
+              "unit": "mL",
+              "value": 50.0
+            },
+            "claim": {
+              "basis": "unknown",
+              "rationale": null,
+              "source_ids": []
+            },
+            "kind": "material",
+            "phase": "aqueous",
+            "quantity": null,
+            "source": {
+              "operation_id": "vinegar-feed",
+              "port_id": "out"
+            },
+            "stream_id": "vinegar",
+            "target": {
+              "operation_id": "react",
+              "port_id": "liquid"
+            }
+          },
+          {
+            "claim": {
+              "basis": "unknown",
+              "rationale": null,
+              "source_ids": []
+            },
+            "kind": "material",
+            "phase": "gas",
+            "quantity": null,
+            "source": {
+              "operation_id": "react",
+              "port_id": "gas"
+            },
+            "stream_id": "gas",
+            "target": {
+              "operation_id": "gas-output",
+              "port_id": "in"
+            }
+          },
+          {
+            "claim": {
+              "basis": "unknown",
+              "rationale": null,
+              "source_ids": []
+            },
+            "kind": "material",
+            "phase": "aqueous",
+            "quantity": null,
+            "source": {
+              "operation_id": "react",
+              "port_id": "residue"
+            },
+            "stream_id": "residue",
+            "target": {
+              "operation_id": "residue-output",
+              "port_id": "in"
+            }
+          }
+        ]
+      }
+    },
+    "compatibility": null,
+    "format": "forma.product-domains",
+    "manifest": {
+      "artifacts": [
+        {
+          "artifact_id": "bicarbonate-vinegar.chemical",
+          "domain": "chemical",
+          "locator": null,
+          "provenance": {
+            "author": "caller",
+            "context_sha256": "9646f1c0db6f85cd2721aaa27665a3b17c75ff424b2350f7abde118705f9aa23",
+            "request_sha256": "fc8d2a615995844316186f16209ce183afc12a961703944db3b84cee95257bc2"
+          },
+          "provider_id": "openforma.native",
+          "provider_version": "1.0",
+          "revision": 1,
+          "schema_id": "openforma.chemical",
+          "schema_version": "1.0",
+          "sha256": "b6d11a184a23c626c58d150631d9babfdd31eac4e01372f48ef282e5e5f5a532"
+        },
+        {
+          "artifact_id": "bicarbonate-vinegar.process",
+          "domain": "process",
+          "locator": null,
+          "provenance": {
+            "author": "caller",
+            "context_sha256": "68696848c7ec217f3e6435666529bb85eadbc0d6b640c2d7e1766e18ea684f8a",
+            "request_sha256": "fc8d2a615995844316186f16209ce183afc12a961703944db3b84cee95257bc2"
+          },
+          "provider_id": "openforma.native",
+          "provider_version": "1.0",
+          "revision": 1,
+          "schema_id": "openforma.process",
+          "schema_version": "1.1",
+          "sha256": "6c109a2800f49c6db361c5e76d46e811625f0d62d31eaeb15fd030c3f53949c4"
+        }
+      ],
+      "links": [
+        {
+          "fact_owners": {
+            "chemical.reaction": "chemical"
+          },
+          "kind": "uses_reaction",
+          "link_id": "reaction",
+          "provenance": {
+            "basis": "assumed",
+            "rationale": "Conceptual mapping; stream composition/yield is not measured."
+          },
+          "source": {
+            "artifact_id": "bicarbonate-vinegar.process",
+            "frame": null,
+            "object_id": "react",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          },
+          "target": {
+            "artifact_id": "bicarbonate-vinegar.chemical",
+            "frame": null,
+            "object_id": "acid-bicarbonate",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          }
+        },
+        {
+          "fact_owners": {
+            "chemical.species": "chemical"
+          },
+          "kind": "uses_species",
+          "link_id": "solid-species",
+          "provenance": {
+            "basis": "assumed",
+            "rationale": "Conceptual mapping; stream composition/yield is not measured."
+          },
+          "source": {
+            "artifact_id": "bicarbonate-vinegar.process",
+            "frame": null,
+            "object_id": "solid",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          },
+          "target": {
+            "artifact_id": "bicarbonate-vinegar.chemical",
+            "frame": null,
+            "object_id": "bicarbonate",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          }
+        },
+        {
+          "fact_owners": {
+            "chemical.species": "chemical"
+          },
+          "kind": "uses_species",
+          "link_id": "acid-species",
+          "provenance": {
+            "basis": "assumed",
+            "rationale": "Conceptual mapping; stream composition/yield is not measured."
+          },
+          "source": {
+            "artifact_id": "bicarbonate-vinegar.process",
+            "frame": null,
+            "object_id": "vinegar",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          },
+          "target": {
+            "artifact_id": "bicarbonate-vinegar.chemical",
+            "frame": null,
+            "object_id": "acid",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          }
+        },
+        {
+          "fact_owners": {
+            "chemical.species": "chemical"
+          },
+          "kind": "uses_species",
+          "link_id": "gas-species",
+          "provenance": {
+            "basis": "assumed",
+            "rationale": "Conceptual mapping; stream composition/yield is not measured."
+          },
+          "source": {
+            "artifact_id": "bicarbonate-vinegar.process",
+            "frame": null,
+            "object_id": "gas",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          },
+          "target": {
+            "artifact_id": "bicarbonate-vinegar.chemical",
+            "frame": null,
+            "object_id": "co2",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          }
+        },
+        {
+          "fact_owners": {
+            "chemical.species": "chemical"
+          },
+          "kind": "uses_species",
+          "link_id": "residue-acetate",
+          "provenance": {
+            "basis": "assumed",
+            "rationale": "Conceptual mapping; stream composition/yield is not measured."
+          },
+          "source": {
+            "artifact_id": "bicarbonate-vinegar.process",
+            "frame": null,
+            "object_id": "residue",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          },
+          "target": {
+            "artifact_id": "bicarbonate-vinegar.chemical",
+            "frame": null,
+            "object_id": "acetate",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          }
+        },
+        {
+          "fact_owners": {
+            "chemical.species": "chemical"
+          },
+          "kind": "uses_species",
+          "link_id": "residue-water",
+          "provenance": {
+            "basis": "assumed",
+            "rationale": "Conceptual mapping; stream composition/yield is not measured."
+          },
+          "source": {
+            "artifact_id": "bicarbonate-vinegar.process",
+            "frame": null,
+            "object_id": "residue",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          },
+          "target": {
+            "artifact_id": "bicarbonate-vinegar.chemical",
+            "frame": null,
+            "object_id": "water",
+            "port_id": null,
+            "revision": 1,
+            "sha256": null,
+            "units": null
+          }
+        }
+      ],
+      "product_id": "bicarbonate-vinegar",
+      "schema_version": "1.0"
+    },
+    "plan": {
+      "brief": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+      "product_id": "bicarbonate-vinegar",
+      "schema_version": "1.0",
+      "scope": {
+        "biological_experiment": false,
+        "domains": [
+          "chemical",
+          "process"
+        ],
+        "electrical_control": false,
+        "fluid_network": false,
+        "mechanical_motion": false,
+        "physical_structure": false,
+        "wiring": false
+      },
+      "tasks": [
+        {
+          "context": {
+            "chemical_requirements": [
+              "2 g sodium bicarbonate; 50 mL of 5% vinegar.",
+              "Represent acetic acid, sodium bicarbonate, sodium acetate, water and carbon dioxide.",
+              "Vinegar percentage basis is unspecified; do not infer acid mass or concentration."
+            ],
+            "evidence_requirements": [
+              "User-specified nominal inputs, no experimental observations.",
+              "Molecular reaction is an independently authored conceptual model; complete reaction is an assumption for any theoretical comparison."
+            ],
+            "scope": "Conceptual reaction identity and element/charge conservation; no kinetics, yield or thermal analysis."
+          },
+          "dependencies": [],
+          "domain": "chemical",
+          "errors": [],
+          "missing_inputs": [],
+          "provider": {
+            "any_scope": [],
+            "authoring": false,
+            "availability": "available",
+            "dependencies": [],
+            "discovery": false,
+            "domain": "chemical",
+            "evaluation": true,
+            "fact_authorities": [
+              "chemical.species",
+              "chemical.reaction",
+              "chemical.composition"
+            ],
+            "ir_type": "ChemicalIR",
+            "limitations": [
+              "Native authoring uses generate_product with caller-supplied designs; no provider-hosted author or resolver."
+            ],
+            "owner": "OpenForma",
+            "provider_id": "openforma.native",
+            "provider_version": "1.0",
+            "reference_types": [
+              "uses_species",
+              "uses_reaction",
+              "thermal_source"
+            ],
+            "required_context": [
+              {
+                "description": "Native chemical context: scope.",
+                "name": "scope",
+                "required": true
+              },
+              {
+                "description": "Native chemical context: chemical_requirements.",
+                "name": "chemical_requirements",
+                "required": true
+              },
+              {
+                "description": "Native chemical context: evidence_requirements.",
+                "name": "evidence_requirements",
+                "required": true
+              }
+            ],
+            "resolution": false,
+            "schemas": [
+              {
+                "schema_id": "openforma.chemical",
+                "versions": [
+                  "1.0"
+                ]
+              }
+            ],
+            "validation": true
+          },
+          "reason": "The objective requests reactants, products and a balanced CO2-producing chemical reaction.",
+          "required_context": [
+            {
+              "description": "Native chemical context: scope.",
+              "name": "scope",
+              "required": true
+            },
+            {
+              "description": "Native chemical context: chemical_requirements.",
+              "name": "chemical_requirements",
+              "required": true
+            },
+            {
+              "description": "Native chemical context: evidence_requirements.",
+              "name": "evidence_requirements",
+              "required": true
+            }
+          ],
+          "status": "generated",
+          "unresolved_dependencies": []
+        },
+        {
+          "context": {
+            "evidence_requirements": [
+              "Nominal input quantities are specified by the user, not measured.",
+              "5% acidity basis and material conversion are unresolved."
+            ],
+            "process_requirements": [
+              "Feed reactants, mix/react, represent gas and aqueous residue outputs."
+            ],
+            "scope": "Conceptual batch mixing and gas evolution, no vessel/wiring design.",
+            "stream_requirements": [
+              "Represent 2 g and 50 mL as batch material quantities, not rates.",
+              "Output amounts and reaction duration remain unknown."
+            ]
+          },
+          "dependencies": [],
+          "domain": "process",
+          "errors": [],
+          "missing_inputs": [],
+          "provider": {
+            "any_scope": [],
+            "authoring": false,
+            "availability": "available",
+            "dependencies": [],
+            "discovery": false,
+            "domain": "process",
+            "evaluation": true,
+            "fact_authorities": [
+              "process.topology",
+              "process.stream",
+              "process.operation"
+            ],
+            "ir_type": "ProcessIR",
+            "limitations": [
+              "Native authoring uses generate_product with caller-supplied designs; no provider-hosted author or resolver."
+            ],
+            "owner": "OpenForma",
+            "provider_id": "openforma.native",
+            "provider_version": "1.0",
+            "reference_types": [
+              "uses_species",
+              "uses_reaction",
+              "uses_equipment",
+              "uses_electrical_port",
+              "uses_fluidic_port",
+              "uses_thermal_interface",
+              "thermal_source",
+              "spatial",
+              "same_object"
+            ],
+            "required_context": [
+              {
+                "description": "Native process context: scope.",
+                "name": "scope",
+                "required": true
+              },
+              {
+                "description": "Native process context: process_requirements.",
+                "name": "process_requirements",
+                "required": true
+              },
+              {
+                "description": "Native process context: stream_requirements.",
+                "name": "stream_requirements",
+                "required": true
+              },
+              {
+                "description": "Native process context: evidence_requirements.",
+                "name": "evidence_requirements",
+                "required": true
+              }
+            ],
+            "resolution": false,
+            "schemas": [
+              {
+                "schema_id": "openforma.process",
+                "versions": [
+                  "1.0",
+                  "1.1"
+                ]
+              }
+            ],
+            "validation": true
+          },
+          "reason": "The objective requests process operations and typed batch material streams.",
+          "required_context": [
+            {
+              "description": "Native process context: scope.",
+              "name": "scope",
+              "required": true
+            },
+            {
+              "description": "Native process context: process_requirements.",
+              "name": "process_requirements",
+              "required": true
+            },
+            {
+              "description": "Native process context: stream_requirements.",
+              "name": "stream_requirements",
+              "required": true
+            },
+            {
+              "description": "Native process context: evidence_requirements.",
+              "name": "evidence_requirements",
+              "required": true
+            }
+          ],
+          "status": "generated",
+          "unresolved_dependencies": []
+        }
+      ]
+    }
+  },
+  "provenance": {
+    "artifact_sha256": "e6813207366c864b8a76384d39bdc5cb080c006b496b45501572a11fa7578c6f",
+    "author": "caller",
+    "created_at": "2026-11-04T06:49:43.707121+00:00",
+    "parent_sha256": null,
+    "registry_sha256": "6ac7a4560850bc42b2490732efd764dcc52c6df15f90d2abca4c36bf1d82bfe9",
+    "request_sha256": "fc8d2a615995844316186f16209ce183afc12a961703944db3b84cee95257bc2",
+    "scope": "Design representation and declared checks; no experimental or physical verification.",
+    "selection": {
+      "reasons": {
+        "chemical": "The objective requests reactants, products and a balanced CO2-producing chemical reaction.",
+        "process": "The objective requests process operations and typed batch material streams."
+      },
+      "registry_sha256": "6ac7a4560850bc42b2490732efd764dcc52c6df15f90d2abca4c36bf1d82bfe9",
+      "request_sha256": "fc8d2a615995844316186f16209ce183afc12a961703944db3b84cee95257bc2",
+      "scope": {
+        "biological_experiment": false,
+        "domains": [
+          "chemical",
+          "process"
+        ],
+        "electrical_control": false,
+        "fluid_network": false,
+        "mechanical_motion": false,
+        "physical_structure": false,
+        "wiring": false
+      }
+    }
+  },
+  "schema_version": "1.0",
+  "status": "partial",
+  "unresolved": [
+    "The 5% vinegar concentration basis is unspecified; acid mass and limiting reagent are unknown.",
+    "Reaction completion, reaction duration, CO2 collection efficiency and experimental yield are unknown."
+  ],
+  "validation": {
+    "blocked_domains": {},
+    "composition": [],
+    "is_valid": true,
+    "local": {
+      "bicarbonate-vinegar.chemical": [],
+      "bicarbonate-vinegar.process": []
+    }
+  }
+}

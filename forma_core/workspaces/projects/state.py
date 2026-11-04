@@ -6,11 +6,13 @@ from datetime import datetime, timezone
 from typing import Annotated, Any, Literal, Protocol
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator, field_validator
 
 from forma_core.workspaces.design_briefs import DesignBrief
 from forma_core.workspaces.projects.models import ComponentInstance, HardwareIntermediateRepresentation
 
+
+from forma_core.domains.generation import EngineeringResult
 
 PROJECT_REVISION_SCHEMA_VERSION = "1.0"
 NonEmptyString = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
@@ -50,14 +52,28 @@ class ProjectRevisionDraft(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
-    state: HardwareIntermediateRepresentation
+    state: EngineeringResult | HardwareIntermediateRepresentation
     components: list[ComponentInstance] = Field(default_factory=list)
     systems: list[ProjectSystem] = Field(default_factory=list)
     artifacts: list[ProjectArtifact] = Field(default_factory=list)
     assumptions: list[NonEmptyString] = Field(default_factory=list)
 
+    @field_validator("state", mode="before")
+    @classmethod
+    def parse_state(cls, value: Any) -> Any:
+        """Tagged domain reports must never fall back to permissive legacy parsing."""
+        if isinstance(value, dict) and value.get("format") == "forma.engineering-result":
+            return EngineeringResult.model_validate(value)
+        return value
+
     @model_validator(mode="after")
     def require_consistent_unique_output(self) -> "ProjectRevisionDraft":
+        if isinstance(self.state, EngineeringResult):
+            if self.components or self.systems:
+                raise ValueError("Domain revisions retain component semantics in their owning artifacts.")
+            if len({a.artifact_id for a in self.artifacts}) != len(self.artifacts):
+                raise ValueError("Project artifact identities must be unique.")
+            return self
         component_payloads = [item.model_dump(mode="json") for item in self.components]
         state_component_payloads = [item.model_dump(mode="json") for item in self.state.components]
         if component_payloads != state_component_payloads:
@@ -339,32 +355,36 @@ class ProjectStateService:
 
         revision_uuid = uuid4()
         state = draft.state.model_copy(deep=True)
-        metadata = dict(state.assembly_metadata or {})
-        supplied_project = str(metadata.get("project_id") or "").strip()
-        if supplied_project and supplied_project != project:
-            raise ProjectStateError(
-                "project_revision_identity_mismatch",
-                "Generated state targets a different project.",
-                context={"expected_project_id": project, "actual_project_id": supplied_project},
-            )
-        supplied_revision = metadata.get("revision")
-        if supplied_revision not in (None, 1, "1"):
-            raise ProjectStateError(
-                "project_revision_identity_mismatch",
-                "Generated state targets a different project revision.",
-                context={"expected_revision": 1, "actual_revision": supplied_revision},
-            )
-        state.assembly_metadata = {
-            **metadata,
-            "project_id": project,
-            "revision": 1,
-            "project_revision": 1,
-            "canonical_revision_id": str(revision_uuid),
-            "design_brief_id": str(brief_uuid),
-            "design_brief_version": design_brief_version,
-            "source_job_id": job_id,
-        }
-        normalized_draft = draft.model_copy(update={"state": state, "components": list(state.components)})
+        if isinstance(state, EngineeringResult):
+            if state.product.manifest.product_id != project:
+                raise ProjectStateError("project_revision_identity_mismatch", "Domain product targets a different project.")
+        else:
+            metadata = dict(state.assembly_metadata or {})
+            supplied_project = str(metadata.get("project_id") or "").strip()
+            if supplied_project and supplied_project != project:
+                raise ProjectStateError(
+                    "project_revision_identity_mismatch",
+                    "Generated state targets a different project.",
+                    context={"expected_project_id": project, "actual_project_id": supplied_project},
+                )
+            supplied_revision = metadata.get("revision")
+            if supplied_revision not in (None, 1, "1"):
+                raise ProjectStateError(
+                    "project_revision_identity_mismatch",
+                    "Generated state targets a different project revision.",
+                    context={"expected_revision": 1, "actual_revision": supplied_revision},
+                )
+            state.assembly_metadata = {
+                **metadata,
+                "project_id": project,
+                "revision": 1,
+                "project_revision": 1,
+                "canonical_revision_id": str(revision_uuid),
+                "design_brief_id": str(brief_uuid),
+                "design_brief_version": design_brief_version,
+                "source_job_id": job_id,
+            }
+        normalized_draft = draft.model_copy(update={"state": state, "components": list(getattr(state, "components", []))})
         revision = ProjectRevision(
             **normalized_draft.model_dump(),
             revision_id=revision_uuid,
@@ -399,7 +419,7 @@ class ProjectStateService:
             "prompt": str(brief_payload.get("summary") or ""),
             "chat_id": brief_payload.get("conversation_id"),
             "workspace_id": None,
-            "visibility": "public",
+            "visibility": "private" if isinstance(state, EngineeringResult) else "public",
             "status": "active",
             "created_at": revision.created_at.isoformat(),
             "updated_at": revision.created_at.isoformat(),
@@ -478,33 +498,37 @@ class ProjectStateService:
 
         revision_uuid = uuid4()
         state = draft.state.model_copy(deep=True)
-        metadata = dict(state.assembly_metadata or {})
+        if isinstance(state, EngineeringResult):
+            if state.product.manifest.product_id != project:
+                raise ProjectStateError("project_revision_identity_mismatch", "Domain product targets a different project.")
+        else:
+            metadata = dict(state.assembly_metadata or {})
 
-        supplied_project = str(
-            metadata.get("project_id") or ""
-        ).strip()
+            supplied_project = str(
+                metadata.get("project_id") or ""
+            ).strip()
 
-        if supplied_project and supplied_project != project:
-            raise ProjectStateError(
-                "project_revision_identity_mismatch",
-                "Revised state targets a different project.",
-            )
+            if supplied_project and supplied_project != project:
+                raise ProjectStateError(
+                    "project_revision_identity_mismatch",
+                    "Revised state targets a different project.",
+                )
 
-        state.assembly_metadata = {
-            **metadata,
-            "project_id": project,
-            "revision": next_revision,
-            "project_revision": next_revision,
-            "canonical_revision_id": str(revision_uuid),
-            "design_brief_id": str(brief_id),
-            "design_brief_version": brief_version,
-            "source_job_id": job_id,
-        }
+            state.assembly_metadata = {
+                **metadata,
+                "project_id": project,
+                "revision": next_revision,
+                "project_revision": next_revision,
+                "canonical_revision_id": str(revision_uuid),
+                "design_brief_id": str(brief_id),
+                "design_brief_version": brief_version,
+                "source_job_id": job_id,
+            }
 
         normalized = draft.model_copy(
             update={
                 "state": state,
-                "components": list(state.components),
+                "components": list(getattr(state, "components", [])),
             }
         )
 

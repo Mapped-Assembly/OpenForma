@@ -76,7 +76,8 @@ def provider_author(provider: StructuredProvider) -> DomainAuthor:
         prompt = (
             "Author exactly the requested domain IR and preserve its requested artifact identity/revision. "
             "Use only supplied context and declared inputs. Never fabricate missing specifications or "
-            "add unrelated domains. Preserve stable object IDs when updating; ref_des is a display label. "
+            "add unrelated domains. Never create measured evidence. Mark assumptions and unsupported calculations explicitly. "
+            "Preserve stable object IDs when updating; ref_des is a display label. "
             "Validity is limited to the schema and declared checks; do not claim physical validation.\n"
             + canonical_json(request)
         )

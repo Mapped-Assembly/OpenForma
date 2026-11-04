@@ -35,6 +35,7 @@ from forma_core.workers.generation import (
     GENERATION_OUTPUT_VERSION,
     GENERATION_WORKER_ID,
     GenerationEngine,
+    EngineeringGenerationEngine,
     GenerationWorker,
     GenerationWorkerPayload,
     HardwareIntermediateRepresentationGenerationEngine,

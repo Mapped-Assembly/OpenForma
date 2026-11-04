@@ -446,6 +446,8 @@ class HardwareIntermediateRepresentation(BaseModel):
     def migrate_component_model(cls, value: Any) -> Any:
         if not isinstance(value, Mapping):
             return value
+        if value.get("format") in {"forma.engineering-result", "forma.product-domains"} or value.get("domain"):
+            raise ValueError("Independent domain artifacts require their owning schemas; HardwareIR conversion must use an explicit compatibility adapter.")
         payload = dict(value)
         components = expand_component_instances(payload.get("components") or [])
         existing_definitions = []
@@ -640,6 +642,7 @@ class ProjectDetail(ProjectSummary):
 # ==========================================
 
 class GenerateProjectRequest(BaseModel):
+    engineering_request: Optional[Dict[str, Any]] = Field(None, description="Optional portable request/continuation; no pipeline selector.")
     prompt: str = Field(..., max_length=12000, description="User's natural language project description")
     project_id: Optional[str] = Field(
         None,

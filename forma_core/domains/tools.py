@@ -124,6 +124,12 @@ def call_domain_tool(operation: Operation, payload: dict[str, Any], *, registry:
             return prepare_selection(project, registry=registry)
         return select_domains(request.product_id, request.brief, scope=request.scope,
                               contexts=request.contexts, registry=registry).model_dump(mode="json")
+    if operation == "generate" and "brief" in payload:
+        from .generation import EngineeringRequest, generate_engineering
+        from .agents import configured_selector
+        request = EngineeringRequest.model_validate(payload)
+        provider = None if request.decision is not None and request.designs is not None else configured_selector()
+        return generate_engineering(request, provider=provider, registry=registry).model_dump(mode="json")
     if operation == "generate":
         request = GenerateInput.model_validate(payload)
         for domain in request.designs:

@@ -1,8 +1,15 @@
-# Form
+# OpenForma
 
-**Build hardware from ideas.**
+**Describe a physical system; generate its engineering domains.**
 
-Form is an open-source AI hardware design workspace. Describe a design, add reference images, and iterate toward CAD models, wiring diagrams, bills of materials, and assembly instructions.
+OpenForma selects independently owned MechanicalIR, ElectricalIR, BiologicalIR,
+FluidicIR, ChemicalIR, ProcessIR and ThermalIR artifacts according to requested
+scope. The standard generation entry point returns portable artifacts, typed
+relationships, supported checks, assumptions and unresolved information. Existing
+HardwareIR projects keep their compatibility workflows.
+
+See [unified generation and the architecture audit](docs/unified-generation.md)
+for usage, the chemistry-first benchmark and explicit validation limits.
 
 [![License: MPL 2.0](https://img.shields.io/badge/license-MPL--2.0-blue.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/caid-forma-core.svg)](https://pypi.org/project/caid-forma-core/)

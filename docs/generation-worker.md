@@ -1,4 +1,17 @@
-# Generation worker
+# Domain-aware generation workers
+
+The default `EngineeringGenerationEngine` now invokes the shared domain control
+plane from the frozen DesignBrief. `ProjectStateService` stores tagged engineering
+reports and their independently pinned artifacts in the existing immutable
+revision stream. Existing HardwareIR revisions automatically use the compatibility
+engine. See [unified generation](unified-generation.md) for the audit, report
+contract and limitations.
+
+The following stage/checkpoint documentation describes the retained HardwareIR
+compatibility engine. Domain generation preserves independent successes and
+reports missing context, stale references and unsupported evaluations explicitly.
+
+# Legacy generation worker
 
 The Generation worker owns the `project.generate` capability. It converts one persisted, frozen `DesignBrief` into canonical project revision 1 and never reads raw conversation text.
 
