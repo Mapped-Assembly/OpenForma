@@ -145,11 +145,20 @@ specifications, and an intentionally broken network:
 
 ![Two-channel organ-chip flow schematic](assets/organ-on-chip-flow.gif)
 
-This application-specific GIF is an exploded schematic rendered from the checked
-example JSON. It is not a CAD export or CFD result. Channel tracers move at the
-declared flow divided by channel cross-sectional area; layer gaps, chambers,
-cells and external tubing are illustrative. No membrane transport or biological
-response is simulated.
+This application-specific GIF is an assembled isometric cutaway rendered from the
+checked example JSON. The two continuous inlet → pump → distribution chamber →
+main channel → waste circuits contact opposite faces of the porous membrane.
+It is not a CAD export or CFD result. Geometry is schematic and thickness is
+exaggerated. Main-channel tracers use one common length scale and real-time Q/A
+mean velocities: 0.83 mm/s epithelial and 2.50 mm/s vascular. The 20 mm channels
+therefore have 24 s and 8 s transit times. The 12 s loop returns to the same
+tracer phase without a reset jump. Passive solute exchange is calculated using a mass-conserving steady-state
+1D model with explicit illustrative permeability and inlet concentrations.
+Gold shading follows calculated concentrations; upward gold pulses indicate
+net exchange, with symbolic timing rather than molecular crossing times.
+Biological response is not simulated. See [membrane exchange](membrane-exchange-demo.md)
+for equations, assumptions, provenance, and conservation checks. The renderer rejects unsupported topology, dimensions and flows
+rather than silently drawing a different network.
 
 Run from the repository root after installing Forma's Python dependencies:
 
