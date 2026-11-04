@@ -54,6 +54,7 @@ class ProviderMetadata(DomainModel):
     schemas: list[SchemaSupport] = Field(default_factory=list)
     authoring: bool = False
     validation: bool = False
+    evaluation: bool = False
     resolution: bool = False
     discovery: bool = False
     required_context: list[ContextRequirement] = Field(default_factory=list)
@@ -142,6 +143,10 @@ JSON, with no requirement to subclass an OpenForma or Pydantic IR model.
 
     def author(self, request: dict[str, Any]) -> ArtifactReference:
         """Author through the owning implementation and return a pinned reference."""
+        ...
+
+    def evaluate(self, payload: dict[str, Any], reference: ArtifactReference) -> list[dict[str, Any]]:
+        """Return supported deterministic analyses when metadata advertises evaluation."""
         ...
 
 

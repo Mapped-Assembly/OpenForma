@@ -604,6 +604,7 @@ def persist_chat_project_revision(
     prompt: str,
     chat_id: Optional[str] = None,
     visibility: Optional[str] = None,
+    expected_parent_revision: int | None = None,
 ) -> ProjectRevision:
     """Commit generated chat output canonically, then refresh its gallery projection."""
 
@@ -625,16 +626,18 @@ def persist_chat_project_revision(
         ):
             raise ValueError("Could not update the canonical project visibility.")
     service = ProjectStateService(_DATABASE_REPOSITORY)
-    candidate = HardwareIntermediateRepresentation.model_validate(state)
+    from forma_core.domains.generation import EngineeringResult
+    candidate = state if isinstance(state, EngineeringResult) else HardwareIntermediateRepresentation.model_validate(state)
     try:
         service.get_latest(canonical_project_id, owner_user_id)
     except ProjectStateError as exc:
         if exc.code != "project_revision_not_found":
             raise
-        metadata = dict(candidate.assembly_metadata or {})
-        metadata["project_id"] = canonical_project_id
-        metadata.pop("revision", None)
-        candidate.assembly_metadata = metadata
+        if not isinstance(candidate, EngineeringResult):
+            metadata = dict(candidate.assembly_metadata or {})
+            metadata["project_id"] = canonical_project_id
+            metadata.pop("revision", None)
+            candidate.assembly_metadata = metadata
         revision = service.create_initial_revision(
             build_generation_draft(brief, candidate),
             project_id=canonical_project_id,
@@ -649,6 +652,7 @@ def persist_chat_project_revision(
             project_id=canonical_project_id,
             owner_user_id=owner_user_id,
             source_job_id=source_job_id,
+            expected_parent_revision=expected_parent_revision,
         ).revision
     publish_project_revision(revision, brief, owner_user_id)
     return revision
@@ -669,6 +673,13 @@ def publish_project_revision(
         raise ValueError("Project revision owner must match owner_user_id.")
     if revision.project_id != brief.project_id or revision.design_brief_id != brief.design_brief_id:
         raise ValueError("Project revision and DesignBrief identities must match.")
+
+    from forma_core.domains.generation import EngineeringResult
+    if isinstance(revision.state, EngineeringResult):
+        # Canonical revisions already persist the portable report. The legacy gallery
+        # projection cannot represent domain semantics and must not coerce them.
+        invalidate_project_lists()
+        return project_id
 
     ir = revision.state.model_copy(deep=True)
     ir.assembly_metadata = {
@@ -1588,7 +1599,7 @@ def create_project_generation_plan(
         GENERATION_WORKER_ID,
         WORKER_CONTRACT_VERSION,
         GenerationWorker,
-        HardwareIntermediateRepresentationGenerationEngine,
+        EngineeringGenerationEngine,
         WorkerOrchestrator,
         WorkerRequest,
     )
@@ -1604,7 +1615,7 @@ def create_project_generation_plan(
         raise ValueError("The build owner must match owner_user_id.")
     plan_id = f"build-plan-{build.build_id}"
     existing = _DATABASE_REPOSITORY.get_worker_execution_plan(plan_id, owner)
-    engine = HardwareIntermediateRepresentationGenerationEngine(provider_name=provider_name, model_name=model_name)
+    engine = EngineeringGenerationEngine(provider_name=provider_name, model_name=model_name)
     worker = GenerationWorker(ProjectStateService(_DATABASE_REPOSITORY), engine)
     orchestrator = WorkerOrchestrator(
         _DATABASE_REPOSITORY,
@@ -1763,12 +1774,12 @@ async def execute_project_generation_plan(
 ):
     """Execute or resume a persisted project-generation plan."""
 
-    from forma_core.workers import GenerationWorker, HardwareIntermediateRepresentationGenerationEngine, WorkerOrchestrator
+    from forma_core.workers import GenerationWorker, EngineeringGenerationEngine, WorkerOrchestrator
 
     owner = _normalize_user_id(owner_user_id)
     worker = GenerationWorker(
         ProjectStateService(_DATABASE_REPOSITORY),
-        HardwareIntermediateRepresentationGenerationEngine(provider_name=provider_name, model_name=model_name),
+        EngineeringGenerationEngine(provider_name=provider_name, model_name=model_name),
         project_publisher=publish_project_revision,
     )
     orchestrator = WorkerOrchestrator(

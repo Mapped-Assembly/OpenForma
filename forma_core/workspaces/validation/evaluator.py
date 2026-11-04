@@ -248,6 +248,25 @@ def evaluate_project_revision(
     design_brief: DesignBrief,
     requested_checks: list[str] | None = None,
 ) -> ValidationReportDraft:
+    from forma_core.domains.generation import EngineeringResult
+    from forma_core.domains.composition import validate_product
+
+    if isinstance(revision.state, EngineeringResult):
+        report = validate_product(revision.state.product)
+        findings = [_finding(
+            criterion_id="domains:structure-and-composition", criterion="Domain local and composition checks",
+            kind=ValidationFindingKind.CONSISTENCY,
+            status=ValidationCheckStatus.PASSED if report.is_valid else ValidationCheckStatus.FAILED,
+            evidence=[report.model_dump_json()], remediation="Inspect each domain and composition finding separately.", artifact_id=None)]
+        # Legacy generic criteria have no domain evaluator mapping; do not certify them.
+        findings.append(_finding(
+            criterion_id="domains:engineering-coverage", criterion="Physical verification coverage",
+            kind=ValidationFindingKind.CRITERION, status=ValidationCheckStatus.WARNING,
+            evidence=["Domain checks do not establish physical performance. Unsupported requested checks remain unresolved.",
+                      revision.state.model_dump_json(include={"evaluations", "unresolved"})],
+            remediation="Provide missing evidence and supported domain evaluators for the requested criteria.", artifact_id=None))
+        return ValidationReportDraft(findings=findings)
+
     checks: list[str] = []
     seen_checks: set[str] = set()
     for requested in requested_checks or ["constraints", "consistency", "assumptions", "criteria"]:

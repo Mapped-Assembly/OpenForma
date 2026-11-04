@@ -29,6 +29,7 @@
 - [DesignBrief contract](design-brief.md)
 - [Worker contracts and capability registry](worker-contracts.md)
 - [Dependency-aware worker orchestration](worker-orchestration.md)
+- [Unified domain generation and architecture audit](unified-generation.md)
 - [Generation worker and canonical project revisions](generation-worker.md)
 - [Validation worker and revision-bound findings](validation-worker.md)
 - [Reverse-Engineering worker and artifact findings](reverse-engineering-worker.md)

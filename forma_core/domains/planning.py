@@ -102,7 +102,7 @@ def select_domains(
         if selector is None:
             raise ValueError("Supply a ProductScope or an agent selector for the product brief.")
         scope = selector(brief)
-    scope = ProductScope.model_validate(scope)
+    scope = ProductScope.model_validate(scope.model_dump() if isinstance(scope, ProductScope) else scope)
     registry = get_registry(registry)
     catalog = registry.catalog()
     contexts = contexts or {}

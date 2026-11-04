@@ -14,6 +14,7 @@ from apps.api.auth import UserContext, require_user_context
 from forma_core.database import get_project_identity, get_project_revision_by_id, list_project_revisions
 from forma_core.persistence.images import hydrate_image_storage_metadata
 from forma_core.persistence.project_artifacts import ProjectArtifactStorage, ProjectArtifactStorageError
+from forma_core.domains.generation import EngineeringResult
 from forma_core.workspaces.projects.state import ProjectRevision, ProjectStateError
 
 router = APIRouter(prefix="/projects/{project_id}/history", tags=["project-history"])
@@ -37,7 +38,8 @@ class RevisionPage(BaseModel):
 
 class RevisionSnapshot(RevisionSummary):
     project_id: UUID
-    project_ir: dict[str, Any]
+    project_ir: dict[str, Any] | None = None
+    engineering_result: dict[str, Any] | None = None
 
 
 def _owner(project_id: UUID, user: UserContext) -> str:
@@ -53,6 +55,11 @@ def _owner(project_id: UUID, user: UserContext) -> str:
 
 
 def _summary(revision: ProjectRevision) -> RevisionSummary:
+    if isinstance(revision.state, EngineeringResult):
+        return RevisionSummary(
+            revision_id=revision.revision_id, revision=revision.revision, parent_revision=revision.parent_revision,
+            created_at=revision.created_at, title=revision.state.product.plan.brief[:160] if revision.state.product.plan else "Engineering project",
+            summary=f"Engineering artifacts: {revision.state.status}")
     metadata = revision.state.assembly_metadata or {}
     last_iteration = metadata.get("last_iteration") or {}
     if revision.source_job_id.startswith("opencode-image-"):
@@ -109,6 +116,10 @@ def get_project_snapshot(
 ) -> RevisionSnapshot:
     """Hydrate only assets recorded in this version; never discover newer images."""
     revision = _revision(project_id, revision_id, _owner(project_id, user))
+    if isinstance(revision.state, EngineeringResult):
+        response.headers["Cache-Control"] = "private, no-store"
+        return RevisionSnapshot(**_summary(revision).model_dump(), project_id=project_id,
+                                engineering_result=revision.state.model_dump(mode="json"))
     ir = revision.state.model_dump(mode="json")
     ir["assembly_metadata"] = hydrate_image_storage_metadata(
         ir.get("assembly_metadata") or {}, str(project_id), discover_missing=False,
@@ -133,7 +144,7 @@ def get_snapshot_cad(
 ) -> Response:
     """Serve bytes only when the exact owned snapshot references their checksum."""
     revision = _revision(project_id, revision_id, _owner(project_id, user))
-    cad = revision.state.cad_model
+    cad = getattr(revision.state, "cad_model", None)
     if not isinstance(cad, dict) or len(sha256) != 64 or cad.get("stored_sha256") != sha256:
         raise HTTPException(status_code=404, detail="This version has no matching STEP artifact.")
     try:

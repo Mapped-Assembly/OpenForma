@@ -75,7 +75,7 @@ def get_workflow_debug_config(
     }
 
 
-def generate_project_with_workflow(
+def generate_legacy_project_with_workflow(
     workflow_id: Optional[str],
     prompt: str,
     *,
@@ -139,3 +139,38 @@ def generate_project_with_workflow(
             workflow=normalized,
         )
     return ir
+
+
+def generate_project_with_workflow(
+    workflow_id: Optional[str], prompt: str, *, provider_name: Optional[str] = None,
+    model_name: Optional[str] = None, settings: Optional[ResolvedIntegrationSettings] = None,
+    generation_metadata: Optional[Dict[str, Any]] = None, existing: Any = None,
+    engineering_request: Any = None, provider: Any = None, **options: Any,
+) -> Any:
+    """Generate domains by default; infer compatibility only from an existing legacy document."""
+    from uuid import uuid4
+    from forma_core.domains.generation import EngineeringRequest, generate_engineering
+    from forma_core.domains.composition import ProductBundle
+
+    normalize_workflow_id(workflow_id)
+    if isinstance(existing, HardwareIntermediateRepresentation):
+        return generate_legacy_project_with_workflow(
+            workflow_id, prompt, provider_name=provider_name, model_name=model_name, settings=settings,
+            generation_metadata=generation_metadata, **options)
+    request = EngineeringRequest.model_validate(engineering_request) if engineering_request is not None else EngineeringRequest(
+        product_id=(existing.manifest.product_id if isinstance(existing, ProductBundle) else
+                    (generation_metadata or {}).get("project_id") or str(uuid4())),
+        brief=prompt, existing=existing)
+    if provider is not None or (request.decision is not None and request.designs is not None):
+        result = generate_engineering(request, provider=provider)
+    else:
+        orchestrator = HardwarePipelineOrchestrator(
+            provider_name=provider_name, model_name=model_name, settings=settings, persist_project=False)
+        result = orchestrator.generate_engineering(request)
+    unsupported = [name for name in ("image_bytes", "external_source_provider") if options.get(name)]
+    if workflow_id == "web_research":
+        unsupported.append("web_research")
+    if unsupported:
+        result.unresolved.append("Domain generation has no adapter for: " + ", ".join(unsupported))
+        result.status = "partial"
+    return result

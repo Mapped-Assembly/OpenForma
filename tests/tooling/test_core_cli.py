@@ -115,7 +115,7 @@ class CoreCliTests(unittest.TestCase):
             },
             clear=False,
         ), patch(
-            "forma_core.generation.generate_project_with_workflow",
+            "forma_core.agents.workflows.generate_legacy_project_with_workflow",
             side_effect=fail_after_observing,
         ), patch("sys.stderr", io.StringIO()):
             exit_code = main(["generate", "make a sensor", "--simulation"])
