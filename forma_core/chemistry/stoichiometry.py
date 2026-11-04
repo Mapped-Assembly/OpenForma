@@ -223,13 +223,40 @@ Revalidate mutable models at entry so edited inputs cannot bypass constraints.
     result.maximum_extent_mol = str(extent)
     absolute = Fraction(str(request.limiting_absolute_tolerance_mol))
     relative = Fraction(str(request.limiting_relative_tolerance))
+    result.amounts = _amounts_at_extent(initial, coefficients, extent, masses, roles)
+    result.limiting_species_ids = [key for key in sorted(consumed_ids)
+                                  if initial[key] + coefficients[key] * extent <= absolute + relative * initial[key]]
+    result.conservation = _conservation_at_extent(
+        document, balance, coefficients, extent, masses, request.mass_balance_tolerance_g,
+    )
+    mass_status = result.conservation.mass_status
+    if mass_status != "pass":
+        result.findings.append(Finding(
+            code=f"mass_balance_{mass_status}", location=reaction.reaction_id,
+            severity="error" if mass_status == "fail" else "warning",
+            message="Supplied molar masses do not conserve mass for the calculated extent." if mass_status == "fail"
+            else "Missing molar masses leave mass conservation unknown; mole/element results remain available.",
+        ))
+    if mass_status == "fail":
+        result.status = "fail"
+    return result
+
+
+def _amounts_at_extent(
+    initial: dict[str, Fraction], coefficients: dict[str, Fraction], extent: Fraction,
+    masses: dict[str, Fraction], roles: dict[str, str],
+) -> list[SpeciesAmountResult]:
+    """Share exact inventory accounting between stoichiometric and kinetic evaluations."""
+    if extent < 0:
+        raise ValueError("Forward extent cannot be negative.")
+    amounts: list[SpeciesAmountResult] = []
     for key in sorted(initial):
         coefficient = coefficients.get(key, Fraction(0))
         delta = coefficient * extent
         consumed, formed = max(-delta, Fraction(0)), max(delta, Fraction(0))
         final = initial[key] + delta
-        if key in consumed_ids and final <= absolute + relative * initial[key]:
-            result.limiting_species_ids.append(key)
+        if final < 0:
+            raise ValueError("Extent exceeds the available inventory.")
         item = SpeciesAmountResult(
             species_id=key, initial=str(initial[key]), consumed=str(consumed), formed=str(formed),
             final=str(final), net_coefficient=str(coefficient), role=roles.get(key, "unspecified"),
@@ -240,7 +267,16 @@ Revalidate mutable models at entry so edited inputs cannot bypass constraints.
             item.consumed_mass_g = str(consumed * masses[key])
             item.formed_mass_g = str(formed * masses[key])
             item.final_mass_g = str(final * masses[key])
-        result.amounts.append(item)
+        amounts.append(item)
+    return amounts
+
+
+def _conservation_at_extent(
+    document: ChemicalIR, balance: BalanceResult, coefficients: dict[str, Fraction],
+    extent: Fraction, masses: dict[str, Fraction], mass_tolerance_g: float,
+) -> ConservationResult:
+    """Check net changes for a previously balanced reaction at a supplied extent."""
+    species = {item.species_id: item for item in document.species}
     elements: dict[str, Fraction] = defaultdict(Fraction)
     charge = Fraction(0)
     for key, coefficient in coefficients.items():
@@ -254,19 +290,9 @@ Revalidate mutable models at entry so edited inputs cannot bypass constraints.
     mass_residual = (sum((coefficients[key] * extent * masses[key] for key in active), Fraction(0))
                      if active <= masses.keys() else None)
     mass_status: Status = "unknown" if mass_residual is None else (
-        "pass" if abs(mass_residual) <= Fraction(str(request.mass_balance_tolerance_g)) else "fail")
-    result.conservation = ConservationResult(
+        "pass" if abs(mass_residual) <= Fraction(str(mass_tolerance_g)) else "fail")
+    return ConservationResult(
         reaction_balance=balance, element_residuals_mol={key: str(value) for key, value in sorted(elements.items())},
         charge_residual_mol=str(charge), mass_status=mass_status,
         mass_residual_g=str(mass_residual) if mass_residual is not None else None,
     )
-    if mass_status != "pass":
-        result.findings.append(Finding(
-            code=f"mass_balance_{mass_status}", location=reaction.reaction_id,
-            severity="error" if mass_status == "fail" else "warning",
-            message="Supplied molar masses do not conserve mass for the calculated extent." if mass_status == "fail"
-            else "Missing molar masses leave mass conservation unknown; mole/element results remain available.",
-        ))
-    if mass_status == "fail":
-        result.status = "fail"
-    return result

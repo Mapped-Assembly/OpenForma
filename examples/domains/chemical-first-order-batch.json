@@ -1,0 +1,300 @@
+{
+  "action": "evaluate",
+  "document": {
+    "artifact_id": "synthetic-first-order-batch",
+    "revision": 1,
+    "domain": "chemical",
+    "schema_version": "1.0",
+    "species": [
+      {
+        "species_id": "peroxide",
+        "name": "peroxide",
+        "formula": "H2O2",
+        "charge": 0,
+        "phase": null,
+        "registry_id": null,
+        "claim": {
+          "basis": "illustrative",
+          "source_ids": [
+            "synthetic-kinetics"
+          ],
+          "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+        }
+      },
+      {
+        "species_id": "water",
+        "name": "water",
+        "formula": "H2O",
+        "charge": 0,
+        "phase": null,
+        "registry_id": null,
+        "claim": {
+          "basis": "illustrative",
+          "source_ids": [
+            "synthetic-kinetics"
+          ],
+          "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+        }
+      },
+      {
+        "species_id": "oxygen",
+        "name": "oxygen",
+        "formula": "O2",
+        "charge": 0,
+        "phase": null,
+        "registry_id": null,
+        "claim": {
+          "basis": "illustrative",
+          "source_ids": [
+            "synthetic-kinetics"
+          ],
+          "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+        }
+      },
+      {
+        "species_id": "inert",
+        "name": "inert",
+        "formula": "He",
+        "charge": 0,
+        "phase": null,
+        "registry_id": null,
+        "claim": {
+          "basis": "illustrative",
+          "source_ids": [
+            "synthetic-kinetics"
+          ],
+          "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+        }
+      }
+    ],
+    "mixtures": [],
+    "reactions": [
+      {
+        "reaction_id": "decomposition",
+        "reactants": [
+          {
+            "species_id": "peroxide",
+            "coefficient": "2"
+          }
+        ],
+        "products": [
+          {
+            "species_id": "water",
+            "coefficient": "2"
+          },
+          {
+            "species_id": "oxygen",
+            "coefficient": "1"
+          }
+        ],
+        "reversible": false,
+        "catalyst_species_ids": [],
+        "condition_ids": [],
+        "model_ids": [],
+        "claim": {
+          "basis": "illustrative",
+          "source_ids": [
+            "synthetic-kinetics"
+          ],
+          "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+        }
+      }
+    ],
+    "conditions": [],
+    "models": [],
+    "evidence": [
+      {
+        "source_id": "synthetic-kinetics",
+        "basis": "illustrative",
+        "title": "Analytical first-order batch regression",
+        "publisher": null,
+        "locator": null,
+        "url": null,
+        "published_at": null,
+        "retrieved_at": null,
+        "effective_at": null,
+        "undated_reason": null,
+        "applicability": null,
+        "uncertainty": null,
+        "rationale": "All parameters are synthetic fixture inputs; no real rate law or experimental validation is asserted."
+      }
+    ]
+  },
+  "request": {
+    "schema_version": "1.0",
+    "batch": {
+      "schema_version": "1.0",
+      "chemical": {
+        "artifact_id": "synthetic-first-order-batch",
+        "domain": "chemical",
+        "schema_id": "openforma.chemical",
+        "schema_version": "1.0",
+        "revision": 1,
+        "provider_id": "openforma.native",
+        "provider_version": "1.0",
+        "sha256": "f7658c8bcee1a9c6f8d25b20737a6e2900fccae3f3af64df75a8876ba434e972",
+        "locator": null,
+        "provenance": {}
+      },
+      "reaction_id": "decomposition",
+      "direction": "forward",
+      "mode": "single_reaction_batch",
+      "inventory": [
+        {
+          "species_id": "peroxide",
+          "value": 2.0,
+          "unit": "mol",
+          "role": "unspecified",
+          "claim": {
+            "basis": "illustrative",
+            "source_ids": [
+              "synthetic-kinetics"
+            ],
+            "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+          }
+        },
+        {
+          "species_id": "water",
+          "value": 10.0,
+          "unit": "mol",
+          "role": "unspecified",
+          "claim": {
+            "basis": "illustrative",
+            "source_ids": [
+              "synthetic-kinetics"
+            ],
+            "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+          }
+        },
+        {
+          "species_id": "inert",
+          "value": 1.0,
+          "unit": "mol",
+          "role": "inert",
+          "claim": {
+            "basis": "illustrative",
+            "source_ids": [
+              "synthetic-kinetics"
+            ],
+            "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+          }
+        }
+      ],
+      "inventory_policy": "zero_unlisted_nonreactants",
+      "molar_masses": [
+        {
+          "species_id": "peroxide",
+          "value": 34.0,
+          "unit": "g/mol",
+          "claim": {
+            "basis": "illustrative",
+            "source_ids": [
+              "synthetic-kinetics"
+            ],
+            "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+          }
+        },
+        {
+          "species_id": "water",
+          "value": 18.0,
+          "unit": "g/mol",
+          "claim": {
+            "basis": "illustrative",
+            "source_ids": [
+              "synthetic-kinetics"
+            ],
+            "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+          }
+        },
+        {
+          "species_id": "oxygen",
+          "value": 32.0,
+          "unit": "g/mol",
+          "claim": {
+            "basis": "illustrative",
+            "source_ids": [
+              "synthetic-kinetics"
+            ],
+            "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+          }
+        }
+      ],
+      "evidence": [],
+      "limiting_absolute_tolerance_mol": 1e-12,
+      "limiting_relative_tolerance": 1e-09,
+      "mass_balance_tolerance_g": 1e-09
+    },
+    "model": "first-order-batch",
+    "model_version": "1.0",
+    "rate_law": "first_order_disappearance",
+    "rate_constant": {
+      "value": 0.1,
+      "unit": "1/s",
+      "temperature": {
+        "value": 25.0,
+        "unit": "degC",
+        "claim": {
+          "basis": "illustrative",
+          "source_ids": [
+            "synthetic-kinetics"
+          ],
+          "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+        }
+      },
+      "claim": {
+        "basis": "illustrative",
+        "source_ids": [
+          "synthetic-kinetics"
+        ],
+        "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+      }
+    },
+    "volume": {
+      "value": 2.0,
+      "unit": "L",
+      "claim": {
+        "basis": "illustrative",
+        "source_ids": [
+          "synthetic-kinetics"
+        ],
+        "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+      }
+    },
+    "temperature": {
+      "value": 298.15,
+      "unit": "K",
+      "claim": {
+        "basis": "illustrative",
+        "source_ids": [
+          "synthetic-kinetics"
+        ],
+        "rationale": "Synthetic constants for analytic regression, not measured peroxide kinetics."
+      }
+    },
+    "isothermal": true,
+    "constant_volume": true,
+    "competing_reactions": false,
+    "times": [
+      {
+        "value": 0.0,
+        "unit": "s"
+      },
+      {
+        "value": 1.0,
+        "unit": "s"
+      },
+      {
+        "value": 10.0,
+        "unit": "s"
+      },
+      {
+        "value": 100.0,
+        "unit": "s"
+      },
+      {
+        "value": 10000.0,
+        "unit": "s"
+      }
+    ]
+  }
+}

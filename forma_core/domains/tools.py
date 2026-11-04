@@ -82,7 +82,7 @@ class ExportInput(DomainModel):
     allow_lossy: bool = False
 
 
-Operation = Literal["plan", "generate", "compose", "registry", "validate", "validate-domain", "import-hardware", "export-hardware", "schema", "bindings"]
+Operation = Literal["plan", "generate", "compose", "registry", "validate", "validate-domain", "import-hardware", "export-hardware", "schema", "bindings", "kinetics"]
 
 
 def call_domain_tool(operation: Operation, payload: dict[str, Any], *, registry: DomainRegistry | None = None) -> dict[str, Any]:
@@ -91,6 +91,16 @@ def call_domain_tool(operation: Operation, payload: dict[str, Any], *, registry:
         from forma_core.geometry_bindings.tools import binding_tool
         return binding_tool(payload)
     registry = get_registry(registry)
+    if operation == "kinetics":
+        adapter = registry.provider("chemical")
+        handler = getattr(adapter, "kinetics", None)
+        metadata = registry.metadata("chemical")
+        if not callable(handler) or metadata is None or not metadata.evaluation:
+            return {"status": "unsupported", "findings": [Finding(
+                code="kinetics_provider_unavailable", location="chemical", severity="warning",
+                message="The registered chemical provider does not expose bounded kinetics evaluation.",
+            ).model_dump(mode="json")]}
+        return handler(payload)
     if operation == "registry":
         if payload:
             raise ValueError("Registry discovery accepts an empty object; registration is application configuration.")

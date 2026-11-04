@@ -204,3 +204,121 @@ Run the deterministic solver and existing ChemicalIR regression tests:
 ```bash
 python -m pytest tests/projects/test_stoichiometry.py tests/projects/test_chemical_ir.py -q
 ```
+
+## Bounded first-order batch kinetics
+
+Issue #43 adds an explicitly parameterized **prediction** alongside the
+stoichiometric upper bound. `evaluate_kinetics(document, request)` in
+`forma_core.chemistry.kinetics` evaluates one model, `first-order-batch` v1.0:
+
+`-d[A]/dt = k[A]`, so `n_A(t) = n_A(0) exp(-kt)` at constant volume.
+
+There must be exactly one **net consumed** species A. For its written reaction
+coefficient `a`, extent is `(n_A(0) - n_A(t))/a`, and the extent rate is
+`k n_A(t)/a`. Other species follow net stoichiometry. Initial products and inert,
+solvent or catalyst inventories are retained through the same accounting code
+as the stoichiometric evaluator.
+
+This model is an irreversible, isothermal, constant-volume batch without
+competing reactions. It does not imply that a balanced reaction follows this
+law. In particular, the two-reactant vinegar/baking-soda reaction is outside
+this bounded kinetic model; no pseudo-first-order law is inferred for it.
+
+### Required inputs and applicability
+
+`KineticsRequest` contains:
+
+- `batch`: the existing `StoichiometryRequest`, including its pinned ChemicalIR
+  reference, initial inventory policy, property sources and optional evidence.
+- `rate_constant`: nonnegative value, inverse-time unit (`1/s`, `1/min`, `1/h`),
+  claim/source or explicit assumption, and the temperature at which it applies.
+- `volume`: positive value in `L`, `mL` or `m3`.
+- `temperature`: operating temperature in `K` or `degC`. It must match the
+  rate-constant reference temperature and any temperature condition referenced
+  by the selected reaction. No temperature correction or rate lookup occurs.
+- Explicit `isothermal: true`, `constant_volume: true`, and
+  `competing_reactions: false` declarations. Missing declarations remain unknown.
+- `times`: one to 10,000 nonnegative elapsed times, each with `s`, `min` or `h`.
+  The initial inventory is at t=0; samples retain request order.
+
+Claims for kinetic inputs resolve source IDs against the chemical document and
+`batch.evidence`. Rate constants with unknown provenance are not evaluated.
+Synthetic or assumed parameters remain labeled as such in the receipt.
+No confidence intervals are manufactured from qualitative evidence.
+
+Missing k, volume, temperatures or condition declarations returns `unknown`
+with no time series. Unsupported laws/versions, reverse or competing reactions,
+multiple net consumed species, variable temperature/volume, or incompatible
+temperature applicability returns `unsupported`. Invalid dimensions or
+unresolved evidence produces `fail`; negative/nonfinite values are structured
+Pydantic schema errors. Existing stoichiometry diagnostics remain available in
+the nested `stoichiometric_bound` receipt.
+
+### One interface through Python, CLI and MCP
+
+The existing native chemical provider dispatches the additive `kinetics`
+operation. It accepts `{"action":"schema"}` for the input/result schemas,
+supported units and limitations, or `{"action":"evaluate","document":...,
+"request":...}`. This does not mutate a hosted project or call an LLM.
+Artifact-only generation still checks reaction balance; it does not invent
+the numerical inputs for a subsequent kinetic evaluation.
+
+```bash
+printf '%s\n' '{"action":"schema"}' | python -m forma_core domains kinetics -
+python -m forma_core domains kinetics examples/domains/chemical-first-order-batch.json --output /tmp/kinetic-result.json
+python -m pytest tests/projects/test_kinetics.py tests/projects/test_stoichiometry.py tests/opencode/test_mcp.py -q
+```
+
+The CLI exits 0 for successful predictions/schema discovery and 1 for
+unknown, unsupported or failed evaluations. Inspect findings even on success:
+mass-property coverage may remain unknown.
+
+```python
+import json
+from pathlib import Path
+
+from forma_core.domains.tools import call_domain_tool
+
+payload = json.loads(Path("examples/domains/chemical-first-order-batch.json").read_text())
+result = call_domain_tool("kinetics", payload)
+print(result["status"], result["samples"][2]["time_s"])
+```
+
+For MCP, invoke `forma.opencode.domains` with `operation: "kinetics"` and
+`payload` containing the same JSON encoded as a string. `tools/list` advertises
+the operation and its prerequisites; schema discovery and evaluation return
+the same data as Python and the CLI. If the registered chemical provider does
+not support this operation, there is no silent fallback to a different provider.
+
+### Synthetic fixture and result meanings
+
+The checked-in fixture uses balanced `2 H2O2 -> 2 H2O + O2` solely for accounting
+and **synthetic** `k = 0.1 /s` at 25 degC. These are not measured peroxide
+kinetics. With 2 mol initial reactant and a 2 L batch, at 10 s the expected
+remaining reactant is `2/e` mol, its concentration is `1/e` mol/L, and its
+disappearance rate is `0.2/e` mol/s. Extent rate is `0.1/e` mol/s for the written
+coefficient of 2. The fixture also retains 10 mol initial water and 1 mol inert.
+
+Each sample includes amounts, concentrations, signed net species rates,
+disappearance rate, extent/rate, and element/charge/mass findings. Rates have
+explicit units: mol/s for amount rates, mol/(L s) for concentration rates.
+Multiplying all reaction coefficients rescales extent and extent rate; physical
+species amounts and rates remain invariant.
+
+The exponential uses binary64 `exp`/`expm1`; all subsequent calculations retain
+the existing rational-string format. Small conversions and small remaining
+amounts use separate numerically stable formulas. Fractions below binary64
+resolution are reported with `kinetic_precision_limit` findings; no physical
+claim of completion follows from an underflowed tail. Exact rational accounting
+keeps inventories nonnegative and conserves the balanced reaction after that
+single exponential approximation. Missing molar masses leave mass conservation
+unknown while mole-based predictions remain available.
+
+The receipt retains the full kinetic request, model/version, canonical input
+digest and nested theoretical-bound receipt with its evidence and artifact
+identity. `kinetics_result_is_current(result, document, request)` checks input
+and model freshness; changed rates, times, volume, conditions, evidence or
+reaction revisions invalidate the prediction. This is not a signature proving
+that saved output values are authentic. Save the document and request alongside
+the result and recompute to verify it. No caching or background execution is
+introduced.
