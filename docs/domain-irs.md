@@ -313,6 +313,11 @@ work completed; it does not mean physical, manufacturing or safety qualification
 
 ## Agent-independent public workflow
 
+For end-to-end external-agent generation, start with `generate` and only `{brief}`.
+Follow the returned action/schema and submit its continuation to the same operation;
+see [guided generation](external-agent-generation.md). The lower-level selection
+exchange remains available below for callers managing individual steps.
+
 The default `plan` operation accepts a project and returns a selection request
 for **the calling agent**. It does not load provider configuration, call another
 model or guess the selection. The same exchange works through Python, CLI and
@@ -399,7 +404,7 @@ All CLI operations read JSON from a path or `-` and optionally write `--output`:
 | --- | --- |
 | `schema` | `{"domain": "mechanical"}`; returns document and context schemas |
 | `plan` | `{product_id, brief, contexts?}` returns an external selection request; add `decision` or explicit `scope` to complete it. Optional internal inference requires `selection_mode: "provider"` (plus optional `provider`, `model`). |
-| `generate` | `{plan, designs, existing?, inputs?, links?, update_domains?}` |
+| `generate` | `{brief}` starts a guided external-agent turn; `{continuation, submission?}` advances/resumes it. Complete caller-authored requests and `{plan, designs, existing?, inputs?, links?, update_domains?}` remain supported. `execution: "provider"` explicitly enables internal inference for brief-based requests. |
 | `validate` | ProductBundle |
 | `validate-domain` | One standalone domain document |
 | `import-hardware` | `{product_id, hardware_ir}` |

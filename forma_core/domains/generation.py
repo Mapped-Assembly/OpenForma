@@ -7,7 +7,7 @@ from typing import Any, Callable, Literal, TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
-from .base import Domain, DomainModel, Text, fingerprint, unique
+from .base import Domain, DomainModel, InteractionRequired, Text, canonical_json, fingerprint, unique
 from .composition import ArtifactReference, DomainLink, LinkEndpoint, ProductBundle, compose_product, validate_product
 from .planning import ProductPlan, context_errors
 from .providers import DomainRegistry, NATIVE_PROVIDER
@@ -173,6 +173,8 @@ def generate_product(
                 task.status = "invalid" if task.errors else "generated"
                 if task.status == "generated":
                     documents[task.domain] = document
+            except InteractionRequired:
+                raise
             except Exception as exc:
                 # The author is an external callback/provider boundary. One
                 # failure must not cancel unrelated selected domains.
@@ -256,11 +258,29 @@ class EngineeringResult(DomainModel):
     status: Literal["succeeded", "partial", "failed"]
 
 
+def reject_invented_measurements(payload: Any, previous: Any) -> None:
+    """Permit unchanged imported observations; never mint observations by generation."""
+    def measured(value: Any) -> set[str]:
+        """Include the measured value's parent as well as its evidence claim."""
+        if isinstance(value, dict):
+            is_measurement = value.get("basis") == "measured" or (
+                isinstance(value.get("claim"), dict) and value["claim"].get("basis") == "measured")
+            own = {canonical_json(value)} if is_measurement else set()
+            return own.union(*(measured(v) for v in value.values()))
+        if isinstance(value, list):
+            return set().union(*(measured(v) for v in value))
+        return set()
+
+    if measured(payload) - measured(previous):
+        raise ValueError("Generation cannot introduce experimental measurements; import sourced observations separately.")
+
+
 def generate_engineering(
     request: EngineeringRequest,
     *,
     provider: StructuredProvider | None = None,
     registry: DomainRegistry | None = None,
+    activity_runner: Callable[[str, dict[str, Any], Callable[[], Any]], Any] | None = None,
 ) -> EngineeringResult:
     """Coordinate selection, isolated authoring, composition and supported evaluation.
 
@@ -276,6 +296,11 @@ def generate_engineering(
 
     request = request.model_copy(deep=True)
     registry = get_registry(registry)
+
+    def activity(name: str, inputs: dict[str, Any], execute: Callable[[], Any]) -> Any:
+        """Allow a resumable adapter to journal owner calls without changing ownership."""
+        return activity_runner(name, inputs, execute) if activity_runner else execute()
+
     project = SelectionProject(product_id=request.product_id, brief=request.brief, contexts=request.contexts)
     selection = prepare_selection(project, registry=registry)
     if request.decision is not None:
@@ -317,6 +342,8 @@ def generate_engineering(
             unresolved.extend(f"{task.domain}: {item}" for item in draft.unknowns)
             if draft.missing:
                 blocked_context[task.domain] = draft.missing
+        except InteractionRequired:
+            raise
         except Exception as exc:
             blocked_context[task.domain] = [f"Context extraction failed: {exc}"]
 
@@ -332,11 +359,13 @@ def generate_engineering(
                 or (task.domain in existing_domains and task.domain not in (request.update_domains or set()))):
             continue
         try:
-            reference = ArtifactReference.model_validate(adapter.author({
+            author_input = {
                 "product_id": request.product_id, "domain": task.domain, "context": deepcopy(task.context),
                 "previous": next((r.model_dump(mode="json") for r in request.existing.manifest.artifacts
                                   if r.domain == task.domain), None) if request.existing else None,
-            }))
+            }
+            reference = ArtifactReference.model_validate(activity(
+                "author:" + task.domain, author_input, lambda: adapter.author(author_input)))
             if reference.domain != task.domain or registry.reference_errors(reference):
                 raise ValueError("External author returned an incompatible artifact identity.")
             external_references.append(reference)
@@ -354,20 +383,7 @@ def generate_engineering(
             raise ValueError("No author configured for this domain.")
         output = base_author(item)
         payload = output.model_dump(mode="json") if isinstance(output, BaseModel) else output
-        previous = item.previous or {}
-
-        def measured(value: Any) -> set[str]:
-            """Find exact existing observation claims; new generation cannot mint them."""
-            if isinstance(value, dict):
-                is_measurement = value.get("basis") == "measured" or (isinstance(value.get("claim"), dict) and value["claim"].get("basis") == "measured")
-                own = {canonical_json(value)} if is_measurement else set()
-                return own.union(*(measured(v) for v in value.values()))
-            if isinstance(value, list):
-                return set().union(*(measured(v) for v in value))
-            return set()
-
-        if measured(payload) - measured(previous):
-            raise ValueError("Generation cannot introduce experimental measurements; import sourced observations separately.")
+        reject_invented_measurements(payload, item.previous or {})
         return output
 
     # An unavailable owner cannot supply a replacement pin. Retain its previous
@@ -412,6 +428,8 @@ def generate_engineering(
                     + canonical_json({"product": bundle.model_dump(mode="json"), "registry": registry.catalog()}), CompositionDraft))
                 bundle.manifest.links = draft.links
                 unresolved.extend(draft.unresolved)
+            except InteractionRequired:
+                raise
             except Exception as exc:
                 unresolved.append(f"Composition authoring failed: {exc}")
     validation = validate_product(bundle, registry=registry)
