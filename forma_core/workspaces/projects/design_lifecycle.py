@@ -1,11 +1,12 @@
 """Typed lifecycle state for progressively expensive project representations.
 
-The canonical system topology remains ``HardwareIntermediateRepresentation.system_architecture``.  This
+For legacy HardwareIR projects, the canonical system topology remains ``HardwareIntermediateRepresentation.system_architecture``.  This
 module tracks the derived representations (visuals, geometry, CAD, exports),
 their source fingerprints, and the visual approval gate.  The serialized state
 is currently embedded in ``HardwareIntermediateRepresentation.assembly_metadata`` so existing 0.2 IR
 consumers remain compatible while the lifecycle itself stays strongly typed at
-all mutation boundaries.
+all mutation boundaries. New domain generation uses ProductBundle identities and
+revision pins; this compatibility lifecycle does not own other engineering domains.
 """
 
 from __future__ import annotations

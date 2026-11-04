@@ -146,7 +146,31 @@ def cmd_namespaces(args: argparse.Namespace) -> int:
 
 
 def cmd_generate(args: argparse.Namespace) -> int:
+    """Generate portable domain artifacts through the shared engineering control plane."""
     from forma_core.generation import generate_project_with_workflow
+
+    if args.simulation:
+        return _cmd_generate_hardware_fixture(args)
+    provider, model = _provider_and_model(args)
+    request = _read_json(args.request_file) if args.request_file else None
+    image_bytes, image_mime_type = _image_payload(args.image_file)
+    with config.override(_cli_generation_environment(simulation=False)):
+        result = generate_project_with_workflow(
+            args.workflow, args.prompt, provider_name=provider, model_name=model,
+            engineering_request=request, image_bytes=image_bytes, image_mime_type=image_mime_type,
+            external_source_provider=args.external_source_provider)
+    if not hasattr(result, "product"):
+        _reject_live_fallback_output(result, simulation=False)
+        raise ValueError("Expected a portable engineering result from new generation.")
+    if args.generate_image or args.assembly_step or args.show_image or args.image_output:
+        result.unresolved.append("Domain image/CAD export adapters are not integrated; no physical output was generated.")
+        result.status = "partial"
+    _write_json(result, args.output)
+    return 0 if result.status == "succeeded" else 1
+
+
+def _cmd_generate_hardware_fixture(args: argparse.Namespace) -> int:
+    from forma_core.agents.workflows import generate_legacy_project_with_workflow as generate_project_with_workflow
     from forma_core.terminal.images import TerminalImageRenderConfig, render_images
     from forma_core.workspaces.projects.output import (
         attach_product_image,
@@ -231,7 +255,22 @@ def cmd_iterate(args: argparse.Namespace) -> int:
     from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
 
     provider, model = _provider_and_model(args)
-    current_project = HardwareIntermediateRepresentation.model_validate(_hardware_ir_payload(_read_json(args.project)))
+    payload = _read_json(args.project)
+    if payload.get("format") in {"forma.engineering-result", "forma.product-domains"}:
+        from forma_core.domains.composition import ProductBundle
+        from forma_core.domains.generation import EngineeringRequest
+        from forma_core.generation import generate_project_with_workflow
+        bundle = ProductBundle.model_validate(payload.get("product", payload))
+        domains = {r.domain for r in bundle.manifest.artifacts}
+        request = EngineeringRequest(
+            product_id=bundle.manifest.product_id,
+            brief=(bundle.plan.brief if bundle.plan else "Existing product") + "\nRevision: " + args.instruction,
+            existing=bundle, update_domains={args.namespace} if args.namespace else domains)
+        result = generate_project_with_workflow("default", request.brief, engineering_request=request,
+                                               provider_name=provider, model_name=model)
+        _write_json(result, args.output)
+        return 0 if result.status == "succeeded" else 1
+    current_project = HardwareIntermediateRepresentation.model_validate(_hardware_ir_payload(payload))
     with config.override(_cli_generation_environment(simulation=args.simulation)):
         revised_project = iterate_project(
             current_project,
@@ -270,8 +309,9 @@ def build_parser() -> argparse.ArgumentParser:
     namespaces.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     namespaces.set_defaults(func=cmd_namespaces)
 
-    generate = subparsers.add_parser("generate", help="Generate a HardwareIntermediateRepresentation directly through Forma Core.")
-    generate.add_argument("prompt", help="Hardware idea to generate.")
+    generate = subparsers.add_parser("generate", help="Generate the engineering domains required by a physical-system objective.")
+    generate.add_argument("prompt", help="Physical-system objective to generate.")
+    generate.add_argument("--request-file", help="Optional engineering request JSON with caller-authored selection/context/designs.")
     generate.add_argument("--workflow", default="default", choices=("default", "web_research"))
     generate.add_argument("--external-source-provider", choices=("firecrawl",))
     generate.add_argument("--image-file", help="Optional reference image.")
@@ -284,7 +324,7 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--terminal-height", type=int, default=40, help="Maximum terminal rows for --show-image.")
     generate.add_argument("--assembly-step", help="Attach a validated assembly.step or assembled.step artifact before persistence.")
     generate.add_argument("--simulation", action="store_true", help="Use the deterministic built-in generator.")
-    generate.add_argument("--output", help="Write HardwareIntermediateRepresentation JSON to this path; defaults to stdout.")
+    generate.add_argument("--output", help="Write the portable engineering result to this path; defaults to stdout.")
     _add_runtime_selector_arguments(generate)
     generate.set_defaults(func=cmd_generate)
 

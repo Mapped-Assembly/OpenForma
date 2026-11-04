@@ -40,6 +40,15 @@ Each `ProcessOperation` is identified by `operation_id`, with typed `ports`.
 Optional numeric design `quantity` states a dimension and unit explicitly.
 Conceptual streams may omit quantities without substituting zero.
 
+Schema **1.1** additionally supports optional `batch_quantity` on material
+streams: mass (`g`, `kg`), amount (`mol`, `mmol`), or volume (`mL`, `L`, `m3`),
+with the same explicit claim/evidence model. These are finite inventories,
+not rates. A 2 g feed does not imply any processing duration or flow rate.
+Documents without this field keep the version 1.0 wire shape and hashes;
+using it requires declaring `schema_version: "1.1"`. Existing rate-balance
+checks do not evaluate batch conversion, yield, or mass conservation.
+See the [unified chemistry benchmark](unified-generation.md#chemistry-benchmark).
+
 Composition uses `ArtifactReference` and `DomainLink` from the existing
 domain system. `uses_reaction` and `uses_species` connect process operation
 or stream entities to *version-pinned ChemicalIR* reaction/species entities.
@@ -48,8 +57,8 @@ object types and source hashes are checked at the composition boundary.
 The `uses_equipment` (MechanicalIR), `uses_electrical_port` (ElectricalIR),
 and `uses_fluidic_port` (FluidicIR) relationships additionally check expected
 owner-domain and whether the process source is an operation, energy port,
-or material port as appropriate. `uses_thermal_interface` is reserved for
-a future ThermalIR provider; it is not an assertion that ThermalIR exists.
+or material port as appropriate. `uses_thermal_interface` connects to the
+independently owned ThermalIR through the same composition boundary.
 These relationships are composition artifacts, not schema dependencies.
 
 The `ProcessIR` package must remain usable without ChemicalIR, FluidicIR,

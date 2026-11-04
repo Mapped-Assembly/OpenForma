@@ -21,7 +21,7 @@ from apps.api.auth import (
     resolve_a2a_service_context,
 )
 from forma_core.agents.workflows import (
-    generate_project_with_workflow,
+    generate_legacy_project_with_workflow as generate_project_with_workflow,
     get_workflow_debug_config,
     list_workflows,
     normalize_workflow_id,
@@ -30,6 +30,7 @@ from forma_core.agents.orchestrator import HardwarePipelineOrchestrator
 from forma_core.database import (
     ensure_project_action_allowed,
     get_latest_project_revision,
+    get_project_revision_by_source_job,
     get_project_identity,
     persist_chat_project_revision,
     persist_legacy_project_projection,
@@ -956,6 +957,82 @@ def build_generation_response(
     retry_stage: Optional[str] = None,
     generation_mode: str = "regular",
     settings: Optional[ResolvedIntegrationSettings] = None,
+    engineering_request: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Route new objectives through domains and persisted HardwareIR projects through compatibility."""
+    from forma_core.agents.workflows import generate_project_with_workflow as generate_engineering_workflow
+    from forma_core.domains.generation import EngineeringRequest, EngineeringResult
+
+    ensure_hosted_chat_enabled()
+    settings = settings or _resolve_owner_user_integrations(owner_user_id)
+    existing_revision = None
+    if project_id and owner_user_id:
+        try:
+            existing_revision = get_latest_project_revision(project_id, owner_user_id)
+        except ProjectStateError as exc:
+            if exc.code != "project_revision_not_found":
+                raise
+    if existing_revision is not None and isinstance(existing_revision.state, EngineeringResult) and frontend_job_id:
+        replay = get_project_revision_by_source_job(project_id, owner_user_id, f"generation-{frontend_job_id}")
+        if replay is not None and isinstance(replay.state, EngineeringResult):
+            return {"engineering_result": replay.state.model_dump(mode="json"),
+                    "generation_status": replay.state.status, "project_id": project_id, "chat_id": chat_id}
+    if existing_revision is not None and not isinstance(existing_revision.state, EngineeringResult) and engineering_request is None:
+        return _build_legacy_generation_response(
+            prompt, image_data, generate_image, workflow, provider, model, external_source_provider,
+            chat_id, source_project_id, frontend_job_id, owner_user_id, data_sources, past_job_context,
+            project_id, retry_stage, generation_mode, settings)
+    if retry_stage:
+        raise ValueError("Named legacy stage retry requires a persisted HardwareIR project.")
+    request = EngineeringRequest.model_validate(engineering_request) if engineering_request is not None else EngineeringRequest(
+        product_id=project_id or str(uuid.uuid4()), brief=prompt,
+        existing=existing_revision.state.product if existing_revision is not None else None,
+        update_domains={r.domain for r in existing_revision.state.product.manifest.artifacts} if existing_revision is not None else None)
+    if project_id and request.product_id != project_id:
+        raise ValueError("Engineering request product identity differs from the API project identity.")
+    if existing_revision is not None and isinstance(existing_revision.state, EngineeringResult):
+        from forma_core.domains.base import fingerprint
+        if request.existing is None or fingerprint(request.existing) != fingerprint(existing_revision.state.product):
+            raise ValueError("Domain project changed; reload its current bundle before generating a revision.")
+    if request.brief != prompt:
+        raise ValueError("Engineering request brief differs from the API prompt.")
+    result = generate_engineering_workflow(
+        workflow, prompt, provider_name=provider, model_name=model, settings=settings,
+        engineering_request=request, external_source_provider=external_source_provider)
+    if image_data or generate_image or generation_mode == "progressive":
+        result.unresolved.append("Domain image/progressive CAD adapters are not integrated; no geometry was inferred.")
+        result.status = "partial"
+    if data_sources:
+        result.unresolved.append("Past-job retrieval is not used as domain evidence; supply explicit context and provenance.")
+        result.status = "partial"
+    if owner_user_id:
+        persisted = persist_chat_project_revision(
+            request.product_id, owner_user_id, result, source_job_id=f"generation-{frontend_job_id or uuid.uuid4().hex}",
+            prompt=prompt, chat_id=chat_id,
+            expected_parent_revision=existing_revision.revision if existing_revision is not None else None)
+        result = persisted.state
+    return {"engineering_result": result.model_dump(mode="json"),
+            "generation_status": result.status, "project_id": request.product_id, "chat_id": chat_id}
+
+
+def _build_legacy_generation_response(
+    prompt: str,
+    image_data: Optional[str] = None,
+    generate_image: bool = False,
+    workflow: str = "default",
+    provider: Optional[str] = None,
+    model: Optional[str] = None,
+    external_source_provider: Optional[str] = None,
+    chat_id: Optional[str] = None,
+    source_project_id: Optional[str] = None,
+    frontend_job_id: Optional[str] = None,
+    owner_user_id: Optional[str] = None,
+    data_sources: Optional[List[str]] = None,
+    past_job_context: Optional[PastJobContext] = None,
+    project_id: Optional[str] = None,
+    retry_stage: Optional[str] = None,
+    generation_mode: str = "regular",
+    settings: Optional[ResolvedIntegrationSettings] = None,
 ) -> Dict[str, Any]:
     ensure_hosted_chat_enabled()
     settings = settings or _resolve_owner_user_integrations(owner_user_id)
@@ -1292,6 +1369,7 @@ async def call_forma_action(
             payload.get("retry_stage"),
             generation_mode=payload.get("generation_mode", "regular"),
             settings=settings,
+            engineering_request=payload.get("engineering_request"),
         )
 
     if normalized == "debug_config":

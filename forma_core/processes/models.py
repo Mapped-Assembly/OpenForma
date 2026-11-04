@@ -119,6 +119,23 @@ class ProcessPort(DomainModel):
         return self
 
 
+class ProcessBatchQuantity(DomainModel):
+    """Finite material inventory, distinct from a rate with an unknown duration."""
+
+    kind: Literal["mass", "amount", "volume"]
+    value: float = Field(ge=0)
+    unit: Text
+    claim: ProcessClaim = Field(default_factory=ProcessClaim)
+
+    @model_validator(mode="after")
+    def check_units(self) -> "ProcessBatchQuantity":
+        """Keep batch dimensions explicit; no density or duration is inferred."""
+        allowed = {"mass": {"g", "kg"}, "amount": {"mol", "mmol"}, "volume": {"mL", "L", "m3"}}
+        if self.unit not in allowed[self.kind]:
+            raise ValueError(f"Unsupported batch unit '{self.unit}' for '{self.kind}'.")
+        return self
+
+
 class ProcessOperation(DomainModel):
     """One declarative unit operation, without embedded chemistry or runtime code."""
 
@@ -152,12 +169,15 @@ class ProcessStream(DomainModel):
     target: ProcessEndpoint
     kind: StreamKind
     quantity: ProcessQuantity | None = None
+    batch_quantity: ProcessBatchQuantity | None = Field(None, exclude_if=lambda value: value is None)
     phase: Phase | None = None
     claim: ProcessClaim = Field(default_factory=ProcessClaim)
 
     @model_validator(mode="after")
     def compatible_quantity(self) -> "ProcessStream":
         """A stream's declared rate cannot represent a different physical kind."""
+        if self.batch_quantity is not None and self.kind != "material":
+            raise ValueError("Batch amounts are only valid for material streams.")
         if self.quantity is not None:
             allowed = {
                 "material": {"mass_rate", "molar_rate", "volume_rate"},
@@ -219,7 +239,7 @@ class ProcessIR(DomainDocument):
     """Standalone process topology and declared flows with no implicit execution."""
 
     domain: Literal["process"] = "process"
-    schema_version: Literal["1.0"] = "1.0"
+    schema_version: Literal["1.0", "1.1"] = "1.0"
     operations: list[ProcessOperation] = Field(min_length=1)
     streams: list[ProcessStream] = Field(default_factory=list)
     balances: list[ProcessBalanceSpec] = Field(default_factory=list)
@@ -230,6 +250,8 @@ class ProcessIR(DomainDocument):
     @model_validator(mode="after")
     def references_and_interfaces(self) -> "ProcessIR":
         """Check identity and topology without loading chemistry or site geometry."""
+        if self.schema_version == "1.0" and any(stream.batch_quantity is not None for stream in self.streams):
+            raise ValueError("Batch material quantities require ProcessIR schema_version 1.1.")
         unique([o.operation_id for o in self.operations], "process operation ID")
         unique([s.stream_id for s in self.streams], "process stream ID")
         unique([b.balance_id for b in self.balances], "process balance ID")
@@ -246,6 +268,7 @@ class ProcessIR(DomainDocument):
         claims += [stream.claim for stream in self.streams]
         claims += [scenario.claim for scenario in self.scenarios]
         claims += [stream.quantity.claim for stream in self.streams if stream.quantity]
+        claims += [stream.batch_quantity.claim for stream in self.streams if stream.batch_quantity]
         claims += [override.quantity.claim for scenario in self.scenarios for override in scenario.overrides]
         for item in self.balances:
             claims += [

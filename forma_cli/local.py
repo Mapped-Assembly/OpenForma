@@ -316,6 +316,12 @@ def build_project(
     current = read_project(root)
     assembly_source = _resolve_assembly_step_source(root, assembly_step)
     from forma_core.generation import generate_project_with_workflow
+    from forma_core.agents.workflows import generate_legacy_project_with_workflow
+    from forma_core.domains.generation import EngineeringResult, EngineeringRequest
+    old_result = EngineeringResult.model_validate(current.project_ir) if current.project_ir.get("format") == "forma.engineering-result" else None
+    if simulation and old_result is not None:
+        raise LocalProjectError("A legacy simulation fixture cannot overwrite a domain project.")
+    legacy = bool(current.project_ir) and old_result is None
 
     requested_prompt = (prompt or current.prompt or current.title).strip()
     if not requested_prompt:
@@ -324,14 +330,26 @@ def build_project(
     generation_environment = SIMULATION_ENVIRONMENT if simulation else STRICT_GENERATION_ENVIRONMENT
     environment = {**generation_environment, **_local_provider_environment(store)}
     with config.override(environment):
-        ir = generate_project_with_workflow(
+        generate = generate_legacy_project_with_workflow if simulation or legacy else generate_project_with_workflow
+        continuation = {"engineering_request": EngineeringRequest(
+            product_id=current.project_id, brief=requested_prompt, existing=old_result.product,
+            update_domains={r.domain for r in old_result.product.manifest.artifacts})} if old_result else {}
+        ir = generate(
             workflow,
             requested_prompt,
             provider_name="simulation" if simulation else provider,
             model_name=None if simulation else model,
             generation_metadata={"project_id": current.project_id, "project_prompt": requested_prompt},
             persist_project=False,
+            **continuation,
         )
+    if isinstance(ir, EngineeringResult):
+        if assembly_source is not None:
+            ir.unresolved.append("A CAD file is present but no domain geometry binding was authored.")
+            ir.status = "partial"
+        updated = current.model_copy(update={"prompt": requested_prompt, "project_ir": ir.model_dump(mode="json")})
+        write_project_manifest(root / PROJECT_FILENAME, updated)
+        return updated
     metadata = dict(ir.assembly_metadata or {})
     metadata["project_id"] = current.project_id
     metadata["project_prompt"] = requested_prompt
@@ -375,6 +393,13 @@ def status_project(path: str | Path | None = None) -> dict[str, Any]:
         from forma_core.validation import build_validation_summary, validate_circuit
         from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
 
+        if manifest.project_ir.get("format") == "forma.engineering-result":
+            from forma_core.domains.generation import EngineeringResult
+            from forma_core.domains.composition import validate_product
+            result = EngineeringResult.model_validate(manifest.project_ir)
+            report = validate_product(result.product)
+            return {"project_id": manifest.project_id, "title": manifest.title, "path": str(root / PROJECT_FILENAME),
+                    "valid": report.is_valid, "validation": report.model_dump(mode="json"), "status": result.status}
         ir = HardwareIntermediateRepresentation.model_validate(manifest.project_ir)
         summary = build_validation_summary(validate_circuit(ir.components, ir.nets, ir.requirements))
         valid = not summary.critical

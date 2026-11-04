@@ -1,5 +1,6 @@
 "use client";
 
+import { EngineeringResultView, type EngineeringResult } from "./forma-workspace/engineering-result";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -1761,6 +1762,7 @@ export function FormaWorkspace({
   const hasGenerationRuns = Object.keys(generationRuns).length > 0;
   const [activeTab, setActiveTab] = useState("overview");
   const [projectIR, setProjectIR] = useState<any>(null);
+  const [engineeringResult, setEngineeringResult] = useState<EngineeringResult | null>(null);
   const currentCadModel = projectCadModel(projectIR);
   const currentCadDescriptor = resolveCadModel(currentCadModel);
   const hasRenderableCadModel = Boolean(currentCadDescriptor && currentCadDescriptor.kind !== "unsupported");
@@ -3735,6 +3737,10 @@ export function FormaWorkspace({
           });
           if (!projectResponse.ok) throw new Error(await readApiErrorMessage(projectResponse));
           const projectData = await projectResponse.json();
+          if (projectData.engineering_result?.format === "forma.engineering-result") {
+            setEngineeringResult(projectData.engineering_result);
+            return;
+          }
           const ir = withProjectResponseMetadata(projectData.project_ir, projectData);
           const title = ir?.overview?.title || "Project";
           setProjectIR(ir);
@@ -3802,7 +3808,11 @@ export function FormaWorkspace({
             });
             if (projectResponse.ok) {
               const projectData = await projectResponse.json();
-              setProjectIR(withProjectResponseMetadata(projectData.project_ir, projectData));
+              if (projectData.engineering_result?.format === "forma.engineering-result") {
+                setEngineeringResult(projectData.engineering_result);
+              } else {
+                setProjectIR(withProjectResponseMetadata(projectData.project_ir, projectData));
+              }
             }
           } catch (error) {
             console.warn("Could not load the preserved partial project.", error);
@@ -4490,6 +4500,15 @@ export function FormaWorkspace({
       if (data.job) {
         applyChatPipelineProgressFromJob(assistantMessageId, data.job, pipelineProgress, generateProductImage);
         applyThreadPipelineProgressFromJob(requestChatId, assistantMessageId, data.job, pipelineProgress, generateProductImage);
+      }
+      if (data.engineering_result?.format === "forma.engineering-result") {
+        setEngineeringResult(data.engineering_result);
+        const message = `Engineering artifacts: ${data.engineering_result.status}. Review selected domains, findings and unresolved information.`;
+        const resultStatus = data.engineering_result.status === "failed" ? "error" : "success";
+        updateChatMessage(assistantMessageId, { content: message, status: resultStatus });
+        updateThreadMessage(requestChatId, assistantMessageId, { content: message, status: resultStatus });
+        fetchA2aJobs(jobStatusFilter, { silent: true });
+        return;
       }
       const ir = withProjectResponseMetadata(data.project_ir, data);
       setProjectIR(ir);
@@ -6050,6 +6069,10 @@ export function FormaWorkspace({
         onHome={goHome}
       />
     );
+  }
+
+  if (engineeringResult) {
+    return <EngineeringResultView result={engineeringResult} onBack={() => setEngineeringResult(null)} />;
   }
 
   if (showChatRouteFallback && visibleChatRouteTransition) {

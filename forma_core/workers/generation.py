@@ -57,6 +57,9 @@ GENERATION_INPUT_VERSION = "design-brief.v1"
 GENERATION_OUTPUT_VERSION = "project-revision.v1"
 
 
+from forma_core.domains.generation import EngineeringResult
+
+
 class GenerationWorkerPayload(BaseModel):
     """The Generation worker accepts no conversational input outside the frozen brief."""
 
@@ -167,7 +170,37 @@ def _reference_image_bytes(image_data: str | None) -> tuple[bytes | None, str | 
         return None, None
 
 
-def build_generation_draft(design_brief: DesignBrief, state: HardwareIntermediateRepresentation) -> ProjectRevisionDraft:
+class EngineeringGenerationEngine(HardwareIntermediateRepresentationGenerationEngine):
+    """Frozen-brief adapter to the same domain-aware generation entry point."""
+
+    def generate(self, design_brief: DesignBrief, *, generation_metadata: dict[str, Any] | None = None) -> ProjectRevisionDraft:
+        """Generate domains without constructing HardwareIR or issuing physical commands."""
+        from forma_core.agents.workflows import generate_project_with_workflow
+        from forma_core.domains.generation import EngineeringRequest
+
+        metadata = generation_metadata or {}
+        existing = metadata.get("existing_engineering")
+        request = EngineeringRequest(
+            product_id=str(design_brief.project_id),
+            brief="Design the physical system described by this frozen brief:\n" + prompt_safe_design_brief(design_brief).model_dump_json(),
+            existing=existing,
+        )
+        result = generate_project_with_workflow(
+            "default", request.brief, provider_name=self.provider_name, model_name=self.model_name,
+            settings=self.settings, engineering_request=request)
+        return build_generation_draft(design_brief, result)
+
+
+def build_generation_draft(design_brief: DesignBrief, state: HardwareIntermediateRepresentation | EngineeringResult) -> ProjectRevisionDraft:
+    """Retain the authoritative state format and its independently pinned artifacts."""
+    if isinstance(state, EngineeringResult):
+        return ProjectRevisionDraft(
+            state=state,
+            artifacts=[ProjectArtifact(artifact_id=ref.artifact_id, kind=ref.domain,
+                uri=f"urn:forma:artifact:{ref.sha256}", media_type="application/json", checksum=ref.sha256,
+                metadata={"reference": ref.model_dump(mode="json")}) for ref in state.product.manifest.artifacts],
+            assumptions=list(dict.fromkeys(item for values in state.assumptions.values() for item in values)),
+        )
     component_refs = [component.ref_des for component in state.components]
     known_component_refs = set(component_refs)
     used_system_ids = {"system-primary"}
@@ -314,7 +347,7 @@ class GenerationWorker:
         project_publisher: ProjectPublisher | None = None,
     ) -> None:
         self._state = state_service
-        self._engine = engine or HardwareIntermediateRepresentationGenerationEngine()
+        self._engine = engine or EngineeringGenerationEngine()
         self._project_publisher = project_publisher
 
     def worker_definition(self) -> WorkerDefinition:
@@ -404,6 +437,7 @@ class GenerationWorker:
             if isinstance(generation_engine, HardwareIntermediateRepresentationGenerationEngine):
                 event_loop = asyncio.get_running_loop()
 
+                latest = None
                 prior_generation_run = request.metadata.get("prior_generation_run")
                 prior_generation_run = prior_generation_run if isinstance(prior_generation_run, dict) else None
                 if prior_generation_run is None:
@@ -413,10 +447,14 @@ class GenerationWorker:
                         latest = None
                     candidate_run = (
                         ((latest.state.assembly_metadata or {}).get("generation_run") or {})
-                        if latest is not None
+                        if latest is not None and not isinstance(latest.state, EngineeringResult)
                         else {}
                     )
                     prior_generation_run = candidate_run if isinstance(candidate_run, dict) and candidate_run else None
+                if latest is not None and not isinstance(latest.state, EngineeringResult) and isinstance(generation_engine, EngineeringGenerationEngine):
+                    generation_engine = HardwareIntermediateRepresentationGenerationEngine(
+                        provider_name=generation_engine.provider_name, model_name=generation_engine.model_name,
+                        settings=generation_engine.settings, generate_image=generation_engine.generate_image)
                 retry_stage = str(request.metadata.get("retry_stage") or "").strip() or None
 
                 def generate_with_observation() -> ProjectRevisionDraft:
@@ -463,6 +501,7 @@ class GenerationWorker:
                         return generation_engine.generate(
                             payload.design_brief,
                             generation_metadata={
+                                "existing_engineering": latest.state.product if latest is not None and isinstance(latest.state, EngineeringResult) else None,
                                 "prior_generation_run": prior_generation_run,
                                 "retry_stage": retry_stage,
                                 "stage_checkpoint": record_stage_checkpoint,
@@ -565,7 +604,9 @@ def _success_result(request: WorkerRequest, outcome: ProjectRevisionOutcome) -> 
         )
         for artifact in revision.artifacts
     ]
-    generation_status = str((revision.state.assembly_metadata or {}).get("generation_status") or "succeeded")
+    engineering = isinstance(revision.state, EngineeringResult)
+    metadata = {} if engineering else (revision.state.assembly_metadata or {})
+    generation_status = revision.state.status if engineering else str(metadata.get("generation_status") or "succeeded")
     generation_error = None
     if generation_status in {"partial", "failed"}:
         generation_error = WorkerError(
@@ -578,7 +619,7 @@ def _success_result(request: WorkerRequest, outcome: ProjectRevisionOutcome) -> 
             ),
             retryable=True,
             details={
-                "stage_failures": (revision.state.assembly_metadata or {}).get("generation_stage_failures") or [],
+                "stage_failures": metadata.get("generation_stage_failures") or [],
             },
         )
     result_status = (
@@ -588,7 +629,7 @@ def _success_result(request: WorkerRequest, outcome: ProjectRevisionOutcome) -> 
         if generation_status == "failed"
         else WorkerResultStatus.SUCCEEDED
     )
-    retry_metadata = _generation_retry_metadata(revision.state) if generation_error is not None else None
+    retry_metadata = _generation_retry_metadata(revision.state) if generation_error is not None and not engineering else None
     return WorkerResult(
         **context,
         output_contract_version=GENERATION_OUTPUT_VERSION,
