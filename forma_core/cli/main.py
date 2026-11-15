@@ -293,6 +293,43 @@ def _add_runtime_selector_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--model", help="LLM model override.")
 
 
+def cmd_mujoco(args: argparse.Namespace) -> int:
+    """Drive one persistent MuJoCo session through a terminal or line-oriented pipe."""
+    from dataclasses import asdict
+    from forma_core.mechanics.mujoco_runtime import MuJoCoRuntime
+
+    project = _hardware_ir_payload(_read_json(args.project))
+    with MuJoCoRuntime(project) as runtime:
+        print(json.dumps({"control": asdict(runtime.control), "commands": [
+            "start", "set VALUE", "step COUNT", "state", "pause", "reset", "close"
+        ]}), flush=True)
+        for line in sys.stdin:
+            try:
+                match line.split():
+                    case []:
+                        continue
+                    case ["start"]:
+                        runtime.start()
+                    case ["set", value]:
+                        runtime.set_target(float(value))
+                    case ["step", count]:
+                        runtime.step(int(count))
+                    case ["pause"]:
+                        runtime.pause()
+                    case ["reset"]:
+                        runtime.reset()
+                    case ["close"]:
+                        break
+                    case ["state"]:
+                        pass
+                    case _:
+                        raise ValueError("Unknown command or incorrect argument count.")
+                print(json.dumps(asdict(runtime.state())), flush=True)
+            except (ValueError, RuntimeError) as exc:
+                print(json.dumps({"error": str(exc)}), flush=True)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="forma-core",
@@ -300,6 +337,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    mujoco = subparsers.add_parser("mujoco", help="Control a live fixed-base joint session.")
+    mujoco.add_argument("project", help="Forma project JSON with resolved CAD kinematics.")
+    mujoco.set_defaults(func=cmd_mujoco)
 
     workflows = subparsers.add_parser("workflows", help="List available generation workflows.")
     workflows.add_argument("--json", action="store_true", help="Print machine-readable JSON.")

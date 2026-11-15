@@ -49,6 +49,7 @@ fabricator = "forma_core.fabricator.main:main"
 entrypoint = "apps.api.main:app"
 
 [project.optional-dependencies]
+mujoco = ["mujoco>=3.3,<5"]
 gemini = ["google-genai>=1.0.0"]
 vertex = ["google-auth>=2.29.0", "google-genai>=1.0.0"]
 huggingface = ["huggingface-hub>=0.34.0"]
