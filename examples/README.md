@@ -93,3 +93,37 @@ Raw Runpod Parti behavior probe:
 
 It writes raw chat/completions responses and seed classifications to
 `examples/results/*-caid-technologies-parti-base-behavior.json`.
+
+### Drive the captive hinge with MuJoCo
+
+From the repository root, run the following in PowerShell or a shell.
+
+```sh
+python -m pip install -e ".[mujoco]"
+forma-core mujoco examples/print_in_place_hinge.json
+```
+
+The session prints its joint ID, moving part, input unit and travel limits. Type
+these commands one at a time. Each response reports simulation time, target,
+measured position and velocity. Time advances by 2 ms per requested step.
+
+```text
+start
+set 1
+step 1
+step 99
+set 0.25
+step 100
+pause
+reset
+close
+```
+
+The same session is available from Python as
+`forma_core.mechanics.mujoco_runtime.MuJoCoRuntime(project_dict)`.
+This adapter supports one resolved, fixed-base revolute or prismatic joint.
+It uses component placement boxes at 1000 kg/m³, zero gravity, disabled
+contacts, and a virtual position servo. Hinge inputs are radians and slider
+inputs are meters. CAD preview samples are ignored. The simulation exercises
+controller behavior; material, actuator and contact calibration are outside
+this model.
