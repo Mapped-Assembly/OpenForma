@@ -1,0 +1,8 @@
+{
+  "effective_permeability_mm_s": 0.005,
+  "vascular_inlet_mM": 1.0,
+  "epithelial_inlet_mM": 0.0,
+  "provenance": "Illustrative passive solute. Effective permeability is assumed, not measured, and not inferred from pore size or porosity.",
+  "assumptions": ["steady state", "co-current plug flow", "cross-sectionally mixed concentrations", "no axial diffusion", "no bulk transmembrane flow", "no cell uptake or reactions"],
+  "sources": ["https://doc.comsol.com/6.3/doc/com.comsol.help.porous/porous_ug_chemsptrans.08.24.html", "https://www.comsol.com/multiphysics/convection-diffusion-equation"]
+}
