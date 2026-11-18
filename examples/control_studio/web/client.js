@@ -1,7 +1,7 @@
 export class ControlClient extends EventTarget {
   constructor(machineId) {
     super(); this.id = machineId; this.base = `/api/control/v2/machines/${machineId}`;
-    this.session = null; this.seq = 0; this.lease = null; this.online = false; this.epoch = 0;
+    this.session = null; this.ownerId = null; this.seq = 0; this.lease = null; this.online = false; this.epoch = 0;
     this.queue = Promise.resolve(); this.closed = false; this.heartbeatPending = false;
     this.timer = setInterval(() => {
       if (this.session && this.online && this.state?.state !== 'FAULT' && !document.hidden && !this.heartbeatPending) {
@@ -29,7 +29,7 @@ export class ControlClient extends EventTarget {
       if (ws !== this.ws || this.closed) return;
       const data = JSON.parse(event.data); this.lastFrame = performance.now();
       if (!this.online) { this.online = true; this.emit('connection', true); }
-      if (this.session && data.telemetry.owner?.session_id !== this.session) { this.session = null; this.lease = null; this.epoch++; this.emit('notice', 'Control ownership changed.'); }
+      if (this.session && data.telemetry.owner?.owner_id !== this.ownerId) { this.session = null; this.ownerId = null; this.lease = null; this.epoch++; this.emit('notice', 'Control ownership changed.'); }
       if (data.lease) this.lease = {...data.lease, received: performance.now()};
       this.state = data.telemetry; this.emit('state', data);
     };
@@ -38,7 +38,7 @@ export class ControlClient extends EventTarget {
   }
   async claim(takeover = false) {
     const response = await this.request('/claim', {name: 'Control Studio', kind: 'human', takeover});
-    this.session = response.session_id; this.lease = {...response, received: performance.now()}; this.seq = 0; this.epoch++; this.connect();
+    this.session = response.session_id; this.ownerId = response.owner_id; this.lease = {...response, received: performance.now()}; this.seq = 0; this.epoch++; this.connect();
   }
   command(op, params = {}) {
     if (['hold', 'disarm'].includes(op)) this.epoch++;
@@ -58,7 +58,7 @@ export class ControlClient extends EventTarget {
     const result = this.queue.then(task, task); this.queue = result; return result;
   }
   async release() {
-    const session = this.session; this.session = null; this.lease = null; this.epoch++;
+    const session = this.session; this.session = null; this.ownerId = null; this.lease = null; this.epoch++;
     await this.queue;
     if (session) await this.request('/release', {session_id: session});
     if (!this.closed) this.connect();

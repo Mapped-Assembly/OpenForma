@@ -14,7 +14,7 @@ try:
     client.claim("XY agent benchmark",takeover=args.takeover)
     client.command("arm")
     for target in ({"x":20,"y":15},{"x":-20,"y":15},{"x":-20,"y":-15},{"x":20,"y":-15},{"x":0,"y":0}):
-        result=client.move_and_wait(target)
+        result=client.move_and_wait(target, wait_for="simulated", tolerance=.05)
         assert all(result["axes"][a]["simulated"]==v and result["axes"][a]["measured"] is None for a,v in target.items())
         results.append({"targets":target,"state":result})
 finally:

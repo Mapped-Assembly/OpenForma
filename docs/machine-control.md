@@ -141,7 +141,7 @@ machine.claim("My agent")  # Release the browser first, or explicitly use takeov
 try:
     machine.command("arm")
     state = machine.move_and_wait(
-        {"x": 20, "y": -15}, rates={"x": 30, "y": 20}, coordinated=True
+        {"x": 20, "y": -15}, rates={"x": 30, "y": 20}, coordinated=True, wait_for="simulated"
     )
     print(state["axes"])
 finally:
@@ -152,11 +152,24 @@ The client supplies heartbeats during `move_and_wait`. Other long-running caller
 must send heartbeats themselves. A controller/agent owns each machine until it
 releases or another client explicitly takes over.
 
-`move_and_wait` defaults to command completion; select `wait_for="simulated"`
+`move_and_wait` requires an explicit `wait_for` argument; select `wait_for="simulated"`
 with an appropriate quantization tolerance to wait for the firmware simulator's
 plant, or `wait_for="measured"` for actual measurements when available. Optional
 `execution` diagnostics and `execution_fault` keep adapter state separate from
 the host planner. Reported adapter faults disable output and latch runtime FAULT.
+Choose `wait_for="commanded"` only when host-plan completion is sufficient.
+Existing callers that omitted `wait_for` must now choose a source; omission fails
+before sending motion. No source falls back to another source.
+
+Adapter exceptions expose `execution_fault="adapter_exception"` and persistent
+`execution_error` fields (`reason`, exception `type`, and `message`). These
+details survive later polls and release and clear only on explicit adapter reset.
+
+Public owner telemetry contains only `owner_id`, `name`, and `kind`. The claim
+response separately returns the private `session_id` used for control and the
+public `owner_id` used to detect ownership changes. Public IDs cannot obtain
+leases or authorize commands. The local service still permits explicit takeover;
+ownership is coordination, not user authentication.
 
 ## Benchmarks and verification
 

@@ -93,3 +93,26 @@ The virtual startup fixtures, servo calibration and steps/mm are explicit
 assumptions. Homing, electrical edges, board peripherals and physical motion
 remain outside this verification. See the firmware simulation guide for clock
 semantics and the future board-port boundary.
+
+## Control contract hardening — 2026-11-18
+
+Public telemetry now exposes a separate owner ID instead of the session credential.
+Adapter exceptions retain structured fault details through polling and release until
+explicit reset. Python clients must select a completion source with `wait_for`;
+examples and documentation use simulated arrival.
+
+Verified on Linux with Python 3.12 and GNU C++ 14.2:
+
+- Native SIL build: passed.
+- Runtime, client, service and native SIL suite: 45 tests passed, no skips.
+- Frontend: 5 tests passed, including ownership retention/takeover; bundle built.
+- Ideal benchmark: 6 coordinated segments / 361 samples passed.
+- Native firmware benchmark: gate 3 segments / 203 samples, XY 6 segments /
+  366 samples, both watchdog checks passed.
+- Regression coverage checks that observer telemetry cannot provide a session
+  credential, public owner IDs cannot acquire leases, fault details survive release,
+  omitted completion sources send no motion, and stalled/absent feedback cannot
+  satisfy a wait by falling back to commanded position.
+
+This follow-up did not repeat live-browser, live-HTTP benchmark, Windows, or
+whole-repository validation.

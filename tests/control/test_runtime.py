@@ -162,6 +162,17 @@ class RuntimeTests(unittest.TestCase):
         self.assertFalse(self.r.snapshot()["output_enabled"])
         self.assertIsNone(self.r.snapshot()["axes"]["x"]["simulated"])
         self.reject("adapter_fault", lambda: self.send("arm"))
+        expected = {"reason": "adapter_exception", "type": "OSError", "message": "offline"}
+        for _ in range(3):
+            self.r.tick()
+            self.assertEqual(self.r.snapshot()["execution_fault"], "adapter_exception")
+            self.assertEqual(self.r.snapshot()["execution_error"], expected)
+        self.r.release(self.session)
+        self.assertEqual(self.r.snapshot()["execution_error"], expected)
+        self.r.replace_adapter(VirtualAdapter(self.r.definition))
+        self.assertIsNone(self.r.snapshot()["execution_error"])
+        self.assertIsNone(self.r.snapshot()["execution_fault"])
+        self.assertEqual(self.r.state, "DISARMED")
 
     def test_virtual_adapter_cannot_claim_physical_measurement(self):
         with self.assertRaises(ValueError):

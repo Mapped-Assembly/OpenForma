@@ -39,7 +39,7 @@ jobs:
       - name: Build native firmware (required, not skipped)
         run: python -m forma_core.firmware.sil.build --output examples/control_studio/generated/firmware
       - name: Test control runtime, native firmware and service
-        run: python -m unittest tests.control.test_runtime tests.control.test_service tests.firmware.test_sil -v
+        run: python -m unittest tests.control.test_runtime tests.control.test_client tests.control.test_service tests.firmware.test_sil -v
       - name: Run ideal control benchmark
         run: python examples/control_studio/benchmark.py
       - name: Run compiled firmware benchmark

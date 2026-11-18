@@ -170,7 +170,8 @@ finally:
     machine.release()
 ```
 
-The default remains `wait_for="commanded"` for compatibility. Explicit
+Callers must explicitly choose `wait_for`; `"commanded"` only verifies the host
+plan. Explicit
 `wait_for="measured"` never treats simulated feedback as a measurement. The XY
 browser benchmark waits for simulated arrival when using Firmware SIL.
 

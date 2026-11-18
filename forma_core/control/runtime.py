@@ -51,6 +51,7 @@ class MachineRuntime:
         self.lease_issued = float("-inf")
         self.events: deque[dict] = deque(maxlen=200)
         self.event_id = 0
+        self.execution_error: dict[str, str] | None = None
         self.feedback = Feedback(mode=definition.backend, axes={})
         self._output()
         self._event("boot", "Runtime ready; output disabled.")
@@ -85,6 +86,8 @@ class MachineRuntime:
                     self._event("fault", feedback.fault)
                 return False
         except Exception as error:
+            if self.execution_error is None:
+                self.execution_error = dict(reason="adapter_exception", type=type(error).__name__, message=str(error))
             self.state = "FAULT"
             self.plans.clear()
             self.targets = {a: None for a in self.axes}
@@ -108,6 +111,7 @@ class MachineRuntime:
         if adapter.mode != self.definition.backend:
             raise ValueError("Adapter mode differs from machine definition.")
         self.adapter = adapter
+        self.execution_error = None
         self.commanded = {a: None for a in self.axes}
         self.targets = dict(self.commanded)
         self.plans.clear()
@@ -125,14 +129,14 @@ class MachineRuntime:
         self.plans.clear()
         if self.enabled:
             self.state, self.targets = "LINK_LOST", dict(self.commanded)
-        self.owner = dict(session_id=uuid.uuid4().hex, name=name, kind=kind)
+        self.owner = dict(session_id=uuid.uuid4().hex, owner_id=uuid.uuid4().hex, name=name, kind=kind)
         self.last_seq = None
         self.last_valid = self.clock()
         self.leases.clear()
         self.latest_lease = None
         self.lease_issued = float("-inf")
         self._event("ownership", f"{name} acquired control; explicit Arm required.")
-        return dict(session_id=self.owner["session_id"], **self.lease(self.owner["session_id"]))
+        return dict(session_id=self.owner["session_id"], owner_id=self.owner["owner_id"], **self.lease(self.owner["session_id"]))
 
     def lease(self, session_id):
         self._require_owner(session_id)
@@ -278,12 +282,13 @@ class MachineRuntime:
                               simulated=feedback.simulated if feedback else None, measured=feedback.measured if feedback else None)
         return dict(protocol_version=2, machine_id=self.definition.machine_id, backend=self.definition.backend,
                     state=self.state, output_enabled=self.enabled, axes=axes, ack_seq=self.last_seq,
-                    owner=dict(self.owner) if self.owner else None,
+                    owner={key: self.owner[key] for key in ("owner_id", "name", "kind")} if self.owner else None,
                     uptime_ms=round((self.clock()-self.started)*1000),
                     active_groups=[list(p.targets) for p in self.plans],
                     command_motion_complete=self.enabled and not self.plans,
                     execution=self.feedback.diagnostics.model_dump(mode="json") if self.feedback.diagnostics else None,
-                    execution_fault=self.feedback.fault)
+                    execution_fault=self.execution_error["reason"] if self.execution_error else self.feedback.fault,
+                    execution_error=dict(self.execution_error) if self.execution_error else None)
 
 
 class MachineRegistry:

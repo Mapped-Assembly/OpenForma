@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import time
+from typing import Any, Literal
 from urllib.error import HTTPError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
@@ -63,7 +64,18 @@ class ControlClient:
             return self._request("/release", {"session_id": session})
         return None
 
-    def move_and_wait(self, targets, *, rates=None, coordinated=True, timeout=30, wait_for="commanded", tolerance=1e-6):
+    def move_and_wait(
+        self, targets: dict[str, float], *,
+        wait_for: Literal["commanded", "simulated", "measured"],
+        rates: dict[str, float] | None = None, coordinated: bool = True,
+        timeout: float = 30, tolerance: float = 1e-6,
+    ) -> dict[str, Any]:
+        """Move and await the explicitly selected position source.
+
+        Commanded arrival only confirms the host plan. Simulated or measured
+        arrival requires feedback from that source; neither falls back to commands.
+        Omitting wait_for raises TypeError before any command is sent.
+        """
         if wait_for not in ("commanded", "simulated", "measured") or not 0 < tolerance < float("inf"):
             raise ValueError("Select an explicit position source and a finite positive tolerance.")
         reply = self.command("move", targets=targets, rates=rates or {}, coordinated=coordinated)

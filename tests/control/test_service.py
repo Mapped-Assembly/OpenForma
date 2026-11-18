@@ -58,6 +58,37 @@ class ServiceTests(unittest.TestCase):
         self.assertIn("lease_id", data["lease"])
         self.assertIsNone(data["telemetry"]["axes"]["x"]["measured"])
 
+    def test_public_telemetry_cannot_supply_control_credentials(self) -> None:
+        """State and observer streams expose identity without authorization."""
+        secret = self.claim["session_id"]
+        state = self.client.get(self.base+"/state").json()
+        owner = state["telemetry"]["owner"]
+        self.assertEqual(set(owner), {"owner_id", "name", "kind"})
+        self.assertEqual(owner["owner_id"], self.claim["owner_id"])
+        self.assertNotEqual(owner["owner_id"], secret)
+        self.assertNotIn(secret, str(state))
+        with self.client.websocket_connect(self.base+"/stream") as ws:
+            observer = ws.receive_json()
+        self.assertNotIn(secret, str(observer))
+        self.assertNotIn("lease", observer)
+        self.assertEqual(
+            self.client.post(self.base+"/lease", json={"session_id": owner["owner_id"]}).json()["reason"],
+            "wrong_session",
+        )
+        ack = self.command("arm").json()
+        self.assertNotIn(secret, str(ack))
+        self.assertTrue(ack["accepted"])
+
+    def test_takeover_changes_public_identity_and_revokes_old_stream_lease(self) -> None:
+        """Observers can distinguish owners without seeing either credential."""
+        replacement = self.client.post(self.base+"/claim", json={"name": "next", "takeover": True}).json()
+        self.assertNotEqual(replacement["owner_id"], self.claim["owner_id"])
+        with self.client.websocket_connect(self.base+"/stream?session_id="+self.claim["session_id"]) as ws:
+            data = ws.receive_json()
+        self.assertNotIn("lease", data)
+        self.assertEqual(data["telemetry"]["owner"]["owner_id"], replacement["owner_id"])
+        self.assertNotIn(replacement["session_id"], str(data))
+
     def test_cross_origin_commands_are_rejected(self):
         response = self.client.post(self.base+"/claim", json={"name": "other"}, headers={"Origin": "http://elsewhere.invalid"})
         self.assertEqual(response.status_code, 403)
