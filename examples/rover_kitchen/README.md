@@ -57,6 +57,35 @@ The [interactive verification record](verification.json) preserves the operator 
 
 The [stock SDK execution record](sdk-verification.json) covers a separate run from HTTP task submission through the unmodified OpenCode worker. Work Mode Codex chose each tool call over a loopback OpenAI-compatible connection. Both rovers completed eight actions, parked, and disarmed. The record includes session IDs, action run IDs, the model's evidence citations, and item/base positions checked against the fixture geometry.
 
+### Recheck the recorded deliveries
+
+The [unattended local-model record](local-model-verification.json) contains the two goals, OpenCode provider configuration, llama.cpp arguments, model-file SHA-256, and the run IDs cited by Qwen3-4B-Instruct-2507. Both workers used the stock Control Studio SDK worker. This CPU run submitted Amber first and Blue second in the same kitchen.
+
+The [raw SDK journals](sdk-journals.tar.gz) hold both the local-model run and the concurrent Codex run. From the repository root, check the recorded simulated poses and custody directly against SpaceIR, without installing MuJoCo or calling a provider:
+
+```bash
+kitchen=examples/rover_kitchen
+receipts="$kitchen/generated/receipts"
+mkdir -p "$receipts"
+tar -xzf "$kitchen/sdk-journals.tar.gz" -C "$receipts"
+python "$kitchen/verify_delivery.py" \
+  --delivery "$receipts/local-qwen/amber.json" tomato left_plate \
+  --delivery "$receipts/local-qwen/blue.json" lettuce right_plate
+python "$kitchen/verify_delivery.py" --require-overlap \
+  --delivery "$receipts/concurrent-codex/amber.json" tomato left_plate \
+  --delivery "$receipts/concurrent-codex/blue.json" lettuce right_plate
+```
+
+For a fresh run with your local model server, start llama.cpp with the model and arguments recorded in the local-model record, substituting your GGUF path for `MODEL.gguf`. With the standard launch dependencies and `jq` installed, start the kitchen in another terminal:
+
+```bash
+kitchen=examples/rover_kitchen
+mkdir -p "$kitchen/generated"
+jq '.provider_config' "$kitchen/local-model-verification.json" > "$kitchen/generated/opencode.json"
+OPENCODE_CONFIG="$PWD/$kitchen/generated/opencode.json" \
+  FORMA_TASK_MODEL=workcell-local/qwen3-4b-instruct python -m examples.rover_kitchen.server
+```
+
 ### Model provenance
 
 The assembly and route handling derive from the linked garden revision. The asset installer retains ASTRA's upstream MIT license and the SO-101 model's included Apache-2.0 license. No garden checkout is required to install or run the sample.
