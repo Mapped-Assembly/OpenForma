@@ -4,13 +4,13 @@ Conceptual linear-bearing envelopes, not a manufactured or motorized design.
 X translates the whole Y mechanism; Y translates its platform and tool marker.
 """
 import json
-import os
 from pathlib import Path
 import cadquery as cq
 from opencad import Part, Sketch, get_default_context
+from forma_core.config import config
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = Path(os.environ.get("FORMA_CONTROL_CAD_OUT", str(ROOT/"generated/xy-stage")))
+OUT = Path(config.get("FORMA_CONTROL_CAD_OUT", str(ROOT/"generated/xy-stage")))
 OUT.mkdir(parents=True, exist_ok=True)
 ctx = get_default_context()
 parts, records = {}, []
