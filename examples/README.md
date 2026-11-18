@@ -1,5 +1,12 @@
 # Forma Project Object Examples
 
+## Real-time machine control
+
+[`control_studio/`](control_studio/README.md) demonstrates the reusable
+`forma_core.control` runtime with a servo gate and a two-axis XY-stage benchmark.
+It includes keyboard/joystick input adapters, coordinated motion, native CAD
+bindings and an agent-compatible API. See [the control guide](../docs/machine-control.md).
+
 These examples create real `FormaProjectObject` instances from generated `HardwareIntermediateRepresentation`.
 The hardcoded scripts run Ollama, Runpod, and Baseten GLM by default. Hugging Face Qwen is wired in and can be enabled after setting a token.
 

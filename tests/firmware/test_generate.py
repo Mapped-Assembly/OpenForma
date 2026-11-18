@@ -47,7 +47,7 @@ class GoldenFileTests(unittest.TestCase):
         self.assertEqual(scaffold.warnings, [])
         for path in SCAFFOLD_PATHS:
             with self.subTest(path=path):
-                expected = (GOLDEN_ROOT / "esp32dev" / GOLDEN_FILENAMES[path]).read_text()
+                expected = (GOLDEN_ROOT / "esp32dev" / GOLDEN_FILENAMES[path]).read_text(encoding="utf-8")
                 self.assertEqual(scaffold.files[path], expected)
 
     def test_nano_example_matches_golden(self) -> None:
@@ -55,7 +55,7 @@ class GoldenFileTests(unittest.TestCase):
         self.assertEqual(scaffold.warnings, [])
         for path in SCAFFOLD_PATHS:
             with self.subTest(path=path):
-                expected = (GOLDEN_ROOT / "nanoatmega328" / GOLDEN_FILENAMES[path]).read_text()
+                expected = (GOLDEN_ROOT / "nanoatmega328" / GOLDEN_FILENAMES[path]).read_text(encoding="utf-8")
                 self.assertEqual(scaffold.files[path], expected)
 
     def test_scaffold_contains_all_scaffold_files(self) -> None:

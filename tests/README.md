@@ -4,6 +4,7 @@ The offline Python tests are grouped by the concern they exercise:
 
 - `agents/` — orchestration, clarification, reconciliation, and continuity.
 - `api/` — API routes, authentication, access control, and storage boundaries.
+- `control/` — machine definitions, multi-axis control, adapter feedback and optional control-service transport.
 - `integrations/` — external sources, artifact services, and user integrations.
 - `jobs/` — background jobs, streams, progress, and prior-job context.
 - `observability/` — diagnostics, safe error visibility, and logging.

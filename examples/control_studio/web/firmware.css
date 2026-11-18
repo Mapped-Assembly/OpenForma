@@ -1,0 +1,10 @@
+#firmware-panel{margin-top:22px;padding:20px;background:#fff;border:1px solid var(--line);border-radius:10px}
+#firmware-panel[hidden]{display:none}
+#firmware-panel .section-title{align-items:flex-start;gap:12px;margin-bottom:10px}
+#firmware-panel h2 small{display:block;float:none;margin-top:7px}
+#firmware-state{font:11px ui-monospace,monospace;color:var(--green);overflow-wrap:anywhere}
+#firmware-summary,#firmware-axes p{font:11px/1.8 ui-monospace,monospace;color:#577180;overflow-wrap:anywhere}
+#firmware-assumptions{font-size:11px;line-height:1.7;color:#8395a2}
+#firmware-panel .row{flex-wrap:wrap}
+#firmware-panel button{min-width:140px;font-size:11px}
+@media(max-width:760px){#firmware-panel{padding:16px}#firmware-panel .row{flex-direction:column}}

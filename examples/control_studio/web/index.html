@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Forma · Control Studio</title><link rel="icon" href="data:,"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/firmware.css"></head><body>
+<header><div class="brand">F <strong>FORMA</strong><span>/ CONTROL STUDIO</span></div><div id="connection">Connecting…</div></header>
+<main><section class="workspace"><div class="title-row"><div><div class="eyebrow">REUSABLE MACHINE CONTROL <b>VIRTUAL</b></div><h1 id="machine-title">Two-axis XY Stage</h1><p id="description">Independent axes. One shared control interface.</p></div><button id="home">Reset view ↗</button></div>
+<div id="viewer"><div class="scene-header"><span id="body-count">Loading native CAD…</span><span id="joint-count"></span></div><div id="loading">Loading machine…</div><div class="scene-footer"><span id="pose-note">Reference pose · output disabled</span><span>Drag to orbit · scroll to zoom</span></div></div>
+<div id="readouts"></div><section class="activity"><h2>Activity <small>SHARED RUNTIME EVENTS</small></h2><ol id="events"></ol></section>
+<section id="firmware-panel" hidden><div class="section-title"><h2>Firmware execution <small>NATIVE C++ · SIMULATED I/O</small></h2><span id="firmware-state"></span></div><p id="firmware-summary"></p><div id="firmware-axes"></div><div class="row"><button id="firmware-link">Drop firmware link</button><button id="firmware-stall">Stall simulated actuator</button><button id="firmware-reset">Reset simulation</button></div><p id="firmware-assumptions"></p></section>
+<div class="architecture-note">INPUT DEVICE <span>→</span> MACHINE COMMANDS <span>→</span> FORMA RUNTIME <span>→</span> EXECUTION ADAPTER <span>→</span> CAD / HARDWARE</div>
+</section><aside><div class="section-title"><h2>Controller</h2><span id="state">DISARMED</span></div>
+<label for="machine">Machine</label><select id="machine" aria-label="Machine"></select>
+<div class="row"><button id="claim">Take control</button><button id="release">Release</button></div>
+<button id="arm" class="primary full">Arm machine <kbd>A</kbd></button>
+<div class="input-row"><label for="source">Input</label><select id="source"><option value="keyboard">Keyboard + pointer</option><option value="gamepad">USB / Bluetooth joystick</option></select></div>
+<p id="input-hint">← → X · ↑ ↓ Y · release to Hold</p><p id="gamepad-status" hidden></p>
+<div id="dpad"><button data-dir="up" aria-label="Jog up">↑</button><div><button data-dir="left" aria-label="Jog left">←</button><span>HOLD TO JOG</span><button data-dir="right" aria-label="Jog right">→</button></div><button data-dir="down" aria-label="Jog down">↓</button></div>
+<div class="speed-row"><label for="speed">Speed scale</label><output id="speed-value">75%</output></div><input type="range" id="speed" min="5" max="100" value="75" aria-label="Speed scale">
+<div id="axis-controls"></div><button id="together" class="full">Move together to targets ↗</button>
+<div class="row"><button id="hold">Hold <kbd>Space</kbd></button><button id="disarm" class="danger">Disarm <kbd>Esc</kbd></button></div>
+<div class="benchmark"><h3>Two-axis benchmark</h3><p>Coordinated rectangle + return to center.<br>Any manual input cancels the remaining path.</p><button id="benchmark" class="full">Run benchmark path</button><output id="benchmark-status">Ready</output></div>
+<p id="message" role="status" aria-live="polite">Arm to enable virtual motion.</p><div class="note">SIMULATED FEEDBACK ONLY<p>No physical hardware is connected. Joystick support uses the browser Gamepad API; device compatibility depends on your controller.</p><a href="/docs" target="_blank" rel="noreferrer">Agent / control API ↗</a></div>
+</aside></main><footer><span>Forma control core · protocol v2</span><span>Degree and millimeter axes · single-owner sessions · bounded motion</span></footer><script type="module" src="/dist/app.js"></script></body></html>
