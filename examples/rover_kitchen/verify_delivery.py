@@ -6,6 +6,7 @@ import argparse
 import json
 import math
 from datetime import datetime
+from itertools import combinations
 from pathlib import Path
 from typing import Any
 
@@ -61,6 +62,7 @@ def check_delivery(
         action["run_id"]: action["after"]["observations"]
         for action in record["actions"]
         if (action.get("evidence") or {}).get("status") == "completed"
+        and action["evidence"]["run_id"] == action["run_id"]
     }
     if not any(after["holding"] == item for after in completed.values()):
         raise ValueError("No completed action shows the assigned rover holding the item")
@@ -94,6 +96,7 @@ def main() -> None:
         for obj in space["occupancies"]
     }
     windows = []
+    actions = []
     machines = set()
     for filename, item, station in args.delivery:
         try:
@@ -103,6 +106,11 @@ def main() -> None:
             if len(ready) != 1:
                 raise ValueError("Expected one SDK worker connection")
             windows.append((datetime.fromisoformat(ready[0]), datetime.fromisoformat(record["finished_at"])))
+            started = {e["run_id"]: e["time"] for e in record["events"] if e["kind"] == "action_started"}
+            for event in record["events"]:
+                if event["kind"] == "action_completed":
+                    start = datetime.fromisoformat(started[event["evidence"]["run_id"]])
+                    actions.append((record["machine_id"], start, datetime.fromisoformat(event["time"])))
         except (KeyError, OSError, TypeError, ValueError) as error:
             parser.exit(1, f"{filename}: {error}\n")
         machines.add(record["machine_id"])
@@ -110,7 +118,9 @@ def main() -> None:
     if args.require_overlap:
         if len(machines) < 2 or max(start for start, _ in windows) >= min(end for _, end in windows):
             parser.exit(1, "Expected overlapping tasks on at least two machines\n")
-        print("The verified tasks overlapped.")
+        if not any(a[0] != b[0] and max(a[1], b[1]) < min(a[2], b[2]) for a, b in combinations(actions, 2)):
+            parser.exit(1, "No completed actions overlapped across different rovers\n")
+        print("The verified tasks and their machine actions overlapped.")
 
 
 if __name__ == "__main__":

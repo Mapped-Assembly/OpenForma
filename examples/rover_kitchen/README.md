@@ -59,9 +59,9 @@ The [stock SDK execution record](sdk-verification.json) covers a separate run fr
 
 ### Recheck the recorded deliveries
 
-The [unattended local-model record](local-model-verification.json) contains the two goals, OpenCode provider configuration, llama.cpp arguments, model-file SHA-256, and the run IDs cited by Qwen3-4B-Instruct-2507. Both workers used the stock Control Studio SDK worker. This CPU run submitted Amber first and Blue second in the same kitchen.
+The [unattended local-model record](local-model-verification.json) contains the two goals, OpenCode provider configuration, llama.cpp arguments, model-file SHA-256, and the run IDs cited by Qwen3-4B-Instruct-2507. Qwen completed both goals twice on CPU through the stock Control Studio worker. The first run used one inference slot and processed the rovers in turn. The second submitted both goals together and used two slots. The record includes the rejected commands that the model recovered from.
 
-The [raw SDK journals](sdk-journals.tar.gz) hold both the local-model run and the concurrent Codex run. From the repository root, check the recorded simulated poses and custody directly against SpaceIR, without installing MuJoCo or calling a provider:
+The [raw SDK journals](sdk-journals.tar.gz) contain both Qwen runs and the concurrent Codex run. From the repository root, check the recorded simulated poses and custody directly against SpaceIR, without installing MuJoCo or calling a provider:
 
 ```bash
 kitchen=examples/rover_kitchen
@@ -72,11 +72,11 @@ python "$kitchen/verify_delivery.py" \
   --delivery "$receipts/local-qwen/amber.json" tomato left_plate \
   --delivery "$receipts/local-qwen/blue.json" lettuce right_plate
 python "$kitchen/verify_delivery.py" --require-overlap \
-  --delivery "$receipts/concurrent-codex/amber.json" tomato left_plate \
-  --delivery "$receipts/concurrent-codex/blue.json" lettuce right_plate
+  --delivery "$receipts/concurrent-qwen/amber.json" tomato left_plate \
+  --delivery "$receipts/concurrent-qwen/blue.json" lettuce right_plate
 ```
 
-For a fresh run with your local model server, start llama.cpp with the model and arguments recorded in the local-model record, substituting your GGUF path for `MODEL.gguf`. With the standard launch dependencies and `jq` installed, start the kitchen in another terminal:
+For a fresh run with your local model server, start llama.cpp with the model and either set of server arguments recorded in the local-model record, substituting your GGUF path for `MODEL.gguf`. With the standard launch dependencies and `jq` installed, start the kitchen in another terminal:
 
 ```bash
 kitchen=examples/rover_kitchen
