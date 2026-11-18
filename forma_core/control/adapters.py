@@ -29,3 +29,8 @@ class VirtualAdapter:
 
     def read(self) -> Feedback:
         return Feedback(mode=self.mode, axes={key: AxisFeedback(simulated=value) for key, value in self.positions.items()})
+
+    def describe(self):
+        from .package import AdapterContract
+        return AdapterContract(adapter_id="forma.ideal", mode=self.mode, evidence="ideal-kinematics",
+                               actuators={key: key for key in self.positions}, handlers=["move"])

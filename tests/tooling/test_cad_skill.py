@@ -68,6 +68,14 @@ class CadSkillTests(unittest.TestCase):
         self.assertIn(command, message)
         self.assertEqual(1, message.count(command))
 
+    def test_same_version_old_runtime_is_replaced_after_dependency_resolution(self) -> None:
+        module = load_cad_module()
+        runtime = module.OpenCADRuntime("0.2.4", module.DEFAULT_OPENCAD_REQUIREMENT)
+        with patch.object(module, "_inspect_runtime", side_effect=[(None, "missing assemblies"), (None, "missing assemblies"), (runtime, "")]), patch.object(module, "_install") as install, patch.object(module, "_clear_opencad_modules"):
+            self.assertEqual(module.ensure_opencad(), runtime)
+        self.assertEqual(install.call_count, 2)
+        install.assert_called_with(module.DEFAULT_OPENCAD_REQUIREMENT, replace=True)
+
     def test_clean_skill_copy_exports_minimal_step_when_occt_is_available(self) -> None:
         module = load_cad_module()
         try:

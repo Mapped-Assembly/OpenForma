@@ -46,10 +46,10 @@ export class ControlClient extends EventTarget {
     const task = async () => {
       if (!session || session !== this.session || !this.online || this.closed) return false;
       if (op === 'heartbeat' && this.state?.state === 'FAULT') return false;
-      if (['jog', 'move'].includes(op) && epoch !== this.epoch) return false;
+      if (['jog', 'move', 'action'].includes(op) && epoch !== this.epoch) return false;
       try {
         if (!this.lease || performance.now() - this.lease.received > this.lease.valid_for_ms - 80) this.lease = {...await this.request('/lease', {session_id: session}), received: performance.now()};
-        if (session !== this.session || (['jog', 'move'].includes(op) && epoch !== this.epoch)) return false;
+        if (session !== this.session || (['jog', 'move', 'action'].includes(op) && epoch !== this.epoch)) return false;
         const response = await this.request('/command', {protocol_version: 2, session_id: session, lease_id: this.lease.lease_id, seq: this.seq++, op, ...params});
         if (op !== 'heartbeat') this.emit('accepted', response);
         return response;
@@ -62,6 +62,33 @@ export class ControlClient extends EventTarget {
     await this.queue;
     if (session) await this.request('/release', {session_id: session});
     if (!this.closed) this.connect();
+  }
+  async resetSimulation() {
+    const session = this.session;
+    if (!session) return false;
+    // Stop issuing heartbeats and invalidate queued moves before reset revokes
+    // the server session. Drain an in-flight command first.
+    this.session = null; this.ownerId = null; this.lease = null; this.epoch++;
+    await this.queue;
+    try { return await this.request('/simulation', {session_id: session, op: 'reset'}); }
+    finally { if (!this.closed) this.connect(); }
+  }
+  async startTask(goal, options = {}) {
+    // Atomically hand the current browser session to the task host. Stop local
+    // heartbeats and drain already-dispatched commands before the handoff.
+    const session = this.session, owner = this.ownerId;
+    this.session = null; this.ownerId = null; this.lease = null; this.epoch++;
+    await this.queue;
+    try { return await this.request('/tasks', {goal, ...options, session_id: session}); }
+    catch (error) {
+      // A definite rejected start did not transfer ownership. An ambiguous
+      // transport failure is reconciled against public state before restoring it.
+      try {
+        const {telemetry} = await this.request('/state');
+        if (owner && telemetry.owner?.owner_id === owner) { this.session = session; this.ownerId = owner; }
+      } catch {}
+      throw error;
+    } finally { if (!this.closed) this.connect(); }
   }
   async dispose() {
     this.closed = true; clearInterval(this.timer); clearTimeout(this.retry);

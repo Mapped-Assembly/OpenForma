@@ -57,6 +57,38 @@ class ControlClient:
     def state(self):
         return self._request("/state")["telemetry"]
 
+    def solve_tool(self, target_mm: list[float]):
+        """Read-only top-down IK where supported; execute via command('move')."""
+        return self._request("/ik", {"target_mm": target_mm})["targets"]
+
+    def action_result(self, run_id: str):
+        return self._request("/actions/"+quote(run_id, safe=""))
+
+    def act_and_wait(self, action_id: str, parameters=None, *, timeout=60):
+        """Execute a declared action; completion is evaluated by the runtime.
+
+        Returns its evidence record, never substitutes command-plan completion.
+        Caller owns heartbeats between separate tool calls/LLM reasoning turns.
+        """
+        reply = self.command("action", action_id=action_id, parameters=parameters or {})
+        deadline = time.monotonic()+timeout
+        while time.monotonic() < deadline:
+            result = self.action_result(reply["run_id"])
+            if result["status"] == "completed":
+                return result
+            if result["status"] != "running":
+                raise RuntimeError(f"Action {result['status']}: {result['reason']}")
+            self.command("heartbeat")
+            time.sleep(.1)
+        self.command("hold")
+        raise TimeoutError("Action evidence did not arrive before the client timeout.")
+
+    def reset_simulation(self):
+        """Restore a virtual fixture, releasing ownership and disarming it."""
+        result = self._request("/simulation", {"session_id": self.session_id, "op": "reset"})
+        self.session_id = None
+        return result
+
     def release(self):
         if self.session_id is not None:
             session = self.session_id

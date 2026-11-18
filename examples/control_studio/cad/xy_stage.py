@@ -6,7 +6,7 @@ X translates the whole Y mechanism; Y translates its platform and tool marker.
 import json
 from pathlib import Path
 import cadquery as cq
-from opencad import Part, Sketch, get_default_context
+from opencad import Part, Sketch, get_default_context, AssemblyTree, AssemblyComponent, serialize_assembly_tree
 from forma_core.config import config
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,3 +88,15 @@ for group in ("fixed","x","y"):
 assembly.save(str(OUT/"xy-stage-hierarchy.step"))
 (OUT/"body-map.json").write_text(json.dumps(records,indent=2)+"\n",encoding="utf-8")
 (OUT/"joints.json").write_text(json.dumps([j.model_dump(mode="json") for j in ctx.kernel.joint_store.all()],indent=2)+"\n",encoding="utf-8")
+
+# Stable authored component IDs survive regenerated kernel shape UUIDs. Keep
+# semantic hierarchy distinct from the native joint occurrence graph.
+components = {}
+for group, children in (("fixed", ["x"]), ("x", ["y"]), ("y", [])):
+    members = [r["id"] for r in records if r["group"] == group]
+    components[group] = AssemblyComponent(id=group, name=group, child_ids=members+children)
+for record in records:
+    components[record["id"]] = AssemblyComponent(id=record["id"], name=record["id"],
+        geometry_refs=[record["shape_id"]], feature_refs=[record["feature_id"]])
+tree = AssemblyTree(id="xy-stage", name="XY stage", root_ids=["fixed"], components=components)
+(OUT/"opencad-assembly.json").write_text(serialize_assembly_tree(tree)+"\n", encoding="utf-8")

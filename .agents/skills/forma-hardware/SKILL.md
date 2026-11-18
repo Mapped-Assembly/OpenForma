@@ -16,7 +16,7 @@ runtime before writing or running the model:
 python <skill-directory>/scripts/cad.py setup
 ```
 
-The setup command reuses compatible OpenCAD `0.2.4` installations only when native OCCT, rigid kinematics, spur gears and gear coupling are available. Otherwise it installs the pinned OpenCAD gear-motion commit `1c417752eb42d29b951784e80f65ac79c3fb6e0e`. It verifies native OCCT before a generation job begins. Do not import OpenCAD from Forma's core package; use the adapter's
+The setup command reuses compatible OpenCAD `0.2.4` installations only when native OCCT, rigid kinematics, spur gears, gear coupling, assembly identities and scene contracts are available. Otherwise it installs pinned OpenCAD commit `5cf1a47dda7b80fc6b5ac47a9f60f8d6030dba0f`. It verifies native OCCT before a generation job begins. Do not import OpenCAD from Forma's core package; use the adapter's
 `build` command for model execution and export.
 
 ## Workspace
@@ -89,6 +89,18 @@ Use `forma.generate_project` only when the user wants Forma's separately configu
 ```bash
 python <skill-directory>/scripts/forma.py generate "ESP32 plant monitor with an OLED" --output "$PROJECT_DIR/forma-project.json"
 ```
+
+## Executable machines
+
+When designing a controllable mechanism, also follow
+[references/machine-packages.md](references/machine-packages.md). Author a
+versioned `forma.machine-package` alongside the project: preserve native OpenCAD
+component/joint identities, declare parameterized actions, bind a concrete
+execution adapter, and specify observed completion criteria. Validate the package
+and its referenced artifacts with `forma-core machine validate`. Exercise its
+declared actions and retain runtime evidence before claiming operation is verified.
+Static package validity, authored playback, ideal simulation, contact physics,
+firmware SIL and hardware measurements are different evidence scopes.
 
 ## Firmware scaffold
 

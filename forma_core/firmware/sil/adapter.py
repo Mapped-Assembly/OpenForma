@@ -61,5 +61,11 @@ class FirmwareSilAdapter:
     def fresh(self):
         return type(self)(self.definition, self.profile, self.library, clock=self.clock)
 
+    def describe(self):
+        from forma_core.control.package import AdapterContract, digest
+        return AdapterContract(adapter_id="forma.firmware-sil", mode=self.mode, evidence="firmware-sil",
+                               configuration_sha256=digest(dict(profile=self.profile.model_dump(mode="json"), firmware=self.native.manifest["source_sha256"])),
+                               actuators={axis.axis_id: f"native:{i}" for i, axis in enumerate(self.definition.axes)}, handlers=["move"])
+
     def close(self):
         self.native.close()

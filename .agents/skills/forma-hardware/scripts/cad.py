@@ -24,7 +24,7 @@ from typing import Any
 
 
 SUPPORTED_OPENCAD_VERSION = "0.2.4"
-OPENCAD_KINEMATICS_COMMIT = "1c417752eb42d29b951784e80f65ac79c3fb6e0e"
+OPENCAD_KINEMATICS_COMMIT = "5cf1a47dda7b80fc6b5ac47a9f60f8d6030dba0f"
 DEFAULT_OPENCAD_REQUIREMENT = f"opencad[occt] @ git+https://github.com/caid-technologies/OpenCAD.git@{OPENCAD_KINEMATICS_COMMIT}#subdirectory=packages/opencad"
 OPENCAD_REQUIREMENT_ENV = "FORMA_OPENCAD_REQUIREMENT"
 SUPPORTED_OUTPUT_SUFFIXES = {".step", ".stp", ".stl"}
@@ -257,6 +257,7 @@ def _inspect_runtime(requirement: str) -> tuple[OpenCADRuntime | None, str]:
         from opencad.kernel.core.backend_factory import create_backend
         from opencad.kinematics import evaluate_assembly_pose  # noqa: F401
         from opencad.kinematics import GearCoupling, resolve_gear_progress  # noqa: F401
+        from opencad import AssemblyTree, AssemblyComponent, serialize_assembly_tree, SceneDocument  # noqa: F401
         from opencad.gears import SpurGearSpec, spur_gear  # noqa: F401
 
         create_backend("occt", require_native=True)
@@ -273,8 +274,12 @@ def _clear_opencad_modules() -> None:
     importlib.invalidate_caches()
 
 
-def _install(requirement: str) -> None:
+def _install(requirement: str, *, replace: bool = False) -> None:
     command = [sys.executable, "-m", "pip", "install", "--upgrade", requirement]
+    if replace:
+        # Dependency resolution already ran; replace a same-version wheel that
+        # predates the required assembly/scene APIs without reinstalling OCCT.
+        command[4:4] = ["--force-reinstall", "--no-deps"]
     try:
         completed = subprocess.run(command, check=False, capture_output=True, text=True)
     except OSError as exc:
@@ -300,6 +305,10 @@ def ensure_opencad(*, install: bool = True, requirement: str | None = None) -> O
     _install(configured)
     _clear_opencad_modules()
     runtime, reason = _inspect_runtime(configured)
+    if runtime is None:
+        _install(configured, replace=True)
+        _clear_opencad_modules()
+        runtime, reason = _inspect_runtime(configured)
     if runtime is None:
         raise OpenCADError(_diagnostic(f"managed installation completed but verification failed: {reason}", configured))
     return runtime

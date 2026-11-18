@@ -12,7 +12,7 @@ import uuid
 from pydantic import ValidationError
 
 from .adapters import MachineAdapter, VirtualAdapter
-from .models import COMMAND_ADAPTER, Feedback, HoldCommand, JogCommand, MachineDefinition, MoveCommand
+from .models import COMMAND_ADAPTER, ActionCommand, Feedback, HoldCommand, JogCommand, MachineDefinition, MoveCommand
 
 
 class ControlError(ValueError):
@@ -30,13 +30,20 @@ class MotionPlan:
 
 
 class MachineRuntime:
-    def __init__(self, definition: MachineDefinition, adapter: MachineAdapter | None = None, *, clock=time.monotonic):
+    def __init__(self, definition: MachineDefinition, adapter: MachineAdapter | None = None, *, clock=time.monotonic, package=None):
         if adapter is None and definition.backend != "virtual":
             raise ValueError("Physical machines require an explicit hardware adapter.")
         self.definition = definition
         self.adapter = adapter if adapter is not None else VirtualAdapter(definition)
         if self.adapter.mode != definition.backend:
             raise ValueError("Adapter mode differs from the machine definition.")
+        self.action_execution = None
+        if package is not None:
+            from .actions import ActionExecution
+            if package.definition != definition:
+                raise ValueError("Machine package definition differs from the runtime.")
+            self.action_execution = ActionExecution(package, self.adapter)
+        self.feedback_sequence = 0
         self.clock = clock
         self.started = self.last_tick = self.last_valid = clock()
         self.axes = {a.axis_id: a for a in definition.axes}
@@ -76,6 +83,7 @@ class MachineRuntime:
             if feedback.mode != self.definition.backend or set(feedback.axes) != set(self.axes):
                 raise ValueError("Adapter returned the wrong mode or axis set.")
             self.feedback = feedback
+            self.feedback_sequence += 1
             if feedback.fault:
                 first = self.state != "FAULT"
                 self.state = "FAULT"
@@ -84,6 +92,8 @@ class MachineRuntime:
                 self.adapter.apply(self.commanded, False)
                 if first:
                     self._event("fault", feedback.fault)
+                if self.action_execution:
+                    self.action_execution.observe(self)
                 return False
         except Exception as error:
             if self.execution_error is None:
@@ -97,7 +107,11 @@ class MachineRuntime:
             except Exception:
                 pass
             self._event("fault", f"Adapter failed: {type(error).__name__}. Restart after correcting adapter.")
+            if self.action_execution:
+                self.action_execution.observe(self)
             return False
+        if self.action_execution:
+            self.action_execution.observe(self)
         return True
 
     def _require_owner(self, session_id):
@@ -110,6 +124,9 @@ class MachineRuntime:
             raise ControlError("release_before_adapter_reset")
         if adapter.mode != self.definition.backend:
             raise ValueError("Adapter mode differs from machine definition.")
+        if self.action_execution:
+            self.action_execution.bind(adapter)
+            self.action_execution.interrupt("adapter_reset", self)
         self.adapter = adapter
         self.execution_error = None
         self.commanded = {a: None for a in self.axes}
@@ -126,6 +143,8 @@ class MachineRuntime:
         self.tick()
         if self.owner and not takeover:
             raise ControlError("control_busy")
+        if self.action_execution:
+            self.action_execution.interrupt("ownership_changed", self)
         self.plans.clear()
         if self.enabled:
             self.state, self.targets = "LINK_LOST", dict(self.commanded)
@@ -150,6 +169,8 @@ class MachineRuntime:
 
     def release(self, session_id):
         self._require_owner(session_id)
+        if self.action_execution:
+            self.action_execution.interrupt("released", self)
         self.plans.clear()
         if self.state != "FAULT":
             self.state = "DISARMED"
@@ -203,8 +224,16 @@ class MachineRuntime:
                 raise ControlError("stale_sequence")
             if self.state == "FAULT":
                 raise ControlError("adapter_fault")
-            if command.op in ("move", "jog", "hold") and self.state not in ("ARMED", "HOLD"):
+            if command.op in ("move", "jog", "hold", "action") and self.state not in ("ARMED", "HOLD"):
                 raise ControlError("invalid_state")
+            original, action = command, None
+            if isinstance(command, ActionCommand):
+                if self.action_execution is None:
+                    raise ControlError("machine_has_no_action_contract")
+                try:
+                    action, command = self.action_execution.prepare(command, self.adapter)
+                except ValidationError:
+                    raise ControlError("invalid_action_resolution") from None
             if isinstance(command, MoveCommand):
                 self._axis_ids(command.targets)
                 if not command.rates.keys() <= command.targets.keys():
@@ -215,11 +244,15 @@ class MachineRuntime:
                         raise ControlError("position_limit")
                     if not 0 < rates[a] <= self.axes[a].max_rate:
                         raise ControlError("rate_limit")
+                if self.action_execution:
+                    self.action_execution.interrupt("superseded", self)
                 self._move(command.targets, rates, command.coordinated)
             elif isinstance(command, JogCommand):
                 self._axis_ids(command.velocities)
                 if any(abs(v) > self.axes[a].max_rate for a, v in command.velocities.items()):
                     raise ControlError("rate_limit")
+                if self.action_execution:
+                    self.action_execution.interrupt("manual_jog", self)
                 self._cancel(command.velocities)
                 targets = {a: self.axes[a].maximum if v > 0 else self.axes[a].minimum
                            for a, v in command.velocities.items() if v != 0}
@@ -230,6 +263,8 @@ class MachineRuntime:
             elif isinstance(command, HoldCommand):
                 ids = command.axes if command.axes is not None else list(self.axes)
                 self._axis_ids(ids)
+                if self.action_execution:
+                    self.action_execution.interrupt("held", self)
                 self._cancel(ids)
                 if not self.plans:
                     self.state = "HOLD"
@@ -238,14 +273,17 @@ class MachineRuntime:
                 self.commanded = {a: value if value is not None else self.axes[a].neutral for a, value in self.commanded.items()}
                 self.targets, self.state = dict(self.commanded), "ARMED"
             elif command.op == "disarm":
+                if self.action_execution:
+                    self.action_execution.interrupt("disarmed", self)
                 self.plans.clear()
                 self.targets, self.state = {a: None for a in self.axes}, "DISARMED"
             if not self._output():
                 raise ControlError("adapter_fault")
             self.last_seq, self.last_valid = command.seq, self.clock()
+            run_id = self.action_execution.begin(original, action, command.targets, self) if action else None
             if command.op != "heartbeat":
-                self._event("command", command.op, seq=command.seq, targets=dict(self.targets))
-            return dict(accepted=True, ack_seq=self.last_seq, telemetry=self.snapshot())
+                self._event("command", original.op, seq=command.seq, targets=dict(self.targets))
+            return dict(accepted=True, ack_seq=self.last_seq, telemetry=self.snapshot(), **({"run_id": run_id} if run_id else {}))
         except ControlError as error:
             self._event("rejected", error.reason)
             raise
@@ -288,7 +326,8 @@ class MachineRuntime:
                     command_motion_complete=self.enabled and not self.plans,
                     execution=self.feedback.diagnostics.model_dump(mode="json") if self.feedback.diagnostics else None,
                     execution_fault=self.execution_error["reason"] if self.execution_error else self.feedback.fault,
-                    execution_error=dict(self.execution_error) if self.execution_error else None)
+                    execution_error=dict(self.execution_error) if self.execution_error else None,
+                    action=self.action_execution.snapshot() if self.action_execution else None)
 
 
 class MachineRegistry:
@@ -301,6 +340,12 @@ class MachineRegistry:
         if key in self._machines:
             raise ValueError(f"Machine '{key}' is already registered.")
         self._machines[key] = runtime
+
+    def add_package(self, package, adapter=None, *, clock=time.monotonic):
+        """Bind a validated package to an explicitly supplied installed adapter."""
+        runtime = MachineRuntime(package.definition, adapter, clock=clock, package=package)
+        self.add(runtime)
+        return runtime
 
     def get(self, machine_id: str) -> MachineRuntime:
         if machine_id not in self._machines:

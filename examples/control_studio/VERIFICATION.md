@@ -116,3 +116,205 @@ Verified on Linux with Python 3.12 and GNU C++ 14.2:
 
 This follow-up did not repeat live-browser, live-HTTP benchmark, Windows, or
 whole-repository validation.
+
+## SO-101 contact-physics task — 2026-11-18
+
+Verified locally on Windows, Python 3.12, MuJoCo 3.3.7, pinned Menagerie SO-101
+`3abca2e302625cec9429c49806121ea2855cef81`:
+
+- Explicit `setup_so101.py`: model, license/provenance manifest, task fixture and
+  browser mesh export generated successfully. No runtime downloads.
+- `python -m unittest tests.control.test_so101 tests.control.test_runtime tests.control.test_client tests.control.test_service tests.firmware.test_sil -v`:
+  **51 passed**, no skips. The six physics/service tests also passed after the
+  final adapter lifecycle change.
+- `npm test`: **6 passed**, including reset draining in-flight commands before
+  revoking ownership. `npm run build` and focused Python compileall passed.
+- Deterministic `so101_benchmark.py`: **passed**, 12 observed stages, maximum
+  lift **54.67 mm**, final cube center `[200.300, -104.310, 14.939]` mm.
+- Live `so101_benchmark.py --live`: **passed**, 12 observed stages, maximum lift
+  **54.78 mm**, final center `[200.353, -104.311, 14.939]` mm. This is a scripted
+  reference using the agent client and simulated ground truth, not an autonomous
+  learned/LLM policy.
+- Browser at `http://127.0.0.1:8766`, 1440×1000: completed pick-and-place using
+  visible XYZ fields/buttons and gripper buttons. Both jaw contacts observed,
+  **54.89 mm** maximum lift, released/settled success. Rendered cube world
+  coordinates matched physics telemetry exactly at lift and placement.
+- Keyboard X step, Hold interrupt, individual wrist-roll slider, task reset,
+  ownership release/reclaim, switch to XY and back: passed. Final reset left
+  the arm at the initial fixture, disarmed, with simulation time zero.
+- 390×844 mobile: no horizontal overflow; controls disabled while disarmed.
+- Final browser interaction pass: zero page/console errors. One benign browser
+  warning occurred when a newly opening WebSocket was replaced during rapid
+  reset/reclaim. Earlier restart connection errors and the fixed reset heartbeat
+  409 were excluded from that final pass, not mistaken for passing results.
+
+Local evidence (ignored generated artifacts):
+
+- `generated/so101/source-manifest.json`
+- `generated/so101-benchmark.json`, `generated/so101-live-benchmark.json`
+- `evidence/so101-before.png`, `evidence/so101-ready.png`
+- `evidence/so101-manual-lift.png`, `evidence/so101-manual-success.png`
+- `evidence/so101-mobile.png`
+
+Linux/Windows CI now explicitly prepares this model and requires the contact
+benchmark; that new CI configuration has not been run remotely. The repository-
+wide suite was not repeated for this addition. Physical robot/joystick hardware,
+camera perception and real SO-101 firmware were not tested.
+
+## Identity-preserving machine packages — 2026-11-18
+
+- Focused package, runtime, client, service, SO-101, firmware SIL and coding-agent
+  skill suite: **80 Python tests passed**. Includes radians-to-degrees limit
+  validation, original identity round trips, rehashed-but-inconsistent source
+  rejection, CLI schema/import/validation, and additional package/viewer loading.
+- Frontend: **7 tests passed**, including cancellation of a declared action while
+  it is waiting for a lease; `npm run build` passed. `git diff --check` passed.
+- Both generated packages pass `forma-core machine validate`. XY preserves
+  **25 components and 15 joints**; SO-101 explicitly identifies an external model.
+  Static validation reports `execution_verified: false`.
+- Offline `action_benchmark.py`: **9/9 declared actions completed**, maximum
+  lift **54.68 mm**, final cube `[200.298, -104.309, 14.939]` mm.
+- Live `action_benchmark.py --live`: **9/9 completed**, maximum lift **55.12 mm**,
+  final cube `[200.423, -104.314, 14.939]` mm. Every record carries the package and
+  configuration hashes, run/command identity, simulated feedback and
+  `contact-physics` provenance. Grasp records bilateral contact; placement records
+  current `placement_settled: true` after retreat.
+- The Python `ControlClient.act_and_wait()` helper also completed a live XY move
+  and returned simulated position evidence with `ideal-kinematics` provenance.
+- Browser at 1440×1000: completed pick/place through the generated action forms;
+  final cube `[200.247, -104.301, 14.939]` mm. Rendered cube coordinates exactly
+  matched physics telemetry. Action status and provenance appeared in the UI.
+- Switching to XY and XY firmware SIL loaded both 22-body packaged viewers.
+  Declared moves to X20/Y15 completed with their respective provenance. Hold
+  interrupted an active SIL action and the UI reported `interrupted / held`.
+- At 390×844, generated controls fit the viewport and are disabled when disarmed.
+  Browser console: zero errors; one opening WebSocket was superseded by the
+  ownership connection before it established. Automation waits were adjusted to
+  wait for reset/machine-switch completion before claiming or arming.
+- SO-101 was reset and left **released, disarmed, simulation time zero**.
+
+Additional local evidence:
+
+- `generated/action-evidence.json`
+- `generated/action-live-evidence.json`
+- `generated/xy-action-live-evidence.json`
+- `evidence/package-disarmed.png`
+- `evidence/package-contact-lift.png`
+- `evidence/package-so101-desktop.png`
+- `evidence/package-sil-actions.png`
+- `evidence/package-mobile.png`
+
+The nine-action reference is scripted, not an autonomous policy. These results
+verify local simulation and package integration; physical hardware, the complete
+repository suite and the new remote CI run remain unverified.
+
+## Live agent visibility — 2026-11-18
+
+- Added an always-visible execution strip above the viewer: controller/agent
+  name, running action and parameters, completion/provenance, and stream status.
+  A disconnected stream is explicitly labelled as a last-received pose.
+- Versioned the changed bundle/CSS URLs after observing cached frontend assets
+  during browser verification. Hard-refresh an already-open development page
+  after rebuilding its frontend.
+- Sent two declared tool moves through an independent Python `ControlClient`
+  while the browser remained an observer. Captured **135 browser samples**, **56
+  running-action samples**, and **49 distinct rounded rendered gripper poses**
+  spanning **119.2 mm in Y**. Agent commands therefore changed both live action
+  text and the rendered robot without browser motion commands.
+- An initial probe used the body name `gripper` where the viewer expects a geom
+  ID and returned null positions. The successful probe used actual `geom_24`.
+- Frontend: 7 tests and build passed. Desktop 1440×1000 and mobile 390×844
+  checked; mobile had no horizontal overflow. The robot was released/disarmed
+  after the check; the cube remains placed on the target.
+
+Evidence: `generated/live-observer-actions.json`,
+`generated/live-browser-samples.json`, `evidence/live-agent-before.png`,
+`evidence/live-agent-running.png`, and `evidence/live-agent-mobile.png`.
+
+## Persistent machine task runner — 2026-11-18
+
+- Added host-owned tasks, SDK subprocess, independent heartbeats, journals,
+  goal entry, timeline, Stop and Take control. Task records survive browser and
+  host restarts; interrupted execution is never automatically resumed.
+- Focused runtime/client/service/package/task/SO-101/native firmware suite:
+  **75 tests passed** before the additional subprocess test. Task suite then
+  passed **10 tests**, including subprocess JSON-lines tool/result handling,
+  rejected actions, successful evidence and forced worker cleanup. The protocol
+  test uses a test fixture, not a real LLM.
+- Frontend: **9 tests passed**; build and `git diff --check` passed. Both
+  regenerated machine packages passed structural/artifact validation.
+- Real browser at `http://127.0.0.1:8766/?tasks=e2e`, 1440×1000: authorized
+  handoff, duplicate-start rejection (409), reload retaining the same active
+  task ID with continuing heartbeats, Stop releasing/disarming, and Take control
+  interrupting the task and acquiring a disarmed human session passed.
+- Mobile 390×844: goal controls visible, no horizontal overflow. Screenshots
+  saved for desktop, mobile, Stop and takeover. No task-worker subprocesses
+  remained after terminal cleanup.
+- Initial SDK attempts reached model dispatch but were blocked:
+  `opencode/hy4-flash-free` and
+  `opencode/deepseek-v4.1-flash-free` reported free usage limits;
+  `gmi/gpt-6-astra` reported a missing API credential in the embedded host.
+  Provider errors now surface from the SDK session instead of a generic
+  ended-without-result error. Each failed attempt released/disarmed.
+- User configured an OpenAI API key in the project-root `.env`. Studio now
+  reloads that file plus ignored `.env.task` for every task; empty worker values
+  do not mask project credentials. The subprocess test verifies inheritance,
+  model override and absence of credentials from journals. **10 task tests passed**
+  after this change. The API account rejected `gpt-6.2-astra`; its model listing
+  confirmed `gpt-5.5`, which was selected explicitly for subsequent runs.
+
+### Authenticated browser E2E — passed
+
+- Real embedded OpenCode SDK + `openai/gpt-5.5`, started from the browser goal
+  panel, completed **9/9 actions in 60 seconds**. Task
+  `950328b503c7434abedfd62ec8033611` records **391 independent heartbeats**.
+  The model discovered the package, selected actions, and compensated for the
+  observed TCP-to-cube offset; no reference-controller fallback was used.
+- Verified bilateral grasp, **55.27 mm actual simulated lift**, and released,
+  settled placement with zero jaw contacts. Final cube center
+  `[200.521, -98.310, 14.939]` mm, **1.77 mm XY target error**. Arm retreated
+  clear; task finished released/disarmed. Physics/completion criteria unchanged.
+- Reloaded the browser during execution; the host continued and the reconnected
+  browser showed completion. Captured **589 browser samples during the task**,
+  including **128 distinct rounded rendered gripper poses**. Full evidence link
+  returned the completed journal with action evidence and contact-physics provenance.
+- A second real LLM task on the XY package was stopped during its first move:
+  `43228c09d4034890b227334aee790fe3`. Browser Stop changed the action from running
+  to interrupted and released/disarmed immediately. A further task
+  `f2af76e0e0cc4099a16242dc91b46885` was manually taken over during model reasoning;
+  human ownership persisted, the machine stayed disarmed and axes remained stable.
+- Desktop 1440×1000 and mobile 390×844 rendered the completed task; no horizontal
+  overflow. Final browser pass: **zero console errors/warnings**. Earlier expected
+  restart connection errors are excluded. No worker processes remained after
+  completion/cancellation. SO-101's final placed scene is retained, released/disarmed.
+
+Local evidence: `generated/tasks/*.json`, `generated/task-ui-checks.json`,
+`evidence/tasks-before.png`, `evidence/task-stopped.png`,
+`evidence/task-takeover.png`, `evidence/task-desktop.png`, and
+`evidence/task-mobile.png`. Remote CI and physical hardware were not exercised.
+
+Authenticated evidence: `generated/task-agent-browser-evidence.json`,
+`generated/task-interruption-evidence.json`, the task journals above,
+`evidence/task-agent-running.png`, `evidence/task-agent-lift.png`,
+`evidence/task-agent-desktop-success.png`, `evidence/task-agent-mobile-success.png`,
+`evidence/task-stop-live-action.png`, and `evidence/task-takeover-reasoning.png`.
+
+### Pre-push portability cleanup
+
+- Task reset availability now comes from installed adapter capabilities rather
+  than frontend adapter-ID checks. Browser verified SO-101 (reset available),
+  ideal XY (unavailable), and firmware SIL XY (available) on an isolated Studio
+  instance at port 8767. Screenshot: `evidence/task-cleanup-capabilities.png`.
+- Heartbeats follow the selected machine's timing configuration. A regression
+  test uses a 120 ms watchdog to catch the former fixed 150 ms heartbeat.
+- Removed the sample model default, robot-specific generic goal placeholder,
+  temporary asset URL versions and SDK-specific wording in the reusable runner.
+  Dependency/source revision pins and the SO-101 fixture configuration are intentional.
+- Credential filename exclusions apply repository-wide, including a duplicate
+  local `.env.task` in a nested folder. Project/worker credentials and task
+  journals are confirmed ignored. Scanned 46 changed/new source and documentation
+  files for local user paths and temporary viewer markers: no matches.
+- **23 focused Python tests, 9 frontend tests, frontend build and diff check
+  passed.** Browser capability checks passed with zero console errors; one
+  opening WebSocket was superseded during machine switching. The isolated test
+  server was stopped afterward; the original successful robot scene was retained.

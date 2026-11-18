@@ -130,7 +130,13 @@ class JogCommand(CommandBase):
     velocities: dict[str, FiniteFloat] = Field(min_length=1)
 
 
-Command = Annotated[SimpleCommand | HoldCommand | MoveCommand | JogCommand, Field(discriminator="op")]
+class ActionCommand(CommandBase):
+    op: Literal["action"]
+    action_id: str = Field(min_length=1)
+    parameters: dict[str, FiniteFloat] = Field(default_factory=dict)
+
+
+Command = Annotated[SimpleCommand | HoldCommand | MoveCommand | JogCommand | ActionCommand, Field(discriminator="op")]
 COMMAND_ADAPTER: TypeAdapter = TypeAdapter(Command)
 
 

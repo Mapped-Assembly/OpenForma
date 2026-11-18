@@ -35,15 +35,23 @@ jobs:
           cache: npm
           cache-dependency-path: examples/control_studio/package-lock.json
       - name: Install optional control host and test dependencies
-        run: python -m pip install -e ".[control]" httpx
+        run: python -m pip install -e ".[control,robot-sim]" httpx
       - name: Build native firmware (required, not skipped)
         run: python -m forma_core.firmware.sil.build --output examples/control_studio/generated/firmware
       - name: Test control runtime, native firmware and service
-        run: python -m unittest tests.control.test_runtime tests.control.test_client tests.control.test_service tests.firmware.test_sil -v
+        run: python -m unittest tests.control.test_runtime tests.control.test_client tests.control.test_service tests.control.test_package tests.control.test_tasks tests.firmware.test_sil -v
       - name: Run ideal control benchmark
         run: python examples/control_studio/benchmark.py
       - name: Run compiled firmware benchmark
         run: python examples/control_studio/firmware_benchmark.py
+      - name: Prepare pinned SO-101 model (explicit download)
+        run: python examples/control_studio/setup_so101.py
+      - name: Test contact physics and task transport
+        run: python -m unittest tests.control.test_so101 -v
+      - name: Require contact-only SO-101 benchmark success
+        run: python examples/control_studio/so101_benchmark.py
+      - name: Require declared-action completion evidence
+        run: python examples/control_studio/action_benchmark.py
       - name: Install frontend dependencies
         working-directory: examples/control_studio
         run: npm ci
@@ -62,3 +70,6 @@ jobs:
             examples/control_studio/generated/control-benchmark.json
             examples/control_studio/generated/firmware-benchmark.json
             examples/control_studio/generated/firmware/build-manifest.json
+            examples/control_studio/generated/so101-benchmark.json
+            examples/control_studio/generated/so101/source-manifest.json
+            examples/control_studio/generated/action-evidence.json

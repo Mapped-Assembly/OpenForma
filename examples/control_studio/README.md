@@ -1,12 +1,52 @@
-# Forma Control Studio — two machines, one runtime
+# Forma Control Studio — reusable machine control
 
 The original servo gate and a new **two-axis XY stage** use `forma_core.control`
 without machine-specific runtime logic. The browser is an optional client.
+An optional **SO-101 arm** adds a contact-physics pick-and-place task through
+the same control runtime; see the [manual/agent guide](../../docs/so101-pick-place.md).
 
 **[Open the running studio](http://127.0.0.1:8766)** ·
 [Architecture/API guide](../../docs/machine-control.md)
 
 [Verification results](VERIFICATION.md)
+
+[Machine packages and declared actions](../../docs/machine-packages.md) preserve
+OpenCAD identities, bind installed adapters, and report observed completion.
+The **Declared machine actions** section is generated from a machine's package.
+
+## Run a machine goal
+
+Select a packaged machine, enter a goal under **Give it a goal**, and click
+**Run task**. The browser transfers its control session to a persistent host
+runner. The timeline and live viewer show the agent's actions and feedback.
+Reloading or closing the browser does not stop the task.
+
+- **Stop task** releases/disarms immediately; **Take control** interrupts the
+  task and gives control to the browser, with explicit Arm required.
+- **Task options** allows a simulation reset and an explicit `provider/model`.
+  Otherwise the worker uses the embedded OpenCode host's default model.
+- `npm ci` installs pinned OpenCode SDK/plugin 2.3.2 and Bun 1.4.4. Provider
+  credentials must be available to that embedded host (for example through
+  OpenCode provider configuration/environment). Signing in to a separate
+  OpenCode service does not necessarily authenticate this embedded host.
+- Provider/auth/quota errors appear in the timeline and release control. There
+  is no scripted fallback. The default free model is subject to provider limits.
+- **View execution evidence** opens the task journal, including before/after
+  observations, action records, package hash and provenance. Journals are saved
+  under `generated/tasks/`; unfinished tasks become interrupted after a host
+  restart and are not resumed automatically.
+
+Manual operation uses the same runtime and simulation. If another browser owns
+the machine, explicitly take control before starting a task.
+
+For an OpenAI API key, copy `.env.task.example` to `.env.task` in this directory
+and fill in `OPENAI_API_KEY` locally. Choose a model your API account supports in
+`FORMA_TASK_MODEL`; the browser's optional Model field overrides it. The ignored
+file is reloaded for each task, so credential changes do not need a Studio
+restart. The key goes only into the worker's environment, never task telemetry
+or evidence. Regular OpenCode provider configuration/environment also works.
+Studio also reads the repository-root `.env`; nonempty values in `.env.task`
+override it. A key already configured in the project therefore works directly.
 
 ## Executable firmware simulation
 
@@ -115,3 +155,10 @@ Release the browser before running the agent test, or explicitly pass
 `--takeover`. The test uses the same API as human input and disarms/releases
 after completion. All feedback in these examples is simulated; physical
 measurement remains null. This is soft-real-time control, not a real-time OS.
+
+## SO-101 manipulation benchmark
+
+For a manual contact-physics pick-and-place task and the same interface for
+agents, see [SO-101 setup, manual trial and agent API](../../docs/so101-pick-place.md).
+Install `.[control,robot-sim]`, run `setup_so101.py`, rebuild the frontend and
+restart Studio. SO-101 becomes the initial machine when its local assets exist.

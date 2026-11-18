@@ -5,6 +5,8 @@ from pathlib import Path
 import uuid
 
 from forma_core.control import MachineDefinition
+from forma_core.control import import_opencad_identity, MachinePackage, VirtualAdapter
+from machine_packages import axis_actions, artifacts
 from forma_core.domains.registry import parse_domain, validate_domain
 from forma_core.opencode.architecture import reconcile_architecture
 from forma_core.validation import build_validation_summary, validate_project
@@ -75,6 +77,7 @@ ir=HardwareIntermediateRepresentation.model_validate(dict(
     overview=dict(title="Two-axis XY control benchmark",description="Virtual serial XY stage for reusable machine-control verification.",difficulty="Intermediate",category="Robotics"),
     part_definitions=parts,components=components,system_architecture=architecture,mechanical=mechanical,cad_model=cad,
     assembly_metadata=dict(control_definition="control-definition.json",mechanical_artifact="mechanical-ir.json",
+        machine_package="machine-package.json",
         benchmark_report="../control-benchmark.json",physical_status="not implemented",price_status="unquoted",bom_semantics="three logical assembly rollups, not procurement items")))
 reconcile_architecture(ir,None)
 issues=validate_project(ir)
@@ -91,5 +94,13 @@ save("subsystem-bindings.json",bindings)
 save("forma-project.json",dict(format="forma-project",version=1,project_id=project_id,title=ir.overview.title,
     visibility="private",workspace_id=None,prompt="Build a two-axis benchmark for reusable real-time machine control.",project_ir=ir.model_dump(mode="json"),artifacts=[]))
 save("forma-validation.json",dict(is_valid=ir.is_valid,mechanical_findings=findings,hardware_findings=[i.model_dump(mode="json") for i in issues]))
+identity = import_opencad_identity(json.loads((OUT/"opencad-assembly.json").read_text(encoding="utf-8")),
+    json.loads((OUT/"joints.json").read_text(encoding="utf-8")), {a.axis_id: a.joint.joint_id for a in control.axes})
+(OUT/"viewer-scene.json").write_bytes((ROOT/"web/assets/xy-stage.json").read_bytes())
+machine = MachinePackage(definition=control, model_source="opencad", mechanical=identity,
+    adapter=VirtualAdapter(control).describe(), actions=axis_actions(control),
+    artifacts=artifacts(OUT, {"opencad-assembly.json": "opencad-assembly", "joints.json": "opencad-joints",
+                             "body-map.json": "geometry-bindings", "xy-stage-hierarchy.step": "cad-assembly", "viewer-scene.json": "viewer-scene"}))
+save("machine-package.json", machine.model_dump(mode="json"))
 save("checksums.json",{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in OUT.iterdir() if p.is_file() and p.name!="checksums.json"})
 print("Forma benchmark package validated: 3 assembly instances, 22 bodies, 2 control-to-CAD axis bindings.")
