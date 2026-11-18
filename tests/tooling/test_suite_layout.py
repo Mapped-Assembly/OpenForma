@@ -9,6 +9,7 @@ TESTS_DIR = ROOT_DIR / "tests"
 CONCERNS = {
     "agents",
     "api",
+    "control",
     "integrations",
     "jobs",
     "observability",

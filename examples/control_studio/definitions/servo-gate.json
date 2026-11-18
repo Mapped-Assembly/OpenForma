@@ -1,0 +1,17 @@
+{
+  "format": "forma.control-definition",
+  "version": 1,
+  "machine_id": "servo-gate",
+  "name": "Servo Gate",
+  "description": "One angular axis; the original gate running on the reusable v2 runtime.",
+  "source_project_id": "9666bd12-1e5d-4ec2-adb3-7d789498e678",
+  "backend": "virtual",
+  "model_asset": "servo-gate.json",
+  "axes": [{
+    "axis_id": "gate", "label": "Gate", "unit": "degree",
+    "minimum": 0, "maximum": 90, "neutral": 45, "max_rate": 45,
+    "component_ref": "A1",
+    "joint": { "joint_id": "gate_hinge", "kind": "revolute", "axis": [0,1,0], "origin_mm": [0,0,55], "sign": -1,
+      "body_ids": ["M1_horn", "A1", "A1_fixing_1", "A1_fixing_2"] }
+  }]
+}

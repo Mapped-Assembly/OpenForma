@@ -350,6 +350,9 @@ def build_parser() -> argparse.ArgumentParser:
     from forma_core.domains.cli import register_parser as register_domains
     register_domains(subparsers)
 
+    from forma_core.control.cli import register_parser as register_machines
+    register_machines(subparsers)
+
     return parser
 
 
