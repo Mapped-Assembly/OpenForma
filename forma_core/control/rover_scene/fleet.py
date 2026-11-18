@@ -191,8 +191,8 @@ class FleetRunner(MachineTaskRunner):
             return await super().tool(task, name, inputs)
         async with lock:
             self._require_active(task)
-            verb, key = rover.preflight(inputs.get("action_id", ""))
             try:
+                verb, key = rover.preflight(inputs.get("action_id", ""))
                 if verb in ("drive", "home"):
                     goal = rover.home if verb == "home" else rover.world.docks[key]
                     end = time.monotonic() + 12
@@ -202,7 +202,12 @@ class FleetRunner(MachineTaskRunner):
                         await asyncio.sleep(0.15)
                         self._require_active(task)
                     rover.world.routes[rover.machine_id] = route
-                rover.intent = (verb, key)
+            except ControlError as error:
+                self._require_active(task)
+                self._event(task, "action_rejected", error.reason, action_id=inputs.get("action_id"))
+                raise
+            rover.intent = (verb, key)
+            try:
                 return await super().tool(task, name, inputs)
             finally:
                 rover.intent = None

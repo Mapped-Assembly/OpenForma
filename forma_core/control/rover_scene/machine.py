@@ -257,10 +257,13 @@ class Rover:
 
     def preflight(self, action_id: str) -> tuple[str, str]:
         """Check station, custody and reach before changing a shared resource."""
+        return self._check_action(action_id, self.observations())
+
+    def _check_action(self, action_id: str, obs: dict[str, Any]) -> tuple[str, str]:
+        """Apply the same capability checks to an observed pose for discovery and dispatch."""
         if action_id not in self.commands:
             raise ControlError("unknown_action")
         verb, key = self.commands[action_id]
-        obs = self.observations()
         if verb in ("reach", "lift", "place") and not obs["at_" + key]:
             raise ControlError("visit_station_first")
         if verb == "home" and self.carrying():
@@ -280,6 +283,18 @@ class Rover:
         ):
             raise ControlError("place_requires_held_item_and_reached_empty_slot")
         return verb, key
+
+    def available_actions(self) -> list[str]:
+        """List actions allowed by this rover's current custody and pose before route reservation."""
+        available = []
+        observations = self.observations()
+        for action_id in self.commands:
+            try:
+                self._check_action(action_id, observations)
+            except ControlError:
+                continue
+            available.append(action_id)
+        return available
 
     def read(self) -> Feedback:
         """Read the simulated axes independently of command acknowledgements."""

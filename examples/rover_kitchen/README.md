@@ -51,6 +51,8 @@ python -m unittest -v examples.rover_kitchen.test_workcell
 
 The integration suite uses a deterministic test operator through the task API and checks concurrent deliveries, final item positions, independent Stop, and a relocated station with a renamed machine. Production launches use the existing OpenCode worker. Use `GET /api/capabilities/{machine_id}` to inspect the generated actions and `GET /api/tasks/{task_id}` to inspect actual task evidence.
 
+The rover worker receives the action catalogue and the actions currently allowed by its observed pose and custody. It can request base, tool, and item coordinates before deciding what to do next. The task journal retains the full machine package, observations, and any action rejected by a rover precondition.
+
 The [interactive verification record](verification.json) preserves the operator identity, goals, action run IDs, observed final positions, and custody from a separate Codex-operated run through Forma's task tools.
 
 The [stock SDK execution record](sdk-verification.json) covers a separate run from HTTP task submission through the unmodified OpenCode worker. Work Mode Codex chose each tool call over a loopback OpenAI-compatible connection. Both rovers completed eight actions, parked, and disarmed. The record includes session IDs, action run IDs, the model's evidence citations, and item/base positions checked against the fixture geometry.

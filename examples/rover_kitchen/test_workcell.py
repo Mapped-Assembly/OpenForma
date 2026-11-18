@@ -11,9 +11,11 @@ from collections.abc import Callable
 from pathlib import Path
 
 import httpx
-from forma_core.control.rover_scene.host import create_app
+
+from forma_core.control.rover_scene.host import create_app, operator_view
 from forma_core.control.rover_scene.machine import Rover
 from forma_core.control.rover_scene.scene import Scene
+from forma_core.control.runtime import ControlError
 
 from .server import DEFAULT, HERE, WORKER
 
@@ -89,6 +91,23 @@ class WorkcellTests(unittest.IsolatedAsyncioTestCase):
                             await asyncio.sleep(0.2)
                         self.assertEqual(record["status"], "completed", record["reason"])
                         self.assertTrue(record["final_observation"]["observations"]["at_home"])
+                        package = record["package"]
+                        discovery = operator_view(
+                            "inspect_machine", {"package": package, "current": record["initial_observation"]}
+                        )
+                        self.assertEqual(set(discovery["actions"]), {a["action_id"] for a in package["actions"]})
+                        self.assertEqual(discovery["operating_notes"], package["operating_notes"])
+                        for action in record["actions"]:
+                            view = operator_view(
+                                "execute_action", {"evidence": action["evidence"], "current": action["after"]}
+                            )
+                            self.assertEqual(view["evidence"]["run_id"], action["run_id"])
+                            self.assertEqual(view["current"]["holding"], action["after"]["observations"]["holding"])
+                        final = record["final_observation"]
+                        observed = operator_view("observe", final)
+                        self.assertIn("at_home", observed["true_conditions"])
+                        self.assertEqual(observed["inventory"], final["observations"]["inventory"])
+                        self.assertEqual(observed["base_m"], final["observations"]["base_m"])
                         self.assertEqual(len(record["evidence_run_ids"]), 8)
                         self.assertTrue(
                             all(a["evidence"]["provenance"] == "ideal-kinematics" for a in record["actions"])
@@ -102,6 +121,20 @@ class WorkcellTests(unittest.IsolatedAsyncioTestCase):
                     )
                 self.assertFalse(world.held)
                 self.assertFalse(world.routes)
+
+    async def test_preflight_rejection_is_journaled(self) -> None:
+        """An out-of-reach command leaves a reason and action ID in the task history."""
+        with tempfile.TemporaryDirectory() as output:
+            app = create_app(DEFAULT, ASSETS, Path(output), agent=ReferenceOperator(), worker=WORKER)
+            async with app.router.lifespan_context(app):
+                runner = app.state.runner
+                task_id = runner.start("amber", "Check reach")["task_id"]
+                with self.assertRaisesRegex(ControlError, "visit_station_first"):
+                    await runner.tool(runner.tasks[task_id], "execute_action", {"action_id": "place_left_plate"})
+                event = runner.get(task_id)["events"][-1]
+                self.assertEqual(event["kind"], "action_rejected")
+                self.assertEqual(event["action_id"], "place_left_plate")
+                self.assertEqual(event["message"], "visit_station_first")
 
     async def test_stop_one(self) -> None:
         """A selected Stop releases only that machine's task."""
@@ -140,5 +173,7 @@ class WorkcellTests(unittest.IsolatedAsyncioTestCase):
             rover = Rover(world, "cedar")
             self.assertEqual(set(world.adapters), {"cedar"})
             self.assertIn("visit_supply", rover.commands)
+            self.assertIn("visit_supply", rover.available_actions())
+            self.assertNotIn("pick_tomato", rover.available_actions())
             self.assertAlmostEqual(world.docks["supply"][0], -1.53)
             self.assertAlmostEqual(world.inventory()["tomato"]["position_m"][0], -1.53)

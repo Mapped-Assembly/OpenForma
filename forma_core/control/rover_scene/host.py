@@ -6,6 +6,7 @@ import asyncio
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, Response
@@ -36,6 +37,7 @@ class Workers:
 
     def __init__(self, world: Scene, output: Path, worker: Path, env_files: tuple[Path, ...]) -> None:
         """Reuse the same SDK worker and provider settings as Control Studio."""
+        self.rovers = world.adapters
         self.members = {
             key: OpenCodeTaskAgent(worker, output / "workers" / key, env_files=env_files)
             for key in world.adapters
@@ -43,7 +45,84 @@ class Workers:
 
     async def run(self, task: dict, invoke: Callable, progress: Callable) -> None:
         """Pass the user's literal goal through the existing worker protocol."""
-        await self.members[task["machine_id"]].run(task, invoke, progress)
+
+        async def operator_tool(name: str, inputs: dict) -> dict:
+            """Send concise feedback to the worker while retaining raw telemetry in the task journal."""
+            try:
+                result = await invoke(name, inputs)
+            except ControlError as error:
+                if name != "execute_action":
+                    raise
+                view = {"rejected_action": inputs.get("action_id"), "error": error.reason}
+            else:
+                view = operator_view(name, result)
+            if name in {"inspect_machine", "execute_action", "observe"}:
+                view["locally_available_actions"] = self.rovers[task["machine_id"]].available_actions()
+            return view
+
+        await self.members[task["machine_id"]].run(task, operator_tool, progress)
+
+
+def operator_view(name: str, result: dict[str, Any]) -> dict[str, Any]:
+    """Expose actions and observed custody to the agent for this rover profile."""
+    if name not in {"inspect_machine", "observe", "execute_action"}:
+        return result
+    current = result if name == "observe" else result["current"]
+    diagnostics = current["observations"]
+    view = {
+        "machine_id": current["machine_id"],
+        "state": current["state"],
+        "provenance": current["provenance"],
+        "execution_fault": current["execution_fault"],
+        "inventory": {
+            key: {
+                "station": item["station"],
+                "holder": item["holder"],
+                "label": item["label"],
+            }
+            for key, item in diagnostics["inventory"].items()
+        },
+        "holding": diagnostics["holding"],
+        "true_conditions": [key for key, value in diagnostics.items() if value is True],
+    }
+    if name == "observe":
+        view.update(
+            inventory=diagnostics["inventory"],
+            base_m=diagnostics["base_m"],
+            tcp_m=diagnostics["tcp_m"],
+            axes={
+                key: {"simulated": axis["simulated"], "unit": axis["unit"]}
+                for key, axis in current["axes"].items()
+            },
+        )
+        return view
+    if name == "execute_action":
+        evidence = result["evidence"]
+        return {
+            "evidence": {
+                key: evidence[key]
+                for key in ("run_id", "action_id", "status", "reason", "provenance")
+            },
+            "current": view,
+        }
+    package = result["package"]
+    return {
+        "machine": package["definition"]["name"],
+        "current": view,
+        "operating_notes": package["operating_notes"],
+        "actions": {
+            action["action_id"]: {
+                "label": action["label"],
+                "parameters": action["parameters"],
+            }
+            for action in package["actions"]
+        },
+        "observation_help": (
+            "observe returns simulated poses and item custody. true_conditions lists all currently true "
+            "boolean observations. Use an exact action ID in locally_available_actions. A drive may wait "
+            "for another rover. Cite completed run IDs from execute_action when finishing."
+        ),
+    }
 
 
 def create_app(
