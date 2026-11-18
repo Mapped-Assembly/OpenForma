@@ -1,0 +1,148 @@
+{
+  "operator": "Work Mode Codex selecting actions interactively through Forma task tools",
+  "execution": "kinematic MuJoCo",
+  "records": [
+    {
+      "machine_id": "amber",
+      "goal": "Serve the tomato on the left plate and park.",
+      "status": "completed",
+      "at_home": true,
+      "holding": null,
+      "inventory": {
+        "tomato": {
+          "label": "Tomato",
+          "station": "left_plate",
+          "holder": null,
+          "position_m": [
+            -0.65,
+            -0.5700000000000001,
+            0.31999999999999995
+          ]
+        },
+        "lettuce": {
+          "label": "Lettuce",
+          "station": "right_plate",
+          "holder": null,
+          "position_m": [
+            0.65,
+            -0.5700000000000001,
+            0.31999999999999995
+          ]
+        }
+      },
+      "actions": [
+        {
+          "action": "visit_tomato_bin",
+          "run_id": "9f6cada04ae5479dba621df0f2365226",
+          "status": "completed"
+        },
+        {
+          "action": "reach_tomato_bin",
+          "run_id": "605320a5ec8a4e3980089eebc78c4048",
+          "status": "completed"
+        },
+        {
+          "action": "pick_tomato",
+          "run_id": "17073c48d5ee47fb862fa62f00a7b9ef",
+          "status": "completed"
+        },
+        {
+          "action": "lift_tomato_bin",
+          "run_id": "f4d4bbc37c23432597354323085f28b1",
+          "status": "completed"
+        },
+        {
+          "action": "visit_left_plate",
+          "run_id": "6ea9c64a247b48c3b24d1d24aacbb574",
+          "status": "completed"
+        },
+        {
+          "action": "reach_left_plate",
+          "run_id": "4efe0d80960449f1bf31390fe47cac37",
+          "status": "completed"
+        },
+        {
+          "action": "place_left_plate",
+          "run_id": "0f93b74b8a99408bbd9067b3631302d8",
+          "status": "completed"
+        },
+        {
+          "action": "return_home",
+          "run_id": "8d5c865b61534e998dd1a7f987deee1a",
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "machine_id": "blue",
+      "goal": "Deliver lettuce to the right plate and return home.",
+      "status": "completed",
+      "at_home": true,
+      "holding": null,
+      "inventory": {
+        "tomato": {
+          "label": "Tomato",
+          "station": "left_plate",
+          "holder": null,
+          "position_m": [
+            -0.65,
+            -0.5700000000000001,
+            0.31999999999999995
+          ]
+        },
+        "lettuce": {
+          "label": "Lettuce",
+          "station": "right_plate",
+          "holder": null,
+          "position_m": [
+            0.65,
+            -0.5700000000000001,
+            0.31999999999999995
+          ]
+        }
+      },
+      "actions": [
+        {
+          "action": "visit_greens_bin",
+          "run_id": "04246296b7c949b3b2d72b148251f18f",
+          "status": "completed"
+        },
+        {
+          "action": "reach_greens_bin",
+          "run_id": "75edafdcec974e81b81ffce3c1a1a91a",
+          "status": "completed"
+        },
+        {
+          "action": "pick_lettuce",
+          "run_id": "5f3fe3a0f2574b0da50ea446430bff28",
+          "status": "completed"
+        },
+        {
+          "action": "lift_greens_bin",
+          "run_id": "dbc63286f08c483c84beb97d00340dfc",
+          "status": "completed"
+        },
+        {
+          "action": "visit_right_plate",
+          "run_id": "363415cd05f5411cb799c32f3f7987e3",
+          "status": "completed"
+        },
+        {
+          "action": "reach_right_plate",
+          "run_id": "2ac7a3b772c34094b7237fe9d5c4a07f",
+          "status": "completed"
+        },
+        {
+          "action": "place_right_plate",
+          "run_id": "f0d7185a1b66428eb0e9e62763db896a",
+          "status": "completed"
+        },
+        {
+          "action": "return_home",
+          "run_id": "af7ec5f5a2f64ea59616a59624cae26a",
+          "status": "completed"
+        }
+      ]
+    }
+  ]
+}
