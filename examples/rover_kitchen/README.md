@@ -53,6 +53,8 @@ The integration suite uses a deterministic test operator through the task API an
 
 The [interactive verification record](verification.json) preserves the operator identity, goals, action run IDs, observed final positions, and custody from a separate Codex-operated run through Forma's task tools.
 
+The [stock SDK execution record](sdk-verification.json) covers a separate run from HTTP task submission through the unmodified OpenCode worker. Work Mode Codex chose each tool call over a loopback OpenAI-compatible connection. Both rovers completed eight actions, parked, and disarmed. The record includes session IDs, action run IDs, the model's evidence citations, and item/base positions checked against the fixture geometry.
+
 ### Model provenance
 
 The assembly and route handling derive from the linked garden revision. The asset installer retains ASTRA's upstream MIT license and the SO-101 model's included Apache-2.0 license. No garden checkout is required to install or run the sample.

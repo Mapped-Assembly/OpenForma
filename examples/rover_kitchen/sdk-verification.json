@@ -1,0 +1,208 @@
+{
+  "runtime_commit": "8e0802d2f8c1d9d868a7c6febe2324a3d510c988",
+  "worker": "OpenCode SDK 2.3.2 and the stock Control Studio task_worker.mjs",
+  "operator": "Work Mode Codex selected each next tool call after receiving the preceding SDK observation. A local OpenAI-compatible HTTP transport relayed the calls and responses. No prerecorded action sequence.",
+  "source": "ideal-kinematics",
+  "records": {
+    "blue": {
+      "task_id": "9f73c944d68b4f84bd6828673e4b8348",
+      "session_id": "ses_e0f48424effe7Eq64xfOerbjeY",
+      "goal": "Bring the lettuce to the right serving plate and park.",
+      "status": "completed",
+      "started_at": "2026-11-18T22:12:14.439411+00:00",
+      "finished_at": "2026-11-18T22:13:22.688232+00:00",
+      "heartbeat_count": 446,
+      "final_machine_state": "DISARMED",
+      "holding": null,
+      "base_m": [
+        1.75,
+        1.16
+      ],
+      "expected_home_m": [
+        1.75,
+        1.16
+      ],
+      "initial_station": "greens_bin",
+      "final_item": {
+        "label": "Lettuce",
+        "station": "right_plate",
+        "holder": null,
+        "position_m": [
+          0.65,
+          -0.5700000000000001,
+          0.31999999999999995
+        ]
+      },
+      "expected_target_m": [
+        0.65,
+        -0.5700000000000001,
+        0.31999999999999995
+      ],
+      "agent_summary": "Lettuce on right plate. Blue is home with an empty gripper.",
+      "cited_run_ids": [
+        "2d444061226e45029e3fbd20c0324e0f",
+        "aba87d0a2ce84a5bae56c529bb5d4cab"
+      ],
+      "package_sha256": "f82fb1a024ec8a015b36574bc2201150eb4b087a6eaebdb17b0f530872665c13",
+      "journal_sha256": "7e66c88aa993c82942255c301f1e63670a4f48f5e135c547e9a7e6777a2d04c0",
+      "actions": [
+        {
+          "action": "visit_greens_bin",
+          "reason": "Approach the lettuce at the greens bin.",
+          "run_id": "db1153a233374e71a8e957feed0f52fb",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "reach_greens_bin",
+          "reason": "Lower the arm to the lettuce.",
+          "run_id": "16beca58a4514e45b1ffdc4494a93731",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "pick_lettuce",
+          "reason": "Pick the lettuce and check the holder.",
+          "run_id": "6ca4f2618d3440dab02341b33d25fa3d",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "lift_greens_bin",
+          "reason": "Raise the lettuce to clear the counter.",
+          "run_id": "d56e0fe421cf4ec7873d9f5ff46e0557",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "visit_right_plate",
+          "reason": "Transport the lettuce to the empty right plate.",
+          "run_id": "49e61c9be9f44e038e4122fc775cd53d",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "reach_right_plate",
+          "reason": "Lower the lettuce onto the right plate.",
+          "run_id": "8ac1e3b235b141c8beacd5aef483cdb5",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "place_right_plate",
+          "reason": "Release and verify the lettuce's final location.",
+          "run_id": "2d444061226e45029e3fbd20c0324e0f",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "return_home",
+          "reason": "The lettuce is served. Park on Blue's home pad.",
+          "run_id": "aba87d0a2ce84a5bae56c529bb5d4cab",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        }
+      ]
+    },
+    "amber": {
+      "task_id": "c0a8a19de5db43ebb1689026f832ad9c",
+      "session_id": "ses_e0f4841f3ffe92fPNIhS6iYEF8",
+      "goal": "Serve the tomato on the left plate and return home.",
+      "status": "completed",
+      "started_at": "2026-11-18T22:12:14.434681+00:00",
+      "finished_at": "2026-11-18T22:13:22.682136+00:00",
+      "heartbeat_count": 447,
+      "final_machine_state": "DISARMED",
+      "holding": null,
+      "base_m": [
+        -1.75,
+        1.16
+      ],
+      "expected_home_m": [
+        -1.75,
+        1.16
+      ],
+      "initial_station": "tomato_bin",
+      "final_item": {
+        "label": "Tomato",
+        "station": "left_plate",
+        "holder": null,
+        "position_m": [
+          -0.65,
+          -0.5700000000000001,
+          0.31999999999999995
+        ]
+      },
+      "expected_target_m": [
+        -0.65,
+        -0.5700000000000001,
+        0.31999999999999995
+      ],
+      "agent_summary": "Tomato on left plate. Amber is home with an empty gripper.",
+      "cited_run_ids": [
+        "1bf83182e6474a89958466e00a862ac9",
+        "fc963e142e464c55a8c6a49f3f0401bc"
+      ],
+      "package_sha256": "441099d215b55b230f65dfe671a5a374987fe9fb34f993203504cbc16ac9e91f",
+      "journal_sha256": "fe35066cdf783e0c95db4ab18195fdc63de4c3d563d990e1ca9829ca85635bbf",
+      "actions": [
+        {
+          "action": "visit_tomato_bin",
+          "reason": "Approach the occupied tomato bin.",
+          "run_id": "f19155b82bec4aabb300152e39117fb9",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "reach_tomato_bin",
+          "reason": "Align the jaws with the tomato.",
+          "run_id": "075fc3e2c72149b19e7192edf3b35b47",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "pick_tomato",
+          "reason": "Pick the tomato and check the holder.",
+          "run_id": "88d4518368bb43ed9c567227bdb9f9ec",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "lift_tomato_bin",
+          "reason": "Raise the tomato for transit.",
+          "run_id": "5aa96adac2f748cab7bac7d3649d910b",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "visit_left_plate",
+          "reason": "Transport the tomato to the empty left plate.",
+          "run_id": "d802fc849b0a447d958f31c3dd008d1a",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "reach_left_plate",
+          "reason": "Lower the tomato onto the left plate.",
+          "run_id": "f85e2d792ea247cdbd59ad482cf73fe4",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "place_left_plate",
+          "reason": "Release and verify the tomato's final location.",
+          "run_id": "1bf83182e6474a89958466e00a862ac9",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        },
+        {
+          "action": "return_home",
+          "reason": "The tomato is served. Park on Amber's home pad.",
+          "run_id": "fc963e142e464c55a8c6a49f3f0401bc",
+          "status": "completed",
+          "provenance": "ideal-kinematics"
+        }
+      ]
+    }
+  }
+}
