@@ -101,6 +101,7 @@ include = [
 
 [tool.setuptools.package-data]
 forma_core = ["py.typed"]
+"forma_core.control.rover_scene" = ["web/*.html", "web/*.js"]
 "forma_core.firmware.sil" = ["native/*.h", "native/*.cpp", "native/CMakeLists.txt"]
 
 [tool.setuptools.dynamic]

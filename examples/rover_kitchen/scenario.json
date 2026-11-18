@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "name": "Prep kitchen",
+  "space": "kitchen.space.json",
+  "aisle": "aisle",
+  "machines": {
+    "amber": {
+      "profile": "astra-so101",
+      "name": "Amber · ASTRA + SO-101",
+      "home": "amber_home",
+      "color": [
+        0.96,
+        0.57,
+        0.13
+      ]
+    },
+    "blue": {
+      "profile": "astra-so101",
+      "name": "Blue · ASTRA + SO-101",
+      "home": "blue_home",
+      "color": [
+        0.13,
+        0.53,
+        0.82
+      ]
+    }
+  },
+  "stations": {
+    "tomato_bin": {
+      "name": "Tomato bin",
+      "footprint": "tomato_bin",
+      "height_m": 0.288,
+      "dock_offset_m": [
+        0,
+        0.35
+      ],
+      "surface": "counter"
+    },
+    "left_plate": {
+      "name": "Left serving plate",
+      "footprint": "left_plate",
+      "height_m": 0.288,
+      "dock_offset_m": [
+        0,
+        0.35
+      ],
+      "surface": "plate"
+    },
+    "right_plate": {
+      "name": "Right serving plate",
+      "footprint": "right_plate",
+      "height_m": 0.288,
+      "dock_offset_m": [
+        0,
+        0.35
+      ],
+      "surface": "plate"
+    },
+    "greens_bin": {
+      "name": "Greens bin",
+      "footprint": "greens_bin",
+      "height_m": 0.288,
+      "dock_offset_m": [
+        0,
+        0.35
+      ],
+      "surface": "counter"
+    }
+  },
+  "items": {
+    "tomato": {
+      "name": "Tomato",
+      "station": "tomato_bin",
+      "color": [
+        0.88,
+        0.17,
+        0.08
+      ]
+    },
+    "lettuce": {
+      "name": "Lettuce",
+      "station": "greens_bin",
+      "color": [
+        0.33,
+        0.68,
+        0.15
+      ]
+    }
+  },
+  "fixtures": {
+    "back_counter": "back-counter.xml"
+  }
+}
