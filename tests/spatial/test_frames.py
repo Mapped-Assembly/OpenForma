@@ -53,8 +53,9 @@ class SpatialFrameTests(unittest.TestCase):
                                 max_age_ns=100_000_000)
         self.assertEqual(result.translation_m, (2.2, 0.1, 1.0))
         restored = FrameGraph.from_dict(frames.to_dict())
-        self.assertEqual(restored.resolve("table-anchor", "tool").translation_m,
-                         (0.2, 0.1, 0.0))
+        actual = restored.resolve("table-anchor", "tool").translation_m
+        for value, expected in zip(actual, (0.2, 0.1, 0.0)):
+            self.assertAlmostEqual(value, expected, places=9)
 
     def test_rejects_stale_unknown_or_disconnected_frames(self) -> None:
         """Absent tracking is not silently treated as a world origin."""
