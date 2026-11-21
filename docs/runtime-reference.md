@@ -56,10 +56,10 @@ tool, and writes the compiled project into `~/forma-workspace`. No Forma login
 is needed for local generation, validation, rendering, or status.
 
 ## Python Package (PyPI)
-The reusable core is published on PyPI as [`caid-forma-core`](https://pypi.org/project/caid-forma-core/). The distribution name is `caid-forma-core`; the Python import package is `forma_core`.
+The reusable core is published on PyPI as [`openforma`](https://pypi.org/project/openforma/). The distribution name is `openforma`; the Python import package is `forma_core`.
 
 ```bash
-pip install caid-forma-core
+pip install openforma
 ```
 
 ```python

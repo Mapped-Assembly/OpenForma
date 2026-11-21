@@ -12,7 +12,7 @@ See [unified generation and the architecture audit](docs/unified-generation.md)
 for usage, the chemistry-first benchmark and explicit validation limits.
 
 [![License: MPL 2.0](https://img.shields.io/badge/license-MPL--2.0-blue.svg)](LICENSE)
-[![PyPI](https://img.shields.io/pypi/v/caid-forma-core.svg)](https://pypi.org/project/caid-forma-core/)
+[![PyPI](https://img.shields.io/pypi/v/openforma.svg)](https://pypi.org/project/openforma/)
 [![GitHub stars](https://img.shields.io/github/stars/caid-technologies/Forma-OSS?style=social)](https://github.com/caid-technologies/Forma-OSS)
 
 **[Try Form](https://caid-technologies.us/)** · [Browse projects](https://caid-technologies.us/projects) · [Run locally](#quick-start) · [Documentation](docs/README.md)
@@ -99,7 +99,7 @@ For Docker, run `docker compose up --build` from the repository root. See [Docke
 For the reusable Python core and CLIs:
 
 ```bash
-pip install caid-forma-core
+pip install openforma
 forma-core --help
 forma-oss --help
 ```
@@ -112,7 +112,7 @@ See the [CLI and runtime reference](docs/runtime-reference.md) for generation, i
 
 This repository publishes its existing package identities from a GitHub Release:
 
-- `caid-forma-core` is built from the root `pyproject.toml` and published to PyPI.
+- `openforma` is built from the root `pyproject.toml` and published to PyPI.
 - `@isayahc/forma-gui` is built from `packages/forma-gui` and published to npm.
 
 The `Publish packages` workflow validates both distributions before publishing. Configure the repository `NPM_TOKEN` secret and the PyPI trusted publisher for the `pypi` environment before creating a release. Update the package version in its own metadata, then publish a matching GitHub Release.

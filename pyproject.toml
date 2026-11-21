@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "caid-forma-core"
+name = "openforma"
 dynamic = ["version"]
 description = "Reusable generation, validation, provider, and project-object core for Forma OSS."
 readme = "README.md"
@@ -36,9 +36,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/caid-technologies/Forma-OSS"
-Repository = "https://github.com/caid-technologies/Forma-OSS"
-Documentation = "https://github.com/caid-technologies/Forma-OSS#readme"
+Homepage = "https://github.com/Mapped-Assembly/OpenForma"
+Repository = "https://github.com/Mapped-Assembly/OpenForma"
+Documentation = "https://github.com/Mapped-Assembly/OpenForma#readme"
 
 [project.scripts]
 forma-core = "forma_core.cli.main:main"
