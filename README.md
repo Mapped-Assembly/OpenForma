@@ -133,6 +133,10 @@ submission and review; the repository includes the packaging and checklist.
 
 With the local agent workflow, your host agent supplies the model and Forma performs deterministic compilation. The reusable `forma_core` package also supports server-side generation. See [architecture](docs/architecture.md) and [agent integrations](docs/agent-clients.md).
 
+## Spatial XR integration
+
+The device-neutral [spatial frame contract](docs/spatial-xr.md) provides metric coordinate-frame composition, explicit pose provenance, freshness checks, and OpenForma-to-WebXR coordinate conversion. It is an interoperability contract, **not** a native headset tracker or physical-machine calibration system.
+
 ## Go deeper
 
 | I want to… | Start here |

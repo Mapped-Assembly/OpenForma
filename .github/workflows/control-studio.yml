@@ -8,6 +8,8 @@ on:
       - 'examples/control_studio/**'
       - 'examples/rover_kitchen/**'
       - 'tests/control/**'
+      - 'forma_core/spatial/**'
+      - 'tests/spatial/**'
       - 'tests/firmware/test_sil.py'
       - 'pyproject.toml'
       - '.github/workflows/control-studio.yml'
@@ -41,6 +43,8 @@ jobs:
         run: python -m forma_core.firmware.sil.build --output examples/control_studio/generated/firmware
       - name: Test control runtime, native firmware and service
         run: python -m unittest tests.control.test_runtime tests.control.test_client tests.control.test_service tests.control.test_package tests.control.test_tasks tests.firmware.test_sil -v
+      - name: Test device-neutral spatial frame graph
+        run: python -m unittest discover -s tests/spatial -v
       - name: Verify portable two-rover workcell
         if: runner.os == 'Linux'
         run: |

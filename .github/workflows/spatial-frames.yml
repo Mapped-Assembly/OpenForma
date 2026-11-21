@@ -1,0 +1,33 @@
+name: Spatial frame contract
+
+on:
+  pull_request:
+    paths:
+      - 'forma_core/spatial/**'
+      - 'tests/spatial/**'
+      - '.github/workflows/spatial-frames.yml'
+  push:
+    paths:
+      - 'forma_core/spatial/**'
+      - 'tests/spatial/**'
+      - '.github/workflows/spatial-frames.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  spatial-frames:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Validate spatial frame contract
+        run: python -m unittest discover -s tests/spatial -v
