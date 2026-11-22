@@ -15,7 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from forma_core.control.opencode_worker import OpenCodeTaskAgent
 from forma_core.control.rover_scene.fleet import FleetRunner, RoutedRuntime
 from forma_core.control.rover_scene.machine import Rover
-from forma_core.control.rover_scene.scene import Scene
+from forma_core.control.rover_scene.scene import ExecutionRequirements, Scene
 from forma_core.control.rover_scene.view import BrowserScene
 from forma_core.control.runtime import ControlError, MachineRegistry
 from forma_core.control.tasks import TaskAgent
@@ -28,6 +28,7 @@ class Goal(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
     machine_id: str
+    execution: ExecutionRequirements = Field(default_factory=ExecutionRequirements)
     goal: str = Field(min_length=1, max_length=2000)
     model: str | None = Field(default=None, pattern=r"^[^/\s]+/[^\s]+$")
 
@@ -58,6 +59,8 @@ class Workers:
                 view = operator_view(name, result)
             if name in {"inspect_machine", "execute_action", "observe"}:
                 view["locally_available_actions"] = self.rovers[task["machine_id"]].available_actions()
+            if name == "inspect_machine":
+                view["bindings"] = self.rovers[task["machine_id"]].action_bindings()
             return view
 
         await self.members[task["machine_id"]].run(task, operator_tool, progress)
@@ -73,6 +76,7 @@ def operator_view(name: str, result: dict[str, Any]) -> dict[str, Any]:
         "machine_id": current["machine_id"],
         "state": current["state"],
         "provenance": current["provenance"],
+        "execution": diagnostics["execution"],
         "execution_fault": current["execution_fault"],
         "inventory": {
             key: {
@@ -192,6 +196,7 @@ def create_app(
             **geometry.document,
             bounds=world.bounds.tolist(),
             name=world.spec.name,
+            execution=world.execution_contract(),
             stations={
                 k: {"label": s.name, "point": world.targets[k].tolist()}
                 for k, s in world.spec.stations.items()
@@ -219,12 +224,24 @@ def create_app(
     @app.get("/api/capabilities/{machine_id}")
     async def capabilities(machine_id: str) -> dict:
         """Return the same action package that the agent discovers."""
-        return registry.get(machine_id).action_execution.package.model_dump(mode="json")
+        package = registry.get(machine_id).action_execution.package.model_dump(mode="json")
+        adapter = world.adapters[machine_id]
+        return {
+            **package,
+            "execution": world.execution_contract(),
+            "profile": world.spec.machines[machine_id].profile,
+            "profile_version": world.spec.machines[machine_id].profile_version,
+            "bindings": adapter.action_bindings(),
+        }
 
     @app.post("/api/tasks")
     async def start(goal: Goal) -> dict:
         """Assign natural-language work to the named machine."""
         registry.get(goal.machine_id)
+        try:
+            goal.execution.check()
+        except ValueError as error:
+            raise HTTPException(409, str(error)) from error
         availability = workers.members[goal.machine_id].availability()
         if agent is None and not availability["available"]:
             raise HTTPException(503, availability["message"])

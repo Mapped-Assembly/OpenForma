@@ -10,8 +10,9 @@ from typing import Annotated, Literal
 
 import mujoco
 import numpy as np
-from pydantic import BaseModel, ConfigDict, Field, FiniteFloat
+from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, model_validator
 
+from .assets import validate_assets
 from .robot import add_rovers
 
 Id = Annotated[str, Field(pattern=r"^[a-z][a-z0-9_-]*$")]
@@ -28,10 +29,29 @@ class Record(BaseModel):
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
 
 
+class ExecutionRequirements(Record):
+    """Required execution semantics; unsupported requests must never degrade silently."""
+
+    fidelity: Literal["kinematic", "contact-dynamics"] = "kinematic"
+    capabilities: list[str] = Field(default_factory=list)
+
+    def check(self) -> None:
+        """Reject semantics the shared rover backend does not implement."""
+        if self.fidelity != "kinematic":
+            raise ValueError("unsupported_fidelity: rover scenes support kinematic execution only")
+        missing = set(self.capabilities) - set(EXECUTION_CAPABILITIES)
+        if missing:
+            raise ValueError("unsupported_capabilities: " + ", ".join(sorted(missing)))
+
+
+EXECUTION_CAPABILITIES = ("mobile-base", "arm-positioning", "proximity-transfer")
+
+
 class Machine(Record):
     """One independently controlled mounted rover at its named home occupancy."""
 
     profile: Literal["astra-so101"]
+    profile_version: Literal[1] = 1
     name: str
     home: Id
     color: Color
@@ -63,10 +83,24 @@ class Scenario(Record):
     name: str
     space: str
     aisle: Id
+    execution: ExecutionRequirements = Field(default_factory=ExecutionRequirements)
     fixtures: dict[Id, str] = Field(default_factory=dict)
     machines: dict[Id, Machine] = Field(min_length=1)
     stations: dict[Id, Station] = Field(min_length=1)
     items: dict[Id, Item] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_bindings(self) -> Scenario:
+        """Validate semantic references before geometry or asset loading."""
+        self.execution.check()
+        occupied: set[str] = set()
+        for key, item in self.items.items():
+            if item.station not in self.stations:
+                raise ValueError(f"items.{key}.station: unknown station {item.station}")
+            if item.station in occupied:
+                raise ValueError(f"items.{key}.station: slot already occupied {item.station}")
+            occupied.add(item.station)
+        return self
 
 
 def rectangle(shape: dict) -> np.ndarray:
@@ -116,15 +150,17 @@ class Scene:
             raise ValueError("Occupancy outside the workcell")
         if any(obj["region_id"] != space["regions"][0]["id"] for obj in space["occupancies"]):
             raise ValueError("Occupancy refers to an unknown region")
+        references = {"aisle": self.spec.aisle}
+        references.update({f"machines.{k}.home": m.home for k, m in self.spec.machines.items()})
+        references.update({f"stations.{k}.footprint": s.footprint for k, s in self.spec.stations.items()})
+        references.update({f"fixtures.{k}": k for k in self.spec.fixtures})
+        for path, reference in references.items():
+            if reference not in boxes:
+                raise ValueError(f"{path}: unknown occupancy {reference}")
         self.aisle = boxes[self.spec.aisle]
         self.homes = {key: boxes[m.home].mean(0) for key, m in self.spec.machines.items()}
         self.docks, self.targets = {}, {}
         self.locations: dict[str, str | None] = {key: item.station for key, item in self.spec.items.items()}
-        if (
-            len(set(self.locations.values())) != len(self.locations)
-            or not set(self.locations.values()) <= self.spec.stations.keys()
-        ):
-            raise ValueError("Items need distinct existing initial slots")
         xml = ET.fromstring('<mujoco><compiler angle="radian"/><asset/><worldbody/></mujoco>')
         world = xml.find("worldbody")
 
@@ -184,6 +220,7 @@ class Scene:
                 world, "body", name="item/" + key, mocap="true", pos=vector(self.targets[item.station])
             )
             ET.SubElement(body, "geom", type="sphere", size=str(item.radius_m), rgba=vector([*item.color, 1]))
+        self.asset_revisions = validate_assets(assets)
         add_rovers(xml, assets.resolve(), self.spec.machines)
         self.model = mujoco.MjModel.from_xml_string(ET.tostring(xml, encoding="unicode"))
         self.data = mujoco.MjData(self.model)
@@ -192,6 +229,39 @@ class Scene:
         self.routes: dict[str, list] = {}
         self.adapters: dict = {}
         mujoco.mj_forward(self.model, self.data)
+
+    def execution_contract(self) -> dict:
+        """Publish backend guarantees independently of scene names or UI assumptions."""
+        return {
+            "version": 1,
+            "fidelity": "kinematic",
+            "evidence": "ideal-kinematics",
+            "attachment": "proximity",
+            "capabilities": list(EXECUTION_CAPABILITIES),
+            "asset_revisions": self.asset_revisions.copy(),
+        }
+
+    def claim(self, machine_id: str, item_id: str) -> bool:
+        """Atomically claim a free item on the owning event loop, with one item per rover."""
+        if machine_id not in self.adapters or item_id not in self.locations:
+            raise ValueError("Unknown machine or item reference")
+        if item_id in self.held or machine_id in self.held.values():
+            return False
+        self.held[item_id] = machine_id
+        self.locations[item_id] = None
+        return True
+
+    def release(self, machine_id: str, station_id: str) -> bool:
+        """Release custody only into an existing empty slot; rejected writes change nothing."""
+        if machine_id not in self.adapters or station_id not in self.targets:
+            raise ValueError("Unknown machine or station reference")
+        item_id = next((key for key, holder in self.held.items() if holder == machine_id), None)
+        if item_id is None or station_id in self.locations.values():
+            return False
+        self.data.mocap_pos[self.item_ids[item_id]] = self.targets[station_id]
+        self.locations[item_id] = station_id
+        del self.held[item_id]
+        return True
 
     def inventory(self) -> dict:
         """Return the current custody, slot, and observed position of every item."""

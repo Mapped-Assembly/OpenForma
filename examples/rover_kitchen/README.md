@@ -89,3 +89,61 @@ OPENCODE_CONFIG="$PWD/$kitchen/generated/opencode.json" \
 ### Model provenance
 
 The assembly and route handling derive from the linked garden revision. The asset installer retains ASTRA's upstream MIT license and the SO-101 model's included Apache-2.0 license. No garden checkout is required to install or run the sample.
+
+### Shared-world execution contract
+
+Scene-specific IDs, placement, station membership, initial inventory and instance
+counts are scenario/SpaceIR data. The `astra-so101` profile owns robot-specific
+geometry, joints, IK and proximity-transfer implementation. Its supported
+`profile_version` is `1` (also the default for existing scenarios). A different
+robot family requires an implemented adapter/profile and conformance tests;
+renaming an asset or adding a profile string does not make it compatible.
+
+The scene loader validates item/station and occupancy references before building
+the model. Installed `REVISION` files must match the robot revisions pinned by
+`forma_core.control.rover_scene.assets`. These markers check declared compatibility,
+not file integrity; locally modified meshes are not authenticated by the markers.
+
+Scenarios and `POST /api/tasks` accept an optional execution requirement:
+
+```json
+"execution": {
+  "fidelity": "kinematic",
+  "capabilities": ["mobile-base", "arm-positioning", "proximity-transfer"]
+}
+```
+
+Omitting it preserves the existing kinematic behavior. A request for
+`contact-dynamics` or an unsupported capability fails explicitly (HTTP 409 for
+tasks), before a worker starts or a machine is armed. This backend does not step
+contact physics. Successful transfers establish simulated proximity custody,
+not evidence of friction, contact force or physical grasp stability.
+
+`GET /api/scene` and `GET /api/capabilities/{machine_id}` expose the actual
+`execution` contract, including evidence kind and declared asset revisions.
+Capabilities also expose `profile`, `profile_version` and `bindings`, mapping
+each action ID to an `operation` and `target_id`. Discover these bindings rather
+than assembling action IDs from scene names. The OpenCode inspection view exposes
+the same bindings. Observations and persisted task observations carry execution
+metadata; the viewer displays the simulation fidelity and attachment semantics.
+
+One `Scene` owns model/data, inventory and custody for all instances. Custody
+transitions are serialized on the host event loop: an item has one holder, a rover
+holds at most one item, and release cannot overwrite an occupied station. These
+methods are not a thread-safe distributed state store. The host remains the sole
+writer; OI and viewers consume its state rather than maintaining a second runtime.
+
+Run the regression and portability checks after installing the pinned assets:
+
+```bash
+python -m forma_core.control.rover_scene.assets examples/rover_kitchen/generated/robots
+python -m unittest -v examples.rover_kitchen.test_workcell tests.control.test_rover_scene
+```
+
+The portability test renames all machine, station, item, occupancy and region IDs,
+translates the complete world, reverses machine order and adds a third rover using
+only input data. Two tasks discover action bindings through HTTP, transfer items
+concurrently and retain independent evidence while the third rover remains idle.
+Additional checks reject incompatible requirements/references/revisions, duplicate
+adapter registration and conflicting custody writes. CI installs assets before
+running these tests on Linux so the integration checks are not silently skipped.

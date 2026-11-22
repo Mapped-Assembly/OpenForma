@@ -38,6 +38,10 @@ class Rover:
 
     def __init__(self, world: Scene, machine_id: str) -> None:
         """Create an independent control contract from this instance and the scene slots."""
+        if machine_id not in world.spec.machines:
+            raise ValueError(f"Unknown machine: {machine_id}")
+        if machine_id in world.adapters:
+            raise ValueError(f"Machine already bound: {machine_id}")
         self.world, self.machine_id = world, machine_id
         self.model, self.data = world.model, world.data
         self.prefix = machine_id + "/"
@@ -94,7 +98,6 @@ class Rover:
         )
         self.positions = {a.axis_id: a.neutral for a in axes}
         self._pose()
-        world.adapters[machine_id] = self
         self.actions: list[MachineAction] = []
         self._add(
             "return_home",
@@ -149,6 +152,7 @@ class Rover:
         ):
             fingerprint.update(field if isinstance(field, bytes) else field.tobytes())
         self.signature = fingerprint.hexdigest()
+        world.adapters[machine_id] = self
 
     @staticmethod
     def base_targets(xy: np.ndarray) -> dict[str, float]:
@@ -194,17 +198,11 @@ class Rover:
             verb, key = self.intent
             if verb == "pick" and grip <= 0.014 and key not in world.held:
                 pos = d.mocap_pos[world.item_ids[key]]
-                if np.linalg.norm(tcp - pos) < 0.008:
-                    world.held[key] = self.machine_id
-                    world.locations[key] = None
+                if np.linalg.norm(tcp - pos) < 0.008 and world.claim(self.machine_id, key):
                     self.transport_height = float(pos[2]) + 0.10
             if verb == "place" and grip >= 0.024 and np.linalg.norm(tcp - world.targets[key]) < 0.008:
-                held = self.carrying()
-                if held:
-                    del world.held[held]
+                if world.release(self.machine_id, key):
                     self.transport_height = None
-                    world.locations[held] = key
-                    d.mocap_pos[world.item_ids[held]] = world.targets[key]
         held = self.carrying()
         if held:
             d.mocap_pos[world.item_ids[held]] = tcp
@@ -236,6 +234,7 @@ class Rover:
         tcp = self.data.site_xpos[self.ik.tcp]
         base = self.data.qpos[self.root : self.root + 2]
         result = {
+            "execution": world.execution_contract(),
             "inventory": world.inventory(),
             "holding": self.carrying(),
             "tcp_m": tcp.tolist(),
@@ -330,6 +329,13 @@ class Rover:
                 for condition in action.completion.conditions
             },
         )
+
+    def action_bindings(self) -> dict[str, dict[str, str | None]]:
+        """Expose operation targets without requiring clients to parse generated action IDs."""
+        return {
+            action_id: {"operation": verb, "target_id": key or None}
+            for action_id, (verb, key) in self.commands.items()
+        }
 
     def package(self) -> MachinePackage:
         """Publish this machine's actual stations, actions and verification criteria."""
