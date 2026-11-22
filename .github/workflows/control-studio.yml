@@ -41,11 +41,11 @@ jobs:
         run: python -m forma_core.firmware.sil.build --output examples/control_studio/generated/firmware
       - name: Test control runtime, native firmware and service
         run: python -m unittest tests.control.test_runtime tests.control.test_client tests.control.test_service tests.control.test_package tests.control.test_tasks tests.firmware.test_sil -v
-      - name: Verify portable two-rover workcell
+      - name: Verify portable workcell and shared-world conformance
         if: runner.os == 'Linux'
         run: |
           python -m forma_core.control.rover_scene.assets examples/rover_kitchen/generated/robots
-          python -m unittest -v examples.rover_kitchen.test_workcell
+          python -m unittest -v examples.rover_kitchen.test_workcell tests.control.test_rover_scene
       - name: Run ideal control benchmark
         run: python examples/control_studio/benchmark.py
       - name: Run compiled firmware benchmark

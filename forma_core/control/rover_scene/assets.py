@@ -27,6 +27,20 @@ SOURCES = (
 )
 
 
+def validate_assets(destination: Path) -> dict[str, str]:
+    """Check installed revision declarations against this adapter's supported models.
+
+    This checks compatibility metadata, not cryptographic integrity of local files.
+    """
+    revisions: dict[str, str] = {}
+    for name, _repo, revision, _subtree, _license in SOURCES:
+        marker = destination / name / "REVISION"
+        if not marker.is_file() or marker.read_text().strip() != revision:
+            raise ValueError(f"Unsupported asset revision for {name}; install pinned rover assets")
+        revisions[name] = revision
+    return revisions
+
+
 def install(destination: Path) -> None:
     """Fetch exact commits into temporary checkouts and retain source licenses."""
     destination.mkdir(parents=True, exist_ok=True)

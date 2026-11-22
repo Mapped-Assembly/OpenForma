@@ -92,6 +92,7 @@ $('stop').onclick = () => command('/api/machines/'+encodeURIComponent(selected)+
 
 async function startViewer() {
   spec = await request('/api/scene');
+  $('fidelity').textContent = `${spec.execution.fidelity} simulation · ${spec.execution.attachment} attachment`;
   document.title='Forma · '+spec.name; $('title').textContent=spec.name;
   const host=$('view'), nodes=new Map();
   const renderer=new THREE.WebGLRenderer({antialias:true});
