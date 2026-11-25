@@ -2,6 +2,7 @@
 
 from typing import Any, List, Literal, Mapping, Optional
 from pydantic import BaseModel, Field, field_validator
+from .contracts import PinLimits
 
 
 class PinDefinition(BaseModel):
@@ -9,6 +10,7 @@ class PinDefinition(BaseModel):
     name: str = Field(..., description="Pin functional name, e.g., 'VCC', 'TX', 'GPIO4'")
     pin_type: str = Field(..., description="Type of pin: Power, Ground, Digital, Analog, I2C, SPI, UART, PWM, Passive")
     voltage: Optional[float] = Field(None, description="Operating voltage of the pin in Volts, e.g., 3.3 or 5.0")
+    limits: PinLimits | None = None
     description: Optional[str] = Field(None, description="Detailed description of the pin function")
     direction: Optional[str] = Field(None, description="Signal direction such as input, output, or bidirectional")
     power_role: Optional[str] = Field(None, description="Power role such as input, source, regulated_output, or return")

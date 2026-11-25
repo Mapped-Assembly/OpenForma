@@ -7,6 +7,7 @@ from typing import Any, Literal
 from pydantic import Field, model_validator
 
 from forma_core.domains.base import ComponentView, DomainDocument, DomainModel, Text, unique
+from .contracts import Harness, PartEngineering, PowerDomain, RuntimeBinding, VerificationEvidence
 from .primitives import BusConnection, ConnectionNet, PinDefinition, PinMappingEntry, PowerRail
 
 
@@ -26,6 +27,7 @@ class ElectricalPart(DomainModel):
     name: str = ""
     part_number: str = ""
     category: str = "Component"
+    engineering: PartEngineering | None = None
     pins: list[PinDefinition] = Field(default_factory=list)
     electrical_specs: dict[str, Any] = Field(default_factory=dict)
 
@@ -45,6 +47,10 @@ class ElectricalIR(DomainDocument):
     buses: list[BusConnection] = Field(default_factory=list)
     pin_mappings: list[PinMappingEntry] = Field(default_factory=list)
     power_rails: list[PowerRail] = Field(default_factory=list)
+    harnesses: list[Harness] = Field(default_factory=list)
+    power_domains: list[PowerDomain] = Field(default_factory=list)
+    runtime_bindings: list[RuntimeBinding] = Field(default_factory=list)
+    evidence: list[VerificationEvidence] = Field(default_factory=list)
     estimated_current_draw_ma: float | None = Field(None, ge=0)
 
     @model_validator(mode="after")
@@ -81,4 +87,6 @@ class ElectricalIR(DomainDocument):
         for rail in self.power_rails:
             if rail.source_component not in components:
                 raise ValueError(f"Rail '{rail.rail_id}' references an unknown source.")
+        from .validation import validate_engineering_references
+        validate_engineering_references(self)
         return self

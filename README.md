@@ -167,3 +167,7 @@ If you use Forma-OSS in research, publications, or other academic work, please c
   note = {Open-source software}
 }
 ```
+
+### Electronics engineering contracts
+
+See [the electronics engineering reference](docs/electronics-engineering.md) for typed ratings, harnesses, power budgets, runtime bindings and revision-bound evidence in ElectricalIR, including a generic example and explicit limitations.
