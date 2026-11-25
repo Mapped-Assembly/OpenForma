@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -203,8 +206,8 @@ class CadGenerationTests(unittest.TestCase):
         self.assertIn('"create_kinematic_joint"', source)
         self.assertIn('"joint_id": intent["motion_id"]', source)
         self.assertIn('"forma_target_ref": intent["target_ref"]', source)
-        self.assertIn('MOVING_REFS = {intent["target_ref"] for intent in MOTION_INTENTS}', source)
-        self.assertIn('if item["ref_des"] not in MOVING_REFS:', source)
+        self.assertIn("for ref_des in sorted(PARTS)", source)
+        self.assertNotIn("model.union(component", source)
         self.assertIn("FORMA_EXPORT_SHAPE_IDS", source)
 
     def test_generation_persists_opencad_kinematics_payload(self) -> None:
@@ -409,6 +412,15 @@ class CadGenerationTests(unittest.TestCase):
                     required=True,
                     authoring_agent="OpenCAD stress fixture",
                 ))
+                inspected = subprocess.run(
+                    [sys.executable, str(Path(__file__).with_name("inspect_native_step.py")),
+                     project.cad_model["path"]],
+                    check=True, capture_output=True, text=True,
+                )
+                geometry = json.loads(inspected.stdout)
+                self.assertTrue(geometry["valid"])
+                # One enclosure plus every independent stationary component.
+                self.assertEqual(len(project.mechanical.component_placements), geometry["solids"])
 
         self.assertEqual("forma-opencad", project.cad_model["adapter"])
         self.assertGreater(project.cad_model["bytes"], 500_000)
