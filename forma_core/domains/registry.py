@@ -102,6 +102,7 @@ def validate_domain(payload: dict[str, Any] | BaseModel) -> list[Finding]:
                 for i in validate_fluidic_system(document.system)]
     if domain == "electrical":
         from forma_core.electronics.rules import validate_circuit
+        from forma_core.electronics.validation import validate_engineering
         parts = {p.part_definition_id: p for p in document.parts}
         components = [SimpleNamespace(
             ref_des=c.ref_des, pins=parts[c.part_definition_id].pins,
@@ -110,7 +111,7 @@ def validate_domain(payload: dict[str, Any] | BaseModel) -> list[Finding]:
         ) for c in document.components]
         return [Finding(code=i.category, location="electrical", message=i.description,
                         severity="error" if i.severity == "CRITICAL" else "warning")
-                for i in validate_circuit(components, document.nets)]
+                for i in validate_circuit(components, document.nets)] + validate_engineering(document)
     return []
 
 

@@ -197,6 +197,10 @@ def export_hardware_ir(
         if domain == "mechanical":
             payload.update({key: deepcopy(document[key]) for key in ("mechanical", "cad_model")})
         elif domain == "electrical":
+            if (any(document.get(key) for key in ("harnesses", "power_domains", "runtime_bindings", "evidence"))
+                    or any(part.get("engineering") is not None for part in document["parts"])):
+                findings.append(Finding(code="unrepresentable", location=document["artifact_id"],
+                                        message="Legacy HardwareIR cannot preserve electronics engineering contracts; export ElectricalIR separately."))
             payload.update({key: deepcopy(document[key]) for key in ("nets", "buses", "pin_mappings", "power_rails")})
             if document["estimated_current_draw_ma"] is None:
                 findings.append(Finding(code="unknown_current", location="estimated_current_draw_ma",
