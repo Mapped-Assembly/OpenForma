@@ -1,0 +1,3447 @@
+{
+  "runtime": {
+    "format": "forma.process-run",
+    "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+    "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+    "process_sha256": "dbb315fbc0dfbe91b5ba7c6cc813267b358e3e7a0d0fe43c14fc122ed9f41b9a",
+    "status": "completed",
+    "steps": {
+      "prepare": "completed",
+      "inputs": "completed",
+      "before": "completed",
+      "mix": "completed",
+      "after": "completed",
+      "record": "completed"
+    },
+    "operations": {
+      "solid-feed": "completed",
+      "vinegar-feed": "completed",
+      "react": "completed",
+      "gas-output": "completed",
+      "residue-output": "completed"
+    },
+    "active_step": null,
+    "ready_steps": [],
+    "batches": {
+      "solid-lot": {
+        "batch_id": "solid-lot",
+        "stream_id": "solid",
+        "quantity": {
+          "value": 2.0,
+          "unit": "g",
+          "instrument": "synthetic lot fixture",
+          "resolution": 0.01,
+          "uncertainty": 0.0,
+          "calibration": null
+        },
+        "parent_batch_ids": [],
+        "evidence_ids": [
+          "synthetic-prepare"
+        ],
+        "step_id": "prepare",
+        "operation_id": "solid-feed",
+        "provenance": "simulated"
+      },
+      "vinegar-lot": {
+        "batch_id": "vinegar-lot",
+        "stream_id": "vinegar",
+        "quantity": {
+          "value": 50.0,
+          "unit": "mL",
+          "instrument": "synthetic lot fixture",
+          "resolution": 0.01,
+          "uncertainty": 0.0,
+          "calibration": null
+        },
+        "parent_batch_ids": [],
+        "evidence_ids": [
+          "synthetic-inputs"
+        ],
+        "step_id": "inputs",
+        "operation_id": "vinegar-feed",
+        "provenance": "simulated"
+      }
+    },
+    "events": [
+      {
+        "sequence": 0,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.313650Z",
+        "step_id": "prepare",
+        "kind": "started",
+        "payload": {
+          "operation_id": "solid-feed"
+        },
+        "previous_sha256": null,
+        "sha256": "c22354eefc3804048c4b2d51d2e454d43e7c4afb85404a36f7add6f3add21a3c"
+      },
+      {
+        "sequence": 1,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.316888Z",
+        "step_id": "prepare",
+        "kind": "submitted",
+        "payload": {
+          "submission": {
+            "submission_id": "prepare-scenario",
+            "actor": "explicit synthetic software fixture",
+            "acknowledged": true,
+            "confirmed_preconditions": [],
+            "readings": {
+              "bicarbonate": {
+                "value": 2.0,
+                "unit": "g",
+                "instrument": "synthetic input fixture",
+                "resolution": 0.001,
+                "uncertainty": 0.001,
+                "calibration": null
+              },
+              "acid": {
+                "value": 2.5,
+                "unit": "g",
+                "instrument": "synthetic input fixture",
+                "resolution": 0.001,
+                "uncertainty": 0.001,
+                "calibration": null
+              },
+              "ambient_temperature": {
+                "value": 24.0,
+                "unit": "degC",
+                "instrument": "synthetic condition fixture",
+                "resolution": 0.01,
+                "uncertainty": 0.0,
+                "calibration": null
+              }
+            },
+            "reading_evidence": {
+              "bicarbonate": [
+                "synthetic-prepare"
+              ],
+              "acid": [
+                "synthetic-prepare"
+              ],
+              "ambient_temperature": [
+                "synthetic-prepare"
+              ]
+            },
+            "batches": [
+              {
+                "batch_id": "solid-lot",
+                "stream_id": "solid",
+                "quantity": {
+                  "value": 2.0,
+                  "unit": "g",
+                  "instrument": "synthetic lot fixture",
+                  "resolution": 0.01,
+                  "uncertainty": 0.0,
+                  "calibration": null
+                },
+                "parent_batch_ids": [],
+                "evidence_ids": [
+                  "synthetic-prepare"
+                ]
+              }
+            ],
+            "observations": [],
+            "evidence": [
+              {
+                "source_id": "synthetic-prepare",
+                "basis": "illustrative",
+                "title": "Synthetic process runtime scenario",
+                "publisher": null,
+                "locator": null,
+                "url": null,
+                "published_at": null,
+                "retrieved_at": null,
+                "effective_at": null,
+                "undated_reason": null,
+                "applicability": null,
+                "uncertainty": null,
+                "rationale": "Software demonstration only; no physical experiment was performed."
+              }
+            ]
+          },
+          "result": {
+            "step_id": "prepare",
+            "status": "completed",
+            "findings": [],
+            "adapter": {
+              "status": "ready",
+              "provenance": "simulated",
+              "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+              "evaluations": [],
+              "machine_receipt": null
+            }
+          }
+        },
+        "previous_sha256": "c22354eefc3804048c4b2d51d2e454d43e7c4afb85404a36f7add6f3add21a3c",
+        "sha256": "24d1c70f33ada3187b9f28116ef237e577faaf2da2040e973e47d311d4a5c233"
+      },
+      {
+        "sequence": 2,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.317027Z",
+        "step_id": "prepare",
+        "kind": "completed",
+        "payload": {
+          "provenance": "simulated",
+          "physical_verification": "not_evaluated"
+        },
+        "previous_sha256": "24d1c70f33ada3187b9f28116ef237e577faaf2da2040e973e47d311d4a5c233",
+        "sha256": "2d1fdd4684d8e66441b4874fc499e4eb9d0b89a48845b6705d1d61e8b48e3e91"
+      },
+      {
+        "sequence": 3,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.317086Z",
+        "step_id": "inputs",
+        "kind": "started",
+        "payload": {
+          "operation_id": "vinegar-feed"
+        },
+        "previous_sha256": "2d1fdd4684d8e66441b4874fc499e4eb9d0b89a48845b6705d1d61e8b48e3e91",
+        "sha256": "fd4f7b4163d462e88490f0b6739c81b8b4efaefffa6bc38ba9bfa6fc94a71d33"
+      },
+      {
+        "sequence": 4,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.320416Z",
+        "step_id": "inputs",
+        "kind": "submitted",
+        "payload": {
+          "submission": {
+            "submission_id": "inputs-scenario",
+            "actor": "explicit synthetic software fixture",
+            "acknowledged": true,
+            "confirmed_preconditions": [],
+            "readings": {},
+            "reading_evidence": {},
+            "batches": [
+              {
+                "batch_id": "vinegar-lot",
+                "stream_id": "vinegar",
+                "quantity": {
+                  "value": 50.0,
+                  "unit": "mL",
+                  "instrument": "synthetic lot fixture",
+                  "resolution": 0.01,
+                  "uncertainty": 0.0,
+                  "calibration": null
+                },
+                "parent_batch_ids": [],
+                "evidence_ids": [
+                  "synthetic-inputs"
+                ]
+              }
+            ],
+            "observations": [],
+            "evidence": [
+              {
+                "source_id": "synthetic-inputs",
+                "basis": "illustrative",
+                "title": "Synthetic process runtime scenario",
+                "publisher": null,
+                "locator": null,
+                "url": null,
+                "published_at": null,
+                "retrieved_at": null,
+                "effective_at": null,
+                "undated_reason": null,
+                "applicability": null,
+                "uncertainty": null,
+                "rationale": "Software demonstration only; no physical experiment was performed."
+              }
+            ]
+          },
+          "result": {
+            "step_id": "inputs",
+            "status": "completed",
+            "findings": [],
+            "adapter": {
+              "status": "ready",
+              "provenance": "simulated",
+              "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+              "evaluations": [],
+              "machine_receipt": null
+            }
+          }
+        },
+        "previous_sha256": "fd4f7b4163d462e88490f0b6739c81b8b4efaefffa6bc38ba9bfa6fc94a71d33",
+        "sha256": "8b61d406d2bc667ca4cf48472d377a3e7d1e904c4492dc4a62e4c710a413985e"
+      },
+      {
+        "sequence": 5,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.320524Z",
+        "step_id": "inputs",
+        "kind": "completed",
+        "payload": {
+          "provenance": "simulated",
+          "physical_verification": "not_evaluated"
+        },
+        "previous_sha256": "8b61d406d2bc667ca4cf48472d377a3e7d1e904c4492dc4a62e4c710a413985e",
+        "sha256": "271a9f6e2a98e1d33329e5621f587dca133250b2088cb9f83300c153b96eee71"
+      },
+      {
+        "sequence": 6,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.320579Z",
+        "step_id": "before",
+        "kind": "started",
+        "payload": {
+          "operation_id": "react"
+        },
+        "previous_sha256": "271a9f6e2a98e1d33329e5621f587dca133250b2088cb9f83300c153b96eee71",
+        "sha256": "294a624fd2765643c146111516f3511e2f8fda5563c4bc376f5d6e7a2c0736a8"
+      },
+      {
+        "sequence": 7,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.323244Z",
+        "step_id": "before",
+        "kind": "submitted",
+        "payload": {
+          "submission": {
+            "submission_id": "before-scenario",
+            "actor": "explicit synthetic software fixture",
+            "acknowledged": true,
+            "confirmed_preconditions": [],
+            "readings": {},
+            "reading_evidence": {},
+            "batches": [],
+            "observations": [],
+            "evidence": [
+              {
+                "source_id": "synthetic-before",
+                "basis": "illustrative",
+                "title": "Synthetic process runtime scenario",
+                "publisher": null,
+                "locator": null,
+                "url": null,
+                "published_at": null,
+                "retrieved_at": null,
+                "effective_at": null,
+                "undated_reason": null,
+                "applicability": null,
+                "uncertainty": null,
+                "rationale": "Software demonstration only; no physical experiment was performed."
+              }
+            ]
+          },
+          "result": {
+            "step_id": "before",
+            "status": "completed",
+            "findings": [],
+            "adapter": {
+              "status": "ready",
+              "provenance": "simulated",
+              "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+              "evaluations": [],
+              "machine_receipt": null
+            }
+          }
+        },
+        "previous_sha256": "294a624fd2765643c146111516f3511e2f8fda5563c4bc376f5d6e7a2c0736a8",
+        "sha256": "5b26bd3be020221693402e7a7ca8631bdee7dcaa60c3c14aa8093d210177c79c"
+      },
+      {
+        "sequence": 8,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.323325Z",
+        "step_id": "before",
+        "kind": "completed",
+        "payload": {
+          "provenance": "simulated",
+          "physical_verification": "not_evaluated"
+        },
+        "previous_sha256": "5b26bd3be020221693402e7a7ca8631bdee7dcaa60c3c14aa8093d210177c79c",
+        "sha256": "71e9139f779f8ee67d99504630d594b4fb48a14ea1d458ec72fd636662b717a4"
+      },
+      {
+        "sequence": 9,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.323372Z",
+        "step_id": "mix",
+        "kind": "started",
+        "payload": {
+          "operation_id": "react"
+        },
+        "previous_sha256": "71e9139f779f8ee67d99504630d594b4fb48a14ea1d458ec72fd636662b717a4",
+        "sha256": "4cd364cd43395cfb58e09304fe863fc55b8ce2282b0fa14c9c41747f74c95128"
+      },
+      {
+        "sequence": 10,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.325782Z",
+        "step_id": "mix",
+        "kind": "submitted",
+        "payload": {
+          "submission": {
+            "submission_id": "mix-scenario",
+            "actor": "explicit synthetic software fixture",
+            "acknowledged": true,
+            "confirmed_preconditions": [],
+            "readings": {},
+            "reading_evidence": {},
+            "batches": [],
+            "observations": [],
+            "evidence": [
+              {
+                "source_id": "synthetic-mix",
+                "basis": "illustrative",
+                "title": "Synthetic process runtime scenario",
+                "publisher": null,
+                "locator": null,
+                "url": null,
+                "published_at": null,
+                "retrieved_at": null,
+                "effective_at": null,
+                "undated_reason": null,
+                "applicability": null,
+                "uncertainty": null,
+                "rationale": "Software demonstration only; no physical experiment was performed."
+              }
+            ]
+          },
+          "result": {
+            "step_id": "mix",
+            "status": "completed",
+            "findings": [],
+            "adapter": {
+              "status": "ready",
+              "provenance": "simulated",
+              "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+              "evaluations": [],
+              "machine_receipt": null
+            }
+          }
+        },
+        "previous_sha256": "4cd364cd43395cfb58e09304fe863fc55b8ce2282b0fa14c9c41747f74c95128",
+        "sha256": "cb6542b129479777df83c069fc386f9e78b16f326d83764b054fdf693daf51b7"
+      },
+      {
+        "sequence": 11,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.325849Z",
+        "step_id": "mix",
+        "kind": "completed",
+        "payload": {
+          "provenance": "simulated",
+          "physical_verification": "not_evaluated"
+        },
+        "previous_sha256": "cb6542b129479777df83c069fc386f9e78b16f326d83764b054fdf693daf51b7",
+        "sha256": "de9cad2862011ceeb859db8f1eadb7e6a03f689afee24191473b1866911777c0"
+      },
+      {
+        "sequence": 12,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.325930Z",
+        "step_id": "after",
+        "kind": "started",
+        "payload": {
+          "operation_id": "gas-output"
+        },
+        "previous_sha256": "de9cad2862011ceeb859db8f1eadb7e6a03f689afee24191473b1866911777c0",
+        "sha256": "9be05a69a916390df7755067d99c014692f1dbad76400185c5337eba98a88a16"
+      },
+      {
+        "sequence": 13,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.328641Z",
+        "step_id": "after",
+        "kind": "submitted",
+        "payload": {
+          "submission": {
+            "submission_id": "after-scenario",
+            "actor": "explicit synthetic software fixture",
+            "acknowledged": true,
+            "confirmed_preconditions": [],
+            "readings": {},
+            "reading_evidence": {},
+            "batches": [],
+            "observations": [],
+            "evidence": [
+              {
+                "source_id": "synthetic-after",
+                "basis": "illustrative",
+                "title": "Synthetic process runtime scenario",
+                "publisher": null,
+                "locator": null,
+                "url": null,
+                "published_at": null,
+                "retrieved_at": null,
+                "effective_at": null,
+                "undated_reason": null,
+                "applicability": null,
+                "uncertainty": null,
+                "rationale": "Software demonstration only; no physical experiment was performed."
+              }
+            ]
+          },
+          "result": {
+            "step_id": "after",
+            "status": "completed",
+            "findings": [],
+            "adapter": {
+              "status": "ready",
+              "provenance": "simulated",
+              "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+              "evaluations": [],
+              "machine_receipt": null
+            }
+          }
+        },
+        "previous_sha256": "9be05a69a916390df7755067d99c014692f1dbad76400185c5337eba98a88a16",
+        "sha256": "7fa7841e461ede156d40e45eafe23118892b350ed577962da31125e92f60b9d6"
+      },
+      {
+        "sequence": 14,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.328750Z",
+        "step_id": "after",
+        "kind": "completed",
+        "payload": {
+          "provenance": "simulated",
+          "physical_verification": "not_evaluated"
+        },
+        "previous_sha256": "7fa7841e461ede156d40e45eafe23118892b350ed577962da31125e92f60b9d6",
+        "sha256": "c6ac71bec7090f50b92c8d8ee1f51d1db468f64d12458d9fab31b74831c76a5e"
+      },
+      {
+        "sequence": 15,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.328798Z",
+        "step_id": "record",
+        "kind": "started",
+        "payload": {
+          "operation_id": "residue-output"
+        },
+        "previous_sha256": "c6ac71bec7090f50b92c8d8ee1f51d1db468f64d12458d9fab31b74831c76a5e",
+        "sha256": "d9af6d6a1fed4e4dfc52204d724a2db5ccce08b89e484db26557e57c6045d887"
+      },
+      {
+        "sequence": 16,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.341376Z",
+        "step_id": "record",
+        "kind": "submitted",
+        "payload": {
+          "submission": {
+            "submission_id": "record-scenario",
+            "actor": "explicit synthetic software fixture",
+            "acknowledged": true,
+            "confirmed_preconditions": [],
+            "readings": {},
+            "reading_evidence": {},
+            "batches": [],
+            "observations": [
+              {
+                "observation_id": "co2-mass-proxy",
+                "criterion_id": "co2-mass-proxy",
+                "target": {
+                  "evaluation_id": "batch-bound",
+                  "output_id": "co2.formed_mass"
+                },
+                "basis": "net_formation",
+                "readings": [
+                  {
+                    "value": 100.0,
+                    "unit": "g",
+                    "instrument": "synthetic observation fixture",
+                    "resolution": 0.01,
+                    "uncertainty": 0.01,
+                    "calibration": null
+                  },
+                  {
+                    "value": 98.9522370861337,
+                    "unit": "g",
+                    "instrument": "synthetic observation fixture",
+                    "resolution": 0.01,
+                    "uncertainty": 0.01,
+                    "calibration": null
+                  }
+                ],
+                "evidence_ids": [
+                  "synthetic-record"
+                ],
+                "assumptions_confirmed": true
+              }
+            ],
+            "evidence": [
+              {
+                "source_id": "synthetic-record",
+                "basis": "illustrative",
+                "title": "Synthetic process runtime scenario",
+                "publisher": null,
+                "locator": null,
+                "url": null,
+                "published_at": null,
+                "retrieved_at": null,
+                "effective_at": null,
+                "undated_reason": null,
+                "applicability": null,
+                "uncertainty": null,
+                "rationale": "Software demonstration only; no physical experiment was performed."
+              }
+            ]
+          },
+          "result": {
+            "step_id": "record",
+            "status": "completed",
+            "findings": [],
+            "adapter": {
+              "status": "ready",
+              "provenance": "simulated",
+              "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+              "evaluations": [
+                {
+                  "request": {
+                    "evaluation_id": "batch-bound",
+                    "artifact_id": "kitchen-acid-bicarbonate",
+                    "evaluator_id": "stoichiometric-bound",
+                    "evaluator_version": "1.0",
+                    "parameters": {
+                      "chemical": {
+                        "artifact_id": "kitchen-acid-bicarbonate",
+                        "domain": "chemical",
+                        "schema_id": "openforma.chemical",
+                        "schema_version": "1.0",
+                        "revision": 1,
+                        "provider_id": "openforma.native",
+                        "provider_version": "1.0",
+                        "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                        "locator": null,
+                        "provenance": {}
+                      },
+                      "reaction_id": "acid-bicarbonate",
+                      "inventory": [
+                        {
+                          "species_id": "bicarbonate",
+                          "value": 2,
+                          "unit": "g",
+                          "claim": {
+                            "basis": "assumed",
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        },
+                        {
+                          "species_id": "acid",
+                          "value": 2.5,
+                          "unit": "g",
+                          "claim": {
+                            "basis": "assumed",
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        }
+                      ],
+                      "inventory_policy": "zero_unlisted_nonreactants",
+                      "molar_masses": [
+                        {
+                          "species_id": "bicarbonate",
+                          "value": 84.0066,
+                          "unit": "g/mol",
+                          "claim": {
+                            "basis": "assumed",
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        },
+                        {
+                          "species_id": "acid",
+                          "value": 60.052,
+                          "unit": "g/mol",
+                          "claim": {
+                            "basis": "assumed",
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        },
+                        {
+                          "species_id": "acetate",
+                          "value": 82.0338,
+                          "unit": "g/mol",
+                          "claim": {
+                            "basis": "assumed",
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        },
+                        {
+                          "species_id": "water",
+                          "value": 18.0153,
+                          "unit": "g/mol",
+                          "claim": {
+                            "basis": "assumed",
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        },
+                        {
+                          "species_id": "co2",
+                          "value": 44.0095,
+                          "unit": "g/mol",
+                          "claim": {
+                            "basis": "assumed",
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        }
+                      ],
+                      "mass_balance_tolerance_g": 1e-05
+                    }
+                  },
+                  "artifact": {
+                    "artifact_id": "kitchen-acid-bicarbonate",
+                    "domain": "chemical",
+                    "schema_id": "openforma.chemical",
+                    "schema_version": "1.0",
+                    "revision": 1,
+                    "provider_id": "openforma.native",
+                    "provider_version": "1.0",
+                    "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                    "locator": null,
+                    "provenance": {}
+                  },
+                  "input_digest": "961870ed94c5ff59136e4f51984fa6ffa2d7dfac4c245c9b6e6322aba1802b7c",
+                  "status": "pass",
+                  "outputs": [
+                    {
+                      "output_id": "acetate.formed",
+                      "value": "10000/420033",
+                      "dimension": "amount",
+                      "unit": "mol",
+                      "basis": "net_formation",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "acetate.final",
+                      "value": "10000/420033",
+                      "dimension": "amount",
+                      "unit": "mol",
+                      "basis": "total_inventory",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "acetate.formed_mass",
+                      "value": "273446/140011",
+                      "dimension": "mass",
+                      "unit": "g",
+                      "basis": "net_formation",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "acetate.final_mass",
+                      "value": "273446/140011",
+                      "dimension": "mass",
+                      "unit": "g",
+                      "basis": "total_inventory",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "acid.formed",
+                      "value": "0",
+                      "dimension": "amount",
+                      "unit": "mol",
+                      "basis": "net_formation",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "acid.final",
+                      "value": "112390625/6305955429",
+                      "dimension": "amount",
+                      "unit": "mol",
+                      "basis": "total_inventory",
+                      "kind": "prediction",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "acid.formed_mass",
+                      "value": "0",
+                      "dimension": "mass",
+                      "unit": "g",
+                      "basis": "net_formation",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "acid.final_mass",
+                      "value": "899125/840066",
+                      "dimension": "mass",
+                      "unit": "g",
+                      "basis": "total_inventory",
+                      "kind": "prediction",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "bicarbonate.formed",
+                      "value": "0",
+                      "dimension": "amount",
+                      "unit": "mol",
+                      "basis": "net_formation",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "bicarbonate.final",
+                      "value": "0",
+                      "dimension": "amount",
+                      "unit": "mol",
+                      "basis": "total_inventory",
+                      "kind": "prediction",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "bicarbonate.formed_mass",
+                      "value": "0",
+                      "dimension": "mass",
+                      "unit": "g",
+                      "basis": "net_formation",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "bicarbonate.final_mass",
+                      "value": "0",
+                      "dimension": "mass",
+                      "unit": "g",
+                      "basis": "total_inventory",
+                      "kind": "prediction",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "co2.formed",
+                      "value": "10000/420033",
+                      "dimension": "amount",
+                      "unit": "mol",
+                      "basis": "net_formation",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "co2.final",
+                      "value": "10000/420033",
+                      "dimension": "amount",
+                      "unit": "mol",
+                      "basis": "total_inventory",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "co2.formed_mass",
+                      "value": "440095/420033",
+                      "dimension": "mass",
+                      "unit": "g",
+                      "basis": "net_formation",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "co2.final_mass",
+                      "value": "440095/420033",
+                      "dimension": "mass",
+                      "unit": "g",
+                      "basis": "total_inventory",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "water.formed",
+                      "value": "10000/420033",
+                      "dimension": "amount",
+                      "unit": "mol",
+                      "basis": "net_formation",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "water.final",
+                      "value": "10000/420033",
+                      "dimension": "amount",
+                      "unit": "mol",
+                      "basis": "total_inventory",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "water.formed_mass",
+                      "value": "60051/140011",
+                      "dimension": "mass",
+                      "unit": "g",
+                      "basis": "net_formation",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    },
+                    {
+                      "output_id": "water.final_mass",
+                      "value": "60051/140011",
+                      "dimension": "mass",
+                      "unit": "g",
+                      "basis": "total_inventory",
+                      "kind": "upper_bound",
+                      "status": "pass",
+                      "message": "Conditional forward stoichiometric bound."
+                    }
+                  ],
+                  "raw": {
+                    "schema_version": "1.0",
+                    "model": "single-reaction-stoichiometric-bound",
+                    "model_version": "1.0",
+                    "status": "pass",
+                    "input_digest": "fa0290b7d12b346655e4f502e9746a8b6f6468cbd26f2671d6f31758dfc9e1e0",
+                    "evaluated_chemical": {
+                      "artifact_id": "kitchen-acid-bicarbonate",
+                      "domain": "chemical",
+                      "schema_id": "openforma.chemical",
+                      "schema_version": "1.0",
+                      "revision": 1,
+                      "provider_id": "openforma.native",
+                      "provider_version": "1.0",
+                      "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                      "locator": null,
+                      "provenance": {}
+                    },
+                    "request": {
+                      "schema_version": "1.0",
+                      "chemical": {
+                        "artifact_id": "kitchen-acid-bicarbonate",
+                        "domain": "chemical",
+                        "schema_id": "openforma.chemical",
+                        "schema_version": "1.0",
+                        "revision": 1,
+                        "provider_id": "openforma.native",
+                        "provider_version": "1.0",
+                        "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                        "locator": null,
+                        "provenance": {}
+                      },
+                      "reaction_id": "acid-bicarbonate",
+                      "direction": "forward",
+                      "mode": "single_reaction_batch",
+                      "inventory": [
+                        {
+                          "species_id": "bicarbonate",
+                          "value": 2.0,
+                          "unit": "g",
+                          "role": "unspecified",
+                          "claim": {
+                            "basis": "assumed",
+                            "source_ids": [],
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        },
+                        {
+                          "species_id": "acid",
+                          "value": 2.5,
+                          "unit": "g",
+                          "role": "unspecified",
+                          "claim": {
+                            "basis": "assumed",
+                            "source_ids": [],
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        }
+                      ],
+                      "inventory_policy": "zero_unlisted_nonreactants",
+                      "molar_masses": [
+                        {
+                          "species_id": "bicarbonate",
+                          "value": 84.0066,
+                          "unit": "g/mol",
+                          "claim": {
+                            "basis": "assumed",
+                            "source_ids": [],
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        },
+                        {
+                          "species_id": "acid",
+                          "value": 60.052,
+                          "unit": "g/mol",
+                          "claim": {
+                            "basis": "assumed",
+                            "source_ids": [],
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        },
+                        {
+                          "species_id": "acetate",
+                          "value": 82.0338,
+                          "unit": "g/mol",
+                          "claim": {
+                            "basis": "assumed",
+                            "source_ids": [],
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        },
+                        {
+                          "species_id": "water",
+                          "value": 18.0153,
+                          "unit": "g/mol",
+                          "claim": {
+                            "basis": "assumed",
+                            "source_ids": [],
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        },
+                        {
+                          "species_id": "co2",
+                          "value": 44.0095,
+                          "unit": "g/mol",
+                          "claim": {
+                            "basis": "assumed",
+                            "source_ids": [],
+                            "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                          }
+                        }
+                      ],
+                      "evidence": [],
+                      "limiting_absolute_tolerance_mol": 1e-12,
+                      "limiting_relative_tolerance": 1e-09,
+                      "mass_balance_tolerance_g": 1e-05
+                    },
+                    "evidence": [
+                      {
+                        "source_id": "user-request",
+                        "basis": "specified",
+                        "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+                        "publisher": "User",
+                        "locator": "engineering-request.brief",
+                        "url": null,
+                        "published_at": null,
+                        "retrieved_at": "2026-11-04T00:00:00Z",
+                        "effective_at": null,
+                        "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+                        "applicability": null,
+                        "uncertainty": null,
+                        "rationale": null
+                      }
+                    ],
+                    "assumptions": [
+                      "Maximum forward extent assuming completion of the selected reaction; not actual conversion, equilibrium, isolated yield or throughput.",
+                      "Only the selected reaction is evaluated; no competing reactions or transport limitations are modeled.",
+                      "Amounts are batch inventories, not flow rates. Net stoichiometry determines consumption and formation.",
+                      "Initial amount of 'acetate' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+                      "Initial amount of 'co2' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+                      "Initial amount of 'water' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+                      "Inventory covers supplied species and selected reaction participants; unrelated document species are outside the batch scope."
+                    ],
+                    "findings": [],
+                    "maximum_extent_mol": "10000/420033",
+                    "limiting_species_ids": [
+                      "bicarbonate"
+                    ],
+                    "amounts": [
+                      {
+                        "species_id": "acetate",
+                        "unit": "mol",
+                        "initial": "0",
+                        "consumed": "0",
+                        "formed": "10000/420033",
+                        "final": "10000/420033",
+                        "net_coefficient": "1",
+                        "role": "unspecified",
+                        "molar_mass_g_per_mol": "410169/5000",
+                        "initial_mass_g": "0",
+                        "consumed_mass_g": "0",
+                        "formed_mass_g": "273446/140011",
+                        "final_mass_g": "273446/140011"
+                      },
+                      {
+                        "species_id": "acid",
+                        "unit": "mol",
+                        "initial": "625/15013",
+                        "consumed": "10000/420033",
+                        "formed": "0",
+                        "final": "112390625/6305955429",
+                        "net_coefficient": "-1",
+                        "role": "unspecified",
+                        "molar_mass_g_per_mol": "15013/250",
+                        "initial_mass_g": "5/2",
+                        "consumed_mass_g": "600520/420033",
+                        "formed_mass_g": "0",
+                        "final_mass_g": "899125/840066"
+                      },
+                      {
+                        "species_id": "bicarbonate",
+                        "unit": "mol",
+                        "initial": "10000/420033",
+                        "consumed": "10000/420033",
+                        "formed": "0",
+                        "final": "0",
+                        "net_coefficient": "-1",
+                        "role": "unspecified",
+                        "molar_mass_g_per_mol": "420033/5000",
+                        "initial_mass_g": "2",
+                        "consumed_mass_g": "2",
+                        "formed_mass_g": "0",
+                        "final_mass_g": "0"
+                      },
+                      {
+                        "species_id": "co2",
+                        "unit": "mol",
+                        "initial": "0",
+                        "consumed": "0",
+                        "formed": "10000/420033",
+                        "final": "10000/420033",
+                        "net_coefficient": "1",
+                        "role": "unspecified",
+                        "molar_mass_g_per_mol": "88019/2000",
+                        "initial_mass_g": "0",
+                        "consumed_mass_g": "0",
+                        "formed_mass_g": "440095/420033",
+                        "final_mass_g": "440095/420033"
+                      },
+                      {
+                        "species_id": "water",
+                        "unit": "mol",
+                        "initial": "0",
+                        "consumed": "0",
+                        "formed": "10000/420033",
+                        "final": "10000/420033",
+                        "net_coefficient": "1",
+                        "role": "unspecified",
+                        "molar_mass_g_per_mol": "180153/10000",
+                        "initial_mass_g": "0",
+                        "consumed_mass_g": "0",
+                        "formed_mass_g": "60051/140011",
+                        "final_mass_g": "60051/140011"
+                      }
+                    ],
+                    "conservation": {
+                      "reaction_balance": {
+                        "reaction_id": "acid-bicarbonate",
+                        "status": "pass",
+                        "residuals": {},
+                        "message": "Element and charge balances pass on the supported formula grammar."
+                      },
+                      "element_residuals_mol": {
+                        "C": "0",
+                        "H": "0",
+                        "Na": "0",
+                        "O": "0"
+                      },
+                      "charge_residual_mol": "0",
+                      "mass_status": "pass",
+                      "mass_residual_g": "0"
+                    }
+                  },
+                  "message": "Inspect the domain-owned calculation receipt."
+                }
+              ],
+              "machine_receipt": null
+            }
+          }
+        },
+        "previous_sha256": "d9af6d6a1fed4e4dfc52204d724a2db5ccce08b89e484db26557e57c6045d887",
+        "sha256": "32d1ea83936f6c4a6b3d07a5a8c454672ad8c7aac0b438b5c2c9874948fc2c8e"
+      },
+      {
+        "sequence": 17,
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "352557fb445f9b34b4037665517082504524d882e30cff13b3f798b2f56ba5b2",
+        "timestamp": "2026-11-26T16:59:05.341652Z",
+        "step_id": "record",
+        "kind": "completed",
+        "payload": {
+          "provenance": "simulated",
+          "physical_verification": "not_evaluated"
+        },
+        "previous_sha256": "32d1ea83936f6c4a6b3d07a5a8c454672ad8c7aac0b438b5c2c9874948fc2c8e",
+        "sha256": "8b669113991ea1aea44a9a3a006c25603b7a57efa214dc6d18f62e337d9d8ec6"
+      }
+    ],
+    "physical_verification": "not_evaluated",
+    "material_balance": "unknown"
+  },
+  "submissions": [
+    {
+      "step_id": "prepare",
+      "status": "completed",
+      "findings": [],
+      "adapter": {
+        "status": "ready",
+        "provenance": "simulated",
+        "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+        "evaluations": [],
+        "machine_receipt": null
+      }
+    },
+    {
+      "step_id": "inputs",
+      "status": "completed",
+      "findings": [],
+      "adapter": {
+        "status": "ready",
+        "provenance": "simulated",
+        "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+        "evaluations": [],
+        "machine_receipt": null
+      }
+    },
+    {
+      "step_id": "before",
+      "status": "completed",
+      "findings": [],
+      "adapter": {
+        "status": "ready",
+        "provenance": "simulated",
+        "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+        "evaluations": [],
+        "machine_receipt": null
+      }
+    },
+    {
+      "step_id": "mix",
+      "status": "completed",
+      "findings": [],
+      "adapter": {
+        "status": "ready",
+        "provenance": "simulated",
+        "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+        "evaluations": [],
+        "machine_receipt": null
+      }
+    },
+    {
+      "step_id": "after",
+      "status": "completed",
+      "findings": [],
+      "adapter": {
+        "status": "ready",
+        "provenance": "simulated",
+        "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+        "evaluations": [],
+        "machine_receipt": null
+      }
+    },
+    {
+      "step_id": "record",
+      "status": "completed",
+      "findings": [],
+      "adapter": {
+        "status": "ready",
+        "provenance": "simulated",
+        "message": "Virtual workflow only; model results are predictions, never measured quantities.",
+        "evaluations": [
+          {
+            "request": {
+              "evaluation_id": "batch-bound",
+              "artifact_id": "kitchen-acid-bicarbonate",
+              "evaluator_id": "stoichiometric-bound",
+              "evaluator_version": "1.0",
+              "parameters": {
+                "chemical": {
+                  "artifact_id": "kitchen-acid-bicarbonate",
+                  "domain": "chemical",
+                  "schema_id": "openforma.chemical",
+                  "schema_version": "1.0",
+                  "revision": 1,
+                  "provider_id": "openforma.native",
+                  "provider_version": "1.0",
+                  "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                  "locator": null,
+                  "provenance": {}
+                },
+                "reaction_id": "acid-bicarbonate",
+                "inventory": [
+                  {
+                    "species_id": "bicarbonate",
+                    "value": 2,
+                    "unit": "g",
+                    "claim": {
+                      "basis": "assumed",
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  },
+                  {
+                    "species_id": "acid",
+                    "value": 2.5,
+                    "unit": "g",
+                    "claim": {
+                      "basis": "assumed",
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  }
+                ],
+                "inventory_policy": "zero_unlisted_nonreactants",
+                "molar_masses": [
+                  {
+                    "species_id": "bicarbonate",
+                    "value": 84.0066,
+                    "unit": "g/mol",
+                    "claim": {
+                      "basis": "assumed",
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  },
+                  {
+                    "species_id": "acid",
+                    "value": 60.052,
+                    "unit": "g/mol",
+                    "claim": {
+                      "basis": "assumed",
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  },
+                  {
+                    "species_id": "acetate",
+                    "value": 82.0338,
+                    "unit": "g/mol",
+                    "claim": {
+                      "basis": "assumed",
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  },
+                  {
+                    "species_id": "water",
+                    "value": 18.0153,
+                    "unit": "g/mol",
+                    "claim": {
+                      "basis": "assumed",
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  },
+                  {
+                    "species_id": "co2",
+                    "value": 44.0095,
+                    "unit": "g/mol",
+                    "claim": {
+                      "basis": "assumed",
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  }
+                ],
+                "mass_balance_tolerance_g": 1e-05
+              }
+            },
+            "artifact": {
+              "artifact_id": "kitchen-acid-bicarbonate",
+              "domain": "chemical",
+              "schema_id": "openforma.chemical",
+              "schema_version": "1.0",
+              "revision": 1,
+              "provider_id": "openforma.native",
+              "provider_version": "1.0",
+              "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+              "locator": null,
+              "provenance": {}
+            },
+            "input_digest": "961870ed94c5ff59136e4f51984fa6ffa2d7dfac4c245c9b6e6322aba1802b7c",
+            "status": "pass",
+            "outputs": [
+              {
+                "output_id": "acetate.formed",
+                "value": "10000/420033",
+                "dimension": "amount",
+                "unit": "mol",
+                "basis": "net_formation",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "acetate.final",
+                "value": "10000/420033",
+                "dimension": "amount",
+                "unit": "mol",
+                "basis": "total_inventory",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "acetate.formed_mass",
+                "value": "273446/140011",
+                "dimension": "mass",
+                "unit": "g",
+                "basis": "net_formation",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "acetate.final_mass",
+                "value": "273446/140011",
+                "dimension": "mass",
+                "unit": "g",
+                "basis": "total_inventory",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "acid.formed",
+                "value": "0",
+                "dimension": "amount",
+                "unit": "mol",
+                "basis": "net_formation",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "acid.final",
+                "value": "112390625/6305955429",
+                "dimension": "amount",
+                "unit": "mol",
+                "basis": "total_inventory",
+                "kind": "prediction",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "acid.formed_mass",
+                "value": "0",
+                "dimension": "mass",
+                "unit": "g",
+                "basis": "net_formation",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "acid.final_mass",
+                "value": "899125/840066",
+                "dimension": "mass",
+                "unit": "g",
+                "basis": "total_inventory",
+                "kind": "prediction",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "bicarbonate.formed",
+                "value": "0",
+                "dimension": "amount",
+                "unit": "mol",
+                "basis": "net_formation",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "bicarbonate.final",
+                "value": "0",
+                "dimension": "amount",
+                "unit": "mol",
+                "basis": "total_inventory",
+                "kind": "prediction",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "bicarbonate.formed_mass",
+                "value": "0",
+                "dimension": "mass",
+                "unit": "g",
+                "basis": "net_formation",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "bicarbonate.final_mass",
+                "value": "0",
+                "dimension": "mass",
+                "unit": "g",
+                "basis": "total_inventory",
+                "kind": "prediction",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "co2.formed",
+                "value": "10000/420033",
+                "dimension": "amount",
+                "unit": "mol",
+                "basis": "net_formation",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "co2.final",
+                "value": "10000/420033",
+                "dimension": "amount",
+                "unit": "mol",
+                "basis": "total_inventory",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "co2.formed_mass",
+                "value": "440095/420033",
+                "dimension": "mass",
+                "unit": "g",
+                "basis": "net_formation",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "co2.final_mass",
+                "value": "440095/420033",
+                "dimension": "mass",
+                "unit": "g",
+                "basis": "total_inventory",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "water.formed",
+                "value": "10000/420033",
+                "dimension": "amount",
+                "unit": "mol",
+                "basis": "net_formation",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "water.final",
+                "value": "10000/420033",
+                "dimension": "amount",
+                "unit": "mol",
+                "basis": "total_inventory",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "water.formed_mass",
+                "value": "60051/140011",
+                "dimension": "mass",
+                "unit": "g",
+                "basis": "net_formation",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              },
+              {
+                "output_id": "water.final_mass",
+                "value": "60051/140011",
+                "dimension": "mass",
+                "unit": "g",
+                "basis": "total_inventory",
+                "kind": "upper_bound",
+                "status": "pass",
+                "message": "Conditional forward stoichiometric bound."
+              }
+            ],
+            "raw": {
+              "schema_version": "1.0",
+              "model": "single-reaction-stoichiometric-bound",
+              "model_version": "1.0",
+              "status": "pass",
+              "input_digest": "fa0290b7d12b346655e4f502e9746a8b6f6468cbd26f2671d6f31758dfc9e1e0",
+              "evaluated_chemical": {
+                "artifact_id": "kitchen-acid-bicarbonate",
+                "domain": "chemical",
+                "schema_id": "openforma.chemical",
+                "schema_version": "1.0",
+                "revision": 1,
+                "provider_id": "openforma.native",
+                "provider_version": "1.0",
+                "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                "locator": null,
+                "provenance": {}
+              },
+              "request": {
+                "schema_version": "1.0",
+                "chemical": {
+                  "artifact_id": "kitchen-acid-bicarbonate",
+                  "domain": "chemical",
+                  "schema_id": "openforma.chemical",
+                  "schema_version": "1.0",
+                  "revision": 1,
+                  "provider_id": "openforma.native",
+                  "provider_version": "1.0",
+                  "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                  "locator": null,
+                  "provenance": {}
+                },
+                "reaction_id": "acid-bicarbonate",
+                "direction": "forward",
+                "mode": "single_reaction_batch",
+                "inventory": [
+                  {
+                    "species_id": "bicarbonate",
+                    "value": 2.0,
+                    "unit": "g",
+                    "role": "unspecified",
+                    "claim": {
+                      "basis": "assumed",
+                      "source_ids": [],
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  },
+                  {
+                    "species_id": "acid",
+                    "value": 2.5,
+                    "unit": "g",
+                    "role": "unspecified",
+                    "claim": {
+                      "basis": "assumed",
+                      "source_ids": [],
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  }
+                ],
+                "inventory_policy": "zero_unlisted_nonreactants",
+                "molar_masses": [
+                  {
+                    "species_id": "bicarbonate",
+                    "value": 84.0066,
+                    "unit": "g/mol",
+                    "claim": {
+                      "basis": "assumed",
+                      "source_ids": [],
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  },
+                  {
+                    "species_id": "acid",
+                    "value": 60.052,
+                    "unit": "g/mol",
+                    "claim": {
+                      "basis": "assumed",
+                      "source_ids": [],
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  },
+                  {
+                    "species_id": "acetate",
+                    "value": 82.0338,
+                    "unit": "g/mol",
+                    "claim": {
+                      "basis": "assumed",
+                      "source_ids": [],
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  },
+                  {
+                    "species_id": "water",
+                    "value": 18.0153,
+                    "unit": "g/mol",
+                    "claim": {
+                      "basis": "assumed",
+                      "source_ids": [],
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  },
+                  {
+                    "species_id": "co2",
+                    "value": 44.0095,
+                    "unit": "g/mol",
+                    "claim": {
+                      "basis": "assumed",
+                      "source_ids": [],
+                      "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                    }
+                  }
+                ],
+                "evidence": [],
+                "limiting_absolute_tolerance_mol": 1e-12,
+                "limiting_relative_tolerance": 1e-09,
+                "mass_balance_tolerance_g": 1e-05
+              },
+              "evidence": [
+                {
+                  "source_id": "user-request",
+                  "basis": "specified",
+                  "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+                  "publisher": "User",
+                  "locator": "engineering-request.brief",
+                  "url": null,
+                  "published_at": null,
+                  "retrieved_at": "2026-11-04T00:00:00Z",
+                  "effective_at": null,
+                  "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+                  "applicability": null,
+                  "uncertainty": null,
+                  "rationale": null
+                }
+              ],
+              "assumptions": [
+                "Maximum forward extent assuming completion of the selected reaction; not actual conversion, equilibrium, isolated yield or throughput.",
+                "Only the selected reaction is evaluated; no competing reactions or transport limitations are modeled.",
+                "Amounts are batch inventories, not flow rates. Net stoichiometry determines consumption and formation.",
+                "Initial amount of 'acetate' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+                "Initial amount of 'co2' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+                "Initial amount of 'water' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+                "Inventory covers supplied species and selected reaction participants; unrelated document species are outside the batch scope."
+              ],
+              "findings": [],
+              "maximum_extent_mol": "10000/420033",
+              "limiting_species_ids": [
+                "bicarbonate"
+              ],
+              "amounts": [
+                {
+                  "species_id": "acetate",
+                  "unit": "mol",
+                  "initial": "0",
+                  "consumed": "0",
+                  "formed": "10000/420033",
+                  "final": "10000/420033",
+                  "net_coefficient": "1",
+                  "role": "unspecified",
+                  "molar_mass_g_per_mol": "410169/5000",
+                  "initial_mass_g": "0",
+                  "consumed_mass_g": "0",
+                  "formed_mass_g": "273446/140011",
+                  "final_mass_g": "273446/140011"
+                },
+                {
+                  "species_id": "acid",
+                  "unit": "mol",
+                  "initial": "625/15013",
+                  "consumed": "10000/420033",
+                  "formed": "0",
+                  "final": "112390625/6305955429",
+                  "net_coefficient": "-1",
+                  "role": "unspecified",
+                  "molar_mass_g_per_mol": "15013/250",
+                  "initial_mass_g": "5/2",
+                  "consumed_mass_g": "600520/420033",
+                  "formed_mass_g": "0",
+                  "final_mass_g": "899125/840066"
+                },
+                {
+                  "species_id": "bicarbonate",
+                  "unit": "mol",
+                  "initial": "10000/420033",
+                  "consumed": "10000/420033",
+                  "formed": "0",
+                  "final": "0",
+                  "net_coefficient": "-1",
+                  "role": "unspecified",
+                  "molar_mass_g_per_mol": "420033/5000",
+                  "initial_mass_g": "2",
+                  "consumed_mass_g": "2",
+                  "formed_mass_g": "0",
+                  "final_mass_g": "0"
+                },
+                {
+                  "species_id": "co2",
+                  "unit": "mol",
+                  "initial": "0",
+                  "consumed": "0",
+                  "formed": "10000/420033",
+                  "final": "10000/420033",
+                  "net_coefficient": "1",
+                  "role": "unspecified",
+                  "molar_mass_g_per_mol": "88019/2000",
+                  "initial_mass_g": "0",
+                  "consumed_mass_g": "0",
+                  "formed_mass_g": "440095/420033",
+                  "final_mass_g": "440095/420033"
+                },
+                {
+                  "species_id": "water",
+                  "unit": "mol",
+                  "initial": "0",
+                  "consumed": "0",
+                  "formed": "10000/420033",
+                  "final": "10000/420033",
+                  "net_coefficient": "1",
+                  "role": "unspecified",
+                  "molar_mass_g_per_mol": "180153/10000",
+                  "initial_mass_g": "0",
+                  "consumed_mass_g": "0",
+                  "formed_mass_g": "60051/140011",
+                  "final_mass_g": "60051/140011"
+                }
+              ],
+              "conservation": {
+                "reaction_balance": {
+                  "reaction_id": "acid-bicarbonate",
+                  "status": "pass",
+                  "residuals": {},
+                  "message": "Element and charge balances pass on the supported formula grammar."
+                },
+                "element_residuals_mol": {
+                  "C": "0",
+                  "H": "0",
+                  "Na": "0",
+                  "O": "0"
+                },
+                "charge_residual_mol": "0",
+                "mass_status": "pass",
+                "mass_residual_g": "0"
+              }
+            },
+            "message": "Inspect the domain-owned calculation receipt."
+          }
+        ],
+        "machine_receipt": null
+      }
+    }
+  ],
+  "experiment_run": {
+    "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+    "sample_id": "vinegar-bicarbonate-declarative-virtual-example",
+    "plan_sha256": "02cd388c556899383d1dedf8e323e61f12c751ad6422f93ed11a0d64b99e5d05",
+    "kind": "synthetic",
+    "started_at": "2026-11-26T16:59:05.313617Z",
+    "completed_at": "2026-11-26T16:59:05.341652Z",
+    "operator": "process-runtime transcript",
+    "inputs": {
+      "bicarbonate": {
+        "value": 2.0,
+        "unit": "g",
+        "instrument": "synthetic input fixture",
+        "resolution": 0.001,
+        "uncertainty": 0.001,
+        "calibration": null
+      },
+      "acid": {
+        "value": 2.5,
+        "unit": "g",
+        "instrument": "synthetic input fixture",
+        "resolution": 0.001,
+        "uncertainty": 0.001,
+        "calibration": null
+      }
+    },
+    "actual_inventory": {},
+    "conditions": {
+      "ambient_temperature": {
+        "value": 24.0,
+        "unit": "degC",
+        "instrument": "synthetic condition fixture",
+        "resolution": 0.01,
+        "uncertainty": 0.0,
+        "calibration": null
+      }
+    },
+    "observations": [
+      {
+        "observation_id": "co2-mass-proxy",
+        "criterion_id": "co2-mass-proxy",
+        "target": {
+          "evaluation_id": "batch-bound",
+          "output_id": "co2.formed_mass"
+        },
+        "basis": "net_formation",
+        "readings": [
+          {
+            "value": 100.0,
+            "unit": "g",
+            "instrument": "synthetic observation fixture",
+            "resolution": 0.01,
+            "uncertainty": 0.01,
+            "calibration": null
+          },
+          {
+            "value": 98.9522370861337,
+            "unit": "g",
+            "instrument": "synthetic observation fixture",
+            "resolution": 0.01,
+            "uncertainty": 0.01,
+            "calibration": null
+          }
+        ],
+        "evidence_ids": [
+          "synthetic-record"
+        ],
+        "assumptions_confirmed": true
+      }
+    ],
+    "evidence": [
+      {
+        "source_id": "synthetic-prepare",
+        "basis": "illustrative",
+        "title": "Synthetic process runtime scenario",
+        "publisher": null,
+        "locator": null,
+        "url": null,
+        "published_at": null,
+        "retrieved_at": null,
+        "effective_at": null,
+        "undated_reason": null,
+        "applicability": null,
+        "uncertainty": null,
+        "rationale": "Software demonstration only; no physical experiment was performed."
+      },
+      {
+        "source_id": "synthetic-inputs",
+        "basis": "illustrative",
+        "title": "Synthetic process runtime scenario",
+        "publisher": null,
+        "locator": null,
+        "url": null,
+        "published_at": null,
+        "retrieved_at": null,
+        "effective_at": null,
+        "undated_reason": null,
+        "applicability": null,
+        "uncertainty": null,
+        "rationale": "Software demonstration only; no physical experiment was performed."
+      },
+      {
+        "source_id": "synthetic-before",
+        "basis": "illustrative",
+        "title": "Synthetic process runtime scenario",
+        "publisher": null,
+        "locator": null,
+        "url": null,
+        "published_at": null,
+        "retrieved_at": null,
+        "effective_at": null,
+        "undated_reason": null,
+        "applicability": null,
+        "uncertainty": null,
+        "rationale": "Software demonstration only; no physical experiment was performed."
+      },
+      {
+        "source_id": "synthetic-mix",
+        "basis": "illustrative",
+        "title": "Synthetic process runtime scenario",
+        "publisher": null,
+        "locator": null,
+        "url": null,
+        "published_at": null,
+        "retrieved_at": null,
+        "effective_at": null,
+        "undated_reason": null,
+        "applicability": null,
+        "uncertainty": null,
+        "rationale": "Software demonstration only; no physical experiment was performed."
+      },
+      {
+        "source_id": "synthetic-after",
+        "basis": "illustrative",
+        "title": "Synthetic process runtime scenario",
+        "publisher": null,
+        "locator": null,
+        "url": null,
+        "published_at": null,
+        "retrieved_at": null,
+        "effective_at": null,
+        "undated_reason": null,
+        "applicability": null,
+        "uncertainty": null,
+        "rationale": "Software demonstration only; no physical experiment was performed."
+      },
+      {
+        "source_id": "synthetic-record",
+        "basis": "illustrative",
+        "title": "Synthetic process runtime scenario",
+        "publisher": null,
+        "locator": null,
+        "url": null,
+        "published_at": null,
+        "retrieved_at": null,
+        "effective_at": null,
+        "undated_reason": null,
+        "applicability": null,
+        "uncertainty": null,
+        "rationale": "Software demonstration only; no physical experiment was performed."
+      }
+    ],
+    "attachments": [],
+    "cost": null,
+    "currency": null
+  },
+  "comparison": {
+    "format": "forma.experiment-report",
+    "schema_version": "2.0",
+    "evaluator": "empirical-scalar-comparison",
+    "evaluator_version": "2.0",
+    "plan_sha256": "02cd388c556899383d1dedf8e323e61f12c751ad6422f93ed11a0d64b99e5d05",
+    "run_sha256": [
+      "6bc39b3ffbc6071d7588b5df45f43c4f610f5543edf4f639800b54979579df81"
+    ],
+    "input_digest": "a51ee218524f0ced09cd636c629dd9ffeab629e5caecfddd1ea6ecadc293232c",
+    "physical_status": "not_run",
+    "results": [
+      {
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "kind": "synthetic",
+        "criterion_id": "co2-mass-proxy",
+        "status": "pass",
+        "message": "Scoped comparison only; uncertainty excludes unquantified model/proxy bias.",
+        "unit": "g",
+        "reference": "440095/420033",
+        "observed": "10477629138663/10000000000000",
+        "signed_residual": "35879/4200330000000000000",
+        "absolute_error": "35879/4200330000000000000",
+        "relative_error": "35879/4400950000000000000",
+        "observed_to_reference_ratio": "4400950000000035879/4400950000000000000",
+        "uncertainty_bound": "1/50",
+        "above_bound": true,
+        "method": "difference_proxy",
+        "basis": "net_formation"
+      }
+    ],
+    "verification_coverage": 0.0,
+    "repeatability": {
+      "co2-mass-proxy": {
+        "count": 0,
+        "sample_standard_deviation": null,
+        "unit": "g"
+      }
+    },
+    "metrics": {
+      "material_balance_residual": {
+        "status": "unknown",
+        "reason": "Full measured inventory not supplied; a proxy mass difference is not a mass-balance closure."
+      },
+      "energy_accounting": {
+        "status": "unsupported",
+        "reason": "Modeled conservation is not measured energy closure.",
+        "modeled_residuals": []
+      },
+      "generalization": {
+        "status": "unknown",
+        "reason": "Requires independently designed held-out processes."
+      },
+      "unsupported_criteria": [],
+      "trial_costs": [
+        {
+          "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+          "cost": null,
+          "currency": null,
+          "elapsed_seconds": 0.028035
+        }
+      ]
+    },
+    "evaluation_statuses": {
+      "batch-bound": "pass"
+    },
+    "scope": "Laboratory-scale conditional comparisons; no industrial qualification or authenticity guarantee.",
+    "limitations": [
+      "No kinetic, pH, equilibrium, evaporation, gas retention or heat model.",
+      "No propagation of feed/property uncertainty; conditional nominal reference only.",
+      "Proxy agreement does not verify species identity, total material balance, completion, safety certification or industrial scale.",
+      "A 1 g kitchen scale is inadequate for the chosen approximately 1 g signal and 0.20 g tolerance."
+    ],
+    "plan": {
+      "format": "forma.experiment-plan",
+      "schema_version": "2.0",
+      "request": {
+        "experiment_id": "vinegar-bicarbonate-mass-loss",
+        "revision": 1,
+        "parent_plan_sha256": null,
+        "objective": "Compare open-batch mass-loss proxy against the conditional theoretical CO2 formation bound.",
+        "process": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 1,
+          "domain": "process",
+          "schema_version": "1.1",
+          "operations": [
+            {
+              "operation_id": "solid-feed",
+              "operation_type": "feed",
+              "capability_version": "conceptual",
+              "ports": [
+                {
+                  "port_id": "out",
+                  "direction": "out",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "solid"
+                }
+              ],
+              "description": null,
+              "model_fidelity": "conceptual",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "operation_id": "vinegar-feed",
+              "operation_type": "feed",
+              "capability_version": "conceptual",
+              "ports": [
+                {
+                  "port_id": "out",
+                  "direction": "out",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "aqueous"
+                }
+              ],
+              "description": null,
+              "model_fidelity": "conceptual",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "operation_id": "react",
+              "operation_type": "batch_reaction",
+              "capability_version": "conceptual",
+              "ports": [
+                {
+                  "port_id": "solid",
+                  "direction": "in",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "solid"
+                },
+                {
+                  "port_id": "liquid",
+                  "direction": "in",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "aqueous"
+                },
+                {
+                  "port_id": "gas",
+                  "direction": "out",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "gas"
+                },
+                {
+                  "port_id": "residue",
+                  "direction": "out",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "aqueous"
+                }
+              ],
+              "description": "Conceptual acid-bicarbonate mixing; duration, conversion and heat remain unknown.",
+              "model_fidelity": "conceptual",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "operation_id": "gas-output",
+              "operation_type": "output",
+              "capability_version": "conceptual",
+              "ports": [
+                {
+                  "port_id": "in",
+                  "direction": "in",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "gas"
+                }
+              ],
+              "description": null,
+              "model_fidelity": "conceptual",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "operation_id": "residue-output",
+              "operation_type": "output",
+              "capability_version": "conceptual",
+              "ports": [
+                {
+                  "port_id": "in",
+                  "direction": "in",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "aqueous"
+                }
+              ],
+              "description": null,
+              "model_fidelity": "conceptual",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            }
+          ],
+          "streams": [
+            {
+              "stream_id": "solid",
+              "source": {
+                "operation_id": "solid-feed",
+                "port_id": "out"
+              },
+              "target": {
+                "operation_id": "react",
+                "port_id": "solid"
+              },
+              "kind": "material",
+              "quantity": null,
+              "batch_quantity": {
+                "kind": "mass",
+                "value": 2.0,
+                "unit": "g",
+                "claim": {
+                  "basis": "specified",
+                  "source_ids": [
+                    "user-request"
+                  ],
+                  "rationale": null
+                }
+              },
+              "phase": "solid",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "stream_id": "vinegar",
+              "source": {
+                "operation_id": "vinegar-feed",
+                "port_id": "out"
+              },
+              "target": {
+                "operation_id": "react",
+                "port_id": "liquid"
+              },
+              "kind": "material",
+              "quantity": null,
+              "batch_quantity": {
+                "kind": "volume",
+                "value": 50.0,
+                "unit": "mL",
+                "claim": {
+                  "basis": "specified",
+                  "source_ids": [
+                    "user-request"
+                  ],
+                  "rationale": null
+                }
+              },
+              "phase": "aqueous",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "stream_id": "gas",
+              "source": {
+                "operation_id": "react",
+                "port_id": "gas"
+              },
+              "target": {
+                "operation_id": "gas-output",
+                "port_id": "in"
+              },
+              "kind": "material",
+              "quantity": null,
+              "phase": "gas",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "stream_id": "residue",
+              "source": {
+                "operation_id": "react",
+                "port_id": "residue"
+              },
+              "target": {
+                "operation_id": "residue-output",
+                "port_id": "in"
+              },
+              "kind": "material",
+              "quantity": null,
+              "phase": "aqueous",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            }
+          ],
+          "balances": [],
+          "steps": [
+            {
+              "step_id": "prepare",
+              "operation_id": "solid-feed",
+              "depends_on": [],
+              "preconditions": [],
+              "description": "Use food-grade baking soda and ordinary food vinegar only. Work in an open, stable bowl of at least 500 mL on a tray; never seal the vessel. Avoid eyes, do not taste the experimental mixture, and keep children/pets away. Gather a scale with 0.01 g resolution, thermometer, 50 mL measuring vessel, small powder cup, spoon and timer."
+            },
+            {
+              "step_id": "inputs",
+              "operation_id": "vinegar-feed",
+              "depends_on": [
+                "prepare"
+              ],
+              "preconditions": [],
+              "description": "Confirm the vinegar label basis is 5 g acetic acid per 100 mL (or independently establish acid inventory). An unspecified 5% is insufficient. Measure 50 mL vinegar and 2.00 g sodium bicarbonate. Record actual amounts, label photograph and uncertainty. If quantities or basis differ, revise and freeze a new plan BEFORE mixing. The calculation assumes nominal inputs and does not propagate feed uncertainty."
+            },
+            {
+              "step_id": "before",
+              "operation_id": "react",
+              "depends_on": [
+                "inputs"
+              ],
+              "preconditions": [],
+              "description": "Record ambient temperature. Weigh the entire tray, bowl with vinegar, powder cup with bicarbonate, and spoon together; record initial total mass. All these items must remain in the final weighed system."
+            },
+            {
+              "step_id": "mix",
+              "operation_id": "react",
+              "depends_on": [
+                "before"
+              ],
+              "preconditions": [],
+              "description": "Slowly add the powder to the vinegar in the open bowl, keeping the empty cup and spoon on the tray. Stir gently without splashing. Record start time and any spills or losses. Keep the vessel open throughout."
+            },
+            {
+              "step_id": "after",
+              "operation_id": "gas-output",
+              "depends_on": [
+                "mix"
+              ],
+              "preconditions": [],
+              "description": "After visible bubbling subsides, take mass readings one minute apart until two consecutive readings differ by no more than 0.02 g, or stop at 15 minutes and mark incomplete. Record final total mass, elapsed time and a photograph of the final scale reading. A stable mass does not prove chemical completion."
+            },
+            {
+              "step_id": "record",
+              "operation_id": "residue-output",
+              "depends_on": [
+                "after"
+              ],
+              "preconditions": [],
+              "description": "Submit the two total-mass readings, instrument resolution and defensible uncertainty bounds, temperature, evidence and deviations. Do not confirm proxy assumptions after a spill. Retain residue until readings are recorded; clean the ordinary food-ingredient mixture with water. Repeat with fresh independent batches to assess repeatability."
+            }
+          ],
+          "scenarios": [],
+          "evidence": [
+            {
+              "source_id": "user-request",
+              "basis": "specified",
+              "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+              "publisher": "User",
+              "locator": "engineering-request.brief",
+              "published_at": null,
+              "retrieved_at": "2026-11-04T00:00:00Z",
+              "effective_at": null,
+              "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+              "applicability": null,
+              "uncertainty": null,
+              "rationale": null
+            }
+          ]
+        },
+        "artifacts": [
+          {
+            "reference": {
+              "artifact_id": "kitchen-acid-bicarbonate",
+              "domain": "chemical",
+              "schema_id": "openforma.chemical",
+              "schema_version": "1.0",
+              "revision": 1,
+              "provider_id": "openforma.native",
+              "provider_version": "1.0",
+              "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+              "locator": null,
+              "provenance": {}
+            },
+            "artifact": {
+              "artifact_id": "kitchen-acid-bicarbonate",
+              "revision": 1,
+              "domain": "chemical",
+              "schema_version": "1.0",
+              "species": [
+                {
+                  "species_id": "bicarbonate",
+                  "name": "sodium bicarbonate",
+                  "formula": "NaHCO3",
+                  "charge": 0,
+                  "phase": "solid",
+                  "registry_id": null,
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "name": "acetic acid",
+                  "formula": "C2H4O2",
+                  "charge": 0,
+                  "phase": "aqueous",
+                  "registry_id": null,
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                },
+                {
+                  "species_id": "acetate",
+                  "name": "sodium acetate",
+                  "formula": "C2H3NaO2",
+                  "charge": 0,
+                  "phase": "aqueous",
+                  "registry_id": null,
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                },
+                {
+                  "species_id": "water",
+                  "name": "water",
+                  "formula": "H2O",
+                  "charge": 0,
+                  "phase": "liquid",
+                  "registry_id": null,
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                },
+                {
+                  "species_id": "co2",
+                  "name": "carbon dioxide",
+                  "formula": "CO2",
+                  "charge": 0,
+                  "phase": "gas",
+                  "registry_id": null,
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                }
+              ],
+              "mixtures": [],
+              "reactions": [
+                {
+                  "reaction_id": "acid-bicarbonate",
+                  "reactants": [
+                    {
+                      "species_id": "bicarbonate",
+                      "coefficient": "1"
+                    },
+                    {
+                      "species_id": "acid",
+                      "coefficient": "1"
+                    }
+                  ],
+                  "products": [
+                    {
+                      "species_id": "acetate",
+                      "coefficient": "1"
+                    },
+                    {
+                      "species_id": "water",
+                      "coefficient": "1"
+                    },
+                    {
+                      "species_id": "co2",
+                      "coefficient": "1"
+                    }
+                  ],
+                  "reversible": false,
+                  "catalyst_species_ids": [],
+                  "condition_ids": [],
+                  "model_ids": [],
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                }
+              ],
+              "conditions": [],
+              "models": [],
+              "evidence": [
+                {
+                  "source_id": "user-request",
+                  "basis": "specified",
+                  "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+                  "publisher": "User",
+                  "locator": "engineering-request.brief",
+                  "url": null,
+                  "published_at": null,
+                  "retrieved_at": "2026-11-04T00:00:00Z",
+                  "effective_at": null,
+                  "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+                  "applicability": null,
+                  "uncertainty": null,
+                  "rationale": null
+                }
+              ]
+            }
+          }
+        ],
+        "evaluations": [
+          {
+            "evaluation_id": "batch-bound",
+            "artifact_id": "kitchen-acid-bicarbonate",
+            "evaluator_id": "stoichiometric-bound",
+            "evaluator_version": "1.0",
+            "parameters": {
+              "chemical": {
+                "artifact_id": "kitchen-acid-bicarbonate",
+                "domain": "chemical",
+                "schema_id": "openforma.chemical",
+                "schema_version": "1.0",
+                "revision": 1,
+                "provider_id": "openforma.native",
+                "provider_version": "1.0",
+                "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                "locator": null,
+                "provenance": {}
+              },
+              "reaction_id": "acid-bicarbonate",
+              "inventory": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 2,
+                  "unit": "g",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 2.5,
+                  "unit": "g",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "inventory_policy": "zero_unlisted_nonreactants",
+              "molar_masses": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 84.0066,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 60.052,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acetate",
+                  "value": 82.0338,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "water",
+                  "value": 18.0153,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "co2",
+                  "value": 44.0095,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "mass_balance_tolerance_g": 1e-05
+            }
+          }
+        ],
+        "required_inputs": [
+          {
+            "input_id": "bicarbonate",
+            "evaluation_id": "batch-bound",
+            "path": [
+              "inventory",
+              0
+            ],
+            "dimension": "mass",
+            "unit": "g",
+            "absolute_tolerance": 0.02
+          },
+          {
+            "input_id": "acid",
+            "evaluation_id": "batch-bound",
+            "path": [
+              "inventory",
+              1
+            ],
+            "dimension": "mass",
+            "unit": "g",
+            "absolute_tolerance": 0.05
+          }
+        ],
+        "inventory_tolerances": {},
+        "criteria": [
+          {
+            "criterion_id": "co2-mass-proxy",
+            "target": {
+              "evaluation_id": "batch-bound",
+              "output_id": "co2.formed_mass"
+            },
+            "basis": "net_formation",
+            "unit": "g",
+            "absolute_tolerance": 0.2,
+            "method": "difference_proxy",
+            "assumptions": [
+              "No splashes or removed objects; same weighed boundary before and after.",
+              "Mass loss is treated as a CO2 proxy; evaporation and retained dissolved CO2 are unquantified biases."
+            ],
+            "recovery_fraction": null
+          }
+        ],
+        "conditions": [
+          {
+            "name": "ambient_temperature",
+            "unit": "degC",
+            "minimum": 18.0,
+            "maximum": 30.0
+          }
+        ],
+        "assumptions": [
+          "50 mL vinegar contains 2.5 g acetic acid only under an explicit 5 g/100 mL concentration basis.",
+          "Nominal 2.00 g pure sodium bicarbonate; full reaction is a theoretical bound.",
+          "The 0.20 g tolerance is a preregistered engineering screening choice, not a statistical confidence interval."
+        ],
+        "limitations": [
+          "No kinetic, pH, equilibrium, evaporation, gas retention or heat model.",
+          "No propagation of feed/property uncertainty; conditional nominal reference only.",
+          "Proxy agreement does not verify species identity, total material balance, completion, safety certification or industrial scale.",
+          "A 1 g kitchen scale is inadequate for the chosen approximately 1 g signal and 0.20 g tolerance."
+        ]
+      },
+      "predictions": [
+        {
+          "request": {
+            "evaluation_id": "batch-bound",
+            "artifact_id": "kitchen-acid-bicarbonate",
+            "evaluator_id": "stoichiometric-bound",
+            "evaluator_version": "1.0",
+            "parameters": {
+              "chemical": {
+                "artifact_id": "kitchen-acid-bicarbonate",
+                "domain": "chemical",
+                "schema_id": "openforma.chemical",
+                "schema_version": "1.0",
+                "revision": 1,
+                "provider_id": "openforma.native",
+                "provider_version": "1.0",
+                "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                "locator": null,
+                "provenance": {}
+              },
+              "reaction_id": "acid-bicarbonate",
+              "inventory": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 2,
+                  "unit": "g",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 2.5,
+                  "unit": "g",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "inventory_policy": "zero_unlisted_nonreactants",
+              "molar_masses": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 84.0066,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 60.052,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acetate",
+                  "value": 82.0338,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "water",
+                  "value": 18.0153,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "co2",
+                  "value": 44.0095,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "mass_balance_tolerance_g": 1e-05
+            }
+          },
+          "artifact": {
+            "artifact_id": "kitchen-acid-bicarbonate",
+            "domain": "chemical",
+            "schema_id": "openforma.chemical",
+            "schema_version": "1.0",
+            "revision": 1,
+            "provider_id": "openforma.native",
+            "provider_version": "1.0",
+            "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+            "locator": null,
+            "provenance": {}
+          },
+          "input_digest": "961870ed94c5ff59136e4f51984fa6ffa2d7dfac4c245c9b6e6322aba1802b7c",
+          "status": "pass",
+          "outputs": [
+            {
+              "output_id": "acetate.formed",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acetate.final",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acetate.formed_mass",
+              "value": "273446/140011",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acetate.final_mass",
+              "value": "273446/140011",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acid.formed",
+              "value": "0",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acid.final",
+              "value": "112390625/6305955429",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "total_inventory",
+              "kind": "prediction",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acid.formed_mass",
+              "value": "0",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acid.final_mass",
+              "value": "899125/840066",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "total_inventory",
+              "kind": "prediction",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "bicarbonate.formed",
+              "value": "0",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "bicarbonate.final",
+              "value": "0",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "total_inventory",
+              "kind": "prediction",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "bicarbonate.formed_mass",
+              "value": "0",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "bicarbonate.final_mass",
+              "value": "0",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "total_inventory",
+              "kind": "prediction",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "co2.formed",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "co2.final",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "co2.formed_mass",
+              "value": "440095/420033",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "co2.final_mass",
+              "value": "440095/420033",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "water.formed",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "water.final",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "water.formed_mass",
+              "value": "60051/140011",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "water.final_mass",
+              "value": "60051/140011",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            }
+          ],
+          "raw": {
+            "schema_version": "1.0",
+            "model": "single-reaction-stoichiometric-bound",
+            "model_version": "1.0",
+            "status": "pass",
+            "input_digest": "fa0290b7d12b346655e4f502e9746a8b6f6468cbd26f2671d6f31758dfc9e1e0",
+            "evaluated_chemical": {
+              "artifact_id": "kitchen-acid-bicarbonate",
+              "domain": "chemical",
+              "schema_id": "openforma.chemical",
+              "schema_version": "1.0",
+              "revision": 1,
+              "provider_id": "openforma.native",
+              "provider_version": "1.0",
+              "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+              "locator": null,
+              "provenance": {}
+            },
+            "request": {
+              "schema_version": "1.0",
+              "chemical": {
+                "artifact_id": "kitchen-acid-bicarbonate",
+                "domain": "chemical",
+                "schema_id": "openforma.chemical",
+                "schema_version": "1.0",
+                "revision": 1,
+                "provider_id": "openforma.native",
+                "provider_version": "1.0",
+                "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                "locator": null,
+                "provenance": {}
+              },
+              "reaction_id": "acid-bicarbonate",
+              "direction": "forward",
+              "mode": "single_reaction_batch",
+              "inventory": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 2.0,
+                  "unit": "g",
+                  "role": "unspecified",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 2.5,
+                  "unit": "g",
+                  "role": "unspecified",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "inventory_policy": "zero_unlisted_nonreactants",
+              "molar_masses": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 84.0066,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 60.052,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acetate",
+                  "value": 82.0338,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "water",
+                  "value": 18.0153,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "co2",
+                  "value": 44.0095,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "evidence": [],
+              "limiting_absolute_tolerance_mol": 1e-12,
+              "limiting_relative_tolerance": 1e-09,
+              "mass_balance_tolerance_g": 1e-05
+            },
+            "evidence": [
+              {
+                "source_id": "user-request",
+                "basis": "specified",
+                "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+                "publisher": "User",
+                "locator": "engineering-request.brief",
+                "url": null,
+                "published_at": null,
+                "retrieved_at": "2026-11-04T00:00:00Z",
+                "effective_at": null,
+                "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+                "applicability": null,
+                "uncertainty": null,
+                "rationale": null
+              }
+            ],
+            "assumptions": [
+              "Maximum forward extent assuming completion of the selected reaction; not actual conversion, equilibrium, isolated yield or throughput.",
+              "Only the selected reaction is evaluated; no competing reactions or transport limitations are modeled.",
+              "Amounts are batch inventories, not flow rates. Net stoichiometry determines consumption and formation.",
+              "Initial amount of 'acetate' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+              "Initial amount of 'co2' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+              "Initial amount of 'water' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+              "Inventory covers supplied species and selected reaction participants; unrelated document species are outside the batch scope."
+            ],
+            "findings": [],
+            "maximum_extent_mol": "10000/420033",
+            "limiting_species_ids": [
+              "bicarbonate"
+            ],
+            "amounts": [
+              {
+                "species_id": "acetate",
+                "unit": "mol",
+                "initial": "0",
+                "consumed": "0",
+                "formed": "10000/420033",
+                "final": "10000/420033",
+                "net_coefficient": "1",
+                "role": "unspecified",
+                "molar_mass_g_per_mol": "410169/5000",
+                "initial_mass_g": "0",
+                "consumed_mass_g": "0",
+                "formed_mass_g": "273446/140011",
+                "final_mass_g": "273446/140011"
+              },
+              {
+                "species_id": "acid",
+                "unit": "mol",
+                "initial": "625/15013",
+                "consumed": "10000/420033",
+                "formed": "0",
+                "final": "112390625/6305955429",
+                "net_coefficient": "-1",
+                "role": "unspecified",
+                "molar_mass_g_per_mol": "15013/250",
+                "initial_mass_g": "5/2",
+                "consumed_mass_g": "600520/420033",
+                "formed_mass_g": "0",
+                "final_mass_g": "899125/840066"
+              },
+              {
+                "species_id": "bicarbonate",
+                "unit": "mol",
+                "initial": "10000/420033",
+                "consumed": "10000/420033",
+                "formed": "0",
+                "final": "0",
+                "net_coefficient": "-1",
+                "role": "unspecified",
+                "molar_mass_g_per_mol": "420033/5000",
+                "initial_mass_g": "2",
+                "consumed_mass_g": "2",
+                "formed_mass_g": "0",
+                "final_mass_g": "0"
+              },
+              {
+                "species_id": "co2",
+                "unit": "mol",
+                "initial": "0",
+                "consumed": "0",
+                "formed": "10000/420033",
+                "final": "10000/420033",
+                "net_coefficient": "1",
+                "role": "unspecified",
+                "molar_mass_g_per_mol": "88019/2000",
+                "initial_mass_g": "0",
+                "consumed_mass_g": "0",
+                "formed_mass_g": "440095/420033",
+                "final_mass_g": "440095/420033"
+              },
+              {
+                "species_id": "water",
+                "unit": "mol",
+                "initial": "0",
+                "consumed": "0",
+                "formed": "10000/420033",
+                "final": "10000/420033",
+                "net_coefficient": "1",
+                "role": "unspecified",
+                "molar_mass_g_per_mol": "180153/10000",
+                "initial_mass_g": "0",
+                "consumed_mass_g": "0",
+                "formed_mass_g": "60051/140011",
+                "final_mass_g": "60051/140011"
+              }
+            ],
+            "conservation": {
+              "reaction_balance": {
+                "reaction_id": "acid-bicarbonate",
+                "status": "pass",
+                "residuals": {},
+                "message": "Element and charge balances pass on the supported formula grammar."
+              },
+              "element_residuals_mol": {
+                "C": "0",
+                "H": "0",
+                "Na": "0",
+                "O": "0"
+              },
+              "charge_residual_mol": "0",
+              "mass_status": "pass",
+              "mass_residual_g": "0"
+            }
+          },
+          "message": "Inspect the domain-owned calculation receipt."
+        }
+      ],
+      "input_requirements": [
+        {
+          "input_id": "bicarbonate",
+          "evaluation_id": "batch-bound",
+          "path": [
+            "inventory",
+            0
+          ],
+          "dimension": "mass",
+          "unit": "g",
+          "absolute_tolerance": 0.02,
+          "value": "2"
+        },
+        {
+          "input_id": "acid",
+          "evaluation_id": "batch-bound",
+          "path": [
+            "inventory",
+            1
+          ],
+          "dimension": "mass",
+          "unit": "g",
+          "absolute_tolerance": 0.05,
+          "value": "5/2"
+        }
+      ],
+      "process_reference": {
+        "artifact_id": "kitchen-open-batch",
+        "domain": "process",
+        "schema_id": "openforma.process",
+        "schema_version": "1.1",
+        "revision": 1,
+        "provider_id": "openforma.native",
+        "provider_version": "1.0",
+        "sha256": "dbb315fbc0dfbe91b5ba7c6cc813267b358e3e7a0d0fe43c14fc122ed9f41b9a",
+        "locator": null,
+        "provenance": {}
+      },
+      "protocol_step_ids": [
+        "prepare",
+        "inputs",
+        "before",
+        "mix",
+        "after",
+        "record"
+      ],
+      "scientific_sha256": "02cd388c556899383d1dedf8e323e61f12c751ad6422f93ed11a0d64b99e5d05"
+    },
+    "runs": [
+      {
+        "run_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "sample_id": "vinegar-bicarbonate-declarative-virtual-example",
+        "plan_sha256": "02cd388c556899383d1dedf8e323e61f12c751ad6422f93ed11a0d64b99e5d05",
+        "kind": "synthetic",
+        "started_at": "2026-11-26T16:59:05.313617Z",
+        "completed_at": "2026-11-26T16:59:05.341652Z",
+        "operator": "process-runtime transcript",
+        "inputs": {
+          "bicarbonate": {
+            "value": 2.0,
+            "unit": "g",
+            "instrument": "synthetic input fixture",
+            "resolution": 0.001,
+            "uncertainty": 0.001,
+            "calibration": null
+          },
+          "acid": {
+            "value": 2.5,
+            "unit": "g",
+            "instrument": "synthetic input fixture",
+            "resolution": 0.001,
+            "uncertainty": 0.001,
+            "calibration": null
+          }
+        },
+        "actual_inventory": {},
+        "conditions": {
+          "ambient_temperature": {
+            "value": 24.0,
+            "unit": "degC",
+            "instrument": "synthetic condition fixture",
+            "resolution": 0.01,
+            "uncertainty": 0.0,
+            "calibration": null
+          }
+        },
+        "observations": [
+          {
+            "observation_id": "co2-mass-proxy",
+            "criterion_id": "co2-mass-proxy",
+            "target": {
+              "evaluation_id": "batch-bound",
+              "output_id": "co2.formed_mass"
+            },
+            "basis": "net_formation",
+            "readings": [
+              {
+                "value": 100.0,
+                "unit": "g",
+                "instrument": "synthetic observation fixture",
+                "resolution": 0.01,
+                "uncertainty": 0.01,
+                "calibration": null
+              },
+              {
+                "value": 98.9522370861337,
+                "unit": "g",
+                "instrument": "synthetic observation fixture",
+                "resolution": 0.01,
+                "uncertainty": 0.01,
+                "calibration": null
+              }
+            ],
+            "evidence_ids": [
+              "synthetic-record"
+            ],
+            "assumptions_confirmed": true
+          }
+        ],
+        "evidence": [
+          {
+            "source_id": "synthetic-prepare",
+            "basis": "illustrative",
+            "title": "Synthetic process runtime scenario",
+            "publisher": null,
+            "locator": null,
+            "url": null,
+            "published_at": null,
+            "retrieved_at": null,
+            "effective_at": null,
+            "undated_reason": null,
+            "applicability": null,
+            "uncertainty": null,
+            "rationale": "Software demonstration only; no physical experiment was performed."
+          },
+          {
+            "source_id": "synthetic-inputs",
+            "basis": "illustrative",
+            "title": "Synthetic process runtime scenario",
+            "publisher": null,
+            "locator": null,
+            "url": null,
+            "published_at": null,
+            "retrieved_at": null,
+            "effective_at": null,
+            "undated_reason": null,
+            "applicability": null,
+            "uncertainty": null,
+            "rationale": "Software demonstration only; no physical experiment was performed."
+          },
+          {
+            "source_id": "synthetic-before",
+            "basis": "illustrative",
+            "title": "Synthetic process runtime scenario",
+            "publisher": null,
+            "locator": null,
+            "url": null,
+            "published_at": null,
+            "retrieved_at": null,
+            "effective_at": null,
+            "undated_reason": null,
+            "applicability": null,
+            "uncertainty": null,
+            "rationale": "Software demonstration only; no physical experiment was performed."
+          },
+          {
+            "source_id": "synthetic-mix",
+            "basis": "illustrative",
+            "title": "Synthetic process runtime scenario",
+            "publisher": null,
+            "locator": null,
+            "url": null,
+            "published_at": null,
+            "retrieved_at": null,
+            "effective_at": null,
+            "undated_reason": null,
+            "applicability": null,
+            "uncertainty": null,
+            "rationale": "Software demonstration only; no physical experiment was performed."
+          },
+          {
+            "source_id": "synthetic-after",
+            "basis": "illustrative",
+            "title": "Synthetic process runtime scenario",
+            "publisher": null,
+            "locator": null,
+            "url": null,
+            "published_at": null,
+            "retrieved_at": null,
+            "effective_at": null,
+            "undated_reason": null,
+            "applicability": null,
+            "uncertainty": null,
+            "rationale": "Software demonstration only; no physical experiment was performed."
+          },
+          {
+            "source_id": "synthetic-record",
+            "basis": "illustrative",
+            "title": "Synthetic process runtime scenario",
+            "publisher": null,
+            "locator": null,
+            "url": null,
+            "published_at": null,
+            "retrieved_at": null,
+            "effective_at": null,
+            "undated_reason": null,
+            "applicability": null,
+            "uncertainty": null,
+            "rationale": "Software demonstration only; no physical experiment was performed."
+          }
+        ],
+        "attachments": [],
+        "cost": null,
+        "currency": null
+      }
+    ]
+  }
+}
