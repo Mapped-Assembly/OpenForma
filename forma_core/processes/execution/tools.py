@@ -1,4 +1,4 @@
-"""Portable manual/virtual transcript execution; physical dispatch is host-injected only."""
+"""Portable transcript replay and declarative ideal workcells; no physical dispatch."""
 from __future__ import annotations
 
 from typing import Annotated, Any, Literal
@@ -8,6 +8,7 @@ from forma_core.domains.providers import DomainRegistry
 from .models import ProcessExecutionPlan, StepSubmission
 from .runtime import ProcessRuntime
 from .adapters import ManualAdapter, VirtualProcessAdapter
+from .workcell import VirtualWorkcell, simulate_workcell
 
 
 class Start(DomainModel):
@@ -29,20 +30,26 @@ class Cancel(DomainModel):
 
 
 class ProcessToolInput(DomainModel):
-    """Stateless replay of data-only manual/virtual commands; never a hardware URL."""
-    action: Literal['schema', 'run']
+    """Data-only transcript replay or ideal workcell execution; never a hardware URL."""
+    action: Literal['schema', 'run', 'simulate']
     plan: ProcessExecutionPlan | None = None
     run_id: Text | None = None
     mode: Literal['manual', 'virtual'] = 'manual'
     commands: list[Annotated[Start | Submit | Cancel, Field(discriminator='op')]] = Field(default_factory=list)
+    workcell: VirtualWorkcell | None = None
+    submissions: dict[str, StepSubmission] = Field(default_factory=dict)
 
     @model_validator(mode='after')
     def arguments(self) -> ProcessToolInput:
         """Reject ignored or incomplete requests."""
-        if self.action == 'schema' and (self.plan or self.run_id or self.commands or self.mode != 'manual'):
+        if self.action == 'schema' and (self.plan or self.run_id or self.commands or self.mode != 'manual' or self.workcell or self.submissions):
             raise ValueError('Schema accepts only action.')
-        if self.action == 'run' and (self.plan is None or self.run_id is None):
+        if self.action in {'run', 'simulate'} and (self.plan is None or self.run_id is None):
             raise ValueError('Run requires an execution plan and run ID.')
+        if self.action == 'simulate' and (self.workcell is None or self.mode != 'virtual' or self.commands):
+            raise ValueError('Simulate requires a virtual workcell and submissions, not transcript commands.')
+        if self.action != 'simulate' and (self.workcell is not None or self.submissions):
+            raise ValueError('Workcell declarations are only accepted by simulate.')
         return self
 
 
@@ -54,6 +61,11 @@ def process_runtime_tool(payload: dict[str, Any], *, registry: DomainRegistry | 
                 'authority': 'OpenForma owns process state and evidence; OpenCAD supplies geometry only.',
                 'machine_execution': 'Inject MachineProcessAdapter into ProcessRuntime in an authorized host. Never replay physical commands from a transcript.'}
     assert request.plan is not None and request.run_id is not None
+    if request.action == 'simulate':
+        assert request.workcell is not None
+        if registry is not None:
+            raise ValueError('Virtual workcell simulation uses the installed evaluator registry.')
+        return simulate_workcell(request.plan, request.workcell, request.run_id, request.submissions)
     runtime = ProcessRuntime(request.plan, request.run_id,
         adapter=ManualAdapter() if request.mode == 'manual' else VirtualProcessAdapter(registry))
     results = []

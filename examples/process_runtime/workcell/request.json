@@ -1,0 +1,3265 @@
+{
+  "action": "simulate",
+  "run_id": "chemical-workcell-motion-001",
+  "mode": "virtual",
+  "plan": {
+    "format": "forma.process-execution",
+    "version": 1,
+    "process": {
+      "artifact_id": "kitchen-open-batch",
+      "revision": 1,
+      "domain": "process",
+      "schema_version": "1.1",
+      "operations": [
+        {
+          "operation_id": "solid-feed",
+          "operation_type": "feed",
+          "capability_version": "conceptual",
+          "ports": [
+            {
+              "port_id": "out",
+              "direction": "out",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "solid"
+            }
+          ],
+          "description": null,
+          "model_fidelity": "conceptual",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "operation_id": "vinegar-feed",
+          "operation_type": "feed",
+          "capability_version": "conceptual",
+          "ports": [
+            {
+              "port_id": "out",
+              "direction": "out",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "aqueous"
+            }
+          ],
+          "description": null,
+          "model_fidelity": "conceptual",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "operation_id": "react",
+          "operation_type": "batch_reaction",
+          "capability_version": "conceptual",
+          "ports": [
+            {
+              "port_id": "solid",
+              "direction": "in",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "solid"
+            },
+            {
+              "port_id": "liquid",
+              "direction": "in",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "aqueous"
+            },
+            {
+              "port_id": "gas",
+              "direction": "out",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "gas"
+            },
+            {
+              "port_id": "residue",
+              "direction": "out",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "aqueous"
+            }
+          ],
+          "description": "Conceptual acid-bicarbonate mixing; duration, conversion and heat remain unknown.",
+          "model_fidelity": "conceptual",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "operation_id": "gas-output",
+          "operation_type": "output",
+          "capability_version": "conceptual",
+          "ports": [
+            {
+              "port_id": "in",
+              "direction": "in",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "gas"
+            }
+          ],
+          "description": null,
+          "model_fidelity": "conceptual",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "operation_id": "residue-output",
+          "operation_type": "output",
+          "capability_version": "conceptual",
+          "ports": [
+            {
+              "port_id": "in",
+              "direction": "in",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "aqueous"
+            }
+          ],
+          "description": null,
+          "model_fidelity": "conceptual",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        }
+      ],
+      "streams": [
+        {
+          "stream_id": "solid",
+          "source": {
+            "operation_id": "solid-feed",
+            "port_id": "out"
+          },
+          "target": {
+            "operation_id": "react",
+            "port_id": "solid"
+          },
+          "kind": "material",
+          "quantity": null,
+          "batch_quantity": {
+            "kind": "mass",
+            "value": 2.0,
+            "unit": "g",
+            "claim": {
+              "basis": "specified",
+              "source_ids": [
+                "user-request"
+              ],
+              "rationale": null
+            }
+          },
+          "phase": "solid",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "stream_id": "vinegar",
+          "source": {
+            "operation_id": "vinegar-feed",
+            "port_id": "out"
+          },
+          "target": {
+            "operation_id": "react",
+            "port_id": "liquid"
+          },
+          "kind": "material",
+          "quantity": null,
+          "batch_quantity": {
+            "kind": "volume",
+            "value": 50.0,
+            "unit": "mL",
+            "claim": {
+              "basis": "specified",
+              "source_ids": [
+                "user-request"
+              ],
+              "rationale": null
+            }
+          },
+          "phase": "aqueous",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "stream_id": "gas",
+          "source": {
+            "operation_id": "react",
+            "port_id": "gas"
+          },
+          "target": {
+            "operation_id": "gas-output",
+            "port_id": "in"
+          },
+          "kind": "material",
+          "quantity": null,
+          "phase": "gas",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "stream_id": "residue",
+          "source": {
+            "operation_id": "react",
+            "port_id": "residue"
+          },
+          "target": {
+            "operation_id": "residue-output",
+            "port_id": "in"
+          },
+          "kind": "material",
+          "quantity": null,
+          "phase": "aqueous",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        }
+      ],
+      "balances": [],
+      "steps": [
+        {
+          "step_id": "prepare",
+          "operation_id": "solid-feed",
+          "depends_on": [],
+          "preconditions": [],
+          "description": "Use food-grade baking soda and ordinary food vinegar only. Work in an open, stable bowl of at least 500 mL on a tray; never seal the vessel. Avoid eyes, do not taste the experimental mixture, and keep children/pets away. Gather a scale with 0.01 g resolution, thermometer, 50 mL measuring vessel, small powder cup, spoon and timer."
+        },
+        {
+          "step_id": "inputs",
+          "operation_id": "vinegar-feed",
+          "depends_on": [
+            "prepare"
+          ],
+          "preconditions": [],
+          "description": "Confirm the vinegar label basis is 5 g acetic acid per 100 mL (or independently establish acid inventory). An unspecified 5% is insufficient. Measure 50 mL vinegar and 2.00 g sodium bicarbonate. Record actual amounts, label photograph and uncertainty. If quantities or basis differ, revise and freeze a new plan BEFORE mixing. The calculation assumes nominal inputs and does not propagate feed uncertainty."
+        },
+        {
+          "step_id": "before",
+          "operation_id": "react",
+          "depends_on": [
+            "inputs"
+          ],
+          "preconditions": [],
+          "description": "Record ambient temperature. Weigh the entire tray, bowl with vinegar, powder cup with bicarbonate, and spoon together; record initial total mass. All these items must remain in the final weighed system."
+        },
+        {
+          "step_id": "mix",
+          "operation_id": "react",
+          "depends_on": [
+            "before"
+          ],
+          "preconditions": [],
+          "description": "Slowly add the powder to the vinegar in the open bowl, keeping the empty cup and spoon on the tray. Stir gently without splashing. Record start time and any spills or losses. Keep the vessel open throughout."
+        },
+        {
+          "step_id": "after",
+          "operation_id": "gas-output",
+          "depends_on": [
+            "mix"
+          ],
+          "preconditions": [],
+          "description": "After visible bubbling subsides, take mass readings one minute apart until two consecutive readings differ by no more than 0.02 g, or stop at 15 minutes and mark incomplete. Record final total mass, elapsed time and a photograph of the final scale reading. A stable mass does not prove chemical completion."
+        },
+        {
+          "step_id": "record",
+          "operation_id": "residue-output",
+          "depends_on": [
+            "after"
+          ],
+          "preconditions": [],
+          "description": "Submit the two total-mass readings, instrument resolution and defensible uncertainty bounds, temperature, evidence and deviations. Do not confirm proxy assumptions after a spill. Retain residue until readings are recorded; clean the ordinary food-ingredient mixture with water. Repeat with fresh independent batches to assess repeatability."
+        }
+      ],
+      "scenarios": [],
+      "evidence": [
+        {
+          "source_id": "user-request",
+          "basis": "specified",
+          "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+          "publisher": "User",
+          "locator": "engineering-request.brief",
+          "published_at": null,
+          "retrieved_at": "2026-11-04T00:00:00Z",
+          "effective_at": null,
+          "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+          "applicability": null,
+          "uncertainty": null,
+          "rationale": null
+        }
+      ]
+    },
+    "bindings": [
+      {
+        "step_id": "prepare",
+        "conditions": [
+          {
+            "name": "ambient_temperature",
+            "dimension": "temperature",
+            "unit": "degC",
+            "minimum": 18.0,
+            "maximum": 30.0,
+            "require_uncertainty": true
+          }
+        ],
+        "readings": [
+          {
+            "name": "bicarbonate",
+            "dimension": "mass",
+            "unit": "g",
+            "minimum": 1.98,
+            "maximum": 2.02,
+            "require_uncertainty": true
+          },
+          {
+            "name": "acid",
+            "dimension": "mass",
+            "unit": "g",
+            "minimum": 2.45,
+            "maximum": 2.55,
+            "require_uncertainty": true
+          }
+        ],
+        "required_batch_streams": [
+          "solid"
+        ],
+        "required_criteria": [],
+        "evaluations": [],
+        "machine": null
+      },
+      {
+        "step_id": "inputs",
+        "conditions": [],
+        "readings": [],
+        "required_batch_streams": [
+          "vinegar"
+        ],
+        "required_criteria": [],
+        "evaluations": [],
+        "machine": null
+      },
+      {
+        "step_id": "before",
+        "conditions": [],
+        "readings": [],
+        "required_batch_streams": [],
+        "required_criteria": [],
+        "evaluations": [],
+        "machine": null
+      },
+      {
+        "step_id": "mix",
+        "conditions": [],
+        "readings": [],
+        "required_batch_streams": [],
+        "required_criteria": [],
+        "evaluations": [],
+        "machine": null
+      },
+      {
+        "step_id": "after",
+        "conditions": [],
+        "readings": [],
+        "required_batch_streams": [],
+        "required_criteria": [],
+        "evaluations": [],
+        "machine": null
+      },
+      {
+        "step_id": "record",
+        "conditions": [],
+        "readings": [],
+        "required_batch_streams": [],
+        "required_criteria": [
+          "co2-mass-proxy"
+        ],
+        "evaluations": [
+          "batch-bound"
+        ],
+        "machine": null
+      }
+    ],
+    "experiment": {
+      "format": "forma.experiment-plan",
+      "schema_version": "2.0",
+      "request": {
+        "experiment_id": "vinegar-bicarbonate-mass-loss",
+        "revision": 1,
+        "parent_plan_sha256": null,
+        "objective": "Compare open-batch mass-loss proxy against the conditional theoretical CO2 formation bound.",
+        "process": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 1,
+          "domain": "process",
+          "schema_version": "1.1",
+          "operations": [
+            {
+              "operation_id": "solid-feed",
+              "operation_type": "feed",
+              "capability_version": "conceptual",
+              "ports": [
+                {
+                  "port_id": "out",
+                  "direction": "out",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "solid"
+                }
+              ],
+              "description": null,
+              "model_fidelity": "conceptual",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "operation_id": "vinegar-feed",
+              "operation_type": "feed",
+              "capability_version": "conceptual",
+              "ports": [
+                {
+                  "port_id": "out",
+                  "direction": "out",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "aqueous"
+                }
+              ],
+              "description": null,
+              "model_fidelity": "conceptual",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "operation_id": "react",
+              "operation_type": "batch_reaction",
+              "capability_version": "conceptual",
+              "ports": [
+                {
+                  "port_id": "solid",
+                  "direction": "in",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "solid"
+                },
+                {
+                  "port_id": "liquid",
+                  "direction": "in",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "aqueous"
+                },
+                {
+                  "port_id": "gas",
+                  "direction": "out",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "gas"
+                },
+                {
+                  "port_id": "residue",
+                  "direction": "out",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "aqueous"
+                }
+              ],
+              "description": "Conceptual acid-bicarbonate mixing; duration, conversion and heat remain unknown.",
+              "model_fidelity": "conceptual",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "operation_id": "gas-output",
+              "operation_type": "output",
+              "capability_version": "conceptual",
+              "ports": [
+                {
+                  "port_id": "in",
+                  "direction": "in",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "gas"
+                }
+              ],
+              "description": null,
+              "model_fidelity": "conceptual",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "operation_id": "residue-output",
+              "operation_type": "output",
+              "capability_version": "conceptual",
+              "ports": [
+                {
+                  "port_id": "in",
+                  "direction": "in",
+                  "kind": "material",
+                  "quantity_kind": null,
+                  "phase": "aqueous"
+                }
+              ],
+              "description": null,
+              "model_fidelity": "conceptual",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            }
+          ],
+          "streams": [
+            {
+              "stream_id": "solid",
+              "source": {
+                "operation_id": "solid-feed",
+                "port_id": "out"
+              },
+              "target": {
+                "operation_id": "react",
+                "port_id": "solid"
+              },
+              "kind": "material",
+              "quantity": null,
+              "batch_quantity": {
+                "kind": "mass",
+                "value": 2.0,
+                "unit": "g",
+                "claim": {
+                  "basis": "specified",
+                  "source_ids": [
+                    "user-request"
+                  ],
+                  "rationale": null
+                }
+              },
+              "phase": "solid",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "stream_id": "vinegar",
+              "source": {
+                "operation_id": "vinegar-feed",
+                "port_id": "out"
+              },
+              "target": {
+                "operation_id": "react",
+                "port_id": "liquid"
+              },
+              "kind": "material",
+              "quantity": null,
+              "batch_quantity": {
+                "kind": "volume",
+                "value": 50.0,
+                "unit": "mL",
+                "claim": {
+                  "basis": "specified",
+                  "source_ids": [
+                    "user-request"
+                  ],
+                  "rationale": null
+                }
+              },
+              "phase": "aqueous",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "stream_id": "gas",
+              "source": {
+                "operation_id": "react",
+                "port_id": "gas"
+              },
+              "target": {
+                "operation_id": "gas-output",
+                "port_id": "in"
+              },
+              "kind": "material",
+              "quantity": null,
+              "phase": "gas",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            },
+            {
+              "stream_id": "residue",
+              "source": {
+                "operation_id": "react",
+                "port_id": "residue"
+              },
+              "target": {
+                "operation_id": "residue-output",
+                "port_id": "in"
+              },
+              "kind": "material",
+              "quantity": null,
+              "phase": "aqueous",
+              "claim": {
+                "basis": "unknown",
+                "source_ids": [],
+                "rationale": null
+              }
+            }
+          ],
+          "balances": [],
+          "steps": [
+            {
+              "step_id": "prepare",
+              "operation_id": "solid-feed",
+              "depends_on": [],
+              "preconditions": [],
+              "description": "Use food-grade baking soda and ordinary food vinegar only. Work in an open, stable bowl of at least 500 mL on a tray; never seal the vessel. Avoid eyes, do not taste the experimental mixture, and keep children/pets away. Gather a scale with 0.01 g resolution, thermometer, 50 mL measuring vessel, small powder cup, spoon and timer."
+            },
+            {
+              "step_id": "inputs",
+              "operation_id": "vinegar-feed",
+              "depends_on": [
+                "prepare"
+              ],
+              "preconditions": [],
+              "description": "Confirm the vinegar label basis is 5 g acetic acid per 100 mL (or independently establish acid inventory). An unspecified 5% is insufficient. Measure 50 mL vinegar and 2.00 g sodium bicarbonate. Record actual amounts, label photograph and uncertainty. If quantities or basis differ, revise and freeze a new plan BEFORE mixing. The calculation assumes nominal inputs and does not propagate feed uncertainty."
+            },
+            {
+              "step_id": "before",
+              "operation_id": "react",
+              "depends_on": [
+                "inputs"
+              ],
+              "preconditions": [],
+              "description": "Record ambient temperature. Weigh the entire tray, bowl with vinegar, powder cup with bicarbonate, and spoon together; record initial total mass. All these items must remain in the final weighed system."
+            },
+            {
+              "step_id": "mix",
+              "operation_id": "react",
+              "depends_on": [
+                "before"
+              ],
+              "preconditions": [],
+              "description": "Slowly add the powder to the vinegar in the open bowl, keeping the empty cup and spoon on the tray. Stir gently without splashing. Record start time and any spills or losses. Keep the vessel open throughout."
+            },
+            {
+              "step_id": "after",
+              "operation_id": "gas-output",
+              "depends_on": [
+                "mix"
+              ],
+              "preconditions": [],
+              "description": "After visible bubbling subsides, take mass readings one minute apart until two consecutive readings differ by no more than 0.02 g, or stop at 15 minutes and mark incomplete. Record final total mass, elapsed time and a photograph of the final scale reading. A stable mass does not prove chemical completion."
+            },
+            {
+              "step_id": "record",
+              "operation_id": "residue-output",
+              "depends_on": [
+                "after"
+              ],
+              "preconditions": [],
+              "description": "Submit the two total-mass readings, instrument resolution and defensible uncertainty bounds, temperature, evidence and deviations. Do not confirm proxy assumptions after a spill. Retain residue until readings are recorded; clean the ordinary food-ingredient mixture with water. Repeat with fresh independent batches to assess repeatability."
+            }
+          ],
+          "scenarios": [],
+          "evidence": [
+            {
+              "source_id": "user-request",
+              "basis": "specified",
+              "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+              "publisher": "User",
+              "locator": "engineering-request.brief",
+              "published_at": null,
+              "retrieved_at": "2026-11-04T00:00:00Z",
+              "effective_at": null,
+              "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+              "applicability": null,
+              "uncertainty": null,
+              "rationale": null
+            }
+          ]
+        },
+        "artifacts": [
+          {
+            "reference": {
+              "artifact_id": "kitchen-acid-bicarbonate",
+              "domain": "chemical",
+              "schema_id": "openforma.chemical",
+              "schema_version": "1.0",
+              "revision": 1,
+              "provider_id": "openforma.native",
+              "provider_version": "1.0",
+              "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+              "locator": null,
+              "provenance": {}
+            },
+            "artifact": {
+              "artifact_id": "kitchen-acid-bicarbonate",
+              "revision": 1,
+              "domain": "chemical",
+              "schema_version": "1.0",
+              "species": [
+                {
+                  "species_id": "bicarbonate",
+                  "name": "sodium bicarbonate",
+                  "formula": "NaHCO3",
+                  "charge": 0,
+                  "phase": "solid",
+                  "registry_id": null,
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "name": "acetic acid",
+                  "formula": "C2H4O2",
+                  "charge": 0,
+                  "phase": "aqueous",
+                  "registry_id": null,
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                },
+                {
+                  "species_id": "acetate",
+                  "name": "sodium acetate",
+                  "formula": "C2H3NaO2",
+                  "charge": 0,
+                  "phase": "aqueous",
+                  "registry_id": null,
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                },
+                {
+                  "species_id": "water",
+                  "name": "water",
+                  "formula": "H2O",
+                  "charge": 0,
+                  "phase": "liquid",
+                  "registry_id": null,
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                },
+                {
+                  "species_id": "co2",
+                  "name": "carbon dioxide",
+                  "formula": "CO2",
+                  "charge": 0,
+                  "phase": "gas",
+                  "registry_id": null,
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                }
+              ],
+              "mixtures": [],
+              "reactions": [
+                {
+                  "reaction_id": "acid-bicarbonate",
+                  "reactants": [
+                    {
+                      "species_id": "bicarbonate",
+                      "coefficient": "1"
+                    },
+                    {
+                      "species_id": "acid",
+                      "coefficient": "1"
+                    }
+                  ],
+                  "products": [
+                    {
+                      "species_id": "acetate",
+                      "coefficient": "1"
+                    },
+                    {
+                      "species_id": "water",
+                      "coefficient": "1"
+                    },
+                    {
+                      "species_id": "co2",
+                      "coefficient": "1"
+                    }
+                  ],
+                  "reversible": false,
+                  "catalyst_species_ids": [],
+                  "condition_ids": [],
+                  "model_ids": [],
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+                  }
+                }
+              ],
+              "conditions": [],
+              "models": [],
+              "evidence": [
+                {
+                  "source_id": "user-request",
+                  "basis": "specified",
+                  "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+                  "publisher": "User",
+                  "locator": "engineering-request.brief",
+                  "url": null,
+                  "published_at": null,
+                  "retrieved_at": "2026-11-04T00:00:00Z",
+                  "effective_at": null,
+                  "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+                  "applicability": null,
+                  "uncertainty": null,
+                  "rationale": null
+                }
+              ]
+            }
+          }
+        ],
+        "evaluations": [
+          {
+            "evaluation_id": "batch-bound",
+            "artifact_id": "kitchen-acid-bicarbonate",
+            "evaluator_id": "stoichiometric-bound",
+            "evaluator_version": "1.0",
+            "parameters": {
+              "chemical": {
+                "artifact_id": "kitchen-acid-bicarbonate",
+                "domain": "chemical",
+                "schema_id": "openforma.chemical",
+                "schema_version": "1.0",
+                "revision": 1,
+                "provider_id": "openforma.native",
+                "provider_version": "1.0",
+                "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                "locator": null,
+                "provenance": {}
+              },
+              "reaction_id": "acid-bicarbonate",
+              "inventory": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 2,
+                  "unit": "g",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 2.5,
+                  "unit": "g",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "inventory_policy": "zero_unlisted_nonreactants",
+              "molar_masses": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 84.0066,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 60.052,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acetate",
+                  "value": 82.0338,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "water",
+                  "value": 18.0153,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "co2",
+                  "value": 44.0095,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "mass_balance_tolerance_g": 1e-05
+            }
+          }
+        ],
+        "required_inputs": [
+          {
+            "input_id": "bicarbonate",
+            "evaluation_id": "batch-bound",
+            "path": [
+              "inventory",
+              0
+            ],
+            "dimension": "mass",
+            "unit": "g",
+            "absolute_tolerance": 0.02
+          },
+          {
+            "input_id": "acid",
+            "evaluation_id": "batch-bound",
+            "path": [
+              "inventory",
+              1
+            ],
+            "dimension": "mass",
+            "unit": "g",
+            "absolute_tolerance": 0.05
+          }
+        ],
+        "inventory_tolerances": {},
+        "criteria": [
+          {
+            "criterion_id": "co2-mass-proxy",
+            "target": {
+              "evaluation_id": "batch-bound",
+              "output_id": "co2.formed_mass"
+            },
+            "basis": "net_formation",
+            "unit": "g",
+            "absolute_tolerance": 0.2,
+            "method": "difference_proxy",
+            "assumptions": [
+              "No splashes or removed objects; same weighed boundary before and after.",
+              "Mass loss is treated as a CO2 proxy; evaporation and retained dissolved CO2 are unquantified biases."
+            ],
+            "recovery_fraction": null
+          }
+        ],
+        "conditions": [
+          {
+            "name": "ambient_temperature",
+            "unit": "degC",
+            "minimum": 18.0,
+            "maximum": 30.0
+          }
+        ],
+        "assumptions": [
+          "50 mL vinegar contains 2.5 g acetic acid only under an explicit 5 g/100 mL concentration basis.",
+          "Nominal 2.00 g pure sodium bicarbonate; full reaction is a theoretical bound.",
+          "The 0.20 g tolerance is a preregistered engineering screening choice, not a statistical confidence interval."
+        ],
+        "limitations": [
+          "No kinetic, pH, equilibrium, evaporation, gas retention or heat model.",
+          "No propagation of feed/property uncertainty; conditional nominal reference only.",
+          "Proxy agreement does not verify species identity, total material balance, completion, safety certification or industrial scale.",
+          "A 1 g kitchen scale is inadequate for the chosen approximately 1 g signal and 0.20 g tolerance."
+        ]
+      },
+      "predictions": [
+        {
+          "request": {
+            "evaluation_id": "batch-bound",
+            "artifact_id": "kitchen-acid-bicarbonate",
+            "evaluator_id": "stoichiometric-bound",
+            "evaluator_version": "1.0",
+            "parameters": {
+              "chemical": {
+                "artifact_id": "kitchen-acid-bicarbonate",
+                "domain": "chemical",
+                "schema_id": "openforma.chemical",
+                "schema_version": "1.0",
+                "revision": 1,
+                "provider_id": "openforma.native",
+                "provider_version": "1.0",
+                "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                "locator": null,
+                "provenance": {}
+              },
+              "reaction_id": "acid-bicarbonate",
+              "inventory": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 2,
+                  "unit": "g",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 2.5,
+                  "unit": "g",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "inventory_policy": "zero_unlisted_nonreactants",
+              "molar_masses": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 84.0066,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 60.052,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acetate",
+                  "value": 82.0338,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "water",
+                  "value": 18.0153,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "co2",
+                  "value": 44.0095,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "mass_balance_tolerance_g": 1e-05
+            }
+          },
+          "artifact": {
+            "artifact_id": "kitchen-acid-bicarbonate",
+            "domain": "chemical",
+            "schema_id": "openforma.chemical",
+            "schema_version": "1.0",
+            "revision": 1,
+            "provider_id": "openforma.native",
+            "provider_version": "1.0",
+            "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+            "locator": null,
+            "provenance": {}
+          },
+          "input_digest": "961870ed94c5ff59136e4f51984fa6ffa2d7dfac4c245c9b6e6322aba1802b7c",
+          "status": "pass",
+          "outputs": [
+            {
+              "output_id": "acetate.formed",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acetate.final",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acetate.formed_mass",
+              "value": "273446/140011",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acetate.final_mass",
+              "value": "273446/140011",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acid.formed",
+              "value": "0",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acid.final",
+              "value": "112390625/6305955429",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "total_inventory",
+              "kind": "prediction",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acid.formed_mass",
+              "value": "0",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "acid.final_mass",
+              "value": "899125/840066",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "total_inventory",
+              "kind": "prediction",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "bicarbonate.formed",
+              "value": "0",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "bicarbonate.final",
+              "value": "0",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "total_inventory",
+              "kind": "prediction",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "bicarbonate.formed_mass",
+              "value": "0",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "bicarbonate.final_mass",
+              "value": "0",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "total_inventory",
+              "kind": "prediction",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "co2.formed",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "co2.final",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "co2.formed_mass",
+              "value": "440095/420033",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "co2.final_mass",
+              "value": "440095/420033",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "water.formed",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "water.final",
+              "value": "10000/420033",
+              "dimension": "amount",
+              "unit": "mol",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "water.formed_mass",
+              "value": "60051/140011",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "net_formation",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            },
+            {
+              "output_id": "water.final_mass",
+              "value": "60051/140011",
+              "dimension": "mass",
+              "unit": "g",
+              "basis": "total_inventory",
+              "kind": "upper_bound",
+              "status": "pass",
+              "message": "Conditional forward stoichiometric bound."
+            }
+          ],
+          "raw": {
+            "schema_version": "1.0",
+            "model": "single-reaction-stoichiometric-bound",
+            "model_version": "1.0",
+            "status": "pass",
+            "input_digest": "fa0290b7d12b346655e4f502e9746a8b6f6468cbd26f2671d6f31758dfc9e1e0",
+            "evaluated_chemical": {
+              "artifact_id": "kitchen-acid-bicarbonate",
+              "domain": "chemical",
+              "schema_id": "openforma.chemical",
+              "schema_version": "1.0",
+              "revision": 1,
+              "provider_id": "openforma.native",
+              "provider_version": "1.0",
+              "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+              "locator": null,
+              "provenance": {}
+            },
+            "request": {
+              "schema_version": "1.0",
+              "chemical": {
+                "artifact_id": "kitchen-acid-bicarbonate",
+                "domain": "chemical",
+                "schema_id": "openforma.chemical",
+                "schema_version": "1.0",
+                "revision": 1,
+                "provider_id": "openforma.native",
+                "provider_version": "1.0",
+                "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+                "locator": null,
+                "provenance": {}
+              },
+              "reaction_id": "acid-bicarbonate",
+              "direction": "forward",
+              "mode": "single_reaction_batch",
+              "inventory": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 2.0,
+                  "unit": "g",
+                  "role": "unspecified",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 2.5,
+                  "unit": "g",
+                  "role": "unspecified",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "inventory_policy": "zero_unlisted_nonreactants",
+              "molar_masses": [
+                {
+                  "species_id": "bicarbonate",
+                  "value": 84.0066,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acid",
+                  "value": 60.052,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "acetate",
+                  "value": 82.0338,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "water",
+                  "value": 18.0153,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                },
+                {
+                  "species_id": "co2",
+                  "value": 44.0095,
+                  "unit": "g/mol",
+                  "claim": {
+                    "basis": "assumed",
+                    "source_ids": [],
+                    "rationale": "Declared nominal laboratory input/property; not a measured value. Revalidate with actual inputs before execution."
+                  }
+                }
+              ],
+              "evidence": [],
+              "limiting_absolute_tolerance_mol": 1e-12,
+              "limiting_relative_tolerance": 1e-09,
+              "mass_balance_tolerance_g": 1e-05
+            },
+            "evidence": [
+              {
+                "source_id": "user-request",
+                "basis": "specified",
+                "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+                "publisher": "User",
+                "locator": "engineering-request.brief",
+                "url": null,
+                "published_at": null,
+                "retrieved_at": "2026-11-04T00:00:00Z",
+                "effective_at": null,
+                "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+                "applicability": null,
+                "uncertainty": null,
+                "rationale": null
+              }
+            ],
+            "assumptions": [
+              "Maximum forward extent assuming completion of the selected reaction; not actual conversion, equilibrium, isolated yield or throughput.",
+              "Only the selected reaction is evaluated; no competing reactions or transport limitations are modeled.",
+              "Amounts are batch inventories, not flow rates. Net stoichiometry determines consumption and formation.",
+              "Initial amount of 'acetate' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+              "Initial amount of 'co2' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+              "Initial amount of 'water' is zero under the explicitly selected zero_unlisted_nonreactants policy.",
+              "Inventory covers supplied species and selected reaction participants; unrelated document species are outside the batch scope."
+            ],
+            "findings": [],
+            "maximum_extent_mol": "10000/420033",
+            "limiting_species_ids": [
+              "bicarbonate"
+            ],
+            "amounts": [
+              {
+                "species_id": "acetate",
+                "unit": "mol",
+                "initial": "0",
+                "consumed": "0",
+                "formed": "10000/420033",
+                "final": "10000/420033",
+                "net_coefficient": "1",
+                "role": "unspecified",
+                "molar_mass_g_per_mol": "410169/5000",
+                "initial_mass_g": "0",
+                "consumed_mass_g": "0",
+                "formed_mass_g": "273446/140011",
+                "final_mass_g": "273446/140011"
+              },
+              {
+                "species_id": "acid",
+                "unit": "mol",
+                "initial": "625/15013",
+                "consumed": "10000/420033",
+                "formed": "0",
+                "final": "112390625/6305955429",
+                "net_coefficient": "-1",
+                "role": "unspecified",
+                "molar_mass_g_per_mol": "15013/250",
+                "initial_mass_g": "5/2",
+                "consumed_mass_g": "600520/420033",
+                "formed_mass_g": "0",
+                "final_mass_g": "899125/840066"
+              },
+              {
+                "species_id": "bicarbonate",
+                "unit": "mol",
+                "initial": "10000/420033",
+                "consumed": "10000/420033",
+                "formed": "0",
+                "final": "0",
+                "net_coefficient": "-1",
+                "role": "unspecified",
+                "molar_mass_g_per_mol": "420033/5000",
+                "initial_mass_g": "2",
+                "consumed_mass_g": "2",
+                "formed_mass_g": "0",
+                "final_mass_g": "0"
+              },
+              {
+                "species_id": "co2",
+                "unit": "mol",
+                "initial": "0",
+                "consumed": "0",
+                "formed": "10000/420033",
+                "final": "10000/420033",
+                "net_coefficient": "1",
+                "role": "unspecified",
+                "molar_mass_g_per_mol": "88019/2000",
+                "initial_mass_g": "0",
+                "consumed_mass_g": "0",
+                "formed_mass_g": "440095/420033",
+                "final_mass_g": "440095/420033"
+              },
+              {
+                "species_id": "water",
+                "unit": "mol",
+                "initial": "0",
+                "consumed": "0",
+                "formed": "10000/420033",
+                "final": "10000/420033",
+                "net_coefficient": "1",
+                "role": "unspecified",
+                "molar_mass_g_per_mol": "180153/10000",
+                "initial_mass_g": "0",
+                "consumed_mass_g": "0",
+                "formed_mass_g": "60051/140011",
+                "final_mass_g": "60051/140011"
+              }
+            ],
+            "conservation": {
+              "reaction_balance": {
+                "reaction_id": "acid-bicarbonate",
+                "status": "pass",
+                "residuals": {},
+                "message": "Element and charge balances pass on the supported formula grammar."
+              },
+              "element_residuals_mol": {
+                "C": "0",
+                "H": "0",
+                "Na": "0",
+                "O": "0"
+              },
+              "charge_residual_mol": "0",
+              "mass_status": "pass",
+              "mass_residual_g": "0"
+            }
+          },
+          "message": "Inspect the domain-owned calculation receipt."
+        }
+      ],
+      "input_requirements": [
+        {
+          "input_id": "bicarbonate",
+          "evaluation_id": "batch-bound",
+          "path": [
+            "inventory",
+            0
+          ],
+          "dimension": "mass",
+          "unit": "g",
+          "absolute_tolerance": 0.02,
+          "value": "2"
+        },
+        {
+          "input_id": "acid",
+          "evaluation_id": "batch-bound",
+          "path": [
+            "inventory",
+            1
+          ],
+          "dimension": "mass",
+          "unit": "g",
+          "absolute_tolerance": 0.05,
+          "value": "5/2"
+        }
+      ],
+      "process_reference": {
+        "artifact_id": "kitchen-open-batch",
+        "domain": "process",
+        "schema_id": "openforma.process",
+        "schema_version": "1.1",
+        "revision": 1,
+        "provider_id": "openforma.native",
+        "provider_version": "1.0",
+        "sha256": "dbb315fbc0dfbe91b5ba7c6cc813267b358e3e7a0d0fe43c14fc122ed9f41b9a",
+        "locator": null,
+        "provenance": {}
+      },
+      "protocol_step_ids": [
+        "prepare",
+        "inputs",
+        "before",
+        "mix",
+        "after",
+        "record"
+      ],
+      "scientific_sha256": "02cd388c556899383d1dedf8e323e61f12c751ad6422f93ed11a0d64b99e5d05"
+    }
+  },
+  "submissions": {
+    "prepare": {
+      "submission_id": "prepare-scenario",
+      "actor": "explicit synthetic software fixture",
+      "acknowledged": true,
+      "confirmed_preconditions": [],
+      "readings": {
+        "bicarbonate": {
+          "value": 2.0,
+          "unit": "g",
+          "instrument": "synthetic input fixture",
+          "resolution": 0.001,
+          "uncertainty": 0.001
+        },
+        "acid": {
+          "value": 2.5,
+          "unit": "g",
+          "instrument": "synthetic input fixture",
+          "resolution": 0.001,
+          "uncertainty": 0.001
+        },
+        "ambient_temperature": {
+          "value": 24.0,
+          "unit": "degC",
+          "instrument": "synthetic condition fixture",
+          "resolution": 0.01,
+          "uncertainty": 0
+        }
+      },
+      "reading_evidence": {
+        "bicarbonate": [
+          "synthetic-prepare"
+        ],
+        "acid": [
+          "synthetic-prepare"
+        ],
+        "ambient_temperature": [
+          "synthetic-prepare"
+        ]
+      },
+      "batches": [
+        {
+          "batch_id": "solid-lot",
+          "stream_id": "solid",
+          "quantity": {
+            "value": 2.0,
+            "unit": "g",
+            "instrument": "synthetic lot fixture",
+            "resolution": 0.01,
+            "uncertainty": 0
+          },
+          "evidence_ids": [
+            "synthetic-prepare"
+          ]
+        }
+      ],
+      "observations": [],
+      "evidence": [
+        {
+          "source_id": "synthetic-prepare",
+          "basis": "illustrative",
+          "title": "Synthetic process runtime scenario",
+          "rationale": "Software demonstration only; no physical experiment was performed."
+        }
+      ]
+    },
+    "inputs": {
+      "submission_id": "inputs-scenario",
+      "actor": "explicit synthetic software fixture",
+      "acknowledged": true,
+      "confirmed_preconditions": [],
+      "readings": {},
+      "reading_evidence": {},
+      "batches": [
+        {
+          "batch_id": "vinegar-lot",
+          "stream_id": "vinegar",
+          "quantity": {
+            "value": 50.0,
+            "unit": "mL",
+            "instrument": "synthetic lot fixture",
+            "resolution": 0.01,
+            "uncertainty": 0
+          },
+          "evidence_ids": [
+            "synthetic-inputs"
+          ]
+        }
+      ],
+      "observations": [],
+      "evidence": [
+        {
+          "source_id": "synthetic-inputs",
+          "basis": "illustrative",
+          "title": "Synthetic process runtime scenario",
+          "rationale": "Software demonstration only; no physical experiment was performed."
+        }
+      ]
+    },
+    "before": {
+      "submission_id": "before-scenario",
+      "actor": "explicit synthetic software fixture",
+      "acknowledged": true,
+      "confirmed_preconditions": [],
+      "readings": {},
+      "reading_evidence": {},
+      "batches": [],
+      "observations": [],
+      "evidence": [
+        {
+          "source_id": "synthetic-before",
+          "basis": "illustrative",
+          "title": "Synthetic process runtime scenario",
+          "rationale": "Software demonstration only; no physical experiment was performed."
+        }
+      ]
+    },
+    "mix": {
+      "submission_id": "mix-scenario",
+      "actor": "explicit synthetic software fixture",
+      "acknowledged": true,
+      "confirmed_preconditions": [],
+      "readings": {},
+      "reading_evidence": {},
+      "batches": [],
+      "observations": [],
+      "evidence": [
+        {
+          "source_id": "synthetic-mix",
+          "basis": "illustrative",
+          "title": "Synthetic process runtime scenario",
+          "rationale": "Software demonstration only; no physical experiment was performed."
+        }
+      ]
+    },
+    "after": {
+      "submission_id": "after-scenario",
+      "actor": "explicit synthetic software fixture",
+      "acknowledged": true,
+      "confirmed_preconditions": [],
+      "readings": {},
+      "reading_evidence": {},
+      "batches": [],
+      "observations": [],
+      "evidence": [
+        {
+          "source_id": "synthetic-after",
+          "basis": "illustrative",
+          "title": "Synthetic process runtime scenario",
+          "rationale": "Software demonstration only; no physical experiment was performed."
+        }
+      ]
+    },
+    "record": {
+      "submission_id": "record-scenario",
+      "actor": "explicit synthetic software fixture",
+      "acknowledged": true,
+      "confirmed_preconditions": [],
+      "readings": {},
+      "reading_evidence": {},
+      "batches": [],
+      "observations": [
+        {
+          "observation_id": "co2-mass-proxy",
+          "criterion_id": "co2-mass-proxy",
+          "target": {
+            "evaluation_id": "batch-bound",
+            "output_id": "co2.formed_mass"
+          },
+          "basis": "net_formation",
+          "assumptions_confirmed": true,
+          "readings": [
+            {
+              "value": 100,
+              "unit": "g",
+              "instrument": "synthetic observation fixture",
+              "resolution": 0.01,
+              "uncertainty": 0.01
+            },
+            {
+              "value": 98.9522370861337,
+              "unit": "g",
+              "instrument": "synthetic observation fixture",
+              "resolution": 0.01,
+              "uncertainty": 0.01
+            }
+          ],
+          "evidence_ids": [
+            "synthetic-record"
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "source_id": "synthetic-record",
+          "basis": "illustrative",
+          "title": "Synthetic process runtime scenario",
+          "rationale": "Software demonstration only; no physical experiment was performed."
+        }
+      ]
+    }
+  },
+  "workcell": {
+    "machine": {
+      "format": "forma.machine-package",
+      "version": 1,
+      "definition": {
+        "format": "forma.control-definition",
+        "version": 1,
+        "machine_id": "chemical-workcell",
+        "name": "Chemical workcell",
+        "description": "Virtual human manipulation of CAD vessels; no physical actuator design or contact simulation.",
+        "source_project_id": null,
+        "backend": "virtual",
+        "axes": [
+          {
+            "axis_id": "measure_x",
+            "label": "measure_x",
+            "unit": "mm",
+            "minimum": -400.0,
+            "maximum": 400.0,
+            "neutral": 0.0,
+            "max_rate": 250.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "measure_x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                -290.0,
+                -90.0,
+                45.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "measure_x_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "measure_y",
+            "label": "measure_y",
+            "unit": "mm",
+            "minimum": -400.0,
+            "maximum": 400.0,
+            "neutral": 0.0,
+            "max_rate": 250.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "measure_y",
+              "kind": "prismatic",
+              "parent_axis": "measure_x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                -290.0,
+                -90.0,
+                45.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "measure_y_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "measure_z",
+            "label": "measure_z",
+            "unit": "mm",
+            "minimum": -10.0,
+            "maximum": 350.0,
+            "neutral": 0.0,
+            "max_rate": 250.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "measure_z",
+              "kind": "prismatic",
+              "parent_axis": "measure_y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                -290.0,
+                -90.0,
+                45.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "measure_z_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "measure_tilt",
+            "label": "measure_tilt",
+            "unit": "degree",
+            "minimum": -120.0,
+            "maximum": 120.0,
+            "neutral": 0.0,
+            "max_rate": 360.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "measure_tilt",
+              "kind": "revolute",
+              "parent_axis": "measure_z",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                -290.0,
+                -90.0,
+                45.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "measure_tilt_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "measure_spin",
+            "label": "measure_spin",
+            "unit": "degree",
+            "minimum": -1500.0,
+            "maximum": 1500.0,
+            "neutral": 0.0,
+            "max_rate": 360.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "measure_spin",
+              "kind": "revolute",
+              "parent_axis": "measure_tilt",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                -290.0,
+                -90.0,
+                45.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "measure"
+              ]
+            }
+          },
+          {
+            "axis_id": "cup_x",
+            "label": "cup_x",
+            "unit": "mm",
+            "minimum": -400.0,
+            "maximum": 400.0,
+            "neutral": 0.0,
+            "max_rate": 250.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "cup_x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                65.0,
+                80.0,
+                68.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "cup_x_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "cup_y",
+            "label": "cup_y",
+            "unit": "mm",
+            "minimum": -400.0,
+            "maximum": 400.0,
+            "neutral": 0.0,
+            "max_rate": 250.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "cup_y",
+              "kind": "prismatic",
+              "parent_axis": "cup_x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                65.0,
+                80.0,
+                68.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "cup_y_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "cup_z",
+            "label": "cup_z",
+            "unit": "mm",
+            "minimum": -10.0,
+            "maximum": 350.0,
+            "neutral": 0.0,
+            "max_rate": 250.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "cup_z",
+              "kind": "prismatic",
+              "parent_axis": "cup_y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                65.0,
+                80.0,
+                68.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "cup_z_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "cup_tilt",
+            "label": "cup_tilt",
+            "unit": "degree",
+            "minimum": -120.0,
+            "maximum": 120.0,
+            "neutral": 0.0,
+            "max_rate": 360.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "cup_tilt",
+              "kind": "revolute",
+              "parent_axis": "cup_z",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                65.0,
+                80.0,
+                68.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "cup_tilt_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "cup_spin",
+            "label": "cup_spin",
+            "unit": "degree",
+            "minimum": -1500.0,
+            "maximum": 1500.0,
+            "neutral": 0.0,
+            "max_rate": 360.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "cup_spin",
+              "kind": "revolute",
+              "parent_axis": "cup_tilt",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                65.0,
+                80.0,
+                68.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "cup"
+              ]
+            }
+          },
+          {
+            "axis_id": "spoon_x",
+            "label": "spoon_x",
+            "unit": "mm",
+            "minimum": -400.0,
+            "maximum": 400.0,
+            "neutral": 0.0,
+            "max_rate": 250.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "spoon_x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0.0,
+                -50.0,
+                58.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "spoon_x_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "spoon_y",
+            "label": "spoon_y",
+            "unit": "mm",
+            "minimum": -400.0,
+            "maximum": 400.0,
+            "neutral": 0.0,
+            "max_rate": 250.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "spoon_y",
+              "kind": "prismatic",
+              "parent_axis": "spoon_x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0.0,
+                -50.0,
+                58.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "spoon_y_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "spoon_z",
+            "label": "spoon_z",
+            "unit": "mm",
+            "minimum": -10.0,
+            "maximum": 350.0,
+            "neutral": 0.0,
+            "max_rate": 250.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "spoon_z",
+              "kind": "prismatic",
+              "parent_axis": "spoon_y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0.0,
+                -50.0,
+                58.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "spoon_z_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "spoon_tilt",
+            "label": "spoon_tilt",
+            "unit": "degree",
+            "minimum": -120.0,
+            "maximum": 120.0,
+            "neutral": 0.0,
+            "max_rate": 360.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "spoon_tilt",
+              "kind": "revolute",
+              "parent_axis": "spoon_z",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0.0,
+                -50.0,
+                58.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "spoon_tilt_frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "spoon_spin",
+            "label": "spoon_spin",
+            "unit": "degree",
+            "minimum": -1500.0,
+            "maximum": 1500.0,
+            "neutral": 0.0,
+            "max_rate": 360.0,
+            "component_ref": null,
+            "joint": {
+              "joint_id": "spoon_spin",
+              "kind": "revolute",
+              "parent_axis": "spoon_tilt",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0.0,
+                -50.0,
+                58.0
+              ],
+              "sign": 1,
+              "body_ids": [
+                "spoon"
+              ]
+            }
+          }
+        ],
+        "timing": {
+          "update_ms": 20,
+          "telemetry_ms": 50,
+          "heartbeat_ms": 200,
+          "lease_ms": 500,
+          "link_loss_ms": 1000
+        },
+        "model_asset": null
+      },
+      "model_source": "external",
+      "mechanical": null,
+      "adapter": {
+        "adapter_id": "forma.ideal",
+        "version": 1,
+        "mode": "virtual",
+        "evidence": "ideal-kinematics",
+        "configuration_sha256": null,
+        "actuators": {
+          "measure_x": "measure_x",
+          "measure_y": "measure_y",
+          "measure_z": "measure_z",
+          "measure_tilt": "measure_tilt",
+          "measure_spin": "measure_spin",
+          "cup_x": "cup_x",
+          "cup_y": "cup_y",
+          "cup_z": "cup_z",
+          "cup_tilt": "cup_tilt",
+          "cup_spin": "cup_spin",
+          "spoon_x": "spoon_x",
+          "spoon_y": "spoon_y",
+          "spoon_z": "spoon_z",
+          "spoon_tilt": "spoon_tilt",
+          "spoon_spin": "spoon_spin"
+        },
+        "handlers": [
+          "move"
+        ],
+        "observations": {}
+      },
+      "actions": [
+        {
+          "action_id": "phase-00",
+          "label": "Prepared charges: 50 g vinegar and 2 g bicarbonate",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_z": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_z"
+          ],
+          "rates": {
+            "cup_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.5,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-01",
+          "label": "Lift the vinegar measuring vessel",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "measure_z": 165.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "measure_z"
+          ],
+          "rates": {
+            "measure_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-02",
+          "label": "Move vinegar above the receiving bowl",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "measure_x": 240.0,
+            "measure_y": 135.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "measure_x",
+            "measure_y"
+          ],
+          "rates": {
+            "measure_x": 110.0,
+            "measure_y": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-03",
+          "label": "Tilt measuring vessel for transfer",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "measure_tilt": 65.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "measure_tilt"
+          ],
+          "rates": {
+            "measure_tilt": 180.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-04",
+          "label": "Transfer 50 g vinegar into the bowl",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "measure_tilt": 65.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "measure_tilt"
+          ],
+          "rates": {
+            "measure_tilt": 180.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 1.0,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-05",
+          "label": "Return measuring vessel upright",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "measure_tilt": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "measure_tilt"
+          ],
+          "rates": {
+            "measure_tilt": 180.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-06",
+          "label": "Return empty vessel to its station",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "measure_x": 0.0,
+            "measure_y": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "measure_x",
+            "measure_y"
+          ],
+          "rates": {
+            "measure_x": 110.0,
+            "measure_y": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-07",
+          "label": "Set measuring vessel down",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "measure_z": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "measure_z"
+          ],
+          "rates": {
+            "measure_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-08",
+          "label": "Record the declared pre-reaction mass (synthetic)",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_z": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_z"
+          ],
+          "rates": {
+            "cup_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.6,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-09",
+          "label": "Lift the bicarbonate dosing cup",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_z": 140.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_z"
+          ],
+          "rates": {
+            "cup_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-10",
+          "label": "Move dosing cup above the bowl",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_x": -95.0,
+            "cup_y": -35.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_x",
+            "cup_y"
+          ],
+          "rates": {
+            "cup_x": 110.0,
+            "cup_y": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-11",
+          "label": "Tilt the bicarbonate dosing cup",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_tilt": -100.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_tilt"
+          ],
+          "rates": {
+            "cup_tilt": 180.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-12",
+          "label": "Transfer 2 g bicarbonate into the bowl",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_tilt": -100.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_tilt"
+          ],
+          "rates": {
+            "cup_tilt": 180.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.8,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-13",
+          "label": "Return dosing cup upright",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_tilt": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_tilt"
+          ],
+          "rates": {
+            "cup_tilt": 180.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-14",
+          "label": "Return the empty cup to the tray",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_x": 0.0,
+            "cup_y": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_x",
+            "cup_y"
+          ],
+          "rates": {
+            "cup_x": 110.0,
+            "cup_y": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-15",
+          "label": "Set dosing cup down",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_z": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_z"
+          ],
+          "rates": {
+            "cup_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-16",
+          "label": "Lift the stirring utensil",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "spoon_z": 190.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "spoon_z"
+          ],
+          "rates": {
+            "spoon_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-17",
+          "label": "Move the utensil over the bowl",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "spoon_x": -30.0,
+            "spoon_y": 95.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "spoon_x",
+            "spoon_y"
+          ],
+          "rates": {
+            "spoon_x": 110.0,
+            "spoon_y": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-18",
+          "label": "Orient the utensil for agitation",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "spoon_tilt": 70.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "spoon_tilt"
+          ],
+          "rates": {
+            "spoon_tilt": 180.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-19",
+          "label": "Lower the utensil into the bowl",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "spoon_z": 90.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "spoon_z"
+          ],
+          "rates": {
+            "spoon_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-20",
+          "label": "Agitate using the declared utensil motion",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "spoon_spin": 1080.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "spoon_spin"
+          ],
+          "rates": {
+            "spoon_spin": 180.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.3,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-21",
+          "label": "Lift the utensil clear of the bowl",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "spoon_z": 190.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "spoon_z"
+          ],
+          "rates": {
+            "spoon_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-22",
+          "label": "Restore utensil orientation",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "spoon_tilt": 0.0,
+            "spoon_spin": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "spoon_tilt",
+            "spoon_spin"
+          ],
+          "rates": {
+            "spoon_tilt": 180.0,
+            "spoon_spin": 180.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-23",
+          "label": "Return utensil to the tray",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "spoon_x": 0.0,
+            "spoon_y": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "spoon_x",
+            "spoon_y"
+          ],
+          "rates": {
+            "spoon_x": 110.0,
+            "spoon_y": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-24",
+          "label": "Set utensil down",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "spoon_z": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "spoon_z"
+          ],
+          "rates": {
+            "spoon_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.12,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-25",
+          "label": "Record synthetic final mass; reaction dynamics unsupported",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_z": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_z"
+          ],
+          "rates": {
+            "cup_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.7,
+            "timeout_s": 20.0
+          }
+        },
+        {
+          "action_id": "phase-26",
+          "label": "Compare original prediction with synthetic observation",
+          "handler": "move",
+          "parameters": {},
+          "parameter_axes": {},
+          "targets": {
+            "cup_z": 0.0
+          },
+          "tool_parameters": [],
+          "axes": [
+            "cup_z"
+          ],
+          "rates": {
+            "cup_z": 110.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.02,
+            "conditions": [],
+            "dwell_s": 0.7,
+            "timeout_s": 20.0
+          }
+        }
+      ],
+      "operating_notes": [
+        "CAD mesh exported from OpenCAD workcell; virtual manipulation joints authored separately, not manufactured hardware.",
+        "No fluid, collision, chemical kinetics or physical verification."
+      ],
+      "artifacts": []
+    },
+    "geometry_sha256": "a0a987553857e2b2b533ceaf069c66c1358aebdae0841fb8e41ca49ff069401c",
+    "containers": [
+      {
+        "container_id": "vinegar-dose",
+        "body_id": "measure",
+        "label": "Vinegar dose",
+        "capacity_g": 60.0,
+        "contents_g": {
+          "vinegar": 50.0
+        },
+        "center_mm": [
+          -290.0,
+          -90.0,
+          4.0
+        ],
+        "radius_mm": 26.0,
+        "height_mm": 80.0,
+        "color": [
+          0.25,
+          0.8,
+          0.95
+        ]
+      },
+      {
+        "container_id": "bicarbonate-dose",
+        "body_id": "cup",
+        "label": "Bicarbonate dose",
+        "capacity_g": 3.0,
+        "contents_g": {
+          "bicarbonate": 2.0
+        },
+        "center_mm": [
+          65.0,
+          80.0,
+          56.0
+        ],
+        "radius_mm": 16.0,
+        "height_mm": 23.0,
+        "color": [
+          0.97,
+          0.94,
+          0.83
+        ]
+      },
+      {
+        "container_id": "reaction-bowl",
+        "body_id": "bowl",
+        "label": "Bowl inventory",
+        "capacity_g": 65.0,
+        "contents_g": {},
+        "center_mm": [
+          -30.0,
+          45.0,
+          57.0
+        ],
+        "radius_mm": 54.0,
+        "height_mm": 70.0,
+        "color": [
+          0.38,
+          0.85,
+          0.74
+        ]
+      }
+    ],
+    "phases": [
+      {
+        "phase_id": "phase-00",
+        "step_id": "prepare",
+        "label": "Prepared charges: 50 g vinegar and 2 g bicarbonate",
+        "action_id": "phase-00"
+      },
+      {
+        "phase_id": "phase-01",
+        "step_id": "inputs",
+        "label": "Lift the vinegar measuring vessel",
+        "action_id": "phase-01"
+      },
+      {
+        "phase_id": "phase-02",
+        "step_id": "inputs",
+        "label": "Move vinegar above the receiving bowl",
+        "action_id": "phase-02"
+      },
+      {
+        "phase_id": "phase-03",
+        "step_id": "inputs",
+        "label": "Tilt measuring vessel for transfer",
+        "action_id": "phase-03"
+      },
+      {
+        "phase_id": "phase-04",
+        "step_id": "inputs",
+        "label": "Transfer 50 g vinegar into the bowl",
+        "action_id": "phase-04",
+        "transfer": {
+          "source": "vinegar-dose",
+          "target": "reaction-bowl",
+          "stream_id": "vinegar",
+          "mass_g": 50.0
+        }
+      },
+      {
+        "phase_id": "phase-05",
+        "step_id": "inputs",
+        "label": "Return measuring vessel upright",
+        "action_id": "phase-05"
+      },
+      {
+        "phase_id": "phase-06",
+        "step_id": "inputs",
+        "label": "Return empty vessel to its station",
+        "action_id": "phase-06"
+      },
+      {
+        "phase_id": "phase-07",
+        "step_id": "inputs",
+        "label": "Set measuring vessel down",
+        "action_id": "phase-07"
+      },
+      {
+        "phase_id": "phase-08",
+        "step_id": "before",
+        "label": "Record the declared pre-reaction mass (synthetic)",
+        "action_id": "phase-08"
+      },
+      {
+        "phase_id": "phase-09",
+        "step_id": "mix",
+        "label": "Lift the bicarbonate dosing cup",
+        "action_id": "phase-09"
+      },
+      {
+        "phase_id": "phase-10",
+        "step_id": "mix",
+        "label": "Move dosing cup above the bowl",
+        "action_id": "phase-10"
+      },
+      {
+        "phase_id": "phase-11",
+        "step_id": "mix",
+        "label": "Tilt the bicarbonate dosing cup",
+        "action_id": "phase-11"
+      },
+      {
+        "phase_id": "phase-12",
+        "step_id": "mix",
+        "label": "Transfer 2 g bicarbonate into the bowl",
+        "action_id": "phase-12",
+        "transfer": {
+          "source": "bicarbonate-dose",
+          "target": "reaction-bowl",
+          "stream_id": "solid",
+          "mass_g": 2.0
+        }
+      },
+      {
+        "phase_id": "phase-13",
+        "step_id": "mix",
+        "label": "Return dosing cup upright",
+        "action_id": "phase-13"
+      },
+      {
+        "phase_id": "phase-14",
+        "step_id": "mix",
+        "label": "Return the empty cup to the tray",
+        "action_id": "phase-14"
+      },
+      {
+        "phase_id": "phase-15",
+        "step_id": "mix",
+        "label": "Set dosing cup down",
+        "action_id": "phase-15"
+      },
+      {
+        "phase_id": "phase-16",
+        "step_id": "mix",
+        "label": "Lift the stirring utensil",
+        "action_id": "phase-16"
+      },
+      {
+        "phase_id": "phase-17",
+        "step_id": "mix",
+        "label": "Move the utensil over the bowl",
+        "action_id": "phase-17"
+      },
+      {
+        "phase_id": "phase-18",
+        "step_id": "mix",
+        "label": "Orient the utensil for agitation",
+        "action_id": "phase-18"
+      },
+      {
+        "phase_id": "phase-19",
+        "step_id": "mix",
+        "label": "Lower the utensil into the bowl",
+        "action_id": "phase-19"
+      },
+      {
+        "phase_id": "phase-20",
+        "step_id": "mix",
+        "label": "Agitate using the declared utensil motion",
+        "action_id": "phase-20",
+        "agitate": "reaction-bowl"
+      },
+      {
+        "phase_id": "phase-21",
+        "step_id": "mix",
+        "label": "Lift the utensil clear of the bowl",
+        "action_id": "phase-21"
+      },
+      {
+        "phase_id": "phase-22",
+        "step_id": "mix",
+        "label": "Restore utensil orientation",
+        "action_id": "phase-22"
+      },
+      {
+        "phase_id": "phase-23",
+        "step_id": "mix",
+        "label": "Return utensil to the tray",
+        "action_id": "phase-23"
+      },
+      {
+        "phase_id": "phase-24",
+        "step_id": "mix",
+        "label": "Set utensil down",
+        "action_id": "phase-24"
+      },
+      {
+        "phase_id": "phase-25",
+        "step_id": "after",
+        "label": "Record synthetic final mass; reaction dynamics unsupported",
+        "action_id": "phase-25"
+      },
+      {
+        "phase_id": "phase-26",
+        "step_id": "record",
+        "label": "Compare original prediction with synthetic observation",
+        "action_id": "phase-26"
+      }
+    ],
+    "frame_interval_s": 0.15,
+    "maximum_duration_s": 100.0
+  }
+}

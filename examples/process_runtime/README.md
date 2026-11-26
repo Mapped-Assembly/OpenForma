@@ -36,3 +36,8 @@ MachineRuntime integration tests in `tests/projects/test_process_runtime.py`.
 Agents should follow [AGENTS.md](../../AGENTS.md) and
 [process-runtime.md](../../docs/process-runtime.md). OpenForma owns execution;
 OpenCAD is optional geometry. No workcell-specific application code is required.
+
+For visible motion, use [workcell/request.json](workcell/request.json) with
+`action: simulate`. Its reusable host joins both OpenForma runtimes and exports
+feedback/virtual inventory frames for the generic renderer. See
+[virtual-workcells.md](../../docs/virtual-workcells.md) for the exact fidelity limits.

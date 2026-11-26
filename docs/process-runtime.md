@@ -98,7 +98,9 @@ Hashes detect accidental edits; they are not digital signatures or operator
 identity verification. Hosts must authenticate operators, serialize runtime calls,
 secure uploads and persist records. Concurrent/distributed scheduling, crash-safe
 machine dispatch recovery, automatic retry, process cancellation compensation,
-inventory balances, reaction kinetics and end-to-end GIF export are not implemented.
+physical inventory balances and reaction kinetics are not implemented.
+The optional [virtual workcell bridge](virtual-workcells.md) adds conservative
+virtual inventory and feedback-driven GIF export; it does not provide those physics.
 
 No physical trials were performed. Physical provenance checks enforce declared
 record types; software cannot prove the truth of an operator's submitted readings.

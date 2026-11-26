@@ -73,5 +73,13 @@ payload. `{"action":"schema"}` discovers the execution contract. The portable
 physical command history. Inject machine adapters in an authorized live host.
 
 Read **`docs/process-runtime.md`** for adapter boundaries and remaining limits.
-This implementation does not supply an end-to-end process GIF exporter or chemistry
-kinetics. Do not claim either exists because execution events are now available.
+For visible workcell execution, use `examples/process_runtime/workcell/request.json`:
+`process-runtime` action `simulate` runs declared phases through MachineRuntime and
+ProcessRuntime, then exports feedback frames and conservative virtual inventory.
+Run `python -m forma_core.processes.execution.render REQUEST TRACE SCENE OUTPUT.gif`
+to render that evidence. The viewer checks geometry/plan/trace hashes and uses
+sampled feedback positions. It never completes steps or generates measurements.
+Read `docs/virtual-workcells.md` before authoring new workcells. The example's
+motions represent virtual human manipulation; no physical actuator is designed.
+Fluid dynamics, collision checking, mixing homogeneity and reaction kinetics are
+not supplied by this bridge. Do not confuse its inventory accounting with chemistry.
