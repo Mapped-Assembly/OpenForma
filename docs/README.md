@@ -51,3 +51,5 @@
 - [Empirical physical process verification](empirical-verification.md): frozen predictions, manual protocols, observations and remote comparison.
 
 - [Declarative water-mixing case study](water-mixing-case-study.md): thermal-only inputs, named outputs and a six-case synthetic benchmark.
+
+- [Declarative process runtime](process-runtime.md): manual, virtual and machine adapters over ProcessIR.

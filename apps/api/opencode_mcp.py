@@ -93,6 +93,7 @@ def opencode_mcp_tools() -> list[dict[str, object]]:
                 "Experiment accepts {action: schema|catalog}, {action: benchmark, benchmark_id}, {action: prepare, request}, or {action: compare, comparison: {plan, runs}}. "
                 "Use catalog to discover versioned domain evaluators and case studies. Declare artifacts, evaluations, required_inputs and criteria targeting evaluation_id/output_id. Prepare freezes native artifacts, named predictions, protocol and criteria; compare preserves unknowns and synthetic evidence labels. "
                 "These are portable receipts; use authenticated /experiments REST endpoints to persist plans, photographs and reports. "
+                "Process-runtime accepts {action: schema} or {action: run, plan, run_id, mode: manual|virtual, commands}. OpenForma owns step dependencies, batches, conditions and evidence; OpenCAD supplies optional geometry. Machine adapters must be supplied by an authorized host; transcript replay never dispatches physical commands. "
                 "Import-hardware: {product_id, hardware_ir}. Export-hardware: {product, legacy_seed?, allow_lossy?}. "
                 "Missing inputs block only dependent domains. Check local/composition findings separately; "
                 "export findings must be inspected before using the payload in the existing compile_project tool."
