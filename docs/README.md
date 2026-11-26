@@ -47,3 +47,5 @@
 - [Developer scripts](../scripts/README.md)
 - [Roadmap](roadmap.md)
 - [Legal and policy drafts](legal/README.md)
+
+- [Empirical physical process verification](empirical-verification.md): frozen predictions, manual protocols, observations and remote comparison.

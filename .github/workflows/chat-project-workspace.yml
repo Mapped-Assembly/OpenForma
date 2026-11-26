@@ -79,6 +79,10 @@ jobs:
         id: opencode
         continue-on-error: true
         run: npx --no-install playwright test --config playwright.integrity.config.ts
+      - name: Test manual experiment workflow on a phone viewport
+        env:
+          FORMA_AUTH_MODE: local
+        run: npx --no-install playwright test e2e/empirical-verification.spec.ts
       - name: Fail on any type, lint or browser regression
         if: always() && (steps.typecheck.outcome == 'failure' || steps.lint.outcome == 'failure' || steps.layout.outcome == 'failure' || steps.opencode.outcome == 'failure')
         run: exit 1
