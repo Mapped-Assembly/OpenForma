@@ -1,7 +1,0 @@
-{
-  "format": "forma.firmware-sil",
-  "version": 1,
-  "watchdog_ms": 250,
-  "assumptions": "Virtual gate fixture starts at 45 degrees. 1000–2000 us maps 0–90 degrees at 50 Hz; ideal servo response is 180 degree/s. This is a benchmark calibration, not a measured FS90 calibration.",
-  "axes": { "gate": { "kind": "servo", "pulse_min_us": 1000, "pulse_max_us": 2000 } }
-}

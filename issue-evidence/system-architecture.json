@@ -1,0 +1,125 @@
+{
+  "summary": "Declarative decomposition of the smart textile requirements from CAID Form issue 283; design and physical verification are separate.",
+  "root": {
+    "system_id": "product",
+    "name": "Thermal management wearable",
+    "domain": "product",
+    "purpose": "Sense temperature, accept user requests and manage textile-mounted cooling.",
+    "children": [
+      {
+        "system_id": "electrical",
+        "name": "Electrical system",
+        "domain": "electrical",
+        "purpose": "Supply and interconnect the wearable modules.",
+        "children": [
+          {
+            "system_id": "electrical.power",
+            "name": "Energy and charging",
+            "domain": "electrical",
+            "purpose": "Qi receiver, thin-film battery, regulated logic and TEC supply.",
+            "children": [],
+            "constraints": [
+              "3.3 V supply",
+              "Combined TEC peak current <= 1 A",
+              "Battery, charger and conversion ratings unknown"
+            ]
+          },
+          {
+            "system_id": "electrical.control",
+            "name": "Controller",
+            "domain": "electrical",
+            "purpose": "Nordic nRF52840 BLE control and local physical input.",
+            "children": [],
+            "constraints": []
+          },
+          {
+            "system_id": "electrical.sensing",
+            "name": "Temperature sensing",
+            "domain": "electrical",
+            "purpose": "Skin and ambient I2C sensor channels; calibration and package parts unresolved.",
+            "children": [],
+            "constraints": []
+          },
+          {
+            "system_id": "electrical.drive",
+            "name": "TEC power drive",
+            "domain": "electrical",
+            "purpose": "Two actuator channels sharing the specified 1 A peak budget.",
+            "children": [],
+            "constraints": []
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "system_id": "mechanical",
+        "name": "Textile and thermal assembly",
+        "domain": "mechanical",
+        "purpose": "Integrate flexible PCB, textile, thermal elements and body interfaces.",
+        "children": [
+          {
+            "system_id": "mechanical.layers",
+            "name": "Layered garment",
+            "domain": "mechanical",
+            "purpose": "Define textile and flex laminate layers, attachments and contact.",
+            "children": [],
+            "constraints": []
+          },
+          {
+            "system_id": "mechanical.thermal",
+            "name": "Thermal path",
+            "domain": "thermal",
+            "purpose": "Peltier cold/hot surfaces, PCM storage and ambient heat rejection.",
+            "children": [],
+            "constraints": [
+              "TEC curves, PCM parameters and conductance unknown"
+            ]
+          },
+          {
+            "system_id": "mechanical.wearer",
+            "name": "Wearer interface",
+            "domain": "human",
+            "purpose": "Torso attachment and hand access to local physical controls.",
+            "children": [],
+            "constraints": []
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "system_id": "control",
+        "name": "Behavior and interaction",
+        "domain": "firmware",
+        "purpose": "Accept local/BLE requests and eventually regulate thermal feedback.",
+        "children": [
+          {
+            "system_id": "control.local",
+            "name": "Local interaction",
+            "domain": "control",
+            "purpose": "Executed contact and debounce toggle a virtual cooling request.",
+            "children": [],
+            "constraints": []
+          },
+          {
+            "system_id": "control.ble",
+            "name": "BLE interface",
+            "domain": "firmware",
+            "purpose": "Required remote interface; firmware and radio not executed.",
+            "children": [],
+            "constraints": []
+          },
+          {
+            "system_id": "control.feedback",
+            "name": "Thermal regulation",
+            "domain": "control",
+            "purpose": "Required closed-loop regulation; no validated plant or sensor model yet.",
+            "children": [],
+            "constraints": []
+          }
+        ],
+        "constraints": []
+      }
+    ],
+    "constraints": []
+  }
+}

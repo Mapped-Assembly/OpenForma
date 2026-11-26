@@ -1,0 +1,457 @@
+{
+  "artifact_id": "smart-textile.thermal",
+  "revision": 3,
+  "domain": "thermal",
+  "schema_version": "1.0",
+  "nodes": [
+    {
+      "node_id": "skin",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "Wearer torso contact; unknown temperature"
+    },
+    {
+      "node_id": "ambient",
+      "kind": "boundary",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "Ambient air; unknown temperature"
+    },
+    {
+      "node_id": "left-spreader",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "spreader"
+    },
+    {
+      "node_id": "left-cold",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "cold"
+    },
+    {
+      "node_id": "left-hot",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "hot"
+    },
+    {
+      "node_id": "left-pcm",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "pcm"
+    },
+    {
+      "node_id": "left-sink",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "sink"
+    },
+    {
+      "node_id": "right-spreader",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "spreader"
+    },
+    {
+      "node_id": "right-cold",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "cold"
+    },
+    {
+      "node_id": "right-hot",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "hot"
+    },
+    {
+      "node_id": "right-pcm",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "pcm"
+    },
+    {
+      "node_id": "right-sink",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "sink"
+    },
+    {
+      "node_id": "controller-laminate",
+      "kind": "body",
+      "ports": [
+        {
+          "port_id": "heat",
+          "kind": "heat"
+        }
+      ],
+      "capacity": null,
+      "initial_temperature": null,
+      "target_temperature": null,
+      "maximum_temperature": null,
+      "material_reference": null,
+      "description": "Unknown laminate thermal state; no parameters supplied"
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "skin-to-left-spreader",
+      "source_node_id": "skin",
+      "target_node_id": "left-spreader",
+      "mechanism": "conduction",
+      "resistance": null,
+      "conductance": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "edge_id": "left-spreader-to-left-cold",
+      "source_node_id": "left-spreader",
+      "target_node_id": "left-cold",
+      "mechanism": "conduction",
+      "resistance": null,
+      "conductance": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "edge_id": "left-hot-to-left-pcm",
+      "source_node_id": "left-hot",
+      "target_node_id": "left-pcm",
+      "mechanism": "conduction",
+      "resistance": null,
+      "conductance": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "edge_id": "left-pcm-to-left-sink",
+      "source_node_id": "left-pcm",
+      "target_node_id": "left-sink",
+      "mechanism": "conduction",
+      "resistance": null,
+      "conductance": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "edge_id": "left-sink-to-ambient",
+      "source_node_id": "left-sink",
+      "target_node_id": "ambient",
+      "mechanism": "convection",
+      "resistance": null,
+      "conductance": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "edge_id": "skin-to-right-spreader",
+      "source_node_id": "skin",
+      "target_node_id": "right-spreader",
+      "mechanism": "conduction",
+      "resistance": null,
+      "conductance": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "edge_id": "right-spreader-to-right-cold",
+      "source_node_id": "right-spreader",
+      "target_node_id": "right-cold",
+      "mechanism": "conduction",
+      "resistance": null,
+      "conductance": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "edge_id": "right-hot-to-right-pcm",
+      "source_node_id": "right-hot",
+      "target_node_id": "right-pcm",
+      "mechanism": "conduction",
+      "resistance": null,
+      "conductance": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "edge_id": "right-pcm-to-right-sink",
+      "source_node_id": "right-pcm",
+      "target_node_id": "right-sink",
+      "mechanism": "conduction",
+      "resistance": null,
+      "conductance": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "edge_id": "right-sink-to-ambient",
+      "source_node_id": "right-sink",
+      "target_node_id": "ambient",
+      "mechanism": "convection",
+      "resistance": null,
+      "conductance": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    }
+  ],
+  "boundaries": [],
+  "loads": [
+    {
+      "load_id": "left-pump-cold",
+      "node_id": "left-cold",
+      "direction": "sink",
+      "heat_rate": null,
+      "origin": "illustrative",
+      "references": [],
+      "calculation_model": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "load_id": "left-pump-hot",
+      "node_id": "left-hot",
+      "direction": "source",
+      "heat_rate": null,
+      "origin": "electrical",
+      "references": [
+        {
+          "domain": "electrical",
+          "artifact_id": "smart-textile.electrical",
+          "entity_id": "left-tec",
+          "schema_version": "1.0",
+          "revision": 3,
+          "sha256": "7cff3335f1043cefc32a18b75a8f2a7a05293eb2001759ddf110a9e2605fd0cc",
+          "port_id": "P",
+          "model_version": null
+        }
+      ],
+      "calculation_model": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "load_id": "right-pump-cold",
+      "node_id": "right-cold",
+      "direction": "sink",
+      "heat_rate": null,
+      "origin": "illustrative",
+      "references": [],
+      "calculation_model": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    },
+    {
+      "load_id": "right-pump-hot",
+      "node_id": "right-hot",
+      "direction": "source",
+      "heat_rate": null,
+      "origin": "electrical",
+      "references": [
+        {
+          "domain": "electrical",
+          "artifact_id": "smart-textile.electrical",
+          "entity_id": "right-tec",
+          "schema_version": "1.0",
+          "revision": 3,
+          "sha256": "7cff3335f1043cefc32a18b75a8f2a7a05293eb2001759ddf110a9e2605fd0cc",
+          "port_id": "P",
+          "model_version": null
+        }
+      ],
+      "calculation_model": null,
+      "claim": {
+        "basis": "unknown",
+        "source_ids": [],
+        "rationale": null
+      }
+    }
+  ],
+  "properties": [],
+  "cases": [
+    {
+      "case_id": "left-heat-rejection",
+      "zone_node_id": "left-sink",
+      "ambient_node_id": "ambient",
+      "edge_id": "left-sink-to-ambient",
+      "load_ids": [
+        "left-pump-hot"
+      ],
+      "model": "lumped-resistance",
+      "model_version": "1.0",
+      "tolerance_w": 1e-9
+    },
+    {
+      "case_id": "right-heat-rejection",
+      "zone_node_id": "right-sink",
+      "ambient_node_id": "ambient",
+      "edge_id": "right-sink-to-ambient",
+      "load_ids": [
+        "right-pump-hot"
+      ],
+      "model": "lumped-resistance",
+      "model_version": "1.0",
+      "tolerance_w": 1e-9
+    }
+  ],
+  "evidence": []
+}

@@ -1,0 +1,92 @@
+{
+  "configuration": "configuration.json",
+  "duration_s": 14.0,
+  "tick_s": 0.01,
+  "sample_s": 0.04,
+  "events": [
+    {
+      "at_s": 0.3,
+      "label": "Reach for physical control",
+      "targets": {
+        "right-shoulder-x": -43.99642495966739,
+        "right-shoulder-y": -3.9530801331031324,
+        "right-shoulder-z": -68.93237426519495,
+        "right-elbow": -101.8590440992756,
+        "left-shoulder-x": -28.0,
+        "left-elbow": -40.0
+      }
+    },
+    {
+      "at_s": 3.0,
+      "label": "Press control: cooling requested",
+      "targets": {
+        "right-shoulder-x": -42.51734170468861,
+        "right-shoulder-y": -5.693427412679537,
+        "right-shoulder-z": -79.62921514487788,
+        "right-elbow": -115.47128410231026
+      }
+    },
+    {
+      "at_s": 4.5,
+      "label": "Release control",
+      "targets": {
+        "right-shoulder-x": -43.99642495966739,
+        "right-shoulder-y": -3.9530801331031324,
+        "right-shoulder-z": -68.93237426519495,
+        "right-elbow": -101.8590440992756
+      }
+    },
+    {
+      "at_s": 5.5,
+      "label": "Torso twist with wearable attached",
+      "targets": {
+        "waist-yaw": 16.0,
+        "waist-bend": 6.0,
+        "left-shoulder-x": -45.0,
+        "left-elbow": -80.0
+      }
+    },
+    {
+      "at_s": 7.2,
+      "label": "Turn back toward control",
+      "targets": {
+        "waist-yaw": -12.0,
+        "waist-bend": -4.0
+      }
+    },
+    {
+      "at_s": 8.5,
+      "label": "Press control again: switch off",
+      "targets": {
+        "right-shoulder-x": -42.51734170468861,
+        "right-shoulder-y": -5.693427412679537,
+        "right-shoulder-z": -79.62921514487788,
+        "right-elbow": -115.47128410231026
+      }
+    },
+    {
+      "at_s": 10.0,
+      "label": "Release control",
+      "targets": {
+        "right-shoulder-x": -43.99642495966739,
+        "right-shoulder-y": -3.9530801331031324,
+        "right-shoulder-z": -68.93237426519495,
+        "right-elbow": -101.8590440992756
+      }
+    },
+    {
+      "at_s": 11.3,
+      "label": "Return to neutral",
+      "targets": {
+        "right-shoulder-x": 0.0,
+        "right-shoulder-y": 0.0,
+        "right-shoulder-z": 0.0,
+        "right-elbow": 0.0,
+        "waist-yaw": 0.0,
+        "waist-bend": 0.0,
+        "left-shoulder-x": 0.0,
+        "left-elbow": 0.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,673 @@
+{
+  "status": "proposed",
+  "not_manufacturing_harness": true,
+  "wires": [
+    {
+      "wire_id": "W01",
+      "net_id": "qi-dc",
+      "net_type": "Power",
+      "from_ref": "RX1",
+      "from_pin": "OUT",
+      "to_ref": "U4",
+      "to_pin": "RX_IN",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          240.0,
+          389.5,
+          1360.0
+        ],
+        [
+          240.0,
+          265.25,
+          1440.0
+        ],
+        [
+          240.0,
+          231.0,
+          1520.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W02",
+      "net_id": "battery",
+      "net_type": "Power",
+      "from_ref": "B1",
+      "from_pin": "POS",
+      "to_ref": "U4",
+      "to_pin": "BAT",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          240.0,
+          307.0,
+          1360.0
+        ],
+        [
+          240.0,
+          224.0,
+          1440.0
+        ],
+        [
+          240.0,
+          231.0,
+          1520.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W03",
+      "net_id": "3v3",
+      "net_type": "Power",
+      "from_ref": "U4",
+      "from_pin": "OUT",
+      "to_ref": "U1",
+      "to_pin": "VDD",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          240.0,
+          231.0,
+          1520.0
+        ],
+        [
+          -10.0,
+          -54.5,
+          1500.0
+        ],
+        [
+          -260.0,
+          -250.0,
+          1480.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W04",
+      "net_id": "3v3",
+      "net_type": "Power",
+      "from_ref": "U4",
+      "from_pin": "OUT",
+      "to_ref": "U2",
+      "to_pin": "VDD",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          240.0,
+          231.0,
+          1522.0
+        ],
+        [
+          237.5,
+          -51.5,
+          1457.0
+        ],
+        [
+          235.0,
+          -232.0,
+          1392.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W05",
+      "net_id": "3v3",
+      "net_type": "Power",
+      "from_ref": "U4",
+      "from_pin": "OUT",
+      "to_ref": "U3",
+      "to_pin": "VDD",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          240.0,
+          231.0,
+          1524.0
+        ],
+        [
+          237.5,
+          -69.0,
+          1354.0
+        ],
+        [
+          235.0,
+          -255.0,
+          1184.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W06",
+      "net_id": "3v3",
+      "net_type": "Power",
+      "from_ref": "U4",
+      "from_pin": "OUT",
+      "to_ref": "U5",
+      "to_pin": "VIN",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          240.0,
+          231.0,
+          1526.0
+        ],
+        [
+          -10.0,
+          -92.5,
+          1396.0
+        ],
+        [
+          -260.0,
+          -290.0,
+          1266.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W07",
+      "net_id": "gnd",
+      "net_type": "Ground",
+      "from_ref": "U1",
+      "from_pin": "GND",
+      "to_ref": "U2",
+      "to_pin": "GND",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1480.0
+        ],
+        [
+          -12.5,
+          -286.0,
+          1435.0
+        ],
+        [
+          235.0,
+          -232.0,
+          1390.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W08",
+      "net_id": "gnd",
+      "net_type": "Ground",
+      "from_ref": "U1",
+      "from_pin": "GND",
+      "to_ref": "U3",
+      "to_pin": "GND",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1482.0
+        ],
+        [
+          -12.5,
+          -303.5,
+          1332.0
+        ],
+        [
+          235.0,
+          -255.0,
+          1182.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W09",
+      "net_id": "gnd",
+      "net_type": "Ground",
+      "from_ref": "U1",
+      "from_pin": "GND",
+      "to_ref": "U4",
+      "to_pin": "GND",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1484.0
+        ],
+        [
+          -10.0,
+          -66.5,
+          1504.0
+        ],
+        [
+          240.0,
+          231.0,
+          1524.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W10",
+      "net_id": "gnd",
+      "net_type": "Ground",
+      "from_ref": "U1",
+      "from_pin": "GND",
+      "to_ref": "RX1",
+      "to_pin": "GND",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1486.0
+        ],
+        [
+          -10.0,
+          6.75,
+          1426.0
+        ],
+        [
+          240.0,
+          389.5,
+          1366.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W11",
+      "net_id": "gnd",
+      "net_type": "Ground",
+      "from_ref": "U1",
+      "from_pin": "GND",
+      "to_ref": "B1",
+      "to_pin": "NEG",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1488.0
+        ],
+        [
+          -10.0,
+          -40.5,
+          1428.0
+        ],
+        [
+          240.0,
+          307.0,
+          1368.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W12",
+      "net_id": "gnd",
+      "net_type": "Ground",
+      "from_ref": "U1",
+      "from_pin": "GND",
+      "to_ref": "U5",
+      "to_pin": "GND",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1490.0
+        ],
+        [
+          -260.0,
+          -345.0,
+          1380.0
+        ],
+        [
+          -260.0,
+          -290.0,
+          1270.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W13",
+      "net_id": "gnd",
+      "net_type": "Ground",
+      "from_ref": "U1",
+      "from_pin": "GND",
+      "to_ref": "TEC1",
+      "to_pin": "N",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1492.0
+        ],
+        [
+          -196.0,
+          -316.0,
+          1394.5
+        ],
+        [
+          -132.0,
+          -220.0,
+          1297.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W14",
+      "net_id": "gnd",
+      "net_type": "Ground",
+      "from_ref": "U1",
+      "from_pin": "GND",
+      "to_ref": "TEC2",
+      "to_pin": "N",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1494.0
+        ],
+        [
+          -64.0,
+          -322.0,
+          1396.5
+        ],
+        [
+          132.0,
+          -220.0,
+          1299.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W15",
+      "net_id": "gnd",
+      "net_type": "Ground",
+      "from_ref": "U1",
+      "from_pin": "GND",
+      "to_ref": "SW1",
+      "to_pin": "GND",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1496.0
+        ],
+        [
+          -260.0,
+          -427.5,
+          1546.0
+        ],
+        [
+          -260.0,
+          -419.0,
+          1596.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W16",
+      "net_id": "i2c-sda",
+      "net_type": "I2C",
+      "from_ref": "U1",
+      "from_pin": "SDA",
+      "to_ref": "U2",
+      "to_pin": "SDA",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1480.0
+        ],
+        [
+          -12.5,
+          -286.0,
+          1435.0
+        ],
+        [
+          235.0,
+          -232.0,
+          1390.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W17",
+      "net_id": "i2c-sda",
+      "net_type": "I2C",
+      "from_ref": "U1",
+      "from_pin": "SDA",
+      "to_ref": "U3",
+      "to_pin": "SDA",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1482.0
+        ],
+        [
+          -12.5,
+          -303.5,
+          1332.0
+        ],
+        [
+          235.0,
+          -255.0,
+          1182.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W18",
+      "net_id": "i2c-scl",
+      "net_type": "I2C",
+      "from_ref": "U1",
+      "from_pin": "SCL",
+      "to_ref": "U2",
+      "to_pin": "SCL",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1480.0
+        ],
+        [
+          -12.5,
+          -286.0,
+          1435.0
+        ],
+        [
+          235.0,
+          -232.0,
+          1390.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W19",
+      "net_id": "i2c-scl",
+      "net_type": "I2C",
+      "from_ref": "U1",
+      "from_pin": "SCL",
+      "to_ref": "U3",
+      "to_pin": "SCL",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1482.0
+        ],
+        [
+          -12.5,
+          -303.5,
+          1332.0
+        ],
+        [
+          235.0,
+          -255.0,
+          1182.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W20",
+      "net_id": "local-control",
+      "net_type": "Digital",
+      "from_ref": "U1",
+      "from_pin": "LOCAL",
+      "to_ref": "SW1",
+      "to_pin": "SIG",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1480.0
+        ],
+        [
+          -260.0,
+          -379.5,
+          1530.0
+        ],
+        [
+          -260.0,
+          -419.0,
+          1580.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W21",
+      "net_id": "tec-enable",
+      "net_type": "Digital",
+      "from_ref": "U1",
+      "from_pin": "TEC_EN",
+      "to_ref": "U5",
+      "to_pin": "EN",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -250.0,
+          1480.0
+        ],
+        [
+          -260.0,
+          -315.0,
+          1370.0
+        ],
+        [
+          -260.0,
+          -290.0,
+          1260.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W22",
+      "net_id": "tec-left",
+      "net_type": "Power",
+      "from_ref": "U5",
+      "from_pin": "OUT_L",
+      "to_ref": "TEC1",
+      "to_pin": "P",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -290.0,
+          1260.0
+        ],
+        [
+          -196.0,
+          -300.0,
+          1272.5
+        ],
+        [
+          -132.0,
+          -220.0,
+          1285.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    },
+    {
+      "wire_id": "W23",
+      "net_id": "tec-right",
+      "net_type": "Power",
+      "from_ref": "U5",
+      "from_pin": "OUT_R",
+      "to_ref": "TEC2",
+      "to_pin": "P",
+      "routing_status": "proposed display route; connector position unknown",
+      "route_exploded_mm": [
+        [
+          -260.0,
+          -290.0,
+          1260.0
+        ],
+        [
+          -64.0,
+          -300.0,
+          1272.5
+        ],
+        [
+          132.0,
+          -220.0,
+          1285.0
+        ]
+      ],
+      "wire_gauge": null,
+      "cut_length_mm": null
+    }
+  ]
+}

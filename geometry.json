@@ -1,0 +1,936 @@
+{
+  "units": "mm",
+  "frame": "X width, -Y front, Z up, origin floor",
+  "description": "Nominal 1750 mm simplified rigid mannequin and torso textile; all envelopes illustrative",
+  "objects": [
+    {
+      "id": "torso",
+      "shape": "ellipse_cylinder",
+      "group": "human",
+      "color": "#a5b0b9",
+      "size_mm": [
+        175,
+        105,
+        355
+      ],
+      "position_mm": [
+        0,
+        0,
+        1277.5
+      ]
+    },
+    {
+      "id": "pelvis",
+      "shape": "ellipse_cylinder",
+      "group": "human",
+      "color": "#81919b",
+      "size_mm": [
+        151,
+        97,
+        155
+      ],
+      "position_mm": [
+        0,
+        0,
+        1022.5
+      ]
+    },
+    {
+      "id": "neck",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          0,
+          0,
+          1470
+        ],
+        [
+          0,
+          0,
+          1550
+        ]
+      ],
+      "radius_mm": 43
+    },
+    {
+      "id": "head",
+      "shape": "sphere",
+      "group": "human",
+      "color": "#a5b0b9",
+      "radius_mm": 98,
+      "position_mm": [
+        0,
+        0,
+        1652
+      ]
+    },
+    {
+      "id": "left-upper-arm",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          -202,
+          0,
+          1415
+        ],
+        [
+          -245,
+          0,
+          1160
+        ]
+      ],
+      "radius_mm": 42
+    },
+    {
+      "id": "left-forearm",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          -245,
+          0,
+          1160
+        ],
+        [
+          -265,
+          -15,
+          940
+        ]
+      ],
+      "radius_mm": 34
+    },
+    {
+      "id": "left-hand",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          -265,
+          -15,
+          940
+        ],
+        [
+          -268,
+          -25,
+          850
+        ]
+      ],
+      "radius_mm": 30
+    },
+    {
+      "id": "left-thigh",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          -80,
+          0,
+          965
+        ],
+        [
+          -85,
+          0,
+          530
+        ]
+      ],
+      "radius_mm": 65
+    },
+    {
+      "id": "left-shin",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          -85,
+          0,
+          530
+        ],
+        [
+          -87,
+          0,
+          110
+        ]
+      ],
+      "radius_mm": 46
+    },
+    {
+      "id": "left-foot",
+      "shape": "box",
+      "group": "human",
+      "color": "#81919b",
+      "size_mm": [
+        100,
+        210,
+        70
+      ],
+      "position_mm": [
+        -87,
+        -55,
+        35
+      ]
+    },
+    {
+      "id": "right-upper-arm",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          202,
+          0,
+          1415
+        ],
+        [
+          245,
+          0,
+          1160
+        ]
+      ],
+      "radius_mm": 42
+    },
+    {
+      "id": "right-forearm",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          245,
+          0,
+          1160
+        ],
+        [
+          265,
+          -15,
+          940
+        ]
+      ],
+      "radius_mm": 34
+    },
+    {
+      "id": "right-hand",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          265,
+          -15,
+          940
+        ],
+        [
+          268,
+          -25,
+          850
+        ]
+      ],
+      "radius_mm": 30
+    },
+    {
+      "id": "right-thigh",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          80,
+          0,
+          965
+        ],
+        [
+          85,
+          0,
+          530
+        ]
+      ],
+      "radius_mm": 65
+    },
+    {
+      "id": "right-shin",
+      "shape": "capsule",
+      "group": "human",
+      "color": "#a5b0b9",
+      "endpoints_mm": [
+        [
+          85,
+          0,
+          530
+        ],
+        [
+          87,
+          0,
+          110
+        ]
+      ],
+      "radius_mm": 46
+    },
+    {
+      "id": "right-foot",
+      "shape": "box",
+      "group": "human",
+      "color": "#81919b",
+      "size_mm": [
+        100,
+        210,
+        70
+      ],
+      "position_mm": [
+        87,
+        -55,
+        35
+      ]
+    },
+    {
+      "id": "textile-band",
+      "shape": "ellipse_ring",
+      "group": "device",
+      "color": "#247e81",
+      "size_mm": [
+        196,
+        128,
+        290
+      ],
+      "inner_radii_mm": [
+        185,
+        117
+      ],
+      "position_mm": [
+        0,
+        0,
+        1280
+      ]
+    },
+    {
+      "id": "left-strap",
+      "shape": "box",
+      "group": "device",
+      "color": "#1c5c63",
+      "size_mm": [
+        53,
+        210,
+        9
+      ],
+      "position_mm": [
+        -111,
+        0,
+        1461
+      ]
+    },
+    {
+      "id": "left-strap-front",
+      "shape": "box",
+      "group": "device",
+      "color": "#1c5c63",
+      "size_mm": [
+        53,
+        10,
+        49
+      ],
+      "position_mm": [
+        -111,
+        -94,
+        1437
+      ]
+    },
+    {
+      "id": "left-strap-back",
+      "shape": "box",
+      "group": "device",
+      "color": "#1c5c63",
+      "size_mm": [
+        53,
+        10,
+        49
+      ],
+      "position_mm": [
+        -111,
+        94,
+        1437
+      ]
+    },
+    {
+      "id": "right-strap",
+      "shape": "box",
+      "group": "device",
+      "color": "#1c5c63",
+      "size_mm": [
+        53,
+        210,
+        9
+      ],
+      "position_mm": [
+        111,
+        0,
+        1461
+      ]
+    },
+    {
+      "id": "right-strap-front",
+      "shape": "box",
+      "group": "device",
+      "color": "#1c5c63",
+      "size_mm": [
+        53,
+        10,
+        49
+      ],
+      "position_mm": [
+        111,
+        -94,
+        1437
+      ]
+    },
+    {
+      "id": "right-strap-back",
+      "shape": "box",
+      "group": "device",
+      "color": "#1c5c63",
+      "size_mm": [
+        53,
+        10,
+        49
+      ],
+      "position_mm": [
+        111,
+        94,
+        1437
+      ]
+    },
+    {
+      "id": "left-pocket",
+      "shape": "box",
+      "group": "device",
+      "color": "#1c5c63",
+      "size_mm": [
+        88,
+        11,
+        107
+      ],
+      "position_mm": [
+        -82,
+        -126,
+        1285
+      ]
+    },
+    {
+      "id": "left-spreader",
+      "shape": "box",
+      "group": "device",
+      "color": "#83cbd5",
+      "size_mm": [
+        65,
+        4,
+        70
+      ],
+      "position_mm": [
+        -82,
+        -133.5,
+        1285
+      ]
+    },
+    {
+      "id": "left-tec",
+      "shape": "box",
+      "group": "device",
+      "color": "#e6e8e9",
+      "size_mm": [
+        40,
+        4,
+        40
+      ],
+      "position_mm": [
+        -82,
+        -137.5,
+        1285
+      ]
+    },
+    {
+      "id": "left-pcm",
+      "shape": "box",
+      "group": "device",
+      "color": "#d8a14b",
+      "size_mm": [
+        66,
+        12,
+        72
+      ],
+      "position_mm": [
+        -82,
+        -145.5,
+        1285
+      ]
+    },
+    {
+      "id": "left-sink",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        70,
+        5,
+        76
+      ],
+      "position_mm": [
+        -82,
+        -154,
+        1285
+      ]
+    },
+    {
+      "id": "left-fin-1",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        -112,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "left-fin-2",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        -102,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "left-fin-3",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        -92,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "left-fin-4",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        -82,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "left-fin-5",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        -72,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "left-fin-6",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        -62,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "left-fin-7",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        -52,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "right-pocket",
+      "shape": "box",
+      "group": "device",
+      "color": "#1c5c63",
+      "size_mm": [
+        88,
+        11,
+        107
+      ],
+      "position_mm": [
+        82,
+        -126,
+        1285
+      ]
+    },
+    {
+      "id": "right-spreader",
+      "shape": "box",
+      "group": "device",
+      "color": "#83cbd5",
+      "size_mm": [
+        65,
+        4,
+        70
+      ],
+      "position_mm": [
+        82,
+        -133.5,
+        1285
+      ]
+    },
+    {
+      "id": "right-tec",
+      "shape": "box",
+      "group": "device",
+      "color": "#e6e8e9",
+      "size_mm": [
+        40,
+        4,
+        40
+      ],
+      "position_mm": [
+        82,
+        -137.5,
+        1285
+      ]
+    },
+    {
+      "id": "right-pcm",
+      "shape": "box",
+      "group": "device",
+      "color": "#d8a14b",
+      "size_mm": [
+        66,
+        12,
+        72
+      ],
+      "position_mm": [
+        82,
+        -145.5,
+        1285
+      ]
+    },
+    {
+      "id": "right-sink",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        70,
+        5,
+        76
+      ],
+      "position_mm": [
+        82,
+        -154,
+        1285
+      ]
+    },
+    {
+      "id": "right-fin-1",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        52,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "right-fin-2",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        62,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "right-fin-3",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        72,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "right-fin-4",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        82,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "right-fin-5",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        92,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "right-fin-6",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        102,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "right-fin-7",
+      "shape": "box",
+      "group": "device",
+      "color": "#647785",
+      "size_mm": [
+        5,
+        14,
+        76
+      ],
+      "position_mm": [
+        112,
+        -163.5,
+        1285
+      ]
+    },
+    {
+      "id": "tec-driver",
+      "shape": "box",
+      "group": "device",
+      "color": "#267b59",
+      "size_mm": [
+        42,
+        4,
+        35
+      ],
+      "position_mm": [
+        0,
+        -130,
+        1320
+      ]
+    },
+    {
+      "id": "controller-flex",
+      "shape": "box",
+      "group": "device",
+      "color": "#267b59",
+      "size_mm": [
+        64,
+        3,
+        47
+      ],
+      "position_mm": [
+        0,
+        -130,
+        1380
+      ]
+    },
+    {
+      "id": "controller-cover",
+      "shape": "box",
+      "group": "device",
+      "color": "#dce4e8",
+      "size_mm": [
+        72,
+        10,
+        55
+      ],
+      "position_mm": [
+        0,
+        -137,
+        1380
+      ]
+    },
+    {
+      "id": "local-button",
+      "shape": "box",
+      "group": "device",
+      "color": "#e7b94c",
+      "size_mm": [
+        16,
+        4,
+        16
+      ],
+      "position_mm": [
+        0,
+        -144,
+        1380
+      ]
+    },
+    {
+      "id": "skin-sensor",
+      "shape": "box",
+      "group": "device",
+      "color": "#83cbd5",
+      "size_mm": [
+        16,
+        3,
+        16
+      ],
+      "position_mm": [
+        0,
+        -112,
+        1340
+      ]
+    },
+    {
+      "id": "ambient-sensor",
+      "shape": "box",
+      "group": "device",
+      "color": "#dce4e8",
+      "size_mm": [
+        15,
+        6,
+        18
+      ],
+      "position_mm": [
+        0,
+        -135,
+        1210
+      ]
+    },
+    {
+      "id": "power-flex",
+      "shape": "box",
+      "group": "device",
+      "color": "#267b59",
+      "size_mm": [
+        54,
+        5,
+        38
+      ],
+      "position_mm": [
+        0,
+        131,
+        1380
+      ]
+    },
+    {
+      "id": "battery-pack",
+      "shape": "box",
+      "group": "device",
+      "color": "#596776",
+      "size_mm": [
+        108,
+        12,
+        92
+      ],
+      "position_mm": [
+        0,
+        137,
+        1280
+      ]
+    },
+    {
+      "id": "qi-receiver",
+      "shape": "box",
+      "group": "device",
+      "color": "#b77a42",
+      "size_mm": [
+        52,
+        3,
+        52
+      ],
+      "position_mm": [
+        0,
+        144.5,
+        1280
+      ]
+    }
+  ]
+}

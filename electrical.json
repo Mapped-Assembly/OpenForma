@@ -1,0 +1,899 @@
+{
+  "artifact_id": "smart-textile.electrical",
+  "revision": 3,
+  "domain": "electrical",
+  "schema_version": "1.0",
+  "parts": [
+    {
+      "part_definition_id": "controller-flex",
+      "name": "BLE microcontroller",
+      "part_number": "nRF52840",
+      "category": "Component",
+      "engineering": {
+        "manufacturer": null,
+        "revision": null,
+        "datasheet": null,
+        "mass_kg": null,
+        "cad": null,
+        "connectors": [],
+        "motor": null,
+        "controller": null,
+        "conductor_response": {
+          "reference_resistance_ohm": null,
+          "reference_temperature_kelvin": null,
+          "temperature_coefficient_per_kelvin": null,
+          "longitudinal_gauge_factor": null,
+          "source": null
+        }
+      },
+      "pins": [
+        {
+          "pin_id": "VDD",
+          "name": "VDD",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "GND",
+          "name": "GND",
+          "pin_type": "Ground",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "SDA",
+          "name": "SDA",
+          "pin_type": "I2C",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "SCL",
+          "name": "SCL",
+          "pin_type": "I2C",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "LOCAL",
+          "name": "LOCAL",
+          "pin_type": "Digital",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "TEC_EN",
+          "name": "TEC_EN",
+          "pin_type": "Digital",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        }
+      ],
+      "electrical_specs": {
+        "verification": "logical interface only; actual package pinout TBD"
+      }
+    },
+    {
+      "part_definition_id": "skin-sensor",
+      "name": "Skin temperature sensor",
+      "part_number": "",
+      "category": "Component",
+      "engineering": {
+        "manufacturer": null,
+        "revision": null,
+        "datasheet": null,
+        "mass_kg": null,
+        "cad": null,
+        "connectors": [],
+        "motor": null,
+        "controller": null,
+        "temperature_sensor": {
+          "output_unit": "degC",
+          "accuracy_kelvin": null,
+          "sampling_period_s": null,
+          "calibration": null
+        }
+      },
+      "pins": [
+        {
+          "pin_id": "VDD",
+          "name": "VDD",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "GND",
+          "name": "GND",
+          "pin_type": "Ground",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "SDA",
+          "name": "SDA",
+          "pin_type": "I2C",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "SCL",
+          "name": "SCL",
+          "pin_type": "I2C",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        }
+      ],
+      "electrical_specs": {
+        "verification": "logical interface only; actual package pinout TBD"
+      }
+    },
+    {
+      "part_definition_id": "ambient-sensor",
+      "name": "Ambient temperature sensor",
+      "part_number": "",
+      "category": "Component",
+      "engineering": {
+        "manufacturer": null,
+        "revision": null,
+        "datasheet": null,
+        "mass_kg": null,
+        "cad": null,
+        "connectors": [],
+        "motor": null,
+        "controller": null,
+        "temperature_sensor": {
+          "output_unit": "degC",
+          "accuracy_kelvin": null,
+          "sampling_period_s": null,
+          "calibration": null
+        }
+      },
+      "pins": [
+        {
+          "pin_id": "VDD",
+          "name": "VDD",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "GND",
+          "name": "GND",
+          "pin_type": "Ground",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "SDA",
+          "name": "SDA",
+          "pin_type": "I2C",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "SCL",
+          "name": "SCL",
+          "pin_type": "I2C",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        }
+      ],
+      "electrical_specs": {
+        "verification": "logical interface only; actual package pinout TBD"
+      }
+    },
+    {
+      "part_definition_id": "power-flex",
+      "name": "Charger / protection / regulation block",
+      "part_number": "",
+      "category": "Component",
+      "engineering": null,
+      "pins": [
+        {
+          "pin_id": "RX_IN",
+          "name": "RX_IN",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "BAT",
+          "name": "BAT",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "GND",
+          "name": "GND",
+          "pin_type": "Ground",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "OUT",
+          "name": "OUT",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        }
+      ],
+      "electrical_specs": {
+        "verification": "logical interface only; actual package pinout TBD"
+      }
+    },
+    {
+      "part_definition_id": "qi-receiver",
+      "name": "Qi receiver",
+      "part_number": "",
+      "category": "Component",
+      "engineering": null,
+      "pins": [
+        {
+          "pin_id": "OUT",
+          "name": "OUT",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "GND",
+          "name": "GND",
+          "pin_type": "Ground",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        }
+      ],
+      "electrical_specs": {
+        "verification": "logical interface only; actual package pinout TBD"
+      }
+    },
+    {
+      "part_definition_id": "battery-pack",
+      "name": "Thin-film battery pack",
+      "part_number": "",
+      "category": "Component",
+      "engineering": null,
+      "pins": [
+        {
+          "pin_id": "POS",
+          "name": "POS",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "NEG",
+          "name": "NEG",
+          "pin_type": "Ground",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        }
+      ],
+      "electrical_specs": {
+        "verification": "logical interface only; actual package pinout TBD"
+      }
+    },
+    {
+      "part_definition_id": "tec-driver",
+      "name": "Current-limited TEC driver",
+      "part_number": "",
+      "category": "Component",
+      "engineering": null,
+      "pins": [
+        {
+          "pin_id": "VIN",
+          "name": "VIN",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "GND",
+          "name": "GND",
+          "pin_type": "Ground",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "EN",
+          "name": "EN",
+          "pin_type": "Digital",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "OUT_L",
+          "name": "OUT_L",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "OUT_R",
+          "name": "OUT_R",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        }
+      ],
+      "electrical_specs": {
+        "verification": "logical interface only; actual package pinout TBD"
+      }
+    },
+    {
+      "part_definition_id": "left-tec",
+      "name": "Peltier element L",
+      "part_number": "",
+      "category": "Component",
+      "engineering": null,
+      "pins": [
+        {
+          "pin_id": "P",
+          "name": "P",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "N",
+          "name": "N",
+          "pin_type": "Ground",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        }
+      ],
+      "electrical_specs": {
+        "verification": "logical interface only; actual package pinout TBD"
+      }
+    },
+    {
+      "part_definition_id": "right-tec",
+      "name": "Peltier element R",
+      "part_number": "",
+      "category": "Component",
+      "engineering": null,
+      "pins": [
+        {
+          "pin_id": "P",
+          "name": "P",
+          "pin_type": "Power",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "N",
+          "name": "N",
+          "pin_type": "Ground",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        }
+      ],
+      "electrical_specs": {
+        "verification": "logical interface only; actual package pinout TBD"
+      }
+    },
+    {
+      "part_definition_id": "local-button",
+      "name": "Local control",
+      "part_number": "",
+      "category": "Component",
+      "engineering": null,
+      "pins": [
+        {
+          "pin_id": "SIG",
+          "name": "SIG",
+          "pin_type": "Digital",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        },
+        {
+          "pin_id": "GND",
+          "name": "GND",
+          "pin_type": "Ground",
+          "voltage": null,
+          "limits": null,
+          "description": null,
+          "direction": null,
+          "power_role": null,
+          "interface": null
+        }
+      ],
+      "electrical_specs": {
+        "verification": "logical interface only; actual package pinout TBD"
+      }
+    }
+  ],
+  "components": [
+    {
+      "object_id": "controller-flex",
+      "ref_des": "U1",
+      "part_definition_id": "controller-flex"
+    },
+    {
+      "object_id": "skin-sensor",
+      "ref_des": "U2",
+      "part_definition_id": "skin-sensor"
+    },
+    {
+      "object_id": "ambient-sensor",
+      "ref_des": "U3",
+      "part_definition_id": "ambient-sensor"
+    },
+    {
+      "object_id": "power-flex",
+      "ref_des": "U4",
+      "part_definition_id": "power-flex"
+    },
+    {
+      "object_id": "qi-receiver",
+      "ref_des": "RX1",
+      "part_definition_id": "qi-receiver"
+    },
+    {
+      "object_id": "battery-pack",
+      "ref_des": "B1",
+      "part_definition_id": "battery-pack"
+    },
+    {
+      "object_id": "tec-driver",
+      "ref_des": "U5",
+      "part_definition_id": "tec-driver"
+    },
+    {
+      "object_id": "left-tec",
+      "ref_des": "TEC1",
+      "part_definition_id": "left-tec"
+    },
+    {
+      "object_id": "right-tec",
+      "ref_des": "TEC2",
+      "part_definition_id": "right-tec"
+    },
+    {
+      "object_id": "local-button",
+      "ref_des": "SW1",
+      "part_definition_id": "local-button"
+    }
+  ],
+  "nets": [
+    {
+      "net_id": "qi-dc",
+      "name": "qi-dc",
+      "net_type": "Power",
+      "voltage": null,
+      "pins": [
+        {
+          "ref_des": "RX1",
+          "pin_id": "OUT"
+        },
+        {
+          "ref_des": "U4",
+          "pin_id": "RX_IN"
+        }
+      ]
+    },
+    {
+      "net_id": "battery",
+      "name": "battery",
+      "net_type": "Power",
+      "voltage": null,
+      "pins": [
+        {
+          "ref_des": "B1",
+          "pin_id": "POS"
+        },
+        {
+          "ref_des": "U4",
+          "pin_id": "BAT"
+        }
+      ]
+    },
+    {
+      "net_id": "3v3",
+      "name": "3v3",
+      "net_type": "Power",
+      "voltage": 3.3,
+      "pins": [
+        {
+          "ref_des": "U4",
+          "pin_id": "OUT"
+        },
+        {
+          "ref_des": "U1",
+          "pin_id": "VDD"
+        },
+        {
+          "ref_des": "U2",
+          "pin_id": "VDD"
+        },
+        {
+          "ref_des": "U3",
+          "pin_id": "VDD"
+        },
+        {
+          "ref_des": "U5",
+          "pin_id": "VIN"
+        }
+      ]
+    },
+    {
+      "net_id": "gnd",
+      "name": "gnd",
+      "net_type": "Ground",
+      "voltage": 0.0,
+      "pins": [
+        {
+          "ref_des": "U1",
+          "pin_id": "GND"
+        },
+        {
+          "ref_des": "U2",
+          "pin_id": "GND"
+        },
+        {
+          "ref_des": "U3",
+          "pin_id": "GND"
+        },
+        {
+          "ref_des": "U4",
+          "pin_id": "GND"
+        },
+        {
+          "ref_des": "RX1",
+          "pin_id": "GND"
+        },
+        {
+          "ref_des": "B1",
+          "pin_id": "NEG"
+        },
+        {
+          "ref_des": "U5",
+          "pin_id": "GND"
+        },
+        {
+          "ref_des": "TEC1",
+          "pin_id": "N"
+        },
+        {
+          "ref_des": "TEC2",
+          "pin_id": "N"
+        },
+        {
+          "ref_des": "SW1",
+          "pin_id": "GND"
+        }
+      ]
+    },
+    {
+      "net_id": "i2c-sda",
+      "name": "i2c-sda",
+      "net_type": "I2C",
+      "voltage": null,
+      "pins": [
+        {
+          "ref_des": "U1",
+          "pin_id": "SDA"
+        },
+        {
+          "ref_des": "U2",
+          "pin_id": "SDA"
+        },
+        {
+          "ref_des": "U3",
+          "pin_id": "SDA"
+        }
+      ]
+    },
+    {
+      "net_id": "i2c-scl",
+      "name": "i2c-scl",
+      "net_type": "I2C",
+      "voltage": null,
+      "pins": [
+        {
+          "ref_des": "U1",
+          "pin_id": "SCL"
+        },
+        {
+          "ref_des": "U2",
+          "pin_id": "SCL"
+        },
+        {
+          "ref_des": "U3",
+          "pin_id": "SCL"
+        }
+      ]
+    },
+    {
+      "net_id": "local-control",
+      "name": "local-control",
+      "net_type": "Digital",
+      "voltage": null,
+      "pins": [
+        {
+          "ref_des": "U1",
+          "pin_id": "LOCAL"
+        },
+        {
+          "ref_des": "SW1",
+          "pin_id": "SIG"
+        }
+      ]
+    },
+    {
+      "net_id": "tec-enable",
+      "name": "tec-enable",
+      "net_type": "Digital",
+      "voltage": null,
+      "pins": [
+        {
+          "ref_des": "U1",
+          "pin_id": "TEC_EN"
+        },
+        {
+          "ref_des": "U5",
+          "pin_id": "EN"
+        }
+      ]
+    },
+    {
+      "net_id": "tec-left",
+      "name": "tec-left",
+      "net_type": "Power",
+      "voltage": null,
+      "pins": [
+        {
+          "ref_des": "U5",
+          "pin_id": "OUT_L"
+        },
+        {
+          "ref_des": "TEC1",
+          "pin_id": "P"
+        }
+      ]
+    },
+    {
+      "net_id": "tec-right",
+      "name": "tec-right",
+      "net_type": "Power",
+      "voltage": null,
+      "pins": [
+        {
+          "ref_des": "U5",
+          "pin_id": "OUT_R"
+        },
+        {
+          "ref_des": "TEC2",
+          "pin_id": "P"
+        }
+      ]
+    }
+  ],
+  "buses": [
+    {
+      "bus_id": "temp-i2c",
+      "bus_type": "I2C",
+      "clock_frequency_hz": null,
+      "nets": [
+        "i2c-sda",
+        "i2c-scl"
+      ]
+    }
+  ],
+  "pin_mappings": [],
+  "power_rails": [],
+  "harnesses": [],
+  "power_domains": [
+    {
+      "domain_id": "battery",
+      "net_id": "battery",
+      "source_object_id": "battery-pack",
+      "voltage_v": null,
+      "current_limit_a": null,
+      "upstream_domain_id": null,
+      "conversion_efficiency": null,
+      "quiescent_power_w": null,
+      "loads": []
+    },
+    {
+      "domain_id": "logic-3v3",
+      "net_id": "3v3",
+      "source_object_id": "power-flex",
+      "voltage_v": 3.3,
+      "current_limit_a": null,
+      "upstream_domain_id": "battery",
+      "conversion_efficiency": null,
+      "quiescent_power_w": null,
+      "loads": [
+        {
+          "object_id": "controller-flex",
+          "on_power_w": null,
+          "idle_power_w": null,
+          "duty_cycle": null
+        },
+        {
+          "object_id": "skin-sensor",
+          "on_power_w": null,
+          "idle_power_w": null,
+          "duty_cycle": null
+        },
+        {
+          "object_id": "ambient-sensor",
+          "on_power_w": null,
+          "idle_power_w": null,
+          "duty_cycle": null
+        }
+      ]
+    },
+    {
+      "domain_id": "left-tec",
+      "net_id": "tec-left",
+      "source_object_id": "tec-driver",
+      "voltage_v": null,
+      "current_limit_a": null,
+      "upstream_domain_id": "logic-3v3",
+      "conversion_efficiency": null,
+      "quiescent_power_w": null,
+      "loads": [
+        {
+          "object_id": "left-tec",
+          "on_power_w": null,
+          "idle_power_w": null,
+          "duty_cycle": null
+        }
+      ]
+    },
+    {
+      "domain_id": "right-tec",
+      "net_id": "tec-right",
+      "source_object_id": "tec-driver",
+      "voltage_v": null,
+      "current_limit_a": null,
+      "upstream_domain_id": "logic-3v3",
+      "conversion_efficiency": null,
+      "quiescent_power_w": null,
+      "loads": [
+        {
+          "object_id": "right-tec",
+          "on_power_w": null,
+          "idle_power_w": null,
+          "duty_cycle": null
+        }
+      ]
+    }
+  ],
+  "runtime_bindings": [],
+  "evidence": [],
+  "estimated_current_draw_ma": null
+}

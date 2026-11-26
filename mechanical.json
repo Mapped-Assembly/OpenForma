@@ -1,0 +1,1738 @@
+{
+  "artifact_id": "smart-textile.mechanical",
+  "revision": 3,
+  "domain": "mechanical",
+  "schema_version": "1.0",
+  "parts": [
+    {
+      "part_definition_id": "textile-band",
+      "dimensions_mm": {
+        "width": 392.0,
+        "depth": 256.0,
+        "height": 290.0
+      },
+      "material": null,
+      "geometry_refs": [],
+      "flexibility": {
+        "warp_modulus_pa": null,
+        "weft_modulus_pa": null,
+        "shear_modulus_pa": null,
+        "warp_bending_rigidity_nm": null,
+        "weft_bending_rigidity_nm": null,
+        "maximum_warp_strain": null,
+        "maximum_weft_strain": null,
+        "minimum_bend_radius_mm": null,
+        "evidence_uri": null,
+        "evidence_sha256": null
+      }
+    },
+    {
+      "part_definition_id": "left-strap",
+      "dimensions_mm": {
+        "width": 53.0,
+        "depth": 210.0,
+        "height": 9.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-strap-front",
+      "dimensions_mm": {
+        "width": 53.0,
+        "depth": 10.0,
+        "height": 49.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-strap-back",
+      "dimensions_mm": {
+        "width": 53.0,
+        "depth": 10.0,
+        "height": 49.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-strap",
+      "dimensions_mm": {
+        "width": 53.0,
+        "depth": 210.0,
+        "height": 9.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-strap-front",
+      "dimensions_mm": {
+        "width": 53.0,
+        "depth": 10.0,
+        "height": 49.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-strap-back",
+      "dimensions_mm": {
+        "width": 53.0,
+        "depth": 10.0,
+        "height": 49.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-pocket",
+      "dimensions_mm": {
+        "width": 88.0,
+        "depth": 11.0,
+        "height": 107.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-spreader",
+      "dimensions_mm": {
+        "width": 65.0,
+        "depth": 4.0,
+        "height": 70.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-tec",
+      "dimensions_mm": {
+        "width": 40.0,
+        "depth": 4.0,
+        "height": 40.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-pcm",
+      "dimensions_mm": {
+        "width": 66.0,
+        "depth": 12.0,
+        "height": 72.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-sink",
+      "dimensions_mm": {
+        "width": 70.0,
+        "depth": 5.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-fin-1",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-fin-2",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-fin-3",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-fin-4",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-fin-5",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-fin-6",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "left-fin-7",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-pocket",
+      "dimensions_mm": {
+        "width": 88.0,
+        "depth": 11.0,
+        "height": 107.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-spreader",
+      "dimensions_mm": {
+        "width": 65.0,
+        "depth": 4.0,
+        "height": 70.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-tec",
+      "dimensions_mm": {
+        "width": 40.0,
+        "depth": 4.0,
+        "height": 40.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-pcm",
+      "dimensions_mm": {
+        "width": 66.0,
+        "depth": 12.0,
+        "height": 72.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-sink",
+      "dimensions_mm": {
+        "width": 70.0,
+        "depth": 5.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-fin-1",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-fin-2",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-fin-3",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-fin-4",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-fin-5",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-fin-6",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "right-fin-7",
+      "dimensions_mm": {
+        "width": 5.0,
+        "depth": 14.0,
+        "height": 76.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "tec-driver",
+      "dimensions_mm": {
+        "width": 42.0,
+        "depth": 4.0,
+        "height": 35.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "controller-flex",
+      "dimensions_mm": {
+        "width": 64.0,
+        "depth": 3.0,
+        "height": 47.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "controller-cover",
+      "dimensions_mm": {
+        "width": 72.0,
+        "depth": 10.0,
+        "height": 55.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "local-button",
+      "dimensions_mm": {
+        "width": 16.0,
+        "depth": 4.0,
+        "height": 16.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "skin-sensor",
+      "dimensions_mm": {
+        "width": 16.0,
+        "depth": 3.0,
+        "height": 16.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "ambient-sensor",
+      "dimensions_mm": {
+        "width": 15.0,
+        "depth": 6.0,
+        "height": 18.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "power-flex",
+      "dimensions_mm": {
+        "width": 54.0,
+        "depth": 5.0,
+        "height": 38.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "battery-pack",
+      "dimensions_mm": {
+        "width": 108.0,
+        "depth": 12.0,
+        "height": 92.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "qi-receiver",
+      "dimensions_mm": {
+        "width": 52.0,
+        "depth": 3.0,
+        "height": 52.0
+      },
+      "material": null,
+      "geometry_refs": []
+    },
+    {
+      "part_definition_id": "controller-film-substrate",
+      "dimensions_mm": {
+        "width": 64.0,
+        "depth": 0.1,
+        "height": 47.0
+      },
+      "material": "Polyimide (candidate)",
+      "geometry_refs": [
+        "controller-film-substrate.step"
+      ],
+      "flexibility": {
+        "warp_modulus_pa": null,
+        "weft_modulus_pa": null,
+        "shear_modulus_pa": null,
+        "warp_bending_rigidity_nm": null,
+        "weft_bending_rigidity_nm": null,
+        "maximum_warp_strain": null,
+        "maximum_weft_strain": null,
+        "minimum_bend_radius_mm": null,
+        "evidence_uri": null,
+        "evidence_sha256": null
+      }
+    },
+    {
+      "part_definition_id": "controller-film-copper",
+      "dimensions_mm": {
+        "width": 64.0,
+        "depth": 0.035,
+        "height": 47.0
+      },
+      "material": "Copper (unpatterned geometry placeholder)",
+      "geometry_refs": [
+        "controller-film-copper.step"
+      ],
+      "flexibility": {
+        "warp_modulus_pa": null,
+        "weft_modulus_pa": null,
+        "shear_modulus_pa": null,
+        "warp_bending_rigidity_nm": null,
+        "weft_bending_rigidity_nm": null,
+        "maximum_warp_strain": null,
+        "maximum_weft_strain": null,
+        "minimum_bend_radius_mm": null,
+        "evidence_uri": null,
+        "evidence_sha256": null
+      }
+    },
+    {
+      "part_definition_id": "controller-film-coverlay",
+      "dimensions_mm": {
+        "width": 64.0,
+        "depth": 0.165,
+        "height": 47.0
+      },
+      "material": "Encapsulation (material unspecified)",
+      "geometry_refs": [
+        "controller-film-coverlay.step"
+      ],
+      "flexibility": {
+        "warp_modulus_pa": null,
+        "weft_modulus_pa": null,
+        "shear_modulus_pa": null,
+        "warp_bending_rigidity_nm": null,
+        "weft_bending_rigidity_nm": null,
+        "maximum_warp_strain": null,
+        "maximum_weft_strain": null,
+        "minimum_bend_radius_mm": null,
+        "evidence_uri": null,
+        "evidence_sha256": null
+      }
+    },
+    {
+      "part_definition_id": "garment-assembly",
+      "dimensions_mm": {},
+      "material": null,
+      "geometry_refs": []
+    }
+  ],
+  "components": [
+    {
+      "object_id": "textile-band",
+      "ref_des": "M01",
+      "part_definition_id": "textile-band"
+    },
+    {
+      "object_id": "left-strap",
+      "ref_des": "M02",
+      "part_definition_id": "left-strap"
+    },
+    {
+      "object_id": "left-strap-front",
+      "ref_des": "M03",
+      "part_definition_id": "left-strap-front"
+    },
+    {
+      "object_id": "left-strap-back",
+      "ref_des": "M04",
+      "part_definition_id": "left-strap-back"
+    },
+    {
+      "object_id": "right-strap",
+      "ref_des": "M05",
+      "part_definition_id": "right-strap"
+    },
+    {
+      "object_id": "right-strap-front",
+      "ref_des": "M06",
+      "part_definition_id": "right-strap-front"
+    },
+    {
+      "object_id": "right-strap-back",
+      "ref_des": "M07",
+      "part_definition_id": "right-strap-back"
+    },
+    {
+      "object_id": "left-pocket",
+      "ref_des": "M08",
+      "part_definition_id": "left-pocket"
+    },
+    {
+      "object_id": "left-spreader",
+      "ref_des": "M09",
+      "part_definition_id": "left-spreader"
+    },
+    {
+      "object_id": "left-tec",
+      "ref_des": "M10",
+      "part_definition_id": "left-tec"
+    },
+    {
+      "object_id": "left-pcm",
+      "ref_des": "M11",
+      "part_definition_id": "left-pcm"
+    },
+    {
+      "object_id": "left-sink",
+      "ref_des": "M12",
+      "part_definition_id": "left-sink"
+    },
+    {
+      "object_id": "left-fin-1",
+      "ref_des": "M13",
+      "part_definition_id": "left-fin-1"
+    },
+    {
+      "object_id": "left-fin-2",
+      "ref_des": "M14",
+      "part_definition_id": "left-fin-2"
+    },
+    {
+      "object_id": "left-fin-3",
+      "ref_des": "M15",
+      "part_definition_id": "left-fin-3"
+    },
+    {
+      "object_id": "left-fin-4",
+      "ref_des": "M16",
+      "part_definition_id": "left-fin-4"
+    },
+    {
+      "object_id": "left-fin-5",
+      "ref_des": "M17",
+      "part_definition_id": "left-fin-5"
+    },
+    {
+      "object_id": "left-fin-6",
+      "ref_des": "M18",
+      "part_definition_id": "left-fin-6"
+    },
+    {
+      "object_id": "left-fin-7",
+      "ref_des": "M19",
+      "part_definition_id": "left-fin-7"
+    },
+    {
+      "object_id": "right-pocket",
+      "ref_des": "M20",
+      "part_definition_id": "right-pocket"
+    },
+    {
+      "object_id": "right-spreader",
+      "ref_des": "M21",
+      "part_definition_id": "right-spreader"
+    },
+    {
+      "object_id": "right-tec",
+      "ref_des": "M22",
+      "part_definition_id": "right-tec"
+    },
+    {
+      "object_id": "right-pcm",
+      "ref_des": "M23",
+      "part_definition_id": "right-pcm"
+    },
+    {
+      "object_id": "right-sink",
+      "ref_des": "M24",
+      "part_definition_id": "right-sink"
+    },
+    {
+      "object_id": "right-fin-1",
+      "ref_des": "M25",
+      "part_definition_id": "right-fin-1"
+    },
+    {
+      "object_id": "right-fin-2",
+      "ref_des": "M26",
+      "part_definition_id": "right-fin-2"
+    },
+    {
+      "object_id": "right-fin-3",
+      "ref_des": "M27",
+      "part_definition_id": "right-fin-3"
+    },
+    {
+      "object_id": "right-fin-4",
+      "ref_des": "M28",
+      "part_definition_id": "right-fin-4"
+    },
+    {
+      "object_id": "right-fin-5",
+      "ref_des": "M29",
+      "part_definition_id": "right-fin-5"
+    },
+    {
+      "object_id": "right-fin-6",
+      "ref_des": "M30",
+      "part_definition_id": "right-fin-6"
+    },
+    {
+      "object_id": "right-fin-7",
+      "ref_des": "M31",
+      "part_definition_id": "right-fin-7"
+    },
+    {
+      "object_id": "tec-driver",
+      "ref_des": "M32",
+      "part_definition_id": "tec-driver"
+    },
+    {
+      "object_id": "controller-flex",
+      "ref_des": "M33",
+      "part_definition_id": "controller-flex"
+    },
+    {
+      "object_id": "controller-cover",
+      "ref_des": "M34",
+      "part_definition_id": "controller-cover"
+    },
+    {
+      "object_id": "local-button",
+      "ref_des": "M35",
+      "part_definition_id": "local-button"
+    },
+    {
+      "object_id": "skin-sensor",
+      "ref_des": "M36",
+      "part_definition_id": "skin-sensor"
+    },
+    {
+      "object_id": "ambient-sensor",
+      "ref_des": "M37",
+      "part_definition_id": "ambient-sensor"
+    },
+    {
+      "object_id": "power-flex",
+      "ref_des": "M38",
+      "part_definition_id": "power-flex"
+    },
+    {
+      "object_id": "battery-pack",
+      "ref_des": "M39",
+      "part_definition_id": "battery-pack"
+    },
+    {
+      "object_id": "qi-receiver",
+      "ref_des": "M40",
+      "part_definition_id": "qi-receiver"
+    },
+    {
+      "object_id": "controller-film-substrate",
+      "ref_des": "controller-film-substrate",
+      "part_definition_id": "controller-film-substrate"
+    },
+    {
+      "object_id": "controller-film-copper",
+      "ref_des": "controller-film-copper",
+      "part_definition_id": "controller-film-copper"
+    },
+    {
+      "object_id": "controller-film-coverlay",
+      "ref_des": "controller-film-coverlay",
+      "part_definition_id": "controller-film-coverlay"
+    },
+    {
+      "object_id": "garment-assembly",
+      "ref_des": "garment-assembly",
+      "part_definition_id": "garment-assembly"
+    }
+  ],
+  "mechanical": {
+    "cad_operations": [],
+    "physical_form": "wearable torso band with shoulder straps",
+    "enclosure_type": "textile with removable rigid module pockets",
+    "mounting_guidance": "Conceptual modular retention; skin isolation and pressure verification required.",
+    "fabrication_details": [],
+    "fabrication_cost_estimate_usd": 0.0,
+    "cad_sources": [],
+    "manufacturability_rating": "Unverified",
+    "render_dimensions": null,
+    "component_placements": [
+      {
+        "ref_des": "M01",
+        "label": "textile-band",
+        "category": null,
+        "layer": "structural",
+        "position": {
+          "x_mm": 0.0,
+          "y_mm": 0.0,
+          "z_mm": 1280.0
+        },
+        "size": {
+          "x_mm": 392.0,
+          "y_mm": 256.0,
+          "z_mm": 290.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M02",
+        "label": "left-strap",
+        "category": null,
+        "layer": "structural",
+        "position": {
+          "x_mm": -111.0,
+          "y_mm": 0.0,
+          "z_mm": 1461.0
+        },
+        "size": {
+          "x_mm": 53.0,
+          "y_mm": 210.0,
+          "z_mm": 9.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M03",
+        "label": "left-strap-front",
+        "category": null,
+        "layer": "structural",
+        "position": {
+          "x_mm": -111.0,
+          "y_mm": -94.0,
+          "z_mm": 1437.0
+        },
+        "size": {
+          "x_mm": 53.0,
+          "y_mm": 10.0,
+          "z_mm": 49.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M04",
+        "label": "left-strap-back",
+        "category": null,
+        "layer": "structural",
+        "position": {
+          "x_mm": -111.0,
+          "y_mm": 94.0,
+          "z_mm": 1437.0
+        },
+        "size": {
+          "x_mm": 53.0,
+          "y_mm": 10.0,
+          "z_mm": 49.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M05",
+        "label": "right-strap",
+        "category": null,
+        "layer": "structural",
+        "position": {
+          "x_mm": 111.0,
+          "y_mm": 0.0,
+          "z_mm": 1461.0
+        },
+        "size": {
+          "x_mm": 53.0,
+          "y_mm": 210.0,
+          "z_mm": 9.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M06",
+        "label": "right-strap-front",
+        "category": null,
+        "layer": "structural",
+        "position": {
+          "x_mm": 111.0,
+          "y_mm": -94.0,
+          "z_mm": 1437.0
+        },
+        "size": {
+          "x_mm": 53.0,
+          "y_mm": 10.0,
+          "z_mm": 49.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M07",
+        "label": "right-strap-back",
+        "category": null,
+        "layer": "structural",
+        "position": {
+          "x_mm": 111.0,
+          "y_mm": 94.0,
+          "z_mm": 1437.0
+        },
+        "size": {
+          "x_mm": 53.0,
+          "y_mm": 10.0,
+          "z_mm": 49.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M08",
+        "label": "left-pocket",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -82.0,
+          "y_mm": -126.0,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 88.0,
+          "y_mm": 11.0,
+          "z_mm": 107.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M09",
+        "label": "left-spreader",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -82.0,
+          "y_mm": -133.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 65.0,
+          "y_mm": 4.0,
+          "z_mm": 70.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M10",
+        "label": "left-tec",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -82.0,
+          "y_mm": -137.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 40.0,
+          "y_mm": 4.0,
+          "z_mm": 40.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M11",
+        "label": "left-pcm",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -82.0,
+          "y_mm": -145.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 66.0,
+          "y_mm": 12.0,
+          "z_mm": 72.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M12",
+        "label": "left-sink",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -82.0,
+          "y_mm": -154.0,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 70.0,
+          "y_mm": 5.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M13",
+        "label": "left-fin-1",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -112.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M14",
+        "label": "left-fin-2",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -102.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M15",
+        "label": "left-fin-3",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -92.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M16",
+        "label": "left-fin-4",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -82.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M17",
+        "label": "left-fin-5",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -72.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M18",
+        "label": "left-fin-6",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -62.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M19",
+        "label": "left-fin-7",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": -52.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M20",
+        "label": "right-pocket",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 82.0,
+          "y_mm": -126.0,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 88.0,
+          "y_mm": 11.0,
+          "z_mm": 107.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M21",
+        "label": "right-spreader",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 82.0,
+          "y_mm": -133.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 65.0,
+          "y_mm": 4.0,
+          "z_mm": 70.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M22",
+        "label": "right-tec",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 82.0,
+          "y_mm": -137.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 40.0,
+          "y_mm": 4.0,
+          "z_mm": 40.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M23",
+        "label": "right-pcm",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 82.0,
+          "y_mm": -145.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 66.0,
+          "y_mm": 12.0,
+          "z_mm": 72.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M24",
+        "label": "right-sink",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 82.0,
+          "y_mm": -154.0,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 70.0,
+          "y_mm": 5.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M25",
+        "label": "right-fin-1",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 52.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M26",
+        "label": "right-fin-2",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 62.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M27",
+        "label": "right-fin-3",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 72.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M28",
+        "label": "right-fin-4",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 82.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M29",
+        "label": "right-fin-5",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 92.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M30",
+        "label": "right-fin-6",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 102.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M31",
+        "label": "right-fin-7",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 112.0,
+          "y_mm": -163.5,
+          "z_mm": 1285.0
+        },
+        "size": {
+          "x_mm": 5.0,
+          "y_mm": 14.0,
+          "z_mm": 76.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M32",
+        "label": "tec-driver",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 0.0,
+          "y_mm": -130.0,
+          "z_mm": 1320.0
+        },
+        "size": {
+          "x_mm": 42.0,
+          "y_mm": 4.0,
+          "z_mm": 35.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M33",
+        "label": "controller-flex",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 0.0,
+          "y_mm": -130.0,
+          "z_mm": 1380.0
+        },
+        "size": {
+          "x_mm": 64.0,
+          "y_mm": 3.0,
+          "z_mm": 47.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M34",
+        "label": "controller-cover",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 0.0,
+          "y_mm": -137.0,
+          "z_mm": 1380.0
+        },
+        "size": {
+          "x_mm": 72.0,
+          "y_mm": 10.0,
+          "z_mm": 55.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M35",
+        "label": "local-button",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 0.0,
+          "y_mm": -144.0,
+          "z_mm": 1380.0
+        },
+        "size": {
+          "x_mm": 16.0,
+          "y_mm": 4.0,
+          "z_mm": 16.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M36",
+        "label": "skin-sensor",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 0.0,
+          "y_mm": -112.0,
+          "z_mm": 1340.0
+        },
+        "size": {
+          "x_mm": 16.0,
+          "y_mm": 3.0,
+          "z_mm": 16.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M37",
+        "label": "ambient-sensor",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 0.0,
+          "y_mm": -135.0,
+          "z_mm": 1210.0
+        },
+        "size": {
+          "x_mm": 15.0,
+          "y_mm": 6.0,
+          "z_mm": 18.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M38",
+        "label": "power-flex",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 0.0,
+          "y_mm": 131.0,
+          "z_mm": 1380.0
+        },
+        "size": {
+          "x_mm": 54.0,
+          "y_mm": 5.0,
+          "z_mm": 38.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M39",
+        "label": "battery-pack",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 0.0,
+          "y_mm": 137.0,
+          "z_mm": 1280.0
+        },
+        "size": {
+          "x_mm": 108.0,
+          "y_mm": 12.0,
+          "z_mm": 92.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      },
+      {
+        "ref_des": "M40",
+        "label": "qi-receiver",
+        "category": null,
+        "layer": "misc",
+        "position": {
+          "x_mm": 0.0,
+          "y_mm": 144.5,
+          "z_mm": 1280.0
+        },
+        "size": {
+          "x_mm": 52.0,
+          "y_mm": 3.0,
+          "z_mm": 52.0
+        },
+        "orientation_deg": {
+          "x_deg": 0.0,
+          "y_deg": 0.0,
+          "z_deg": 0.0
+        },
+        "mounting_face": null,
+        "notes": "Illustrative envelope in wearer frame; actual CAD in geometry.json."
+      }
+    ],
+    "spatial_relationships": [],
+    "motion_intents": [],
+    "mechanism_benchmark": null
+  },
+  "cad_model": null,
+  "layered_assemblies": [
+    {
+      "stack_id": "controller-laminate",
+      "host_object_id": "controller-flex",
+      "frame": "controller-flex-local-mm",
+      "normal": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "warp_direction": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "layers": [
+        {
+          "layer_id": "layer-substrate",
+          "component_object_id": "controller-film-substrate",
+          "thickness_mm": 0.1,
+          "material_angle_deg": 0.0,
+          "role": "dielectric"
+        },
+        {
+          "layer_id": "layer-copper",
+          "component_object_id": "controller-film-copper",
+          "thickness_mm": 0.035,
+          "material_angle_deg": 0.0,
+          "role": "conductor"
+        },
+        {
+          "layer_id": "layer-coverlay",
+          "component_object_id": "controller-film-coverlay",
+          "thickness_mm": 0.165,
+          "material_angle_deg": 0.0,
+          "role": "encapsulation"
+        }
+      ],
+      "joins": [
+        {
+          "join_id": "substrate-copper",
+          "first_layer_id": "layer-substrate",
+          "second_layer_id": "layer-copper",
+          "method": "laminated",
+          "geometry_refs": []
+        },
+        {
+          "join_id": "copper-coverlay",
+          "first_layer_id": "layer-copper",
+          "second_layer_id": "layer-coverlay",
+          "method": "laminated",
+          "geometry_refs": []
+        }
+      ]
+    },
+    {
+      "stack_id": "garment-stack",
+      "host_object_id": "garment-assembly",
+      "frame": "band-front-tangent",
+      "normal": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "warp_direction": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "layers": [
+        {
+          "layer_id": "layer-band",
+          "component_object_id": "textile-band",
+          "thickness_mm": null,
+          "material_angle_deg": 0.0,
+          "role": "contact"
+        }
+      ],
+      "joins": []
+    }
+  ]
+}

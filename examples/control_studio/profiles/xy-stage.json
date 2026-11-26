@@ -1,7 +1,0 @@
-{
-  "format": "forma.firmware-sil",
-  "version": 1,
-  "watchdog_ms": 250,
-  "assumptions": "Virtual XY fixture starts at known center. Both axes use 80 steps/mm with ideal step response and simulated end switches. No motor, driver, homing procedure, microstepping mode or physical encoder is selected.",
-  "axes": { "x": { "kind": "stepper", "steps_per_unit": 80 }, "y": { "kind": "stepper", "steps_per_unit": 80 } }
-}
