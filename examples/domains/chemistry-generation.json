@@ -31,7 +31,7 @@
   },
   "decision": {
     "request_sha256": "fc8d2a615995844316186f16209ce183afc12a961703944db3b84cee95257bc2",
-    "registry_sha256": "6ac7a4560850bc42b2490732efd764dcc52c6df15f90d2abca4c36bf1d82bfe9",
+    "registry_sha256": "bafcd4a98919d37084f88912bf681941df4aafe89ed8d4764a43c2bdb2d2de47",
     "scope": {
       "physical_structure": false,
       "mechanical_motion": false,

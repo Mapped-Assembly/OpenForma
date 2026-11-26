@@ -14,6 +14,7 @@ on:
       - "tests/projects/test_process_runtime.py"
       - "tests/projects/test_workcell_execution.py"
       - "tests/projects/test_domain_irs.py"
+      - "tests/test_human_ir.py"
       - "tests/projects/test_electronics_engineering.py"
       - "examples/electronics/**"
       - "tests/projects/test_unified_generation.py"
@@ -43,6 +44,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install -r apps/api/requirements.txt -e ".[process-render]" pytest
+      - run: python -m pytest tests/test_human_ir.py -q
       - run: python -m pytest tests/projects/test_generation_interaction.py tests/projects/test_unified_generation.py tests/agents/test_domain_generation_persistence.py tests/projects/test_domain_irs.py tests/projects/test_external_domain_providers.py tests/projects/test_chemical_ir.py tests/projects/test_stoichiometry.py tests/projects/test_process_ir.py tests/projects/test_thermal_ir.py tests/projects/test_geometry_bindings.py tests/projects/test_component_instances.py tests/projects/test_wiring_compiler.py tests/projects/test_biology.py tests/projects/test_fluidics.py tests/projects/test_cad_generation.py tests/opencode/test_mcp.py -q
       - run: python -m pytest tests/projects/test_empirical_verification.py tests/projects/test_empirical_api.py tests/projects/test_declarative_experiments.py tests/projects/test_process_runtime.py tests/projects/test_workcell_execution.py -q
       - run: python -m examples.experiments.run_benchmark examples/experiments/water-mixing-suite.json --output /tmp/water-mixing-benchmark-report.json

@@ -94,3 +94,7 @@ flowchart LR
 - Dependency-aware concurrent execution and restart recovery are documented in `docs/worker-orchestration.md`.
 - Frozen-brief generation and canonical revision persistence are documented in `docs/generation-worker.md`.
 - Domain-scoped context sharing, field allowlists, and handoff receipts are documented in `docs/context-governance.md`.
+
+## Human participant authoring
+
+For wearers, manual operators and other physical human participants, select the native `human` domain explicitly and follow [HumanIR authoring](human-ir.md). Use declarative profiles, revision-pinned participant references and typed ports. Keep measurements and performance unknown unless evidence is supplied; do not claim simulation, ergonomic qualification or human safety from schema validation. Do not create scene-specific code or substitute OpenCAD for execution.

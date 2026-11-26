@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 Revision = Annotated[int, Field(ge=1)] | Text
 Digest = Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
-NATIVE_DOMAINS = frozenset({"mechanical", "electrical", "biological", "fluidic", "chemical", "process", "thermal"})
+NATIVE_DOMAINS = frozenset({"mechanical", "electrical", "biological", "fluidic", "chemical", "process", "thermal", "human"})
 NATIVE_PROVIDER = "openforma.native"
 
 
