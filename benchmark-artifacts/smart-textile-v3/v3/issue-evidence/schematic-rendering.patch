@@ -1,0 +1,336 @@
+diff --git a/forma_core/utils.py b/forma_core/utils.py
+index 5289b13..927089e 100644
+--- a/forma_core/utils.py
++++ b/forma_core/utils.py
+@@ -1,7 +1,9 @@
++from __future__ import annotations
+ import re
+ from typing import Dict
+ import html
+ from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
++from forma_core.electronics.models import ElectricalIR
+ 
+ _MERMAID_ID_PATTERN = re.compile(r"[^a-zA-Z0-9_]")
+ 
+@@ -99,193 +101,67 @@ def generate_mermaid_chart(ir: HardwareIntermediateRepresentation) -> str:
+     return "\n".join(lines)
+ 
+ 
+-def generate_svg_schematic(ir: HardwareIntermediateRepresentation) -> str:
+-    """
+-    Generates a beautifully arranged, color-coded SVG schematic of the circuit.
+-    Renders MCUs in the center, sensors on the left, displays/actuators on the right.
+-    Wires are drawn as orthogonal bezier curves.
+-    """
+-    if not ir or not ir.components:
+-        return "<svg width='400' height='200'><text x='20' y='50'>No circuit defined</text></svg>"
+-
+-    # Dimensions
+-    width = 1000
+-    height = 600
+-    
+-    # Divide layout columns
+-    # Left column: Sensors & Power (x=150)
+-    # Center column: Microcontroller (x=500)
+-    # Right column: Actuators & Displays (x=850)
+-    
+-    # Layout positioning maps
+-    # ref_des -> (x, y)
+-    coords: Dict[str, tuple] = {}
+-    
+-    mcu_parts = [c for c in ir.components if c.category.lower() == "microcontroller"]
+-    sensor_parts = [c for c in ir.components if c.category.lower() == "sensor" or c.category.lower() == "power"]
+-    output_parts = [c for c in ir.components if c.category.lower() in ["actuator", "display", "passives"]]
+-    
+-    # Place MCU in center
+-    if mcu_parts:
+-        for idx, mcu in enumerate(mcu_parts):
+-            coords[mcu.ref_des] = (500, 200 + (idx * 220))
+-            
+-    # Place Sensors on left
+-    for idx, sens in enumerate(sensor_parts):
+-        coords[sens.ref_des] = (150, 100 + (idx * 140))
+-        
+-    # Place Outputs on right
+-    for idx, out in enumerate(output_parts):
+-        coords[out.ref_des] = (850, 100 + (idx * 140))
+-        
+-    # Standard fallback coordinates for any remaining parts
+-    for comp in ir.components:
+-        if comp.ref_des not in coords:
+-            coords[comp.ref_des] = (500, 450)
+-
+-    # Begin building SVG
+-    svg_elements = [
+-        f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 {width} {height}' width='100%' height='100%'>",
+-        "  <!-- Grid Background -->",
+-        "  <defs>",
+-        "    <pattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'>",
+-        "      <path d='M 20 0 L 0 0 0 20' fill='none' stroke='#f0f2f5' stroke-width='1'/>",
+-        "    </pattern>",
+-        "  </defs>",
+-        "  <rect width='100%' height='100%' fill='url(#grid)' />",
+-        "  <rect width='100%' height='100%' fill='none' stroke='#cbd5e1' stroke-width='2' />",
+-        "  <text x='25' y='35' font-family='sans-serif' font-size='18' font-weight='bold' fill='#0f172a'>Electrical Assembly Schematic</text>",
+-        f"  <text x='25' y='55' font-family='sans-serif' font-size='12' fill='#64748b'>{html.escape(ir.overview.title if ir.overview else 'Hardware Project')}</text>"
+-    ]
+-
+-    # Render wires (Nets) first so they are layered behind component boxes
+-    svg_elements.append("  <!-- Wires / Connections -->")
+-    
+-    net_colors = {
+-        "ground": "#000000",       # GND is Black
+-        "power": "#dc2626",        # VCC is Red
+-        "i2c": "#06b6d4",          # I2C is Cyan
+-        "spi": "#a855f7",          # SPI is Purple
+-        "digital": "#3b82f6",      # GPIO is Blue
+-        "analog": "#f59e0b",       # Analog is Amber
+-        "pwm": "#10b981",          # PWM is Emerald
+-        "default": "#64748b"       # General signal is Slate
+-    }
++def generate_svg_schematic(ir: HardwareIntermediateRepresentation | ElectricalIR) -> str:
++    """Render every declared pin and named net without merging parallel connections.
+ 
+-    drawn_lines = set()
++    Supports native ElectricalIR and legacy hardware documents. Named net labels
++    connect equal net IDs across component symbols. This is an interface schematic,
++    not a PCB layout, package-pin assignment or manufacturing verification.
++    """
++    if ir is None or not ir.components:
++        return "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='100'><text x='20' y='50'>No circuit defined</text></svg>"
++    if isinstance(ir, ElectricalIR):
++        ir = ElectricalIR.model_validate(ir.model_dump(mode="json"))
++        parts = {part.part_definition_id: part for part in ir.parts}
++        items = [(c.ref_des, parts[c.part_definition_id]) for c in ir.components]
++    else:
++        items = [(c.ref_des, c) for c in ir.components]
++    known = {(ref, pin.pin_id) for ref, part in items for pin in part.pins}
++    connections: dict[tuple[str, str], list] = {}
+     for net in ir.nets:
+-        color = net_colors.get(net.net_type.lower(), net_colors["default"])
+-        stroke_width = 2.5 if net.net_type.lower() in ["power", "ground"] else 1.5
+-        dash_array = "4 4" if net.net_type.lower() == "ground" else "none"
+-        
+-        # Draw connections
+-        # Connect all pins in a net to a central hub, or chain them together
+-        if len(net.pins) >= 2:
+-            # Let's chain them sequentially
+-            for i in range(len(net.pins) - 1):
+-                p1 = net.pins[i]
+-                p2 = net.pins[i+1]
+-                
+-                pt1 = coords.get(p1.ref_des)
+-                pt2 = coords.get(p2.ref_des)
+-                
+-                if pt1 and pt2:
+-                    # Offsets to connect on left/right side of components
+-                    x1, y1 = pt1
+-                    x2, y2 = pt2
+-                    
+-                    # Offset depending on column
+-                    x1_offset = 110 if x1 < 400 else (-110 if x1 > 600 else (110 if x2 > x1 else -110))
+-                    x2_offset = -110 if x2 > 600 else (110 if x2 < 400 else (110 if x1 > x2 else -110))
+-                    
+-                    cx1, cy1 = x1 + x1_offset, y1
+-                    cx2, cy2 = x2 + x2_offset, y2
+-                    
+-                    line_key = tuple(sorted([(cx1, cy1), (cx2, cy2)]))
+-                    if line_key not in drawn_lines:
+-                        drawn_lines.add(line_key)
+-                        
+-                        # Draw Bezier Curve for organic circuit routing look
+-                        control_x1 = cx1 + (cx2 - cx1) * 0.4
+-                        control_x2 = cx1 + (cx2 - cx1) * 0.6
+-                        
+-                        path_d = f"M {cx1} {cy1} C {control_x1} {cy1}, {control_x2} {cy2}, {cx2} {cy2}"
+-                        svg_elements.append(
+-                            f"  <path d='{path_d}' fill='none' stroke='{color}' stroke-width='{stroke_width}' "
+-                            f"stroke-dasharray='{dash_array}' opacity='0.85' />"
+-                        )
+-
+-    # Render Components
+-    svg_elements.append("  <!-- Components -->")
+-    for comp in ir.components:
+-        x, y = coords[comp.ref_des]
+-        
+-        # Component Box Dimensions
+-        c_width = 220
+-        c_height = 120
+-        box_x = x - (c_width // 2)
+-        box_y = y - (c_height // 2)
+-        
+-        # Category Colors
+-        cat_styles = {
+-            "microcontroller": {"fill": "#eff6ff", "border": "#2563eb", "badge_fill": "#dbeafe", "badge_text": "#1e40af"},
+-            "sensor": {"fill": "#f0fdf4", "border": "#16a34a", "badge_fill": "#dcfce7", "badge_text": "#14532d"},
+-            "display": {"fill": "#faf5ff", "border": "#7c3aed", "badge_fill": "#f3e8ff", "badge_text": "#581c87"},
+-            "actuator": {"fill": "#fffbeb", "border": "#d97706", "badge_fill": "#fef3c7", "badge_text": "#78350f"},
+-            "power": {"fill": "#fef2f2", "border": "#dc2626", "badge_fill": "#fee2e2", "badge_text": "#7f1d1d"},
+-            "default": {"fill": "#f8fafc", "border": "#475569", "badge_fill": "#e2e8f0", "badge_text": "#1e293b"}
+-        }
+-        
+-        style = cat_styles.get(comp.category.lower(), cat_styles["default"])
+-        
+-        # Render Component Rectangle Card
+-        svg_elements.append(f"  <g id='comp-{comp.ref_des}'>")
+-        svg_elements.append(
+-            f"    <rect x='{box_x}' y='{box_y}' width='{c_width}' height='{c_height}' rx='8' ry='8' "
+-            f"fill='{style['fill']}' stroke='{style['border']}' stroke-width='2' filter='drop-shadow(0 2px 4px rgba(0,0,0,0.05))'/>"
+-        )
+-        
+-        # Component Badge (Category)
+-        svg_elements.append(
+-            f"    <rect x='{box_x + 12}' y='{box_y + 12}' width='100' height='18' rx='4' ry='4' fill='{style['badge_fill']}' />"
+-        )
+-        svg_elements.append(
+-            f"    <text x='{box_x + 62}' y='{box_y + 25}' font-family='sans-serif' font-size='9' font-weight='bold' "
+-            f"fill='{style['badge_text']}' text-anchor='middle'>{comp.category.upper()}</text>"
+-        )
+-        
+-        # Reference Designator
+-        svg_elements.append(
+-            f"    <text x='{box_x + c_width - 15}' y='{box_y + 26}' font-family='sans-serif' font-size='14' font-weight='bold' "
+-            f"fill='#0f172a' text-anchor='end'>{comp.ref_des}</text>"
+-        )
+-        
+-        # Part Name
+-        name_truncated = comp.name if len(comp.name) <= 24 else comp.name[:21] + "..."
+-        svg_elements.append(
+-            f"    <text x='{box_x + 12}' y='{box_y + 55}' font-family='sans-serif' font-size='12' font-weight='bold' fill='#0f172a'>{html.escape(name_truncated)}</text>"
+-        )
+-        
+-        # Part Number
+-        svg_elements.append(
+-            f"    <text x='{box_x + 12}' y='{box_y + 75}' font-family='sans-serif' font-size='10' fill='#64748b'>{comp.part_number}</text>"
+-        )
+-        
+-        # Pin Count Badge / Sourcing Pricing
+-        svg_elements.append(
+-            f"    <text x='{box_x + 12}' y='{box_y + 102}' font-family='sans-serif' font-size='10' font-weight='600' fill='#475569'>Est: ${comp.unit_price:.2f}</text>"
+-        )
+-        svg_elements.append(
+-            f"    <text x='{box_x + c_width - 12}' y='{box_y + 102}' font-family='sans-serif' font-size='10' fill='#64748b' text-anchor='end'>{len(comp.pins)} Physical Pins</text>"
+-        )
+-        
+-        # Draw physical connection hubs (ports) on Left & Right bounds of component card
+-        # Left Port
+-        svg_elements.append(f"    <circle cx='{box_x}' cy='{y}' r='5' fill='#ffffff' stroke='{style['border']}' stroke-width='2' />")
+-        # Right Port
+-        svg_elements.append(f"    <circle cx='{box_x + c_width}' cy='{y}' r='5' fill='#ffffff' stroke='{style['border']}' stroke-width='2' />")
+-        
+-        svg_elements.append("  </g>")
+-
+-    svg_elements.append("</svg>")
+-    return "\n".join(svg_elements)
++        for pin in net.pins:
++            endpoint = (pin.ref_des, pin.pin_id)
++            if endpoint not in known:
++                raise ValueError(f"Unknown schematic endpoint: {endpoint}")
++            connections.setdefault(endpoint, []).append(net)
++    columns = min(3, len(items))
++    cell_width = 380
++    max_pin_rows = max(sum(max(1, len(connections.get((ref, p.pin_id), []))) for p in part.pins) for ref, part in items)
++    # Width follows labels so arbitrary identifiers cannot run into adjacent cards.
++    max_label = max([len(n.net_id) for n in ir.nets] + [len(p.pin_id) for _, part in items for p in part.pins] + [10])
++    cell_width = max(cell_width, max_label * 16 + 130)
++    cell_height = max(180, 98 + max_pin_rows * 29)
++    rows = (len(items) + columns - 1) // columns
++    width, height = 40 + columns * cell_width, 120 + rows * cell_height
++    colors = {"power": "#c83535", "ground": "#34465c", "i2c": "#087e98", "digital": "#8756a8"}
++    elements = [f"<svg xmlns='http://www.w3.org/2000/svg' width='{width}' height='{height}' viewBox='0 0 {width} {height}'>",
++                "<rect width='100%' height='100%' fill='#f4f7fb'/>",
++                "<g font-family='sans-serif' fill='#17334b'>",
++                "<text x='25' y='35' font-size='23' font-weight='bold'>Electrical interface schematic</text>",
++                "<text x='25' y='61' font-size='13'>Matching net IDs are connected. Declared interface pins; package pinout and PCB internals are not implied.</text>"]
++    for index, (ref, part) in enumerate(items):
++        x, y = 20 + (index % columns) * cell_width, 85 + (index // columns) * cell_height
++        name = html.escape(part.name or ref)
++        safe_ref = html.escape(ref, quote=True)
++        elements.extend([f"<g data-component='{safe_ref}'>",
++                         f"<rect x='{x}' y='{y}' width='{cell_width-18}' height='{cell_height-15}' rx='10' fill='white' stroke='#afbecb'/>",
++                         f"<text x='{x+14}' y='{y+24}' font-size='15' font-weight='bold'>{safe_ref} / {name}</text>",
++                         f"<text x='{x+14}' y='{y+45}' font-size='12' fill='#60788c'>{html.escape(part.part_number or 'Part selection unresolved')}</text>"])
++        row = 0
++        for pin in part.pins:
++            nets = connections.get((ref, pin.pin_id), [None])
++            for net in nets:
++                py = y + 73 + row * 29
++                label = net.net_id if net else 'UNCONNECTED'
++                color = colors.get(net.net_type.lower(), '#60788c') if net else '#a46016'
++                elements.extend([f"<g data-pin='{html.escape(pin.pin_id, quote=True)}' data-net='{html.escape(label, quote=True)}'>",
++                                 f"<text x='{x+14}' y='{py+4}' font-size='12'>{html.escape(pin.pin_id)}</text>",
++                                 f"<line x1='{x+cell_width*.40}' y1='{py}' x2='{x+cell_width*.55}' y2='{py}' stroke='{color}' stroke-width='2'/>",
++                                 f"<circle cx='{x+cell_width*.40}' cy='{py}' r='3' fill='{color}'/>",
++                                 f"<text x='{x+cell_width*.57}' y='{py+4}' font-size='12' fill='{color}'>{html.escape(label)}</text>", "</g>"])
++                row += 1
++        if not part.pins:
++            elements.append(f"<text x='{x+14}' y='{y+77}' font-size='12'>No pins declared</text>")
++        elements.append('</g>')
++    elements.extend(['</g>', '</svg>'])
++    return '\n'.join(elements)
+diff --git a/tests/projects/test_pin_schematic.py b/tests/projects/test_pin_schematic.py
+new file mode 100644
+index 0000000..b736e49
+--- /dev/null
++++ b/tests/projects/test_pin_schematic.py
+@@ -0,0 +1,60 @@
++"""Regression checks for native schematic endpoint preservation."""
++from __future__ import annotations
++import unittest
++import xml.etree.ElementTree as ET
++from forma_core.electronics.models import ElectricalIR
++from forma_core.utils import generate_svg_schematic
++
++
++def circuit(count: int = 2) -> ElectricalIR:
++    """Create generic modules sharing two independent named nets."""
++    return ElectricalIR.model_validate({'artifact_id':'test','revision':1,'parts':[{'part_definition_id':'module','name':'Module & <test>','pins':[{'pin_id':'A','name':'A','pin_type':'Digital'},{'pin_id':'B','name':'B','pin_type':'Ground'}]}],'components':[{'object_id':f'object-{i}','ref_des':f'U{i}','part_definition_id':'module'} for i in range(count)],'nets':[{'net_id':name,'name':name,'net_type':kind,'pins':[{'ref_des':f'U{i}','pin_id':pin} for i in range(count)]} for name,kind,pin in [('signal','Digital','A'),('ground','Ground','B')]]})
++
++
++class PinSchematicTests(unittest.TestCase):
++    """No component-level deduplication may erase distinct electrical nets."""
++    def test_parallel_connections_preserved(self) -> None:
++        """Power/signal and return between the same pair remain distinct."""
++        root=ET.fromstring(generate_svg_schematic(circuit()))
++        pairs=[(e.attrib['data-pin'],e.attrib['data-net']) for e in root.iter() if 'data-pin' in e.attrib]
++        self.assertEqual(pairs.count(('A','signal')),2)
++        self.assertEqual(pairs.count(('B','ground')),2)
++
++    def test_many_modules_have_unique_positions_and_fit(self) -> None:
++        """Fallback module types cannot overlap or escape a fixed canvas."""
++        root=ET.fromstring(generate_svg_schematic(circuit(14)))
++        boxes=[]
++        for group in root.iter():
++            if 'data-component' in group.attrib:
++                box=next(e for e in group if e.tag.endswith('rect'))
++                boxes.append((box.attrib['x'],box.attrib['y']))
++                self.assertLess(float(box.attrib['y'])+float(box.attrib['height']),float(root.attrib['height']))
++        self.assertEqual(len(set(boxes)),14)
++
++    def test_xml_text_escaped(self) -> None:
++        """Names containing markup stay text, not XML elements."""
++        root=ET.fromstring(generate_svg_schematic(circuit()))
++        self.assertIn('Module & <test>',''.join(root.itertext()))
++
++    def test_unconnected_pin_remains_visible(self) -> None:
++        """Unconnected interfaces do not disappear from the output."""
++        doc=circuit();doc.nets=doc.nets[:1]
++        root=ET.fromstring(generate_svg_schematic(doc))
++        self.assertEqual(sum(e.attrib.get('data-net')=='UNCONNECTED' for e in root.iter()),2)
++
++    def test_legacy_document_still_renders(self) -> None:
++        """Existing callers retain the same endpoint-preserving interface."""
++        from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
++        native=circuit()
++        legacy=HardwareIntermediateRepresentation.model_validate({'components':[{'ref_des':c.ref_des,'name':'Generic module','part_number':'TEST','category':'module','quantity':1,'rationale':'Test fixture','pins':[p.model_dump() for p in native.parts[0].pins]} for c in native.components],'nets':[n.model_dump() for n in native.nets]})
++        root=ET.fromstring(generate_svg_schematic(legacy))
++        self.assertEqual(sum('data-pin' in e.attrib for e in root.iter()),4)
++
++    def test_unknown_endpoint_rejected(self) -> None:
++        """Mutable invalid input cannot generate a convincing incomplete picture."""
++        doc=circuit();doc.nets[0].pins[0].pin_id='missing'
++        with self.assertRaises(ValueError):generate_svg_schematic(doc)
++
++
++if __name__=='__main__':
++    unittest.main()

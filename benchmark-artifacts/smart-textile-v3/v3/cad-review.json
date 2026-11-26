@@ -1,0 +1,663 @@
+{
+  "sources": [
+    {
+      "id": "device",
+      "path": "device-opencad.step",
+      "objects": [
+        {
+          "id": "textile-band",
+          "center_mm": [
+            0,
+            0,
+            1280
+          ]
+        },
+        {
+          "id": "left-strap",
+          "center_mm": [
+            -111,
+            0,
+            1461
+          ]
+        },
+        {
+          "id": "left-strap-front",
+          "center_mm": [
+            -111,
+            -94,
+            1437
+          ]
+        },
+        {
+          "id": "left-strap-back",
+          "center_mm": [
+            -111,
+            94,
+            1437
+          ]
+        },
+        {
+          "id": "right-strap",
+          "center_mm": [
+            111,
+            0,
+            1461
+          ]
+        },
+        {
+          "id": "right-strap-front",
+          "center_mm": [
+            111,
+            -94,
+            1437
+          ]
+        },
+        {
+          "id": "right-strap-back",
+          "center_mm": [
+            111,
+            94,
+            1437
+          ]
+        },
+        {
+          "id": "left-pocket",
+          "center_mm": [
+            -82,
+            -126,
+            1285
+          ]
+        },
+        {
+          "id": "left-spreader",
+          "center_mm": [
+            -82,
+            -133.5,
+            1285
+          ]
+        },
+        {
+          "id": "left-tec",
+          "center_mm": [
+            -82,
+            -137.5,
+            1285
+          ]
+        },
+        {
+          "id": "left-pcm",
+          "center_mm": [
+            -82,
+            -145.5,
+            1285
+          ]
+        },
+        {
+          "id": "left-sink",
+          "center_mm": [
+            -82,
+            -154,
+            1285
+          ]
+        },
+        {
+          "id": "left-fin-1",
+          "center_mm": [
+            -112,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "left-fin-2",
+          "center_mm": [
+            -102,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "left-fin-3",
+          "center_mm": [
+            -92,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "left-fin-4",
+          "center_mm": [
+            -82,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "left-fin-5",
+          "center_mm": [
+            -72,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "left-fin-6",
+          "center_mm": [
+            -62,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "left-fin-7",
+          "center_mm": [
+            -52,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "right-pocket",
+          "center_mm": [
+            82,
+            -126,
+            1285
+          ]
+        },
+        {
+          "id": "right-spreader",
+          "center_mm": [
+            82,
+            -133.5,
+            1285
+          ]
+        },
+        {
+          "id": "right-tec",
+          "center_mm": [
+            82,
+            -137.5,
+            1285
+          ]
+        },
+        {
+          "id": "right-pcm",
+          "center_mm": [
+            82,
+            -145.5,
+            1285
+          ]
+        },
+        {
+          "id": "right-sink",
+          "center_mm": [
+            82,
+            -154,
+            1285
+          ]
+        },
+        {
+          "id": "right-fin-1",
+          "center_mm": [
+            52,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "right-fin-2",
+          "center_mm": [
+            62,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "right-fin-3",
+          "center_mm": [
+            72,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "right-fin-4",
+          "center_mm": [
+            82,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "right-fin-5",
+          "center_mm": [
+            92,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "right-fin-6",
+          "center_mm": [
+            102,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "right-fin-7",
+          "center_mm": [
+            112,
+            -163.5,
+            1285
+          ]
+        },
+        {
+          "id": "tec-driver",
+          "center_mm": [
+            0,
+            -130,
+            1320
+          ]
+        },
+        {
+          "id": "controller-flex",
+          "center_mm": [
+            0,
+            -130,
+            1380
+          ]
+        },
+        {
+          "id": "controller-cover",
+          "center_mm": [
+            0,
+            -137,
+            1380
+          ]
+        },
+        {
+          "id": "local-button",
+          "center_mm": [
+            0,
+            -144,
+            1380
+          ]
+        },
+        {
+          "id": "skin-sensor",
+          "center_mm": [
+            0,
+            -112,
+            1340
+          ]
+        },
+        {
+          "id": "ambient-sensor",
+          "center_mm": [
+            0,
+            -135,
+            1210
+          ]
+        },
+        {
+          "id": "power-flex",
+          "center_mm": [
+            0,
+            131,
+            1380
+          ]
+        },
+        {
+          "id": "battery-pack",
+          "center_mm": [
+            0,
+            137,
+            1280
+          ]
+        },
+        {
+          "id": "qi-receiver",
+          "center_mm": [
+            0,
+            144.5,
+            1280
+          ]
+        }
+      ]
+    }
+  ],
+  "views": [
+    {
+      "title": "V2 / Exploded wearable assembly",
+      "subtitle": "Presentation offsets only; no assembly motion or clearance claim",
+      "output": "exploded-assembly.png",
+      "width": 1200,
+      "height": 850,
+      "azimuth_deg": -35,
+      "elevation_deg": 24,
+      "instances": [
+        {
+          "object_id": "textile-band",
+          "translation_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "object_id": "left-strap",
+          "translation_mm": [
+            0,
+            0,
+            70
+          ]
+        },
+        {
+          "object_id": "left-strap-front",
+          "translation_mm": [
+            0,
+            0,
+            70
+          ]
+        },
+        {
+          "object_id": "left-strap-back",
+          "translation_mm": [
+            0,
+            0,
+            70
+          ]
+        },
+        {
+          "object_id": "right-strap",
+          "translation_mm": [
+            0,
+            0,
+            70
+          ]
+        },
+        {
+          "object_id": "right-strap-front",
+          "translation_mm": [
+            0,
+            0,
+            70
+          ]
+        },
+        {
+          "object_id": "right-strap-back",
+          "translation_mm": [
+            0,
+            0,
+            70
+          ]
+        },
+        {
+          "object_id": "left-pocket",
+          "translation_mm": [
+            0,
+            -48,
+            0
+          ]
+        },
+        {
+          "object_id": "left-spreader",
+          "translation_mm": [
+            0,
+            -70.5,
+            0
+          ]
+        },
+        {
+          "object_id": "left-tec",
+          "translation_mm": [
+            0,
+            -82.5,
+            0
+          ]
+        },
+        {
+          "object_id": "left-pcm",
+          "translation_mm": [
+            0,
+            -106.5,
+            0
+          ]
+        },
+        {
+          "object_id": "left-sink",
+          "translation_mm": [
+            0,
+            -132,
+            0
+          ]
+        },
+        {
+          "object_id": "left-fin-1",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "left-fin-2",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "left-fin-3",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "left-fin-4",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "left-fin-5",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "left-fin-6",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "left-fin-7",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "right-pocket",
+          "translation_mm": [
+            0,
+            -48,
+            0
+          ]
+        },
+        {
+          "object_id": "right-spreader",
+          "translation_mm": [
+            0,
+            -70.5,
+            0
+          ]
+        },
+        {
+          "object_id": "right-tec",
+          "translation_mm": [
+            0,
+            -82.5,
+            0
+          ]
+        },
+        {
+          "object_id": "right-pcm",
+          "translation_mm": [
+            0,
+            -106.5,
+            0
+          ]
+        },
+        {
+          "object_id": "right-sink",
+          "translation_mm": [
+            0,
+            -132,
+            0
+          ]
+        },
+        {
+          "object_id": "right-fin-1",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "right-fin-2",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "right-fin-3",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "right-fin-4",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "right-fin-5",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "right-fin-6",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "right-fin-7",
+          "translation_mm": [
+            0,
+            -160.5,
+            0
+          ]
+        },
+        {
+          "object_id": "tec-driver",
+          "translation_mm": [
+            0,
+            -60,
+            0
+          ]
+        },
+        {
+          "object_id": "controller-flex",
+          "translation_mm": [
+            0,
+            -60,
+            0
+          ]
+        },
+        {
+          "object_id": "controller-cover",
+          "translation_mm": [
+            0,
+            -151,
+            0
+          ]
+        },
+        {
+          "object_id": "local-button",
+          "translation_mm": [
+            0,
+            -217,
+            0
+          ]
+        },
+        {
+          "object_id": "skin-sensor",
+          "translation_mm": [
+            0,
+            -6,
+            0
+          ]
+        },
+        {
+          "object_id": "ambient-sensor",
+          "translation_mm": [
+            0,
+            -75,
+            0
+          ]
+        },
+        {
+          "object_id": "power-flex",
+          "translation_mm": [
+            0,
+            63,
+            0
+          ]
+        },
+        {
+          "object_id": "battery-pack",
+          "translation_mm": [
+            0,
+            81,
+            0
+          ]
+        },
+        {
+          "object_id": "qi-receiver",
+          "translation_mm": [
+            0,
+            103.5,
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

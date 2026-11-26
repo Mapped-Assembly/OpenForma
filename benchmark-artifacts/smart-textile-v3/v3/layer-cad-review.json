@@ -1,0 +1,83 @@
+{
+  "sources": [
+    {
+      "id": "controller-film-substrate",
+      "path": "controller-film-substrate.step",
+      "objects": [
+        {
+          "id": "controller-film-substrate",
+          "center_mm": [
+            0,
+            0.09999999999999999,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "controller-film-copper",
+      "path": "controller-film-copper.step",
+      "objects": [
+        {
+          "id": "controller-film-copper",
+          "center_mm": [
+            0,
+            0.03249999999999997,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "controller-film-coverlay",
+      "path": "controller-film-coverlay.step",
+      "objects": [
+        {
+          "id": "controller-film-coverlay",
+          "center_mm": [
+            0,
+            -0.06750000000000002,
+            0
+          ]
+        }
+      ]
+    }
+  ],
+  "views": [
+    {
+      "title": "V3 controller laminate | Native OpenCAD exploded view",
+      "subtitle": "Substrate 0.100 mm / copper envelope 0.035 mm / coverlay 0.165 mm; candidate dimensions",
+      "width": 1100,
+      "height": 620,
+      "azimuth_deg": -55,
+      "elevation_deg": 24,
+      "instances": [
+        {
+          "object_id": "controller-film-substrate",
+          "translation_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "object_id": "controller-film-copper",
+          "translation_mm": [
+            0,
+            -14,
+            0
+          ]
+        },
+        {
+          "object_id": "controller-film-coverlay",
+          "translation_mm": [
+            0,
+            -28,
+            0
+          ]
+        }
+      ],
+      "output": "layer-exploded.png"
+    }
+  ]
+}

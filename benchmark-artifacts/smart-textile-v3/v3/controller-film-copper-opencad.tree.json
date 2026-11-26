@@ -1,0 +1,93 @@
+{
+  "nodes": {
+    "root": {
+      "id": "root",
+      "name": "Root",
+      "operation": "seed",
+      "parameters": {},
+      "typed_parameters": {},
+      "parameter_bindings": [],
+      "sketch_id": null,
+      "parent_id": null,
+      "tool_refs": [],
+      "depends_on": [],
+      "shape_id": null,
+      "status": "built",
+      "replay_shape_id": null,
+      "rebuild_error": null,
+      "suppressed": false,
+      "mate_id": null,
+      "is_assembly_mate": false
+    },
+    "feat-0001": {
+      "id": "feat-0001",
+      "name": "controller-film-copper",
+      "operation": "import_step",
+      "parameters": {
+        "filepath": "/workspace/scratch/2fdf91e1be18/v3/controller-film-copper.step"
+      },
+      "typed_parameters": {},
+      "parameter_bindings": [],
+      "sketch_id": null,
+      "parent_id": null,
+      "tool_refs": [],
+      "depends_on": [],
+      "shape_id": "0f2560af-97b9-4618-a79b-99178e5f68d4",
+      "status": "built",
+      "replay_shape_id": null,
+      "rebuild_error": null,
+      "suppressed": false,
+      "mate_id": null,
+      "is_assembly_mate": false
+    }
+  },
+  "root_id": "root",
+  "active_branch": "main",
+  "branch_snapshots": {
+    "main": {
+      "root": {
+        "id": "root",
+        "name": "Root",
+        "operation": "seed",
+        "parameters": {},
+        "typed_parameters": {},
+        "parameter_bindings": [],
+        "sketch_id": null,
+        "parent_id": null,
+        "tool_refs": [],
+        "depends_on": [],
+        "shape_id": null,
+        "status": "built",
+        "replay_shape_id": null,
+        "rebuild_error": null,
+        "suppressed": false,
+        "mate_id": null,
+        "is_assembly_mate": false
+      },
+      "feat-0001": {
+        "id": "feat-0001",
+        "name": "controller-film-copper",
+        "operation": "import_step",
+        "parameters": {
+          "filepath": "/workspace/scratch/2fdf91e1be18/v3/controller-film-copper.step"
+        },
+        "typed_parameters": {},
+        "parameter_bindings": [],
+        "sketch_id": null,
+        "parent_id": null,
+        "tool_refs": [],
+        "depends_on": [],
+        "shape_id": "0f2560af-97b9-4618-a79b-99178e5f68d4",
+        "status": "built",
+        "replay_shape_id": null,
+        "rebuild_error": null,
+        "suppressed": false,
+        "mate_id": null,
+        "is_assembly_mate": false
+      }
+    }
+  },
+  "solver_cache": {},
+  "revision": 1,
+  "kernel_session_id": "12d0de8b-80eb-462b-9dba-78773aa6881a"
+}

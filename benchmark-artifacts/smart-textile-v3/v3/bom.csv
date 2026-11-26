@@ -1,0 +1,18 @@
+item,name,quantity,object_ids,note
+1,Textile band,1,textile-band,Material / thickness TBD
+2,Shoulder straps,2,left-strap;left-strap-front;left-strap-back;right-strap;right-strap-front;right-strap-back,Includes four attachment tabs
+3,Module pockets,2,left-pocket;right-pocket,Textile mounting pockets
+4,Heat spreaders,2,left-spreader;right-spreader,Material / interfaces TBD
+5,Peltier elements,2,left-tec;right-tec,Shared 1 A peak target
+6,PCM packs,2,left-pcm;right-pcm,Transition / latent heat TBD
+7,Heat-sink assemblies,2,left-sink;left-fin-1;left-fin-2;left-fin-3;left-fin-4;left-fin-5;left-fin-6;left-fin-7;right-sink;right-fin-1;right-fin-2;right-fin-3;right-fin-4;right-fin-5;right-fin-6;right-fin-7,2 bases + 14 modeled fins
+8,TEC driver PCB,1,tec-driver,U5 | part / circuit TBD
+9,nRF52840 flex controller,1,controller-flex,U1 | PCB internal traces omitted
+10,Controller cover,1,controller-cover,Protective enclosure
+11,Local button,1,local-button,SW1 | off-board control
+12,Skin sensor,1,skin-sensor,U2 | sensor part TBD
+13,Ambient sensor,1,ambient-sensor,U3 | sensor part TBD
+14,Power / charging PCB,1,power-flex,U4 | PCB internal traces omitted
+15,Thin-film battery target,1,battery-pack,B1 | rating / part TBD
+16,Qi receiver,1,qi-receiver,RX1 | part TBD
+17,Controller laminate layers,3,controller-film-substrate;controller-film-copper;controller-film-coverlay,Internal to #09; shown in layer view

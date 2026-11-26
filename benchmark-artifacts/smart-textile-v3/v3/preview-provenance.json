@@ -1,0 +1,7 @@
+{
+  "source_gif_sha256": "0744cb06ac6dcab673f6d81b825f12e3fa32f9eebe851ee67454c0e4658aae92",
+  "source_trace_sha256": "38a7b829676b0154768a53b34ce6ebc90ebe944358e2ad1491ff3da0164b09ed",
+  "frames": 351,
+  "duration_ms": 14040,
+  "modification": "Resize to 550x408 and quantize to 64 colors; all executed frames and timing retained."
+}

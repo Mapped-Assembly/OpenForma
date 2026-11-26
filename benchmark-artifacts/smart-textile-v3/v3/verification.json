@@ -1,0 +1,186 @@
+{
+  "version": "v3-first-layered-material-slice",
+  "classification": "candidate smart textile derived from connected domain facts; physical performance unverified",
+  "passed": {
+    "domain_tests": 90,
+    "control_tests": 60,
+    "native_product_composition": true,
+    "typed_links": 23,
+    "runtime_frames": 351,
+    "runtime_switch_events": [
+      {
+        "time_s": 3.429999999999844,
+        "switch_id": "local-control",
+        "event": "press",
+        "state": true,
+        "travel_m": 0.0008767101754538267,
+        "normal_force_n": 0.5298552664935099
+      },
+      {
+        "time_s": 4.563999999999719,
+        "switch_id": "local-control",
+        "event": "release",
+        "state": true,
+        "travel_m": -1.9356572968183633e-05,
+        "normal_force_n": 0.0
+      },
+      {
+        "time_s": 8.92599999999965,
+        "switch_id": "local-control",
+        "event": "press",
+        "state": false,
+        "travel_m": 0.0008797827826252921,
+        "normal_force_n": 0.5240253022771102
+      },
+      {
+        "time_s": 10.06200000000003,
+        "switch_id": "local-control",
+        "event": "release",
+        "state": false,
+        "travel_m": -5.97132399604362e-06,
+        "normal_force_n": 0.0
+      }
+    ],
+    "fixed_attachments": 42,
+    "maximum_attachment_error": 7.771561172376096e-16,
+    "openindustries": {
+      "status": "pass",
+      "instances": 59,
+      "tracks": 59,
+      "keys": 6962,
+      "source_trace_sha256": "38a7b829676b0154768a53b34ce6ebc90ebe944358e2ad1491ff3da0164b09ed",
+      "scope": "Native OI composition, validation and hydration; review keyframes are sampled executed poses. OI may interpolate between keys; the GIF does not."
+    }
+  },
+  "failed": [],
+  "unsupported": [
+    "cloth deformation",
+    "conductor strain response evaluation",
+    "coupled TEC / PCM thermal feedback",
+    "firmware / BLE / Qi execution"
+  ],
+  "unknown": [
+    "material coefficients",
+    "sensor calibration",
+    "routed conductive traces",
+    "thermal conductance and heat rejection",
+    "battery peak current",
+    "simultaneous electrical loads"
+  ],
+  "skipped_tests": 7,
+  "requirements_preserved": true,
+  "source_commit": "099eae7",
+  "issue_evidence": {
+    "architecture_valid": true,
+    "original_integer_child_pattern_rejected": true,
+    "integer_child_error_count": 10,
+    "integer_child_errors": [
+      {
+        "location": [
+          "root",
+          "children",
+          0,
+          "children",
+          0
+        ],
+        "type": "model_type"
+      },
+      {
+        "location": [
+          "root",
+          "children",
+          0,
+          "children",
+          1
+        ],
+        "type": "model_type"
+      },
+      {
+        "location": [
+          "root",
+          "children",
+          0,
+          "children",
+          2
+        ],
+        "type": "model_type"
+      },
+      {
+        "location": [
+          "root",
+          "children",
+          0,
+          "children",
+          3
+        ],
+        "type": "model_type"
+      },
+      {
+        "location": [
+          "root",
+          "children",
+          1,
+          "children",
+          0
+        ],
+        "type": "model_type"
+      },
+      {
+        "location": [
+          "root",
+          "children",
+          1,
+          "children",
+          1
+        ],
+        "type": "model_type"
+      },
+      {
+        "location": [
+          "root",
+          "children",
+          2,
+          "children",
+          0
+        ],
+        "type": "model_type"
+      },
+      {
+        "location": [
+          "root",
+          "children",
+          2,
+          "children",
+          1
+        ],
+        "type": "model_type"
+      },
+      {
+        "location": [
+          "root",
+          "children",
+          2,
+          "children",
+          2
+        ],
+        "type": "model_type"
+      },
+      {
+        "location": [
+          "root",
+          "children",
+          2,
+          "children",
+          3
+        ],
+        "type": "model_type"
+      }
+    ],
+    "electrical_components": 10,
+    "nets": 10,
+    "net_endpoints": 33,
+    "all_net_endpoints_rendered": true,
+    "claim": "Validation and rendering in pinned OpenForma checkout only; not a reproduction or fix in the CAID deployment."
+  },
+  "additional_tests_passed": 14
+}

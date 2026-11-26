@@ -1,0 +1,71 @@
+{
+  "controller-film-substrate": {
+    "valid": true,
+    "roundtrip_valid": true,
+    "solid_count": 1,
+    "roundtrip_solid_count": 1,
+    "objects": [
+      {
+        "id": "controller-film-substrate",
+        "solid_index": 0,
+        "valid": true,
+        "center_error_mm": 1.3877787807814457e-17,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -32.0000001,
+          "min_y": 0.0499999,
+          "min_z": -23.5000001,
+          "max_x": 32.0000001,
+          "max_y": 0.1500001,
+          "max_z": 23.5000001
+        }
+      }
+    ]
+  },
+  "controller-film-copper": {
+    "valid": true,
+    "roundtrip_valid": true,
+    "solid_count": 1,
+    "roundtrip_solid_count": 1,
+    "objects": [
+      {
+        "id": "controller-film-copper",
+        "solid_index": 0,
+        "valid": true,
+        "center_error_mm": 2.7755575615628914e-17,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -32.0000001,
+          "min_y": 0.0149999,
+          "min_z": -23.5000001,
+          "max_x": 32.0000001,
+          "max_y": 0.050000100000000006,
+          "max_z": 23.5000001
+        }
+      }
+    ]
+  },
+  "controller-film-coverlay": {
+    "valid": true,
+    "roundtrip_valid": true,
+    "solid_count": 1,
+    "roundtrip_solid_count": 1,
+    "objects": [
+      {
+        "id": "controller-film-coverlay",
+        "solid_index": 0,
+        "valid": true,
+        "center_error_mm": 1.3877787807814457e-17,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -32.0000001,
+          "min_y": -0.1500001,
+          "min_z": -23.5000001,
+          "max_x": 32.0000001,
+          "max_y": 0.015000099999999999,
+          "max_z": 23.5000001
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "source": "https://github.com/caid-technologies/Form/issues/283",
+  "revision": "V1",
+  "scope": "Conceptual bench-only thermal vest; not cleared for human use",
+  "requirements": {
+    "mcu": "Nordic nRF52840",
+    "interface": [
+      "BLE app",
+      "local physical control"
+    ],
+    "sensors": [
+      "skin temperature I2C",
+      "ambient temperature I2C"
+    ],
+    "power": {
+      "charging": "Qi",
+      "storage": "thin-film battery",
+      "regulated_voltage_v": 3.3,
+      "peltier_total_peak_a": 1.0
+    },
+    "materials": [
+      "flexible PCB",
+      "Peltier elements",
+      "phase-change material",
+      "textile layers"
+    ]
+  },
+  "decisions": [
+    "Torso-mounted vest; 2 conceptual modules sharing 1 A peak budget, not 1 A each.",
+    "PCM on hot-side buffer concept, exact thermal interfaces TBD.",
+    "No real component envelopes, safe temperature thresholds, battery ratings or TEC performance curves assumed verified."
+  ],
+  "unresolved": [
+    "Actual part selection and electrical design, heat rejection, PCM transition temperature and latent heat, fabric fit and pressure, independent over-temperature protection, skin-contact safety, current/voltage protection, battery/charger compatibility, empirical bench testing."
+  ]
+}

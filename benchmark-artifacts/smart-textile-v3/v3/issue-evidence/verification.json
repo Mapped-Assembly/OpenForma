@@ -1,0 +1,112 @@
+{
+  "architecture_valid": true,
+  "original_integer_child_pattern_rejected": true,
+  "integer_child_error_count": 10,
+  "integer_child_errors": [
+    {
+      "location": [
+        "root",
+        "children",
+        0,
+        "children",
+        0
+      ],
+      "type": "model_type"
+    },
+    {
+      "location": [
+        "root",
+        "children",
+        0,
+        "children",
+        1
+      ],
+      "type": "model_type"
+    },
+    {
+      "location": [
+        "root",
+        "children",
+        0,
+        "children",
+        2
+      ],
+      "type": "model_type"
+    },
+    {
+      "location": [
+        "root",
+        "children",
+        0,
+        "children",
+        3
+      ],
+      "type": "model_type"
+    },
+    {
+      "location": [
+        "root",
+        "children",
+        1,
+        "children",
+        0
+      ],
+      "type": "model_type"
+    },
+    {
+      "location": [
+        "root",
+        "children",
+        1,
+        "children",
+        1
+      ],
+      "type": "model_type"
+    },
+    {
+      "location": [
+        "root",
+        "children",
+        2,
+        "children",
+        0
+      ],
+      "type": "model_type"
+    },
+    {
+      "location": [
+        "root",
+        "children",
+        2,
+        "children",
+        1
+      ],
+      "type": "model_type"
+    },
+    {
+      "location": [
+        "root",
+        "children",
+        2,
+        "children",
+        2
+      ],
+      "type": "model_type"
+    },
+    {
+      "location": [
+        "root",
+        "children",
+        2,
+        "children",
+        3
+      ],
+      "type": "model_type"
+    }
+  ],
+  "electrical_components": 10,
+  "nets": 10,
+  "net_endpoints": 33,
+  "all_net_endpoints_rendered": true,
+  "claim": "Validation and rendering in pinned OpenForma checkout only; not a reproduction or fix in the CAID deployment."
+}

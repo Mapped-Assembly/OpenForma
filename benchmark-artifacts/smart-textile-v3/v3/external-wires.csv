@@ -1,0 +1,24 @@
+wire_id,net_id,net_type,from_ref,from_pin,to_ref,to_pin,wire_gauge,cut_length_mm,routing_status
+W01,qi-dc,Power,RX1,OUT,U4,RX_IN,,,proposed display route; connector position unknown
+W02,battery,Power,B1,POS,U4,BAT,,,proposed display route; connector position unknown
+W03,3v3,Power,U4,OUT,U1,VDD,,,proposed display route; connector position unknown
+W04,3v3,Power,U4,OUT,U2,VDD,,,proposed display route; connector position unknown
+W05,3v3,Power,U4,OUT,U3,VDD,,,proposed display route; connector position unknown
+W06,3v3,Power,U4,OUT,U5,VIN,,,proposed display route; connector position unknown
+W07,gnd,Ground,U1,GND,U2,GND,,,proposed display route; connector position unknown
+W08,gnd,Ground,U1,GND,U3,GND,,,proposed display route; connector position unknown
+W09,gnd,Ground,U1,GND,U4,GND,,,proposed display route; connector position unknown
+W10,gnd,Ground,U1,GND,RX1,GND,,,proposed display route; connector position unknown
+W11,gnd,Ground,U1,GND,B1,NEG,,,proposed display route; connector position unknown
+W12,gnd,Ground,U1,GND,U5,GND,,,proposed display route; connector position unknown
+W13,gnd,Ground,U1,GND,TEC1,N,,,proposed display route; connector position unknown
+W14,gnd,Ground,U1,GND,TEC2,N,,,proposed display route; connector position unknown
+W15,gnd,Ground,U1,GND,SW1,GND,,,proposed display route; connector position unknown
+W16,i2c-sda,I2C,U1,SDA,U2,SDA,,,proposed display route; connector position unknown
+W17,i2c-sda,I2C,U1,SDA,U3,SDA,,,proposed display route; connector position unknown
+W18,i2c-scl,I2C,U1,SCL,U2,SCL,,,proposed display route; connector position unknown
+W19,i2c-scl,I2C,U1,SCL,U3,SCL,,,proposed display route; connector position unknown
+W20,local-control,Digital,U1,LOCAL,SW1,SIG,,,proposed display route; connector position unknown
+W21,tec-enable,Digital,U1,TEC_EN,U5,EN,,,proposed display route; connector position unknown
+W22,tec-left,Power,U5,OUT_L,TEC1,P,,,proposed display route; connector position unknown
+W23,tec-right,Power,U5,OUT_R,TEC2,P,,,proposed display route; connector position unknown

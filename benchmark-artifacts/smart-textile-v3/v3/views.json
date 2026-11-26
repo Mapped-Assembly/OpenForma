@@ -1,0 +1,70 @@
+{
+  "title": "Smart textile V3 | Declarative layers + runtime interaction",
+  "width": 1100,
+  "height": 815,
+  "font": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+  "switch_id": "local-control",
+  "panels": [
+    {
+      "x": 0,
+      "y": 85,
+      "width": 580,
+      "height": 660,
+      "lookat": [
+        0,
+        0,
+        0.9
+      ],
+      "distance": 2.55,
+      "azimuth": 100,
+      "elevation": -8,
+      "still_output": "full-body.png"
+    },
+    {
+      "x": 590,
+      "y": 85,
+      "width": 500,
+      "height": 420,
+      "lookat": [
+        0,
+        -0.08,
+        1.32
+      ],
+      "distance": 0.83,
+      "azimuth": 110,
+      "elevation": -12,
+      "still_output": "device-closeup.png"
+    }
+  ],
+  "status": {
+    "box": [
+      590,
+      520,
+      1075,
+      575
+    ],
+    "label_position": [
+      610,
+      531
+    ],
+    "lines_position": [
+      598,
+      592
+    ],
+    "on_label": "ON / cooling requested",
+    "off_label": "OFF",
+    "pressed_label": "PRESSED",
+    "released_label": "released",
+    "lines": [
+      "Button: {pressed_label}  |  presses: {press_count}",
+      "Travel: {travel_mm:.2f} mm   Contact: {normal_force_n:.2f} N",
+      "Skin / ambient temperatures: not simulated",
+      "Thermal performance: unsupported",
+      "Wearable attachment: recorded body transforms"
+    ]
+  },
+  "footer": [
+    "OpenForma MachineRuntime + MuJoCo | Fixed attachment and physical button contact",
+    "Rigid geometry; textile strain, sensor temperatures and cooling performance not simulated"
+  ]
+}

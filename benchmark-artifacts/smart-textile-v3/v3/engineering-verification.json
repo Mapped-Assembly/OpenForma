@@ -1,0 +1,352 @@
+{
+  "composition": {
+    "local": {
+      "smart-textile.mechanical": [
+        {
+          "code": "unknown_flexible_material",
+          "location": "layer-substrate",
+          "message": "Directional deformation properties lack pinned evidence; flexibility is not verified.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_flexible_material",
+          "location": "layer-copper",
+          "message": "Directional deformation properties lack pinned evidence; flexibility is not verified.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_flexible_material",
+          "location": "layer-coverlay",
+          "message": "Directional deformation properties lack pinned evidence; flexibility is not verified.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_layer_thickness",
+          "location": "layer-band",
+          "message": "Nominal layer thickness is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_flexible_material",
+          "location": "layer-band",
+          "message": "Directional deformation properties lack pinned evidence; flexibility is not verified.",
+          "severity": "warning"
+        }
+      ],
+      "smart-textile.electrical": [
+        {
+          "code": "unknown_pin_rating",
+          "location": "RX1.OUT",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U4.RX_IN",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "B1.POS",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U4.BAT",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U4.OUT",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U1.VDD",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U2.VDD",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U3.VDD",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U5.VIN",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U1.GND",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U2.GND",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U3.GND",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U4.GND",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "RX1.GND",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "B1.NEG",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U5.GND",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "TEC1.N",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "TEC2.N",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "SW1.GND",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U1.SDA",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U2.SDA",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U3.SDA",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U1.SCL",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U2.SCL",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U3.SCL",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U1.LOCAL",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "SW1.SIG",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U1.TEC_EN",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U5.EN",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U5.OUT_L",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "TEC1.P",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "U5.OUT_R",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "unknown_pin_rating",
+          "location": "TEC2.P",
+          "message": "Pin voltage envelope is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "power_unknown",
+          "location": "left-tec",
+          "message": "Power demand or source capacity is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "power_unknown",
+          "location": "right-tec",
+          "message": "Power demand or source capacity is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "power_unknown",
+          "location": "logic-3v3",
+          "message": "Power demand or source capacity is unknown.",
+          "severity": "warning"
+        },
+        {
+          "code": "power_unknown",
+          "location": "battery",
+          "message": "Power demand or source capacity is unknown.",
+          "severity": "warning"
+        }
+      ],
+      "smart-textile.thermal": [
+        {
+          "code": "thermal_unsupported",
+          "location": "left-heat-rejection",
+          "message": "Only an explicitly lumped resistance/conductance is evaluated in v1.",
+          "severity": "warning"
+        },
+        {
+          "code": "thermal_unsupported",
+          "location": "right-heat-rejection",
+          "message": "Only an explicitly lumped resistance/conductance is evaluated in v1.",
+          "severity": "warning"
+        }
+      ],
+      "smart-textile.human": []
+    },
+    "composition": [],
+    "blocked_domains": {},
+    "is_valid": true
+  },
+  "layers": [
+    {
+      "stack_id": "controller-laminate",
+      "layer_order": [
+        "layer-substrate",
+        "layer-copper",
+        "layer-coverlay"
+      ],
+      "total_thickness_mm": 0.30000000000000004,
+      "geometry_check": "unsupported",
+      "deformation_prediction": "unsupported"
+    },
+    {
+      "stack_id": "garment-stack",
+      "layer_order": [
+        "layer-band"
+      ],
+      "total_thickness_mm": null,
+      "geometry_check": "unsupported",
+      "deformation_prediction": "unsupported"
+    }
+  ],
+  "power_budget": {
+    "left-tec": {
+      "peak_w": null,
+      "average_w": null
+    },
+    "right-tec": {
+      "peak_w": null,
+      "average_w": null
+    },
+    "logic-3v3": {
+      "peak_w": null,
+      "average_w": null
+    },
+    "battery": {
+      "peak_w": null,
+      "average_w": null
+    }
+  },
+  "thermal_analysis": {
+    "results": [
+      {
+        "case_id": "left-heat-rejection",
+        "model": "lumped-resistance",
+        "model_version": "1.0",
+        "status": "unsupported",
+        "input_digest": "7083d43df9cfcf2911ce8015a8bbe167702036aaec4dea8aa1c9bb6436903423",
+        "zone_temperature_kelvin": null,
+        "zone_temperature_celsius": null,
+        "ambient_temperature_kelvin": null,
+        "net_heat_w": null,
+        "transferred_heat_w": null,
+        "residual_w": null,
+        "message": "Only an explicitly lumped resistance/conductance is evaluated in v1."
+      },
+      {
+        "case_id": "right-heat-rejection",
+        "model": "lumped-resistance",
+        "model_version": "1.0",
+        "status": "unsupported",
+        "input_digest": "0daaf74a754ae5bae15722e3a124b9d8a7b9742aa4441859bee9fceaed139264",
+        "zone_temperature_kelvin": null,
+        "zone_temperature_celsius": null,
+        "ambient_temperature_kelvin": null,
+        "net_heat_w": null,
+        "transferred_heat_w": null,
+        "residual_w": null,
+        "message": "Only an explicitly lumped resistance/conductance is evaluated in v1."
+      }
+    ]
+  }
+}

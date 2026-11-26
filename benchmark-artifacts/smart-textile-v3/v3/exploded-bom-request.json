@@ -1,0 +1,397 @@
+{
+  "title": "V3 / Exploded assembly + BOM + inter-module wiring",
+  "mesh_file": "native-meshes.json",
+  "geometry_file": "geometry.json",
+  "electrical_file": "electrical.json",
+  "translations_mm": {
+    "textile-band": [
+      0,
+      0,
+      0
+    ],
+    "left-strap": [
+      0,
+      0,
+      70
+    ],
+    "left-strap-front": [
+      0,
+      0,
+      70
+    ],
+    "left-strap-back": [
+      0,
+      0,
+      70
+    ],
+    "right-strap": [
+      0,
+      0,
+      70
+    ],
+    "right-strap-front": [
+      0,
+      0,
+      70
+    ],
+    "right-strap-back": [
+      0,
+      0,
+      70
+    ],
+    "left-pocket": [
+      -50,
+      -48,
+      0
+    ],
+    "left-spreader": [
+      -50,
+      -70.5,
+      0
+    ],
+    "left-tec": [
+      -50,
+      -82.5,
+      0
+    ],
+    "left-pcm": [
+      -50,
+      -106.5,
+      0
+    ],
+    "left-sink": [
+      -50,
+      -132,
+      0
+    ],
+    "left-fin-1": [
+      -50,
+      -160.5,
+      0
+    ],
+    "left-fin-2": [
+      -50,
+      -160.5,
+      0
+    ],
+    "left-fin-3": [
+      -50,
+      -160.5,
+      0
+    ],
+    "left-fin-4": [
+      -50,
+      -160.5,
+      0
+    ],
+    "left-fin-5": [
+      -50,
+      -160.5,
+      0
+    ],
+    "left-fin-6": [
+      -50,
+      -160.5,
+      0
+    ],
+    "left-fin-7": [
+      -50,
+      -160.5,
+      0
+    ],
+    "right-pocket": [
+      50,
+      -48,
+      0
+    ],
+    "right-spreader": [
+      50,
+      -70.5,
+      0
+    ],
+    "right-tec": [
+      50,
+      -82.5,
+      0
+    ],
+    "right-pcm": [
+      50,
+      -106.5,
+      0
+    ],
+    "right-sink": [
+      50,
+      -132,
+      0
+    ],
+    "right-fin-1": [
+      50,
+      -160.5,
+      0
+    ],
+    "right-fin-2": [
+      50,
+      -160.5,
+      0
+    ],
+    "right-fin-3": [
+      50,
+      -160.5,
+      0
+    ],
+    "right-fin-4": [
+      50,
+      -160.5,
+      0
+    ],
+    "right-fin-5": [
+      50,
+      -160.5,
+      0
+    ],
+    "right-fin-6": [
+      50,
+      -160.5,
+      0
+    ],
+    "right-fin-7": [
+      50,
+      -160.5,
+      0
+    ],
+    "tec-driver": [
+      -260,
+      -160,
+      -60
+    ],
+    "controller-flex": [
+      -260,
+      -120,
+      100
+    ],
+    "controller-cover": [
+      -260,
+      -200,
+      160
+    ],
+    "local-button": [
+      -260,
+      -275,
+      200
+    ],
+    "skin-sensor": [
+      235,
+      -120,
+      50
+    ],
+    "ambient-sensor": [
+      235,
+      -120,
+      -30
+    ],
+    "power-flex": [
+      240,
+      100,
+      140
+    ],
+    "battery-pack": [
+      240,
+      170,
+      80
+    ],
+    "qi-receiver": [
+      240,
+      245,
+      80
+    ]
+  },
+  "bom": [
+    {
+      "item": 1,
+      "name": "Textile band",
+      "quantity": 1,
+      "object_ids": [
+        "textile-band"
+      ],
+      "note": "Material / thickness TBD"
+    },
+    {
+      "item": 2,
+      "name": "Shoulder straps",
+      "quantity": 2,
+      "object_ids": [
+        "left-strap",
+        "left-strap-front",
+        "left-strap-back",
+        "right-strap",
+        "right-strap-front",
+        "right-strap-back"
+      ],
+      "note": "Includes four attachment tabs"
+    },
+    {
+      "item": 3,
+      "name": "Module pockets",
+      "quantity": 2,
+      "object_ids": [
+        "left-pocket",
+        "right-pocket"
+      ],
+      "note": "Textile mounting pockets"
+    },
+    {
+      "item": 4,
+      "name": "Heat spreaders",
+      "quantity": 2,
+      "object_ids": [
+        "left-spreader",
+        "right-spreader"
+      ],
+      "note": "Material / interfaces TBD"
+    },
+    {
+      "item": 5,
+      "name": "Peltier elements",
+      "quantity": 2,
+      "object_ids": [
+        "left-tec",
+        "right-tec"
+      ],
+      "note": "Shared 1 A peak target"
+    },
+    {
+      "item": 6,
+      "name": "PCM packs",
+      "quantity": 2,
+      "object_ids": [
+        "left-pcm",
+        "right-pcm"
+      ],
+      "note": "Transition / latent heat TBD"
+    },
+    {
+      "item": 7,
+      "name": "Heat-sink assemblies",
+      "quantity": 2,
+      "object_ids": [
+        "left-sink",
+        "left-fin-1",
+        "left-fin-2",
+        "left-fin-3",
+        "left-fin-4",
+        "left-fin-5",
+        "left-fin-6",
+        "left-fin-7",
+        "right-sink",
+        "right-fin-1",
+        "right-fin-2",
+        "right-fin-3",
+        "right-fin-4",
+        "right-fin-5",
+        "right-fin-6",
+        "right-fin-7"
+      ],
+      "note": "2 bases + 14 modeled fins"
+    },
+    {
+      "item": 8,
+      "name": "TEC driver PCB",
+      "quantity": 1,
+      "object_ids": [
+        "tec-driver"
+      ],
+      "note": "U5 | part / circuit TBD"
+    },
+    {
+      "item": 9,
+      "name": "nRF52840 flex controller",
+      "quantity": 1,
+      "object_ids": [
+        "controller-flex"
+      ],
+      "note": "U1 | PCB internal traces omitted"
+    },
+    {
+      "item": 10,
+      "name": "Controller cover",
+      "quantity": 1,
+      "object_ids": [
+        "controller-cover"
+      ],
+      "note": "Protective enclosure"
+    },
+    {
+      "item": 11,
+      "name": "Local button",
+      "quantity": 1,
+      "object_ids": [
+        "local-button"
+      ],
+      "note": "SW1 | off-board control"
+    },
+    {
+      "item": 12,
+      "name": "Skin sensor",
+      "quantity": 1,
+      "object_ids": [
+        "skin-sensor"
+      ],
+      "note": "U2 | sensor part TBD"
+    },
+    {
+      "item": 13,
+      "name": "Ambient sensor",
+      "quantity": 1,
+      "object_ids": [
+        "ambient-sensor"
+      ],
+      "note": "U3 | sensor part TBD"
+    },
+    {
+      "item": 14,
+      "name": "Power / charging PCB",
+      "quantity": 1,
+      "object_ids": [
+        "power-flex"
+      ],
+      "note": "U4 | PCB internal traces omitted"
+    },
+    {
+      "item": 15,
+      "name": "Thin-film battery target",
+      "quantity": 1,
+      "object_ids": [
+        "battery-pack"
+      ],
+      "note": "B1 | rating / part TBD"
+    },
+    {
+      "item": 16,
+      "name": "Qi receiver",
+      "quantity": 1,
+      "object_ids": [
+        "qi-receiver"
+      ],
+      "note": "RX1 | part TBD"
+    },
+    {
+      "item": 17,
+      "name": "Controller laminate layers",
+      "quantity": 3,
+      "object_ids": [
+        "controller-film-substrate",
+        "controller-film-copper",
+        "controller-film-coverlay"
+      ],
+      "note": "Internal to #09; shown in layer view"
+    }
+  ],
+  "net_colors": {
+    "Power": "#db4545",
+    "Ground": "#26364a",
+    "I2C": "#1688a0",
+    "Digital": "#9762bb"
+  },
+  "wiring_status": "Proposed display routing from declared nets; connector locations, wire gauge and lengths unknown.",
+  "output": "exploded-assembly.png"
+}

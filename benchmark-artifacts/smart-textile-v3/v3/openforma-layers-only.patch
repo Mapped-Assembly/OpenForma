@@ -1,0 +1,516 @@
+diff --git a/docs/layered-materials.md b/docs/layered-materials.md
+new file mode 100644
+index 0000000..9087823
+--- /dev/null
++++ b/docs/layered-materials.md
+@@ -0,0 +1,51 @@
++# Layered flexible assemblies
++
++MechanicalIR optionally declares `layered_assemblies`. Each stack names an existing
++host occurrence, a CAD frame, an outward normal, an in-plane material direction,
++ordered physical layer occurrences and joins between adjacent layers. Layer IDs
++and join IDs are composition entities, distinct from physical component IDs.
++Thickness is a nominal declaration; null means unknown. `inspect_layers` sums only
++complete declarations. It does not check CAD thickness or solve deformation.
++
++MechanicalPart optionally declares `flexibility`: directional elastic moduli,
++bending rigidities, strain limits, minimum bend radius and pinned material evidence.
++Absent properties remain unknown. Warp/weft identify local material axes; isotropy,
++cloth behavior and measured material performance are never inferred.
++
++ElectricalPart.engineering optionally declares `temperature_sensor` and
++`conductor_response`. These describe measurement roles, calibration and response
++coefficients. They do not produce readings or evaluate resistance changes. Geometry,
++material strain and thermal states retain their existing domain owners.
++
++## Composition relationships
++
++| Relationship | Source | Target |
++|---|---|---|
++| mounted_on_layer | Whole electrical component | Mechanical layer |
++| thermal_representation | Whole mechanical component or layer | Thermal node |
++| observes_temperature | Electrical component with typed temperature sensor role | Thermal node |
++| wearer_contact | Segment-bound HumanIR mechanical contact port | Exposed contact-role layer |
++| thermal_contact | Segment-bound HumanIR thermal exchange port | Thermal node heat port |
++
++Use existing `same_object` for shared physical component views and `thermal_source`
++for electrical heat loads. Endpoints retain revision/digest checks. Validation
++checks endpoint meaning, not physical contact, circuit routing or heat transfer.
++An aggregate host need not be an additional solid or mass. Do not count both a
++module envelope and its sublayers as separate mass without a mass allocation.
++
++These are additive optional fields on the native 1.0 schema. Legacy payloads omit
++the new defaults, preserving normalization and hashes. Older readers cannot consume
++populated extensions without updating. Legacy projection reports layered/material
++facts as unrepresentable rather than silently discarding them. Schema discovery
++uses the existing domain registry; no TextileIR or separate runtime is introduced.
++
++The supported first slice is authoring and structural validation. Cloth/FEM,
++strain-to-resistance evaluation, sensor dynamics, transient PCM and coupled thermal
++feedback are unsupported here. A product can derive its descriptive classification
++from connected domain facts; classification is not physical verification.
++
++Run the generic tests with:
++
++```bash
++python -m unittest tests.projects.test_layered_materials
++```
+diff --git a/forma_core/domains/compatibility.py b/forma_core/domains/compatibility.py
+index 06fdb94..8530fa6 100644
+--- a/forma_core/domains/compatibility.py
++++ b/forma_core/domains/compatibility.py
+@@ -195,6 +195,9 @@ def export_hardware_ir(
+                     findings.append(Finding(code="unrepresentable", location=part["part_definition_id"],
+                                             message="Legacy parts lack typed material and geometry_refs; preserved only in MechanicalIR."))
+         if domain == "mechanical":
++            if document.get("layered_assemblies") or any(part.get("flexibility") is not None for part in document["parts"]):
++                findings.append(Finding(code="unrepresentable", location=document["artifact_id"],
++                                        message="Legacy HardwareIR cannot preserve layered assemblies or directional flexibility; retain MechanicalIR."))
+             payload.update({key: deepcopy(document[key]) for key in ("mechanical", "cad_model")})
+         elif domain == "electrical":
+             if (any(document.get(key) for key in ("harnesses", "power_domains", "runtime_bindings", "evidence"))
+diff --git a/forma_core/domains/composition.py b/forma_core/domains/composition.py
+index 3aa468e..ce8f8b6 100644
+--- a/forma_core/domains/composition.py
++++ b/forma_core/domains/composition.py
+@@ -218,6 +218,9 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
+             metadata = registry.metadata(domain)
+             if metadata is None or link.kind not in metadata.reference_types:
+                 add("relationship_type", link.link_id, f"Provider for '{domain}' does not advertise '{link.kind}'.")
++        from .layer_coupling import RELATIONSHIPS, validate_layer_link
++        if link.kind in RELATIONSHIPS:
++            result.composition.extend(validate_layer_link(link, documents.get(link.source.artifact_id), documents.get(link.target.artifact_id)))
+         if link.kind in {"uses_species", "uses_reaction"}:
+             chemical_endpoints = [endpoint for endpoint in (link.source, link.target)
+                                   if identities[endpoint.artifact_id].domain == "chemical"]
+@@ -312,9 +315,11 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
+             if link.source.object_id != link.target.object_id:
+                 add("physical_identity", link.link_id, "Shared physical views must preserve the same object_id.")
+             if source.domain in {"mechanical", "electrical"} and target.domain in {"mechanical", "electrical"} and source.artifact_id in documents and target.artifact_id in documents:
+-                left = next(c for c in documents[source.artifact_id].components if c.object_id == link.source.object_id)
+-                right = next(c for c in documents[target.artifact_id].components if c.object_id == link.target.object_id)
+-                if left.part_definition_id != right.part_definition_id:
++                left = next((c for c in documents[source.artifact_id].components if c.object_id == link.source.object_id), None)
++                right = next((c for c in documents[target.artifact_id].components if c.object_id == link.target.object_id), None)
++                if left is None or right is None:
++                    add("physical_identity", link.link_id, "Shared physical views must name component occurrences, not layer metadata.")
++                elif left.part_definition_id != right.part_definition_id:
+                     add("part_identity", link.link_id, "Shared object views reference different part definitions.")
+         if link.kind == "spatial":
+             if any(e.units not in {"mm", "m"} or not e.frame for e in (link.source, link.target)):
+@@ -363,7 +368,7 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
+     physical = [(key, doc) for key, doc in documents.items() if doc.domain in {"mechanical", "electrical"}]
+     for index, (left_id, left) in enumerate(physical):
+         for right_id, right in physical[index + 1:]:
+-            for object_id in sorted(entities(left).keys() & entities(right).keys()):
++            for object_id in sorted({c.object_id for c in left.components} & {c.object_id for c in right.components}):
+                 if not any(link.kind == "same_object" and link.source.object_id == object_id
+                            and link.target.object_id == object_id
+                            and {link.source.artifact_id, link.target.artifact_id} == {left_id, right_id}
+diff --git a/forma_core/domains/layer_coupling.py b/forma_core/domains/layer_coupling.py
+new file mode 100644
+index 0000000..279dc89
+--- /dev/null
++++ b/forma_core/domains/layer_coupling.py
+@@ -0,0 +1,54 @@
++"""Typed layered-material relationships within the existing product composition."""
++from __future__ import annotations
++from typing import TYPE_CHECKING
++from pydantic import BaseModel
++from .base import Finding
++if TYPE_CHECKING:
++    from .composition import DomainLink
++
++RELATIONSHIPS={'mounted_on_layer','thermal_representation','observes_temperature','wearer_contact','thermal_contact'}
++
++
++def validate_layer_link(link: DomainLink, source: BaseModel | None, target: BaseModel | None) -> list[Finding]:
++    """Check endpoint meaning, never infer strain, heat transfer or sensor values."""
++    def error(message: str) -> list[Finding]:
++        """Return one composition finding scoped to this relationship."""
++        return [Finding(code='layer_coupling',location=link.link_id,message=message)]
++    if source is None or target is None:
++        return error('Layered-material coupling requires supported native endpoint semantics.')
++    kinds={'mounted_on_layer':('electrical','mechanical'),'thermal_representation':('mechanical','thermal'),
++           'observes_temperature':('electrical','thermal'),'wearer_contact':('human','mechanical'),'thermal_contact':('human','thermal')}
++    if (source.domain,target.domain)!=kinds[link.kind]:
++        return error(f'{link.kind} requires domains {kinds[link.kind]}.')
++    if link.kind=='mounted_on_layer':
++        if link.source.port_id is not None or link.target.port_id is not None:
++            return error('Mounting binds an electrical component occurrence to a whole material layer.')
++        if link.source.object_id not in {c.object_id for c in source.components}:
++            return error('Mounted source must be an electrical component occurrence.')
++        if link.target.object_id not in {layer.layer_id for stack in target.layered_assemblies for layer in stack.layers}:
++            return error('Mount target must be a declared material layer.')
++    elif link.kind=='thermal_representation':
++        valid={c.object_id for c in source.components}|{layer.layer_id for stack in source.layered_assemblies for layer in stack.layers}
++        if link.source.port_id is not None or link.target.port_id is not None or link.source.object_id not in valid or link.target.object_id not in {node.node_id for node in target.nodes}:
++            return error('Thermal representation binds a whole physical component/layer to a thermal node.')
++    elif link.kind=='observes_temperature':
++        component=next((c for c in source.components if c.object_id==link.source.object_id),None)
++        part=next((p for p in source.parts if component and p.part_definition_id==component.part_definition_id),None)
++        if part is None or part.engineering is None or part.engineering.temperature_sensor is None:
++            return error('Temperature observation source must declare a typed temperature-sensor role.')
++        if link.source.port_id is not None or link.target.port_id is not None or link.target.object_id not in {n.node_id for n in target.nodes}:
++            return error('Temperature observation binds a whole sensor to a thermal node, not an electrical pin or heat port.')
++    else:
++        participant=next((p for p in source.participants if p.participant_id==link.source.object_id),None)
++        port=next((p for p in participant.interfaces if p.port_id==link.source.port_id),None) if participant else None
++        required='mechanical_contact' if link.kind=='wearer_contact' else 'thermal_exchange'
++        if port is None or port.kind!=required or port.segment_id is None:
++            return error(f'Human endpoint needs a segment-bound {required} interface.')
++        if link.kind=='wearer_contact':
++            exposed={layer.layer_id:layer for stack in target.layered_assemblies for layer in (stack.layers[0],stack.layers[-1])}
++            layer=exposed.get(link.target.object_id)
++            if layer is None or layer.role!='contact' or link.target.port_id is not None:
++                return error('Wearer contact requires an exposed contact-role layer, not an internal layer.')
++        elif not any(n.node_id==link.target.object_id and any(p.port_id==link.target.port_id for p in n.ports) for n in target.nodes):
++            return error('Human thermal contact requires an explicit heat port on a thermal node.')
++    return []
+diff --git a/forma_core/domains/registry.py b/forma_core/domains/registry.py
+index 6a17c0d..5c30109 100644
+--- a/forma_core/domains/registry.py
++++ b/forma_core/domains/registry.py
+@@ -90,6 +90,9 @@ def validate_domain(payload: dict[str, Any] | BaseModel) -> list[Finding]:
+     except ValueError as exc:
+         return [Finding(code="schema", location="domain", message=str(exc))]
+     domain = payload["domain"]
++    if domain == "mechanical":
++        from forma_core.mechanics.layers import layer_findings
++        return layer_findings(document)
+     if domain == "chemical":
+         from forma_core.chemistry.validation import validate_chemical
+         return validate_chemical(document)
+@@ -123,8 +126,14 @@ def entities(document: BaseModel) -> dict[str, set[str]]:
+     domain = document.domain
+     if domain in {"mechanical", "electrical"}:
+         parts = {p.part_definition_id: p for p in document.parts}
+-        return {c.object_id: ({p.pin_id for p in parts[c.part_definition_id].pins}
++        index = {c.object_id: ({p.pin_id for p in parts[c.part_definition_id].pins}
+                              if domain == "electrical" else set()) for c in document.components}
++        if domain == "mechanical":
++            for stack in document.layered_assemblies:
++                index[stack.stack_id] = set()
++                index.update({layer.layer_id: set() for layer in stack.layers})
++                index.update({join.join_id: set() for join in stack.joins})
++        return index
+     if domain == "human":
+         return {profile.profile_id: set() for profile in document.profiles} | {
+             participant.participant_id: {port.port_id for port in participant.interfaces}
+@@ -261,14 +270,14 @@ def create_registry() -> DomainRegistry:
+                                    "uses_electrical_port", "uses_fluidic_port",
+                                    "uses_thermal_interface", "thermal_source", "spatial", "same_object"]
+                              if domain == "process"
+-                             else ["same_object", "spatial", "hosted_by", "uses_equipment", "thermal_source"]
++                             else ["same_object", "spatial", "hosted_by", "uses_equipment", "thermal_source", "mounted_on_layer", "thermal_representation", "wearer_contact"]
+                              if domain == "mechanical"
+-                             else ["same_object", "spatial", "hosted_by", "uses_electrical_port", "thermal_source"]
++                             else ["same_object", "spatial", "hosted_by", "uses_electrical_port", "thermal_source", "mounted_on_layer", "observes_temperature"]
+                              if domain == "electrical"
+                              else ["same_object", "spatial", "hosted_by", "uses_fluidic_port", "thermal_source"]
+                              if domain == "fluidic"
+-                             else ["uses_thermal_interface", "thermal_source"] if domain == "thermal"
+-                             else ["same_object", "spatial"] if domain == "human"
++                             else ["uses_thermal_interface", "thermal_source", "thermal_representation", "observes_temperature", "thermal_contact"] if domain == "thermal"
++                             else ["same_object", "spatial", "wearer_contact", "thermal_contact"] if domain == "human"
+                              else ["same_object", "spatial", "hosted_by"]),
+             fact_authorities=[fact for fact, owner in FACT_OWNERS.items() if owner == domain],
+             limitations=["Native authoring uses generate_product with caller-supplied designs; no provider-hosted author or resolver."])
+diff --git a/forma_core/electronics/contracts.py b/forma_core/electronics/contracts.py
+index 45d5b34..c523092 100644
+--- a/forma_core/electronics/contracts.py
++++ b/forma_core/electronics/contracts.py
+@@ -73,6 +73,23 @@ class ControllerRatings(DomainModel):
+     bus_voltage: VoltageRange | None = None
+ 
+ 
++class TemperatureSensor(DomainModel):
++    """Measurement role and calibration metadata; not generated sensor readings."""
++    output_unit: Literal['degC', 'K']
++    accuracy_kelvin: Nonnegative | None = None
++    sampling_period_s: Positive | None = None
++    calibration: SourceReference | None = None
++
++
++class ConductorResponse(DomainModel):
++    """Electrical response coefficients; MechanicalIR owns material strain limits."""
++    reference_resistance_ohm: Nonnegative | None = None
++    reference_temperature_kelvin: Positive | None = None
++    temperature_coefficient_per_kelvin: float | None = None
++    longitudinal_gauge_factor: float | None = None
++    source: SourceReference | None = None
++
++
+ class PartEngineering(DomainModel):
+     """Facts owned once by ElectricalPart; instances and exports reference it."""
+ 
+@@ -84,6 +101,8 @@ class PartEngineering(DomainModel):
+     connectors: list[Connector] = Field(default_factory=list)
+     motor: MotorConstants | None = None
+     controller: ControllerRatings | None = None
++    temperature_sensor: TemperatureSensor | None = Field(default=None, exclude_if=lambda value: value is None)
++    conductor_response: ConductorResponse | None = Field(default=None, exclude_if=lambda value: value is None)
+ 
+ 
+ class Endpoint(DomainModel):
+diff --git a/forma_core/mechanics/layers.py b/forma_core/mechanics/layers.py
+new file mode 100644
+index 0000000..73e630e
+--- /dev/null
++++ b/forma_core/mechanics/layers.py
+@@ -0,0 +1,116 @@
++"""Reusable layered flexible assemblies; no cloth or structural solver implied."""
++from __future__ import annotations
++from typing import TYPE_CHECKING, Literal
++from pydantic import Field, model_validator
++from forma_core.domains.base import DomainModel, Finding, Text, unique
++if TYPE_CHECKING:
++    from .models import MechanicalIR
++
++
++class DirectionalFlexibility(DomainModel):
++    """Material-axis properties and limits; null remains unknown, not isotropic."""
++    warp_modulus_pa: float | None = Field(default=None, gt=0)
++    weft_modulus_pa: float | None = Field(default=None, gt=0)
++    shear_modulus_pa: float | None = Field(default=None, gt=0)
++    warp_bending_rigidity_nm: float | None = Field(default=None, ge=0)
++    weft_bending_rigidity_nm: float | None = Field(default=None, ge=0)
++    maximum_warp_strain: float | None = Field(default=None, ge=0)
++    maximum_weft_strain: float | None = Field(default=None, ge=0)
++    minimum_bend_radius_mm: float | None = Field(default=None, gt=0)
++    evidence_uri: Text | None = None
++    evidence_sha256: str | None = Field(default=None, pattern=r'^[a-f0-9]{64}$')
++
++    @model_validator(mode='after')
++    def evidence_pair(self) -> DirectionalFlexibility:
++        """A claimed evidence source must be both locatable and content-pinned."""
++        if (self.evidence_uri is None)!=(self.evidence_sha256 is None):
++            raise ValueError('Material evidence requires both URI and SHA-256')
++        return self
++
++
++class MaterialLayer(DomainModel):
++    """One physical component occurrence within an ordered material stack."""
++    layer_id: Text
++    component_object_id: Text
++    thickness_mm: float | None = Field(default=None, gt=0)
++    material_angle_deg: float = 0.0
++    role: Literal['structural', 'insulation', 'dielectric', 'conductor', 'encapsulation', 'contact', 'spreader', 'storage', 'other']
++
++
++class LayerJoin(DomainModel):
++    """Declared connection of adjacent layers; heat resistance belongs to ThermalIR."""
++    join_id: Text
++    first_layer_id: Text
++    second_layer_id: Text
++    method: Literal['sewn', 'laminated', 'adhesive', 'clamped', 'contact', 'unknown'] = 'unknown'
++    geometry_refs: list[Text] = Field(default_factory=list)
++
++
++class LayeredAssembly(DomainModel):
++    """List order runs along the declared positive normal in the named CAD frame."""
++    stack_id: Text
++    host_object_id: Text
++    frame: Text
++    normal: list[float] = Field(min_length=3, max_length=3)
++    warp_direction: list[float] = Field(min_length=3, max_length=3)
++    layers: list[MaterialLayer] = Field(min_length=1)
++    joins: list[LayerJoin] = Field(default_factory=list)
++
++    @model_validator(mode='after')
++    def topology(self) -> LayeredAssembly:
++        """Reject ambiguous material frames, repeated layers and nonadjacent joins."""
++        for vector in (self.normal,self.warp_direction):
++            if abs(sum(x*x for x in vector)-1)>1e-6:
++                raise ValueError('Layer frame directions must be unit vectors')
++        if abs(sum(a*b for a,b in zip(self.normal,self.warp_direction)))>1e-6:
++            raise ValueError('Warp direction must lie in the layer plane')
++        ids=[layer.layer_id for layer in self.layers]
++        unique(ids,'layer ID');unique([layer.component_object_id for layer in self.layers],'layer occurrence')
++        unique([join.join_id for join in self.joins],'join ID')
++        adjacent={frozenset(pair) for pair in zip(ids,ids[1:])};joined=set()
++        for join in self.joins:
++            pair=frozenset((join.first_layer_id,join.second_layer_id))
++            if pair not in adjacent or pair in joined:
++                raise ValueError('Joins must connect distinct adjacent layers exactly once')
++            joined.add(pair)
++        return self
++
++
++def validate_layer_references(document: MechanicalIR) -> None:
++    """Resolve layer occurrences and reject collisions in the public entity index."""
++    objects={c.object_id for c in document.components}
++    entity_ids=list(objects);occurrences=[]
++    for stack in document.layered_assemblies:
++        entity_ids.extend([stack.stack_id,*[layer.layer_id for layer in stack.layers],*[join.join_id for join in stack.joins]])
++        if stack.host_object_id not in objects:
++            raise ValueError('Layer stack host must be an existing mechanical occurrence')
++        for layer in stack.layers:
++            if layer.component_object_id not in objects or layer.component_object_id==stack.host_object_id:
++                raise ValueError('Layer must reference a distinct existing component occurrence')
++            occurrences.append(layer.component_object_id)
++    unique(entity_ids,'mechanical entity ID');unique(occurrences,'physical layer occurrence across stacks')
++
++
++def inspect_layers(document: MechanicalIR) -> list[dict]:
++    """Report declared thickness accounting without implying a physical evaluation."""
++    from .models import MechanicalIR
++    document = MechanicalIR.model_validate(document.model_dump(mode='json'))
++    return [{'stack_id':stack.stack_id,'layer_order':[layer.layer_id for layer in stack.layers],
++             'total_thickness_mm':None if any(layer.thickness_mm is None for layer in stack.layers) else sum(layer.thickness_mm for layer in stack.layers),
++             'geometry_check':'unsupported','deformation_prediction':'unsupported'} for stack in document.layered_assemblies]
++
++
++def layer_findings(document: MechanicalIR) -> list[Finding]:
++    """Expose absent material evidence and incomplete construction declarations."""
++    parts={p.part_definition_id:p for p in document.parts};objects={c.object_id:c for c in document.components}
++    findings=[]
++    for stack in document.layered_assemblies:
++        if len(stack.joins)<len(stack.layers)-1:
++            findings.append(Finding(code='unknown_layer_join',location=stack.stack_id,severity='warning',message='At least one adjacent interface has no joining declaration.'))
++        for layer in stack.layers:
++            part=parts[objects[layer.component_object_id].part_definition_id]
++            if layer.thickness_mm is None:
++                findings.append(Finding(code='unknown_layer_thickness',location=layer.layer_id,severity='warning',message='Nominal layer thickness is unknown.'))
++            if part.flexibility is None or part.flexibility.evidence_sha256 is None:
++                findings.append(Finding(code='unknown_flexible_material',location=layer.layer_id,severity='warning',message='Directional deformation properties lack pinned evidence; flexibility is not verified.'))
++    return findings
+diff --git a/forma_core/mechanics/models.py b/forma_core/mechanics/models.py
+index 1434dd1..6fedd46 100644
+--- a/forma_core/mechanics/models.py
++++ b/forma_core/mechanics/models.py
+@@ -8,6 +8,7 @@ from pydantic import Field, model_validator
+ 
+ from forma_core.domains.base import ComponentView, DomainDocument, DomainModel, Text, unique
+ from .primitives import MechanicalNotes
++from .layers import DirectionalFlexibility, LayeredAssembly, validate_layer_references
+ 
+ 
+ class MechanicalContext(DomainModel):
+@@ -26,6 +27,7 @@ class MechanicalPart(DomainModel):
+     dimensions_mm: dict[str, float] = Field(default_factory=dict)
+     material: Text | None = None
+     geometry_refs: list[Text] = Field(default_factory=list)
++    flexibility: DirectionalFlexibility | None = Field(default=None, exclude_if=lambda value: value is None)
+ 
+ 
+ class MechanicalIR(DomainDocument):
+@@ -41,6 +43,7 @@ class MechanicalIR(DomainDocument):
+     components: list[ComponentView] = Field(default_factory=list)
+     mechanical: MechanicalNotes | None = None
+     cad_model: Any | None = None
++    layered_assemblies: list[LayeredAssembly] = Field(default_factory=list, exclude_if=lambda value: not value)
+ 
+     @model_validator(mode="after")
+     def validate_references(self) -> MechanicalIR:
+@@ -69,4 +72,5 @@ class MechanicalIR(DomainDocument):
+             for target in targets:
+                 if target not in refs:
+                     raise ValueError(f"Unknown mechanical component '{target}'.")
++        validate_layer_references(self)
+         return self
+diff --git a/tests/projects/test_layered_materials.py b/tests/projects/test_layered_materials.py
+new file mode 100644
+index 0000000..c81c358
+--- /dev/null
++++ b/tests/projects/test_layered_materials.py
+@@ -0,0 +1,99 @@
++"""Layered-material schema and composition tests independent of wearable fixtures."""
++from __future__ import annotations
++from copy import deepcopy
++import unittest
++from typing import Any
++from pydantic import ValidationError
++from forma_core.domains.base import fingerprint
++from forma_core.domains.registry import parse_domain, validate_domain
++from forma_core.domains.composition import DomainLink, LinkEndpoint, compose_product, validate_product
++from forma_core.mechanics.layers import inspect_layers
++
++
++def documents() -> list[dict[str, Any]]:
++    """Make a generic instrumented laminate with explicitly unknown properties."""
++    mechanical={'domain':'mechanical','schema_version':'1.0','artifact_id':'m','revision':1,'parts':[{'part_definition_id':name} for name in ['panel','backing','foil','coating']],'components':[{'object_id':name,'part_definition_id':name,'ref_des':name} for name in ['panel','backing','foil','coating']],'layered_assemblies':[{'stack_id':'stack','host_object_id':'panel','frame':'panel-local','normal':[0.,0.,1.],'warp_direction':[1.,0.,0.],'layers':[{'layer_id':'layer-'+name,'component_object_id':name,'role':role,'thickness_mm':thickness} for name,role,thickness in [('backing','contact',1.),('foil','conductor',.1),('coating','encapsulation',None)]],'joins':[{'join_id':'join-1','first_layer_id':'layer-backing','second_layer_id':'layer-foil','method':'laminated'},{'join_id':'join-2','first_layer_id':'layer-foil','second_layer_id':'layer-coating','method':'laminated'}]}]}
++    electrical={'domain':'electrical','schema_version':'1.0','artifact_id':'e','revision':1,'parts':[{'part_definition_id':'sensor','pins':[{'pin_id':'OUT','name':'OUT','pin_type':'Analog'}],'engineering':{'temperature_sensor':{'output_unit':'degC'}}}],'components':[{'object_id':'sensor','part_definition_id':'sensor','ref_des':'S1'}],'nets':[{'net_id':'measurement','name':'Measurement','net_type':'Signal','pins':[{'ref_des':'S1','pin_id':'OUT'}]}]}
++    thermal={'domain':'thermal','schema_version':'1.0','artifact_id':'t','revision':1,'nodes':[{'node_id':'surface','kind':'body'}]}
++    human={'domain':'human','schema_version':'1.0','artifact_id':'h','revision':1,'profiles':[{'profile_id':'nominal','revision':1,'source':{'kind':'synthetic','description':'Test only'},'segments':[{'segment_id':'hand','label':'Hand'}]}],'participants':[{'participant_id':'operator','profile_id':'nominal','profile_revision':1,'roles':['operator'],'interfaces':[{'port_id':'contact','kind':'mechanical_contact','segment_id':'hand','description':'Contact'},{'port_id':'heat','kind':'thermal_exchange','segment_id':'hand','description':'Heat exchange'}]}]}
++    return [mechanical,electrical,thermal,human]
++
++
++def bundle() -> Any:
++    """Compose all supported coupling types through the public existing API."""
++    docs=[parse_domain(d) for d in documents()];by_id={d.artifact_id:d for d in docs}
++    def endpoint(artifact: str, object_id: str, port: str | None = None) -> LinkEndpoint:
++        """Pin the exact native artifact revision and content."""
++        return LinkEndpoint(artifact_id=artifact,revision=1,sha256=fingerprint(by_id[artifact]),object_id=object_id,port_id=port)
++    links=[DomainLink(link_id='mount',kind='mounted_on_layer',source=endpoint('e','sensor'),target=endpoint('m','layer-foil')),
++           DomainLink(link_id='observe',kind='observes_temperature',source=endpoint('e','sensor'),target=endpoint('t','surface')),
++           DomainLink(link_id='represent',kind='thermal_representation',source=endpoint('m','layer-backing'),target=endpoint('t','surface')),
++           DomainLink(link_id='contact',kind='wearer_contact',source=endpoint('h','operator','contact'),target=endpoint('m','layer-backing')),
++           DomainLink(link_id='heat',kind='thermal_contact',source=endpoint('h','operator','heat'),target=endpoint('t','surface','heat'))]
++    return compose_product('instrumented-panel',docs,links=links)
++
++
++class LayeredMaterialTests(unittest.TestCase):
++    """Reject false coupling claims while keeping unknown physics explicit."""
++    def test_valid_composition_and_unknown_thickness(self) -> None:
++        """Structural validity never converts absent values into physical results."""
++        result=validate_product(bundle());self.assertTrue(result.is_valid,result.model_dump())
++        document=parse_domain(documents()[0]);self.assertIsNone(inspect_layers(document)[0]['total_thickness_mm'])
++        self.assertTrue(any(f.code=='unknown_layer_thickness' for f in validate_domain(document)))
++        self.assertEqual(inspect_layers(document)[0]['deformation_prediction'],'unsupported')
++
++    def test_nonadjacent_join_and_duplicate_occurrence(self) -> None:
++        """Bad construction topology cannot masquerade as an ordered laminate."""
++        raw=documents()[0];raw['layered_assemblies'][0]['joins'][0]['second_layer_id']='layer-coating'
++        with self.assertRaises(ValidationError):parse_domain(raw)
++        raw=documents()[0];raw['layered_assemblies'][0]['layers'][1]['component_object_id']='backing'
++        with self.assertRaises(ValidationError):parse_domain(raw)
++
++    def test_invalid_material_frame_and_nonfinite_properties(self) -> None:
++        """Reject ambiguous axes and impossible numeric declarations."""
++        raw=documents()[0];raw['layered_assemblies'][0]['warp_direction']=[0.,0.,1.]
++        with self.assertRaises(ValidationError):parse_domain(raw)
++        raw=documents()[0];raw['parts'][1]['flexibility']={'warp_modulus_pa':float('nan')}
++        with self.assertRaises(ValidationError):parse_domain(raw)
++
++    def test_wrong_layer_and_internal_contact(self) -> None:
++        """An ordinary component is not a layer; an internal foil is not exposed."""
++        value=bundle();value.manifest.links[0].target.object_id='panel'
++        self.assertTrue(any(f.code=='layer_coupling' for f in validate_product(value).composition))
++        value=bundle();value.manifest.links[3].target.object_id='layer-foil'
++        self.assertTrue(any(f.code=='layer_coupling' for f in validate_product(value).composition))
++
++    def test_stale_revision_and_digest_invalidate_links(self) -> None:
++        """Composition pins cannot remain valid after independent artifact changes."""
++        value=bundle();value.manifest.links[0].target.revision=2
++        self.assertTrue(any(f.code=='link_revision' for f in validate_product(value).composition))
++        value=bundle();value.manifest.links[0].target.sha256='0'*64
++        self.assertTrue(any(f.code=='link_hash' for f in validate_product(value).composition))
++
++    def test_temperature_observation_requires_sensor_role(self) -> None:
++        """A controller or passive component cannot be labelled a temperature sensor."""
++        raw=documents();raw[1]['parts'][0]['engineering']=None
++        value=compose_product('instrumented-panel',[parse_domain(d) for d in raw],links=bundle().manifest.links)
++        self.assertTrue(any(f.code=='layer_coupling' and f.location=='observe' for f in validate_product(value).composition))
++
++    def test_entity_collision_and_unknown_component_rejected(self) -> None:
++        """Synthetic layer IDs must not shadow physical component IDs."""
++        raw=documents()[0];raw['layered_assemblies'][0]['stack_id']='panel'
++        with self.assertRaises(ValidationError):parse_domain(raw)
++        raw=documents()[0];raw['layered_assemblies'][0]['layers'][0]['component_object_id']='missing'
++        with self.assertRaises(ValidationError):parse_domain(raw)
++
++    def test_legacy_payloads_have_no_new_default_keys(self) -> None:
++        """Absent extensions preserve normalized legacy serialization and hashes."""
++        document=parse_domain({'domain':'mechanical','schema_version':'1.0','artifact_id':'m','revision':1,'parts':[{'part_definition_id':'part'}]})
++        data=document.model_dump(mode='json');self.assertNotIn('layered_assemblies',data);self.assertNotIn('flexibility',data['parts'][0])
++
++    def test_same_object_with_layer_metadata_returns_finding(self) -> None:
++        """New entity kinds cannot crash legacy shared-component validation."""
++        value=bundle();link=value.manifest.links[0];link.kind='same_object';link.target.object_id='layer-foil'
++        # Unequal identities are diagnosed without stopping the validator.
++        result=validate_product(value);self.assertTrue(any(f.code=='physical_identity' for f in result.composition))
++
++
++if __name__=='__main__':
++    unittest.main()

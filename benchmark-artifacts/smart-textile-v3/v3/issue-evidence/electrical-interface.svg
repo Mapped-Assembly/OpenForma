@@ -1,0 +1,255 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='1180' height='1208' viewBox='0 0 1180 1208'>
+<rect width='100%' height='100%' fill='#f4f7fb'/>
+<g font-family='sans-serif' fill='#17334b'>
+<text x='25' y='35' font-size='23' font-weight='bold'>Electrical interface schematic</text>
+<text x='25' y='61' font-size='13'>Matching net IDs are connected. Declared interface pins; package pinout and PCB internals are not implied.</text>
+<g data-component='U1'>
+<rect x='20' y='85' width='362' height='257' rx='10' fill='white' stroke='#afbecb'/>
+<text x='34' y='109' font-size='15' font-weight='bold'>U1 / BLE microcontroller</text>
+<text x='34' y='130' font-size='12' fill='#60788c'>nRF52840</text>
+<g data-pin='VDD' data-net='3v3'>
+<text x='34' y='162' font-size='12'>VDD</text>
+<line x1='172.0' y1='158' x2='229.00000000000003' y2='158' stroke='#c83535' stroke-width='2'/>
+<circle cx='172.0' cy='158' r='3' fill='#c83535'/>
+<text x='236.6' y='162' font-size='12' fill='#c83535'>3v3</text>
+</g>
+<g data-pin='GND' data-net='gnd'>
+<text x='34' y='191' font-size='12'>GND</text>
+<line x1='172.0' y1='187' x2='229.00000000000003' y2='187' stroke='#34465c' stroke-width='2'/>
+<circle cx='172.0' cy='187' r='3' fill='#34465c'/>
+<text x='236.6' y='191' font-size='12' fill='#34465c'>gnd</text>
+</g>
+<g data-pin='SDA' data-net='i2c-sda'>
+<text x='34' y='220' font-size='12'>SDA</text>
+<line x1='172.0' y1='216' x2='229.00000000000003' y2='216' stroke='#087e98' stroke-width='2'/>
+<circle cx='172.0' cy='216' r='3' fill='#087e98'/>
+<text x='236.6' y='220' font-size='12' fill='#087e98'>i2c-sda</text>
+</g>
+<g data-pin='SCL' data-net='i2c-scl'>
+<text x='34' y='249' font-size='12'>SCL</text>
+<line x1='172.0' y1='245' x2='229.00000000000003' y2='245' stroke='#087e98' stroke-width='2'/>
+<circle cx='172.0' cy='245' r='3' fill='#087e98'/>
+<text x='236.6' y='249' font-size='12' fill='#087e98'>i2c-scl</text>
+</g>
+<g data-pin='LOCAL' data-net='local-control'>
+<text x='34' y='278' font-size='12'>LOCAL</text>
+<line x1='172.0' y1='274' x2='229.00000000000003' y2='274' stroke='#8756a8' stroke-width='2'/>
+<circle cx='172.0' cy='274' r='3' fill='#8756a8'/>
+<text x='236.6' y='278' font-size='12' fill='#8756a8'>local-control</text>
+</g>
+<g data-pin='TEC_EN' data-net='tec-enable'>
+<text x='34' y='307' font-size='12'>TEC_EN</text>
+<line x1='172.0' y1='303' x2='229.00000000000003' y2='303' stroke='#8756a8' stroke-width='2'/>
+<circle cx='172.0' cy='303' r='3' fill='#8756a8'/>
+<text x='236.6' y='307' font-size='12' fill='#8756a8'>tec-enable</text>
+</g>
+</g>
+<g data-component='U2'>
+<rect x='400' y='85' width='362' height='257' rx='10' fill='white' stroke='#afbecb'/>
+<text x='414' y='109' font-size='15' font-weight='bold'>U2 / Skin temperature sensor</text>
+<text x='414' y='130' font-size='12' fill='#60788c'>Part selection unresolved</text>
+<g data-pin='VDD' data-net='3v3'>
+<text x='414' y='162' font-size='12'>VDD</text>
+<line x1='552.0' y1='158' x2='609.0' y2='158' stroke='#c83535' stroke-width='2'/>
+<circle cx='552.0' cy='158' r='3' fill='#c83535'/>
+<text x='616.6' y='162' font-size='12' fill='#c83535'>3v3</text>
+</g>
+<g data-pin='GND' data-net='gnd'>
+<text x='414' y='191' font-size='12'>GND</text>
+<line x1='552.0' y1='187' x2='609.0' y2='187' stroke='#34465c' stroke-width='2'/>
+<circle cx='552.0' cy='187' r='3' fill='#34465c'/>
+<text x='616.6' y='191' font-size='12' fill='#34465c'>gnd</text>
+</g>
+<g data-pin='SDA' data-net='i2c-sda'>
+<text x='414' y='220' font-size='12'>SDA</text>
+<line x1='552.0' y1='216' x2='609.0' y2='216' stroke='#087e98' stroke-width='2'/>
+<circle cx='552.0' cy='216' r='3' fill='#087e98'/>
+<text x='616.6' y='220' font-size='12' fill='#087e98'>i2c-sda</text>
+</g>
+<g data-pin='SCL' data-net='i2c-scl'>
+<text x='414' y='249' font-size='12'>SCL</text>
+<line x1='552.0' y1='245' x2='609.0' y2='245' stroke='#087e98' stroke-width='2'/>
+<circle cx='552.0' cy='245' r='3' fill='#087e98'/>
+<text x='616.6' y='249' font-size='12' fill='#087e98'>i2c-scl</text>
+</g>
+</g>
+<g data-component='U3'>
+<rect x='780' y='85' width='362' height='257' rx='10' fill='white' stroke='#afbecb'/>
+<text x='794' y='109' font-size='15' font-weight='bold'>U3 / Ambient temperature sensor</text>
+<text x='794' y='130' font-size='12' fill='#60788c'>Part selection unresolved</text>
+<g data-pin='VDD' data-net='3v3'>
+<text x='794' y='162' font-size='12'>VDD</text>
+<line x1='932.0' y1='158' x2='989.0' y2='158' stroke='#c83535' stroke-width='2'/>
+<circle cx='932.0' cy='158' r='3' fill='#c83535'/>
+<text x='996.6' y='162' font-size='12' fill='#c83535'>3v3</text>
+</g>
+<g data-pin='GND' data-net='gnd'>
+<text x='794' y='191' font-size='12'>GND</text>
+<line x1='932.0' y1='187' x2='989.0' y2='187' stroke='#34465c' stroke-width='2'/>
+<circle cx='932.0' cy='187' r='3' fill='#34465c'/>
+<text x='996.6' y='191' font-size='12' fill='#34465c'>gnd</text>
+</g>
+<g data-pin='SDA' data-net='i2c-sda'>
+<text x='794' y='220' font-size='12'>SDA</text>
+<line x1='932.0' y1='216' x2='989.0' y2='216' stroke='#087e98' stroke-width='2'/>
+<circle cx='932.0' cy='216' r='3' fill='#087e98'/>
+<text x='996.6' y='220' font-size='12' fill='#087e98'>i2c-sda</text>
+</g>
+<g data-pin='SCL' data-net='i2c-scl'>
+<text x='794' y='249' font-size='12'>SCL</text>
+<line x1='932.0' y1='245' x2='989.0' y2='245' stroke='#087e98' stroke-width='2'/>
+<circle cx='932.0' cy='245' r='3' fill='#087e98'/>
+<text x='996.6' y='249' font-size='12' fill='#087e98'>i2c-scl</text>
+</g>
+</g>
+<g data-component='U4'>
+<rect x='20' y='357' width='362' height='257' rx='10' fill='white' stroke='#afbecb'/>
+<text x='34' y='381' font-size='15' font-weight='bold'>U4 / Charger / protection / regulation block</text>
+<text x='34' y='402' font-size='12' fill='#60788c'>Part selection unresolved</text>
+<g data-pin='RX_IN' data-net='qi-dc'>
+<text x='34' y='434' font-size='12'>RX_IN</text>
+<line x1='172.0' y1='430' x2='229.00000000000003' y2='430' stroke='#c83535' stroke-width='2'/>
+<circle cx='172.0' cy='430' r='3' fill='#c83535'/>
+<text x='236.6' y='434' font-size='12' fill='#c83535'>qi-dc</text>
+</g>
+<g data-pin='BAT' data-net='battery'>
+<text x='34' y='463' font-size='12'>BAT</text>
+<line x1='172.0' y1='459' x2='229.00000000000003' y2='459' stroke='#c83535' stroke-width='2'/>
+<circle cx='172.0' cy='459' r='3' fill='#c83535'/>
+<text x='236.6' y='463' font-size='12' fill='#c83535'>battery</text>
+</g>
+<g data-pin='GND' data-net='gnd'>
+<text x='34' y='492' font-size='12'>GND</text>
+<line x1='172.0' y1='488' x2='229.00000000000003' y2='488' stroke='#34465c' stroke-width='2'/>
+<circle cx='172.0' cy='488' r='3' fill='#34465c'/>
+<text x='236.6' y='492' font-size='12' fill='#34465c'>gnd</text>
+</g>
+<g data-pin='OUT' data-net='3v3'>
+<text x='34' y='521' font-size='12'>OUT</text>
+<line x1='172.0' y1='517' x2='229.00000000000003' y2='517' stroke='#c83535' stroke-width='2'/>
+<circle cx='172.0' cy='517' r='3' fill='#c83535'/>
+<text x='236.6' y='521' font-size='12' fill='#c83535'>3v3</text>
+</g>
+</g>
+<g data-component='RX1'>
+<rect x='400' y='357' width='362' height='257' rx='10' fill='white' stroke='#afbecb'/>
+<text x='414' y='381' font-size='15' font-weight='bold'>RX1 / Qi receiver</text>
+<text x='414' y='402' font-size='12' fill='#60788c'>Part selection unresolved</text>
+<g data-pin='OUT' data-net='qi-dc'>
+<text x='414' y='434' font-size='12'>OUT</text>
+<line x1='552.0' y1='430' x2='609.0' y2='430' stroke='#c83535' stroke-width='2'/>
+<circle cx='552.0' cy='430' r='3' fill='#c83535'/>
+<text x='616.6' y='434' font-size='12' fill='#c83535'>qi-dc</text>
+</g>
+<g data-pin='GND' data-net='gnd'>
+<text x='414' y='463' font-size='12'>GND</text>
+<line x1='552.0' y1='459' x2='609.0' y2='459' stroke='#34465c' stroke-width='2'/>
+<circle cx='552.0' cy='459' r='3' fill='#34465c'/>
+<text x='616.6' y='463' font-size='12' fill='#34465c'>gnd</text>
+</g>
+</g>
+<g data-component='B1'>
+<rect x='780' y='357' width='362' height='257' rx='10' fill='white' stroke='#afbecb'/>
+<text x='794' y='381' font-size='15' font-weight='bold'>B1 / Thin-film battery pack</text>
+<text x='794' y='402' font-size='12' fill='#60788c'>Part selection unresolved</text>
+<g data-pin='POS' data-net='battery'>
+<text x='794' y='434' font-size='12'>POS</text>
+<line x1='932.0' y1='430' x2='989.0' y2='430' stroke='#c83535' stroke-width='2'/>
+<circle cx='932.0' cy='430' r='3' fill='#c83535'/>
+<text x='996.6' y='434' font-size='12' fill='#c83535'>battery</text>
+</g>
+<g data-pin='NEG' data-net='gnd'>
+<text x='794' y='463' font-size='12'>NEG</text>
+<line x1='932.0' y1='459' x2='989.0' y2='459' stroke='#34465c' stroke-width='2'/>
+<circle cx='932.0' cy='459' r='3' fill='#34465c'/>
+<text x='996.6' y='463' font-size='12' fill='#34465c'>gnd</text>
+</g>
+</g>
+<g data-component='U5'>
+<rect x='20' y='629' width='362' height='257' rx='10' fill='white' stroke='#afbecb'/>
+<text x='34' y='653' font-size='15' font-weight='bold'>U5 / Current-limited TEC driver</text>
+<text x='34' y='674' font-size='12' fill='#60788c'>Part selection unresolved</text>
+<g data-pin='VIN' data-net='3v3'>
+<text x='34' y='706' font-size='12'>VIN</text>
+<line x1='172.0' y1='702' x2='229.00000000000003' y2='702' stroke='#c83535' stroke-width='2'/>
+<circle cx='172.0' cy='702' r='3' fill='#c83535'/>
+<text x='236.6' y='706' font-size='12' fill='#c83535'>3v3</text>
+</g>
+<g data-pin='GND' data-net='gnd'>
+<text x='34' y='735' font-size='12'>GND</text>
+<line x1='172.0' y1='731' x2='229.00000000000003' y2='731' stroke='#34465c' stroke-width='2'/>
+<circle cx='172.0' cy='731' r='3' fill='#34465c'/>
+<text x='236.6' y='735' font-size='12' fill='#34465c'>gnd</text>
+</g>
+<g data-pin='EN' data-net='tec-enable'>
+<text x='34' y='764' font-size='12'>EN</text>
+<line x1='172.0' y1='760' x2='229.00000000000003' y2='760' stroke='#8756a8' stroke-width='2'/>
+<circle cx='172.0' cy='760' r='3' fill='#8756a8'/>
+<text x='236.6' y='764' font-size='12' fill='#8756a8'>tec-enable</text>
+</g>
+<g data-pin='OUT_L' data-net='tec-left'>
+<text x='34' y='793' font-size='12'>OUT_L</text>
+<line x1='172.0' y1='789' x2='229.00000000000003' y2='789' stroke='#c83535' stroke-width='2'/>
+<circle cx='172.0' cy='789' r='3' fill='#c83535'/>
+<text x='236.6' y='793' font-size='12' fill='#c83535'>tec-left</text>
+</g>
+<g data-pin='OUT_R' data-net='tec-right'>
+<text x='34' y='822' font-size='12'>OUT_R</text>
+<line x1='172.0' y1='818' x2='229.00000000000003' y2='818' stroke='#c83535' stroke-width='2'/>
+<circle cx='172.0' cy='818' r='3' fill='#c83535'/>
+<text x='236.6' y='822' font-size='12' fill='#c83535'>tec-right</text>
+</g>
+</g>
+<g data-component='TEC1'>
+<rect x='400' y='629' width='362' height='257' rx='10' fill='white' stroke='#afbecb'/>
+<text x='414' y='653' font-size='15' font-weight='bold'>TEC1 / Peltier element L</text>
+<text x='414' y='674' font-size='12' fill='#60788c'>Part selection unresolved</text>
+<g data-pin='P' data-net='tec-left'>
+<text x='414' y='706' font-size='12'>P</text>
+<line x1='552.0' y1='702' x2='609.0' y2='702' stroke='#c83535' stroke-width='2'/>
+<circle cx='552.0' cy='702' r='3' fill='#c83535'/>
+<text x='616.6' y='706' font-size='12' fill='#c83535'>tec-left</text>
+</g>
+<g data-pin='N' data-net='gnd'>
+<text x='414' y='735' font-size='12'>N</text>
+<line x1='552.0' y1='731' x2='609.0' y2='731' stroke='#34465c' stroke-width='2'/>
+<circle cx='552.0' cy='731' r='3' fill='#34465c'/>
+<text x='616.6' y='735' font-size='12' fill='#34465c'>gnd</text>
+</g>
+</g>
+<g data-component='TEC2'>
+<rect x='780' y='629' width='362' height='257' rx='10' fill='white' stroke='#afbecb'/>
+<text x='794' y='653' font-size='15' font-weight='bold'>TEC2 / Peltier element R</text>
+<text x='794' y='674' font-size='12' fill='#60788c'>Part selection unresolved</text>
+<g data-pin='P' data-net='tec-right'>
+<text x='794' y='706' font-size='12'>P</text>
+<line x1='932.0' y1='702' x2='989.0' y2='702' stroke='#c83535' stroke-width='2'/>
+<circle cx='932.0' cy='702' r='3' fill='#c83535'/>
+<text x='996.6' y='706' font-size='12' fill='#c83535'>tec-right</text>
+</g>
+<g data-pin='N' data-net='gnd'>
+<text x='794' y='735' font-size='12'>N</text>
+<line x1='932.0' y1='731' x2='989.0' y2='731' stroke='#34465c' stroke-width='2'/>
+<circle cx='932.0' cy='731' r='3' fill='#34465c'/>
+<text x='996.6' y='735' font-size='12' fill='#34465c'>gnd</text>
+</g>
+</g>
+<g data-component='SW1'>
+<rect x='20' y='901' width='362' height='257' rx='10' fill='white' stroke='#afbecb'/>
+<text x='34' y='925' font-size='15' font-weight='bold'>SW1 / Local control</text>
+<text x='34' y='946' font-size='12' fill='#60788c'>Part selection unresolved</text>
+<g data-pin='SIG' data-net='local-control'>
+<text x='34' y='978' font-size='12'>SIG</text>
+<line x1='172.0' y1='974' x2='229.00000000000003' y2='974' stroke='#8756a8' stroke-width='2'/>
+<circle cx='172.0' cy='974' r='3' fill='#8756a8'/>
+<text x='236.6' y='978' font-size='12' fill='#8756a8'>local-control</text>
+</g>
+<g data-pin='GND' data-net='gnd'>
+<text x='34' y='1007' font-size='12'>GND</text>
+<line x1='172.0' y1='1003' x2='229.00000000000003' y2='1003' stroke='#34465c' stroke-width='2'/>
+<circle cx='172.0' cy='1003' r='3' fill='#34465c'/>
+<text x='236.6' y='1007' font-size='12' fill='#34465c'>gnd</text>
+</g>
+</g>
+</g>
+</svg>

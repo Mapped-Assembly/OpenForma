@@ -1,0 +1,149 @@
+{
+  "nodes": {
+    "root": {
+      "id": "root",
+      "name": "Root",
+      "operation": "seed",
+      "parameters": {},
+      "typed_parameters": {},
+      "parameter_bindings": [],
+      "sketch_id": null,
+      "parent_id": null,
+      "tool_refs": [],
+      "depends_on": [],
+      "shape_id": null,
+      "status": "built",
+      "replay_shape_id": null,
+      "rebuild_error": null,
+      "suppressed": false,
+      "mate_id": null,
+      "is_assembly_mate": false
+    },
+    "feat-0001": {
+      "id": "feat-0001",
+      "name": "controller-film-copper",
+      "operation": "create_box",
+      "parameters": {
+        "length": 64,
+        "width": 0.035,
+        "height": 47
+      },
+      "typed_parameters": {},
+      "parameter_bindings": [],
+      "sketch_id": null,
+      "parent_id": null,
+      "tool_refs": [],
+      "depends_on": [],
+      "shape_id": "35021aad-6597-44ae-b33a-5e8f86e3c34f",
+      "status": "built",
+      "replay_shape_id": null,
+      "rebuild_error": null,
+      "suppressed": false,
+      "mate_id": null,
+      "is_assembly_mate": false
+    },
+    "feat-0002": {
+      "id": "feat-0002",
+      "name": "placement",
+      "operation": "translate",
+      "parameters": {
+        "shape_id": "35021aad-6597-44ae-b33a-5e8f86e3c34f",
+        "offset": [
+          0,
+          0.03249999999999997,
+          0
+        ]
+      },
+      "typed_parameters": {},
+      "parameter_bindings": [],
+      "sketch_id": null,
+      "parent_id": null,
+      "tool_refs": [],
+      "depends_on": [],
+      "shape_id": "845e8e3e-73df-455b-b69b-eff7ddfa06f2",
+      "status": "built",
+      "replay_shape_id": null,
+      "rebuild_error": null,
+      "suppressed": false,
+      "mate_id": null,
+      "is_assembly_mate": false
+    }
+  },
+  "root_id": "root",
+  "active_branch": "main",
+  "branch_snapshots": {
+    "main": {
+      "root": {
+        "id": "root",
+        "name": "Root",
+        "operation": "seed",
+        "parameters": {},
+        "typed_parameters": {},
+        "parameter_bindings": [],
+        "sketch_id": null,
+        "parent_id": null,
+        "tool_refs": [],
+        "depends_on": [],
+        "shape_id": null,
+        "status": "built",
+        "replay_shape_id": null,
+        "rebuild_error": null,
+        "suppressed": false,
+        "mate_id": null,
+        "is_assembly_mate": false
+      },
+      "feat-0001": {
+        "id": "feat-0001",
+        "name": "controller-film-copper",
+        "operation": "create_box",
+        "parameters": {
+          "length": 64,
+          "width": 0.035,
+          "height": 47
+        },
+        "typed_parameters": {},
+        "parameter_bindings": [],
+        "sketch_id": null,
+        "parent_id": null,
+        "tool_refs": [],
+        "depends_on": [],
+        "shape_id": "35021aad-6597-44ae-b33a-5e8f86e3c34f",
+        "status": "built",
+        "replay_shape_id": null,
+        "rebuild_error": null,
+        "suppressed": false,
+        "mate_id": null,
+        "is_assembly_mate": false
+      },
+      "feat-0002": {
+        "id": "feat-0002",
+        "name": "placement",
+        "operation": "translate",
+        "parameters": {
+          "shape_id": "35021aad-6597-44ae-b33a-5e8f86e3c34f",
+          "offset": [
+            0,
+            0.03249999999999997,
+            0
+          ]
+        },
+        "typed_parameters": {},
+        "parameter_bindings": [],
+        "sketch_id": null,
+        "parent_id": null,
+        "tool_refs": [],
+        "depends_on": [],
+        "shape_id": "845e8e3e-73df-455b-b69b-eff7ddfa06f2",
+        "status": "built",
+        "replay_shape_id": null,
+        "rebuild_error": null,
+        "suppressed": false,
+        "mate_id": null,
+        "is_assembly_mate": false
+      }
+    }
+  },
+  "solver_cache": {},
+  "revision": 2,
+  "kernel_session_id": "589545b9-81d2-4aa0-af19-590eb71a0f28"
+}

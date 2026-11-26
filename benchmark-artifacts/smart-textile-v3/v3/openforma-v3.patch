@@ -1,0 +1,1518 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index bb5fb10..ade7cfa 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -83,3 +83,15 @@ Read `docs/virtual-workcells.md` before authoring new workcells. The example's
+ motions represent virtual human manipulation; no physical actuator is designed.
+ Fluid dynamics, collision checking, mixing homogeneity and reaction kinetics are
+ not supplied by this bridge. Do not confuse its inventory accounting with chemistry.
++
++## Configurable articulated MuJoCo execution
++
++When a task needs an articulated human or another named joint model, inspect
++`docs/configurable-mujoco.md` and `forma_core/control/mujoco_adapter.py` before
++adding an adapter. Author the MJCF tree, axis/body/joint bindings, optional pinned
++HumanIR participant, contact switches and fixed attachments as JSON outside
++repository source. Use `forma_core.control.mujoco_run` to send the declared
++transcript through MachineRuntime, then `forma_core.control.mujoco_render` to
++render the recorded states. The renderer does not execute motion. Keep thermal,
++electrical, biomechanics and physical safety claims separate from joint/contact
++simulation. Do not repurpose robot-specific adapters or add benchmark conditionals.
+diff --git a/docs/configurable-mujoco.md b/docs/configurable-mujoco.md
+new file mode 100644
+index 0000000..5702639
+--- /dev/null
++++ b/docs/configurable-mujoco.md
+@@ -0,0 +1,66 @@
++# Configurable MuJoCo adapter
++
++`forma_core.control.mujoco_adapter.MujocoAdapter` implements the existing
++MachineAdapter boundary. MachineRuntime still owns commands, interpolation,
++leases, watchdog state and ownership. This optional backend uses one MuJoCo
++model/data pair and is exclusively virtual.
++
++Author an instance outside repository source as JSON:
++
++- `MujocoConfiguration.definition`: existing MachineDefinition.
++- `scene`: JSON MJCF tree (`tag`, string `attributes`, `children`).
++- `axes`: exact axis ID → scalar joint name and position-actuator name.
++- `switches`: geometry pair, optional slide joint and minimum travel in metres,
++  debounce seconds, initial state. A rising debounced contact/travel observation
++  toggles the virtual state once. Release is required before another toggle.
++- `attachments`: fixed body/ancestor pairs checked against the model topology.
++- `body_bindings` and `joint_bindings`: semantic IDs mapped to simulator names.
++- Optional `human`: local native HumanIR file, SHA-256 and participant ID.
++  All profile segments/joints must bind, and joint ancestry must match.
++- `asset_hashes`: package-relative assets and SHA-256 hashes. External paths,
++  unpinned assets, includes and plugins are rejected.
++
++MJCF coordinates are metres. Joint limits follow MJCF compiler angle settings;
++actuator control limits are in MuJoCo SI units (radians/metres). MachineDefinition
++axes remain degree/mm. Only unit-gear scalar position servos are accepted.
++Virtual human servos are simulation controls, not physical motor designs or
++biomechanical evidence. Native domain validation does not establish anatomy,
++contact safety, electrical behavior, thermal performance or human-use readiness.
++
++Run a host transcript through the existing controller:
++
++```bash
++python -m forma_core.control.mujoco_run interaction.json runtime-trace.json
++MUJOCO_GL=egl python -m forma_core.control.mujoco_render \
++  configuration.json runtime-trace.json views.json interaction.gif
++```
++
++`RunRequest` has a configuration path, duration, host/sample periods and timed
++move/hold events. The host claims a session, arms it, renews leases and sends
++protocol-v2 commands. It never assigns animation trajectories to simulator qpos.
++IK, when used for planning, produces declarative joint targets before execution.
++The backend reads feedback from integrated MuJoCo state. A host clock jump over
++100 ms faults rather than silently skipping time. Disarmed physics pauses.
++
++The trace includes qpos/qvel/ctrl, feedback, observed contact and travel, switch
++transitions and fixed-attachment transforms. Rendering verifies configuration
++and asset hashes, restores only recorded states, and calls mj_forward for
++kinematic reconstruction; it never calls mj_step or interpolates new states.
++View labels and status panels come from presentation JSON. A render receipt pins
++both the trace and resulting GIF hashes. Contact forces in overlays are recorded
++simulation observations, not reconstructed forces or measured hardware values.
++
++Contact geometry, mass, stiffness, servo gains and joint bounds are model inputs.
++The adapter does not provide thermal feedback, firmware emulation, physiological
++models, generalized collision safety or walking balance. Those claims require
++separate validated domains/evaluators. OI may consume exported poses for spatial
++review; it is not the execution authority.
++
++Test with the optional robot-sim dependency installed:
++
++```bash
++python -m unittest discover -s tests/control -p 'test_*.py'
++```
++
++The new adapter tests use a sliding pusher and spring button, independent of any
++human or wearable benchmark.
+diff --git a/docs/layered-materials.md b/docs/layered-materials.md
+new file mode 100644
+index 0000000..9087823
+--- /dev/null
++++ b/docs/layered-materials.md
+@@ -0,0 +1,51 @@
++# Layered flexible assemblies
++
++MechanicalIR optionally declares `layered_assemblies`. Each stack names an existing
++host occurrence, a CAD frame, an outward normal, an in-plane material direction,
++ordered physical layer occurrences and joins between adjacent layers. Layer IDs
++and join IDs are composition entities, distinct from physical component IDs.
++Thickness is a nominal declaration; null means unknown. `inspect_layers` sums only
++complete declarations. It does not check CAD thickness or solve deformation.
++
++MechanicalPart optionally declares `flexibility`: directional elastic moduli,
++bending rigidities, strain limits, minimum bend radius and pinned material evidence.
++Absent properties remain unknown. Warp/weft identify local material axes; isotropy,
++cloth behavior and measured material performance are never inferred.
++
++ElectricalPart.engineering optionally declares `temperature_sensor` and
++`conductor_response`. These describe measurement roles, calibration and response
++coefficients. They do not produce readings or evaluate resistance changes. Geometry,
++material strain and thermal states retain their existing domain owners.
++
++## Composition relationships
++
++| Relationship | Source | Target |
++|---|---|---|
++| mounted_on_layer | Whole electrical component | Mechanical layer |
++| thermal_representation | Whole mechanical component or layer | Thermal node |
++| observes_temperature | Electrical component with typed temperature sensor role | Thermal node |
++| wearer_contact | Segment-bound HumanIR mechanical contact port | Exposed contact-role layer |
++| thermal_contact | Segment-bound HumanIR thermal exchange port | Thermal node heat port |
++
++Use existing `same_object` for shared physical component views and `thermal_source`
++for electrical heat loads. Endpoints retain revision/digest checks. Validation
++checks endpoint meaning, not physical contact, circuit routing or heat transfer.
++An aggregate host need not be an additional solid or mass. Do not count both a
++module envelope and its sublayers as separate mass without a mass allocation.
++
++These are additive optional fields on the native 1.0 schema. Legacy payloads omit
++the new defaults, preserving normalization and hashes. Older readers cannot consume
++populated extensions without updating. Legacy projection reports layered/material
++facts as unrepresentable rather than silently discarding them. Schema discovery
++uses the existing domain registry; no TextileIR or separate runtime is introduced.
++
++The supported first slice is authoring and structural validation. Cloth/FEM,
++strain-to-resistance evaluation, sensor dynamics, transient PCM and coupled thermal
++feedback are unsupported here. A product can derive its descriptive classification
++from connected domain facts; classification is not physical verification.
++
++Run the generic tests with:
++
++```bash
++python -m unittest tests.projects.test_layered_materials
++```
+diff --git a/forma_core/control/mujoco_adapter.py b/forma_core/control/mujoco_adapter.py
+new file mode 100644
+index 0000000..5bf972e
+--- /dev/null
++++ b/forma_core/control/mujoco_adapter.py
+@@ -0,0 +1,269 @@
++"""Declaratively bound MuJoCo physics behind the existing MachineAdapter protocol.
++
++Position servos are virtual control aids, not evidence of human biomechanics or
++physical motor design. Contact switches report simulated state only.
++"""
++from __future__ import annotations
++
++import hashlib
++import json
++import math
++import time
++import xml.etree.ElementTree as ET
++from collections.abc import Callable, Mapping
++from pathlib import Path
++from typing import Any, Literal
++
++import mujoco
++import numpy as np
++from pydantic import Field, FiniteFloat, model_validator
++
++from .models import AdapterDiagnostics, AxisFeedback, ControlModel, Feedback, MachineDefinition
++from .package import AdapterContract, ObservationSpec, digest
++
++
++class MJCFNode(ControlModel):
++    """JSON representation of an MJCF element; no executable code or includes."""
++    tag: str
++    attributes: dict[str, str] = Field(default_factory=dict)
++    children: list[MJCFNode] = Field(default_factory=list)
++
++    def element(self) -> ET.Element:
++        """Create an XML node after rejecting external code and file indirection."""
++        if self.tag in {'include', 'plugin', 'extension'}:
++            raise ValueError('MJCF includes and plugins are not allowed')
++        node = ET.Element(self.tag, self.attributes)
++        node.extend(child.element() for child in self.children)
++        return node
++
++
++class AxisBinding(ControlModel):
++    """Map a MachineDefinition axis to one scalar joint and position actuator."""
++    joint: str
++    actuator: str
++
++
++class ContactSwitch(ControlModel):
++    """Debounced contact plus optional spring-button travel; toggles on press."""
++    switch_id: str
++    geom_a: str
++    geom_b: str
++    travel_joint: str | None = None
++    minimum_travel_m: FiniteFloat = Field(default=0.0, ge=0)
++    debounce_s: FiniteFloat = Field(default=0.04, gt=0)
++    initial_state: bool = False
++
++
++class FixedAttachment(ControlModel):
++    """A fixed descendant body whose local transform must remain invariant."""
++    body: str
++    parent: str
++
++
++class HumanReference(ControlModel):
++    """Pin one optional HumanIR participant to simulator identities."""
++    file: str
++    sha256: str = Field(pattern=r'^[a-f0-9]{64}$')
++    participant_id: str
++
++
++class MujocoConfiguration(ControlModel):
++    """Versioned physics binding; the scene and all named identities are data."""
++    format: Literal['forma.mujoco-adapter'] = 'forma.mujoco-adapter'
++    version: Literal[1] = 1
++    definition: MachineDefinition
++    scene: MJCFNode
++    axes: dict[str, AxisBinding]
++    switches: list[ContactSwitch] = Field(default_factory=list)
++    attachments: list[FixedAttachment] = Field(default_factory=list)
++    body_bindings: dict[str, str] = Field(default_factory=dict)
++    joint_bindings: dict[str, list[str]] = Field(default_factory=dict)
++    asset_hashes: dict[str, str] = Field(default_factory=dict)
++    human: HumanReference | None = None
++
++    @model_validator(mode='after')
++    def identities(self) -> MujocoConfiguration:
++        """Reject ambiguous bindings before loading a simulator."""
++        if self.definition.backend != 'virtual' or self.scene.tag != 'mujoco':
++            raise ValueError('Configuration requires a virtual definition and MJCF root')
++        if set(self.axes) != {a.axis_id for a in self.definition.axes}:
++            raise ValueError('Axis bindings must exactly cover the machine definition')
++        if len({b.joint for b in self.axes.values()}) != len(self.axes) or len({b.actuator for b in self.axes.values()}) != len(self.axes):
++            raise ValueError('Each controlled joint and actuator needs a unique owner')
++        if len({s.switch_id for s in self.switches}) != len(self.switches):
++            raise ValueError('Duplicate contact switch identity')
++        return self
++
++
++def compile_scene(config: MujocoConfiguration, directory: Path) -> str:
++    """Compile JSON MJCF while checking every file against a pinned local asset."""
++    directory = directory.resolve()
++    root = config.scene.element()
++    for node in root.iter():
++        for key, value in node.attrib.items():
++            if key in {'meshdir', 'texturedir', 'assetdir'} and value not in {'', '.'}:
++                raise ValueError('Asset directory overrides are not supported')
++            if key == 'file':
++                path = (directory/value).resolve()
++                if not path.is_relative_to(directory) or value not in config.asset_hashes:
++                    raise ValueError('Every asset must be local and hash pinned')
++                if hashlib.sha256(path.read_bytes()).hexdigest() != config.asset_hashes[value]:
++                    raise ValueError(f'Asset digest mismatch: {value}')
++                node.set(key, str(path))
++    return ET.tostring(root, encoding='unicode')
++
++
++class MujocoAdapter:
++    """Advance a single MuJoCo state under MachineRuntime's clock and commands."""
++    mode = 'virtual'
++
++    def __init__(self, config: MujocoConfiguration, directory: Path, *, clock: Callable[[], float] = time.monotonic) -> None:
++        """Resolve named bindings and validate units, limits and fixed attachments."""
++        self.config, self.clock = config, clock
++        self.model = mujoco.MjModel.from_xml_string(compile_scene(config, directory))
++        self.data = mujoco.MjData(self.model)
++        self.enabled = False
++        self.last_tick = clock()
++        self.remainder = 0.0
++        self.ids: dict[str, tuple[int, int, float]] = {}
++        for axis in config.definition.axes:
++            binding = config.axes[axis.axis_id]
++            jid = self.model.joint(binding.joint).id
++            aid = self.model.actuator(binding.actuator).id
++            expected = mujoco.mjtJoint.mjJNT_HINGE if axis.unit == 'degree' else mujoco.mjtJoint.mjJNT_SLIDE
++            scale = math.pi/180 if axis.unit == 'degree' else .001
++            if self.model.jnt_type[jid] != expected or self.model.actuator_trnid[aid, 0] != jid:
++                raise ValueError('Axis unit/type or actuator transmission mismatch')
++            if not np.allclose(self.model.actuator_gear[aid], [1, 0, 0, 0, 0, 0]):
++                raise ValueError('Only unit-gear position actuators are supported')
++            if self.model.actuator_biastype[aid] != mujoco.mjtBias.mjBIAS_AFFINE or not math.isclose(self.model.actuator_biasprm[aid, 1], -self.model.actuator_gainprm[aid, 0]):
++                raise ValueError('Bound actuator must be a position servo')
++            for limited, limits in [(self.model.jnt_limited[jid], self.model.jnt_range[jid]), (self.model.actuator_ctrllimited[aid], self.model.actuator_ctrlrange[aid])]:
++                if not limited or axis.minimum*scale < limits[0]-1e-8 or axis.maximum*scale > limits[1]+1e-8:
++                    raise ValueError('Declared axis limits exceed simulator limits')
++            qadr = int(self.model.jnt_qposadr[jid])
++            self.ids[axis.axis_id] = (qadr, aid, scale)
++            self.data.qpos[qadr] = axis.neutral*scale
++            self.data.ctrl[aid] = axis.neutral*scale
++        self.switch_ids: dict[str, tuple[int, int, int | None]] = {}
++        self.states: dict[str, dict[str, Any]] = {}
++        for switch in config.switches:
++            qadr = None
++            if switch.travel_joint:
++                joint = self.model.joint(switch.travel_joint)
++                if self.model.jnt_type[joint.id] != mujoco.mjtJoint.mjJNT_SLIDE:
++                    raise ValueError('Button travel must be a slide joint in metres')
++                qadr = int(joint.qposadr[0])
++            self.switch_ids[switch.switch_id] = (self.model.geom(switch.geom_a).id, self.model.geom(switch.geom_b).id, qadr)
++            self.states[switch.switch_id] = {'pressed':False,'state':switch.initial_state,'press_count':0,'candidate':False,'candidate_time':0.0,'contact':False,'travel_m':0.0,'normal_force_n':0.0}
++        self.attachment_ids: list[tuple[int, int]] = []
++        for attachment in config.attachments:
++            child, parent = self.model.body(attachment.body).id, self.model.body(attachment.parent).id
++            walk = child
++            while walk != parent and walk != 0:
++                if self.model.body_jntnum[walk]:
++                    raise ValueError('Fixed attachment path includes a movable joint')
++                walk = int(self.model.body_parentid[walk])
++            if walk != parent:
++                raise ValueError('Attachment must be a fixed descendant of parent')
++            self.attachment_ids.append((child,parent))
++        for name in config.body_bindings.values():
++            self.model.body(name)
++        for names in config.joint_bindings.values():
++            for name in names:
++                self.model.joint(name)
++        if config.human:
++            from forma_core.domains.registry import parse_domain, validate_domain
++            file=(directory/config.human.file).resolve()
++            if not file.is_relative_to(directory.resolve()) or hashlib.sha256(file.read_bytes()).hexdigest()!=config.human.sha256:
++                raise ValueError('HumanIR path or digest mismatch')
++            payload=json.loads(file.read_text())
++            if payload.get('domain')!='human' or any(f.severity=='error' for f in validate_domain(payload)):
++                raise ValueError('Invalid native HumanIR document')
++            human=parse_domain(payload)
++            participant=next((p for p in human.participants if p.participant_id==config.human.participant_id),None)
++            if participant is None:
++                raise ValueError('Unknown HumanIR participant')
++            profile=next(p for p in human.profiles if p.profile_id==participant.profile_id and p.revision==participant.profile_revision)
++            if set(config.body_bindings)!={s.segment_id for s in profile.segments} or set(config.joint_bindings)!={j.joint_id for j in profile.joints}:
++                raise ValueError('Every HumanIR segment and joint needs an explicit binding')
++            for joint in profile.joints:
++                parent=self.model.body(config.body_bindings[joint.parent_segment_id]).id
++                child=self.model.body(config.body_bindings[joint.child_segment_id]).id
++                if self.model.body_parentid[child]!=parent or not config.joint_bindings[joint.joint_id]:
++                    raise ValueError('HumanIR joint ancestry differs from simulator')
++                for name in config.joint_bindings[joint.joint_id]:
++                    if self.model.jnt_bodyid[self.model.joint(name).id]!=child:
++                        raise ValueError('HumanIR joint is bound to the wrong body')
++        self.events: list[dict[str, Any]] = []
++        mujoco.mj_forward(self.model,self.data)
++        self.initial_relative = self.relative_attachments()
++
++    def relative_attachments(self) -> list[dict[str, Any]]:
++        """Read attachment transforms from executed world poses."""
++        values=[]
++        for child,parent in self.attachment_ids:
++            rotation=self.data.xmat[parent].reshape(3,3)
++            values.append({'body':self.model.body(child).name,'position_m':(rotation.T@(self.data.xpos[child]-self.data.xpos[parent])).tolist(),'rotation':(rotation.T@self.data.xmat[child].reshape(3,3)).reshape(-1).tolist()})
++        return values
++
++    def _observe_switches(self) -> None:
++        """Update switch state only from simulated contact and joint observations."""
++        for switch in self.config.switches:
++            a,b,qadr=self.switch_ids[switch.switch_id]
++            state=self.states[switch.switch_id]
++            force=0.0; contact=False
++            for index,c in enumerate(self.data.contact):
++                if {int(c.geom1),int(c.geom2)} == {a,b}:
++                    wrench=np.zeros(6);mujoco.mj_contactForce(self.model,self.data,index,wrench)
++                    force+=max(0.0,float(wrench[0]));contact=True
++            travel=float(self.data.qpos[qadr]) if qadr is not None else 0.0
++            raw=contact and force>0 and travel>=switch.minimum_travel_m
++            state.update(contact=contact,travel_m=travel,normal_force_n=force)
++            if raw != state['candidate']:
++                state.update(candidate=raw,candidate_time=float(self.data.time))
++            if raw != state['pressed'] and self.data.time-state['candidate_time'] >= switch.debounce_s:
++                state['pressed']=raw
++                if raw:
++                    state['state']=not state['state'];state['press_count']+=1
++                self.events.append({'time_s':float(self.data.time),'switch_id':switch.switch_id,'event':'press' if raw else 'release','state':state['state'],'travel_m':travel,'normal_force_n':force})
++
++    def apply(self, commands: Mapping[str, float | None], enabled: bool) -> None:
++        """Integrate elapsed enabled time, then apply the latest position setpoints."""
++        if set(commands)!=set(self.ids):
++            raise ValueError('Commands must cover exactly the bound axes')
++        for axis in self.config.definition.axes:
++            value=commands[axis.axis_id]
++            if value is not None and (not math.isfinite(value) or not axis.minimum<=value<=axis.maximum):
++                raise ValueError('Invalid axis command')
++        now=self.clock();elapsed=now-self.last_tick
++        if elapsed < -1e-9 or elapsed > .1:
++            raise ValueError('Physics host must use a monotonic clock and tick at least every 100 ms')
++        self.last_tick=now
++        if self.enabled:
++            self.remainder+=max(0.0,elapsed)
++            while self.remainder+1e-10>=self.model.opt.timestep:
++                mujoco.mj_step(self.model,self.data)
++                self.remainder-=self.model.opt.timestep
++                if not np.isfinite(self.data.qpos).all() or not np.isfinite(self.data.qvel).all():
++                    raise RuntimeError('Nonfinite MuJoCo state')
++                self._observe_switches()
++        self.enabled=enabled
++        if enabled:
++            for axis in self.config.definition.axes:
++                _,aid,scale=self.ids[axis.axis_id]
++                value=commands[axis.axis_id]
++                self.data.ctrl[aid]=(axis.neutral if value is None else value)*scale
++        mujoco.mj_forward(self.model,self.data)
++
++    def observation(self) -> dict[str, Any]:
++        """Return detached, simulated control-state observations."""
++        return json.loads(json.dumps(self.states))
++
++    def read(self) -> Feedback:
++        """Return simulator joint positions, never measured hardware values."""
++        return Feedback(mode='virtual',axes={key:AxisFeedback(simulated=float(self.data.qpos[q]/scale)) for key,(q,_,scale) in self.ids.items()},diagnostics=AdapterDiagnostics(kind='mujoco-configurable',status='RUNNING' if self.enabled else 'PAUSED',output_enabled=self.enabled,details={'simulation_time_s':float(self.data.time),'switches':self.observation()}))
++
++    def describe(self) -> AdapterContract:
++        """Advertise move support and revision-pinned simulation provenance."""
++        return AdapterContract(adapter_id='forma.mujoco-configurable',mode='virtual',evidence='contact-physics',configuration_sha256=digest(self.config.model_dump(mode='json')),actuators={key:value.actuator for key,value in self.config.axes.items()},handlers=['move'],observations={s.switch_id+'.state':ObservationSpec(path=[s.switch_id,'state'],value_type='boolean') for s in self.config.switches})
+diff --git a/forma_core/control/mujoco_render.py b/forma_core/control/mujoco_render.py
+new file mode 100644
+index 0000000..b5068b0
+--- /dev/null
++++ b/forma_core/control/mujoco_render.py
+@@ -0,0 +1,67 @@
++"""Render recorded MuJoCo states; this viewer never advances simulation time."""
++from __future__ import annotations
++import argparse
++import hashlib
++import json
++from pathlib import Path
++from typing import Any
++import mujoco
++import numpy as np
++from PIL import Image, ImageDraw, ImageFont
++from .mujoco_adapter import MujocoConfiguration, compile_scene
++
++
++def camera(spec: dict[str, Any]) -> mujoco.MjvCamera:
++    """Create a free camera from declared presentation parameters."""
++    cam=mujoco.MjvCamera();cam.type=mujoco.mjtCamera.mjCAMERA_FREE
++    cam.lookat[:]=spec['lookat'];cam.distance=spec['distance'];cam.azimuth=spec['azimuth'];cam.elevation=spec['elevation']
++    return cam
++
++
++def render(config_path: Path, trace_path: Path, views_path: Path, output: Path) -> None:
++    """Render exactly the stored qpos/qvel/ctrl frames, without interpolation."""
++    config=MujocoConfiguration.model_validate_json(config_path.read_text())
++    trace=json.loads(trace_path.read_text());views=json.loads(views_path.read_text())
++    if trace['configuration_sha256']!=hashlib.sha256(config_path.read_bytes()).hexdigest():
++        raise ValueError('Trace/configuration digest mismatch')
++    model=mujoco.MjModel.from_xml_string(compile_scene(config,config_path.parent));data=mujoco.MjData(model)
++    renderers=[mujoco.Renderer(model,height=v['height'],width=v['width']) for v in views['panels']]
++    cams=[camera(v) for v in views['panels']]
++    font=ImageFont.truetype(views['font'],23);small=ImageFont.truetype(views['font'],16);bold=ImageFont.truetype(views['font'],28)
++    frames=[];pressed_saved=False
++    for index,frame in enumerate(trace['frames']):
++        data.qpos[:]=frame['qpos'];data.qvel[:]=frame['qvel'];data.ctrl[:]=frame['ctrl'];data.time=frame['time_s']
++        mujoco.mj_forward(model,data)
++        canvas=Image.new('RGB',(views['width'],views['height']),'#edf2f7');draw=ImageDraw.Draw(canvas)
++        draw.text((24,14),views['title'],font=bold,fill='#102a43')
++        draw.text((24,54),f"t = {frame['time_s']:05.2f} s  |  {frame['phase']}",font=small,fill='#42566c')
++        for panel,renderer,cam in zip(views['panels'],renderers,cams,strict=True):
++            renderer.update_scene(data,camera=cam)
++            pixels=renderer.render()
++            canvas.paste(Image.fromarray(pixels),(panel['x'],panel['y']))
++        switch=frame['switches'][views['switch_id']]
++        status=views['status']
++        fields={**switch,'travel_mm':1000*switch['travel_m'],'state_label':status['on_label'] if switch['state'] else status['off_label'],'pressed_label':status['pressed_label'] if switch['pressed'] else status['released_label']}
++        draw.rounded_rectangle(tuple(status['box']),radius=10,fill='#0c766e' if switch['state'] else '#344759')
++        draw.text(tuple(status['label_position']),fields['state_label'],fill='white',font=font)
++        for row,template in enumerate(status['lines']):
++            draw.text((status['lines_position'][0],status['lines_position'][1]+row*28),template.format(**fields),font=small,fill='#19384c')
++        for row,line in enumerate(views['footer']):
++            draw.text((24,views['height']-53+row*25),line,font=small,fill='#526777')
++        frames.append(canvas)
++        if index==0:
++            canvas.save(output.parent/'runtime-overview.png')
++            for panel,renderer,cam in zip(views['panels'],renderers,cams,strict=True):
++                renderer.update_scene(data,camera=cam);Image.fromarray(renderer.render()).save(output.parent/panel['still_output'])
++        if switch['pressed'] and not pressed_saved:
++            canvas.save(output.parent/'control-pressed.png');pressed_saved=True
++    interval=trace['frames'][1]['host_time_s']-trace['frames'][0]['host_time_s']
++    frames[0].save(output,save_all=True,append_images=frames[1:],duration=round(interval*1000),loop=0,optimize=False)
++    for renderer in renderers:renderer.close()
++    (output.parent/'render-receipt.json').write_text(json.dumps({'source_trace_sha256':hashlib.sha256(trace_path.read_bytes()).hexdigest(),'configuration_sha256':trace['configuration_sha256'],'frames':len(frames),'interpolated':False,'simulation_steps_during_render':0,'gif_sha256':hashlib.sha256(output.read_bytes()).hexdigest()},indent=2))
++
++
++if __name__=='__main__':
++    parser=argparse.ArgumentParser(description=__doc__)
++    for name in ['configuration','trace','views','output']:parser.add_argument(name,type=Path)
++    args=parser.parse_args();render(args.configuration,args.trace,args.views,args.output)
+diff --git a/forma_core/control/mujoco_run.py b/forma_core/control/mujoco_run.py
+new file mode 100644
+index 0000000..60b23ad
+--- /dev/null
++++ b/forma_core/control/mujoco_run.py
+@@ -0,0 +1,99 @@
++"""Headless host for declarative commands sent through MachineRuntime.
++
++This is a clock/transport host, not a second controller or motion interpolator.
++"""
++from __future__ import annotations
++import argparse
++import hashlib
++import json
++from pathlib import Path
++from typing import Any, Literal
++import numpy as np
++from pydantic import Field, FiniteFloat, model_validator
++from .models import ControlModel
++from .mujoco_adapter import MujocoAdapter, MujocoConfiguration
++from .runtime import MachineRuntime
++
++
++class CommandEvent(ControlModel):
++    """A timed external command; MachineRuntime supplies all interpolation."""
++    at_s: FiniteFloat = Field(ge=0)
++    label: str
++    op: Literal['move', 'hold'] = 'move'
++    targets: dict[str, FiniteFloat] = Field(default_factory=dict)
++    rates: dict[str, FiniteFloat] = Field(default_factory=dict)
++
++
++class RunRequest(ControlModel):
++    """Portable simulated run request, with no physical execution path."""
++    configuration: str
++    duration_s: FiniteFloat = Field(gt=0, le=120)
++    tick_s: FiniteFloat = Field(default=.01,gt=0,le=.02)
++    sample_s: FiniteFloat = Field(default=.04,gt=0)
++    events: list[CommandEvent]
++
++    @model_validator(mode='after')
++    def order(self) -> RunRequest:
++        """Reject unordered or out-of-run external commands."""
++        if [e.at_s for e in self.events] != sorted(e.at_s for e in self.events) or any(e.at_s>self.duration_s for e in self.events):
++            raise ValueError('Events must be ordered and inside run duration')
++        return self
++
++
++class SimulationClock:
++    """Deterministic host clock shared by runtime and adapter."""
++    def __init__(self) -> None:
++        """Start the run at zero host seconds."""
++        self.time=0.0
++    def __call__(self) -> float:
++        """Return elapsed host seconds."""
++        return self.time
++
++
++def run(request_path: Path, output: Path) -> dict[str, Any]:
++    """Execute a transcript and export actual simulator states and feedback."""
++    request=RunRequest.model_validate_json(request_path.read_text())
++    config_path=(request_path.parent/request.configuration).resolve()
++    config=MujocoConfiguration.model_validate_json(config_path.read_text())
++    clock=SimulationClock()
++    adapter=MujocoAdapter(config,config_path.parent,clock=clock)
++    runtime=MachineRuntime(config.definition,adapter,clock=clock)
++    if request.tick_s>config.definition.timing.update_ms/1000:
++        raise ValueError('Host tick exceeds runtime control period')
++    claim=runtime.claim('declarative simulation',kind='agent');session=claim['session_id'];seq=0
++
++    def send(op: str, **values: Any) -> None:
++        """Send a leased version-2 command through the existing command boundary."""
++        nonlocal seq
++        seq+=1
++        runtime.command(dict(protocol_version=2,session_id=session,lease_id=runtime.lease(session)['lease_id'],seq=seq,op=op,**values))
++
++    send('arm')
++    trace=[];index=0;label='initial';next_sample=0.0;max_attachment=0.0
++    ticks=int(round(request.duration_s/request.tick_s))
++    for step in range(ticks+1):
++        clock.time=step*request.tick_s
++        while index<len(request.events) and request.events[index].at_s<=clock.time+1e-9:
++            event=request.events[index];label=event.label
++            if event.op=='move':send('move',targets=event.targets,rates=event.rates,coordinated=True)
++            else:send('hold')
++            index+=1
++        if step%max(1,int(.1/request.tick_s))==0:send('heartbeat')
++        runtime.tick()
++        if runtime.state=='FAULT':raise RuntimeError(runtime.snapshot())
++        relative=adapter.relative_attachments()
++        for initial,current in zip(adapter.initial_relative,relative,strict=True):
++            max_attachment=max(max_attachment,float(np.max(np.abs(np.array(initial['position_m'])-current['position_m']))),float(np.max(np.abs(np.array(initial['rotation'])-current['rotation']))))
++        if clock.time+1e-9>=next_sample:
++            trace.append({'time_s':float(adapter.data.time),'host_time_s':clock.time,'phase':label,'qpos':adapter.data.qpos.tolist(),'qvel':adapter.data.qvel.tolist(),'ctrl':adapter.data.ctrl.tolist(),'feedback':runtime.snapshot(),'switches':adapter.observation(),'attachments':relative})
++            next_sample+=request.sample_s
++    result={'format':'forma.mujoco-trace','version':1,'configuration_sha256':hashlib.sha256(config_path.read_bytes()).hexdigest(),'request_sha256':hashlib.sha256(request_path.read_bytes()).hexdigest(),'engine':'MuJoCo','engine_version':__import__('mujoco').__version__,'runtime':'forma_core.control.runtime.MachineRuntime','frames':trace,'switch_events':adapter.events,'runtime_events':list(runtime.events),'max_attachment_transform_error':max_attachment,'final_feedback':runtime.snapshot()}
++    output.write_text(json.dumps(result,separators=(',',':')))
++    runtime.release(session)
++    return result
++
++
++if __name__=='__main__':
++    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('request',type=Path);parser.add_argument('output',type=Path)
++    args=parser.parse_args();result=run(args.request,args.output)
++    print(json.dumps({'frames':len(result['frames']),'switch_events':result['switch_events'],'attachment_error':result['max_attachment_transform_error']}))
+diff --git a/forma_core/domains/compatibility.py b/forma_core/domains/compatibility.py
+index 06fdb94..8530fa6 100644
+--- a/forma_core/domains/compatibility.py
++++ b/forma_core/domains/compatibility.py
+@@ -195,6 +195,9 @@ def export_hardware_ir(
+                     findings.append(Finding(code="unrepresentable", location=part["part_definition_id"],
+                                             message="Legacy parts lack typed material and geometry_refs; preserved only in MechanicalIR."))
+         if domain == "mechanical":
++            if document.get("layered_assemblies") or any(part.get("flexibility") is not None for part in document["parts"]):
++                findings.append(Finding(code="unrepresentable", location=document["artifact_id"],
++                                        message="Legacy HardwareIR cannot preserve layered assemblies or directional flexibility; retain MechanicalIR."))
+             payload.update({key: deepcopy(document[key]) for key in ("mechanical", "cad_model")})
+         elif domain == "electrical":
+             if (any(document.get(key) for key in ("harnesses", "power_domains", "runtime_bindings", "evidence"))
+diff --git a/forma_core/domains/composition.py b/forma_core/domains/composition.py
+index 3aa468e..ce8f8b6 100644
+--- a/forma_core/domains/composition.py
++++ b/forma_core/domains/composition.py
+@@ -218,6 +218,9 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
+             metadata = registry.metadata(domain)
+             if metadata is None or link.kind not in metadata.reference_types:
+                 add("relationship_type", link.link_id, f"Provider for '{domain}' does not advertise '{link.kind}'.")
++        from .layer_coupling import RELATIONSHIPS, validate_layer_link
++        if link.kind in RELATIONSHIPS:
++            result.composition.extend(validate_layer_link(link, documents.get(link.source.artifact_id), documents.get(link.target.artifact_id)))
+         if link.kind in {"uses_species", "uses_reaction"}:
+             chemical_endpoints = [endpoint for endpoint in (link.source, link.target)
+                                   if identities[endpoint.artifact_id].domain == "chemical"]
+@@ -312,9 +315,11 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
+             if link.source.object_id != link.target.object_id:
+                 add("physical_identity", link.link_id, "Shared physical views must preserve the same object_id.")
+             if source.domain in {"mechanical", "electrical"} and target.domain in {"mechanical", "electrical"} and source.artifact_id in documents and target.artifact_id in documents:
+-                left = next(c for c in documents[source.artifact_id].components if c.object_id == link.source.object_id)
+-                right = next(c for c in documents[target.artifact_id].components if c.object_id == link.target.object_id)
+-                if left.part_definition_id != right.part_definition_id:
++                left = next((c for c in documents[source.artifact_id].components if c.object_id == link.source.object_id), None)
++                right = next((c for c in documents[target.artifact_id].components if c.object_id == link.target.object_id), None)
++                if left is None or right is None:
++                    add("physical_identity", link.link_id, "Shared physical views must name component occurrences, not layer metadata.")
++                elif left.part_definition_id != right.part_definition_id:
+                     add("part_identity", link.link_id, "Shared object views reference different part definitions.")
+         if link.kind == "spatial":
+             if any(e.units not in {"mm", "m"} or not e.frame for e in (link.source, link.target)):
+@@ -363,7 +368,7 @@ def validate_product(bundle: ProductBundle, *, registry: DomainRegistry | None =
+     physical = [(key, doc) for key, doc in documents.items() if doc.domain in {"mechanical", "electrical"}]
+     for index, (left_id, left) in enumerate(physical):
+         for right_id, right in physical[index + 1:]:
+-            for object_id in sorted(entities(left).keys() & entities(right).keys()):
++            for object_id in sorted({c.object_id for c in left.components} & {c.object_id for c in right.components}):
+                 if not any(link.kind == "same_object" and link.source.object_id == object_id
+                            and link.target.object_id == object_id
+                            and {link.source.artifact_id, link.target.artifact_id} == {left_id, right_id}
+diff --git a/forma_core/domains/layer_coupling.py b/forma_core/domains/layer_coupling.py
+new file mode 100644
+index 0000000..279dc89
+--- /dev/null
++++ b/forma_core/domains/layer_coupling.py
+@@ -0,0 +1,54 @@
++"""Typed layered-material relationships within the existing product composition."""
++from __future__ import annotations
++from typing import TYPE_CHECKING
++from pydantic import BaseModel
++from .base import Finding
++if TYPE_CHECKING:
++    from .composition import DomainLink
++
++RELATIONSHIPS={'mounted_on_layer','thermal_representation','observes_temperature','wearer_contact','thermal_contact'}
++
++
++def validate_layer_link(link: DomainLink, source: BaseModel | None, target: BaseModel | None) -> list[Finding]:
++    """Check endpoint meaning, never infer strain, heat transfer or sensor values."""
++    def error(message: str) -> list[Finding]:
++        """Return one composition finding scoped to this relationship."""
++        return [Finding(code='layer_coupling',location=link.link_id,message=message)]
++    if source is None or target is None:
++        return error('Layered-material coupling requires supported native endpoint semantics.')
++    kinds={'mounted_on_layer':('electrical','mechanical'),'thermal_representation':('mechanical','thermal'),
++           'observes_temperature':('electrical','thermal'),'wearer_contact':('human','mechanical'),'thermal_contact':('human','thermal')}
++    if (source.domain,target.domain)!=kinds[link.kind]:
++        return error(f'{link.kind} requires domains {kinds[link.kind]}.')
++    if link.kind=='mounted_on_layer':
++        if link.source.port_id is not None or link.target.port_id is not None:
++            return error('Mounting binds an electrical component occurrence to a whole material layer.')
++        if link.source.object_id not in {c.object_id for c in source.components}:
++            return error('Mounted source must be an electrical component occurrence.')
++        if link.target.object_id not in {layer.layer_id for stack in target.layered_assemblies for layer in stack.layers}:
++            return error('Mount target must be a declared material layer.')
++    elif link.kind=='thermal_representation':
++        valid={c.object_id for c in source.components}|{layer.layer_id for stack in source.layered_assemblies for layer in stack.layers}
++        if link.source.port_id is not None or link.target.port_id is not None or link.source.object_id not in valid or link.target.object_id not in {node.node_id for node in target.nodes}:
++            return error('Thermal representation binds a whole physical component/layer to a thermal node.')
++    elif link.kind=='observes_temperature':
++        component=next((c for c in source.components if c.object_id==link.source.object_id),None)
++        part=next((p for p in source.parts if component and p.part_definition_id==component.part_definition_id),None)
++        if part is None or part.engineering is None or part.engineering.temperature_sensor is None:
++            return error('Temperature observation source must declare a typed temperature-sensor role.')
++        if link.source.port_id is not None or link.target.port_id is not None or link.target.object_id not in {n.node_id for n in target.nodes}:
++            return error('Temperature observation binds a whole sensor to a thermal node, not an electrical pin or heat port.')
++    else:
++        participant=next((p for p in source.participants if p.participant_id==link.source.object_id),None)
++        port=next((p for p in participant.interfaces if p.port_id==link.source.port_id),None) if participant else None
++        required='mechanical_contact' if link.kind=='wearer_contact' else 'thermal_exchange'
++        if port is None or port.kind!=required or port.segment_id is None:
++            return error(f'Human endpoint needs a segment-bound {required} interface.')
++        if link.kind=='wearer_contact':
++            exposed={layer.layer_id:layer for stack in target.layered_assemblies for layer in (stack.layers[0],stack.layers[-1])}
++            layer=exposed.get(link.target.object_id)
++            if layer is None or layer.role!='contact' or link.target.port_id is not None:
++                return error('Wearer contact requires an exposed contact-role layer, not an internal layer.')
++        elif not any(n.node_id==link.target.object_id and any(p.port_id==link.target.port_id for p in n.ports) for n in target.nodes):
++            return error('Human thermal contact requires an explicit heat port on a thermal node.')
++    return []
+diff --git a/forma_core/domains/registry.py b/forma_core/domains/registry.py
+index 6a17c0d..5c30109 100644
+--- a/forma_core/domains/registry.py
++++ b/forma_core/domains/registry.py
+@@ -90,6 +90,9 @@ def validate_domain(payload: dict[str, Any] | BaseModel) -> list[Finding]:
+     except ValueError as exc:
+         return [Finding(code="schema", location="domain", message=str(exc))]
+     domain = payload["domain"]
++    if domain == "mechanical":
++        from forma_core.mechanics.layers import layer_findings
++        return layer_findings(document)
+     if domain == "chemical":
+         from forma_core.chemistry.validation import validate_chemical
+         return validate_chemical(document)
+@@ -123,8 +126,14 @@ def entities(document: BaseModel) -> dict[str, set[str]]:
+     domain = document.domain
+     if domain in {"mechanical", "electrical"}:
+         parts = {p.part_definition_id: p for p in document.parts}
+-        return {c.object_id: ({p.pin_id for p in parts[c.part_definition_id].pins}
++        index = {c.object_id: ({p.pin_id for p in parts[c.part_definition_id].pins}
+                              if domain == "electrical" else set()) for c in document.components}
++        if domain == "mechanical":
++            for stack in document.layered_assemblies:
++                index[stack.stack_id] = set()
++                index.update({layer.layer_id: set() for layer in stack.layers})
++                index.update({join.join_id: set() for join in stack.joins})
++        return index
+     if domain == "human":
+         return {profile.profile_id: set() for profile in document.profiles} | {
+             participant.participant_id: {port.port_id for port in participant.interfaces}
+@@ -261,14 +270,14 @@ def create_registry() -> DomainRegistry:
+                                    "uses_electrical_port", "uses_fluidic_port",
+                                    "uses_thermal_interface", "thermal_source", "spatial", "same_object"]
+                              if domain == "process"
+-                             else ["same_object", "spatial", "hosted_by", "uses_equipment", "thermal_source"]
++                             else ["same_object", "spatial", "hosted_by", "uses_equipment", "thermal_source", "mounted_on_layer", "thermal_representation", "wearer_contact"]
+                              if domain == "mechanical"
+-                             else ["same_object", "spatial", "hosted_by", "uses_electrical_port", "thermal_source"]
++                             else ["same_object", "spatial", "hosted_by", "uses_electrical_port", "thermal_source", "mounted_on_layer", "observes_temperature"]
+                              if domain == "electrical"
+                              else ["same_object", "spatial", "hosted_by", "uses_fluidic_port", "thermal_source"]
+                              if domain == "fluidic"
+-                             else ["uses_thermal_interface", "thermal_source"] if domain == "thermal"
+-                             else ["same_object", "spatial"] if domain == "human"
++                             else ["uses_thermal_interface", "thermal_source", "thermal_representation", "observes_temperature", "thermal_contact"] if domain == "thermal"
++                             else ["same_object", "spatial", "wearer_contact", "thermal_contact"] if domain == "human"
+                              else ["same_object", "spatial", "hosted_by"]),
+             fact_authorities=[fact for fact, owner in FACT_OWNERS.items() if owner == domain],
+             limitations=["Native authoring uses generate_product with caller-supplied designs; no provider-hosted author or resolver."])
+diff --git a/forma_core/electronics/contracts.py b/forma_core/electronics/contracts.py
+index 45d5b34..c523092 100644
+--- a/forma_core/electronics/contracts.py
++++ b/forma_core/electronics/contracts.py
+@@ -73,6 +73,23 @@ class ControllerRatings(DomainModel):
+     bus_voltage: VoltageRange | None = None
+ 
+ 
++class TemperatureSensor(DomainModel):
++    """Measurement role and calibration metadata; not generated sensor readings."""
++    output_unit: Literal['degC', 'K']
++    accuracy_kelvin: Nonnegative | None = None
++    sampling_period_s: Positive | None = None
++    calibration: SourceReference | None = None
++
++
++class ConductorResponse(DomainModel):
++    """Electrical response coefficients; MechanicalIR owns material strain limits."""
++    reference_resistance_ohm: Nonnegative | None = None
++    reference_temperature_kelvin: Positive | None = None
++    temperature_coefficient_per_kelvin: float | None = None
++    longitudinal_gauge_factor: float | None = None
++    source: SourceReference | None = None
++
++
+ class PartEngineering(DomainModel):
+     """Facts owned once by ElectricalPart; instances and exports reference it."""
+ 
+@@ -84,6 +101,8 @@ class PartEngineering(DomainModel):
+     connectors: list[Connector] = Field(default_factory=list)
+     motor: MotorConstants | None = None
+     controller: ControllerRatings | None = None
++    temperature_sensor: TemperatureSensor | None = Field(default=None, exclude_if=lambda value: value is None)
++    conductor_response: ConductorResponse | None = Field(default=None, exclude_if=lambda value: value is None)
+ 
+ 
+ class Endpoint(DomainModel):
+diff --git a/forma_core/mechanics/layers.py b/forma_core/mechanics/layers.py
+new file mode 100644
+index 0000000..73e630e
+--- /dev/null
++++ b/forma_core/mechanics/layers.py
+@@ -0,0 +1,116 @@
++"""Reusable layered flexible assemblies; no cloth or structural solver implied."""
++from __future__ import annotations
++from typing import TYPE_CHECKING, Literal
++from pydantic import Field, model_validator
++from forma_core.domains.base import DomainModel, Finding, Text, unique
++if TYPE_CHECKING:
++    from .models import MechanicalIR
++
++
++class DirectionalFlexibility(DomainModel):
++    """Material-axis properties and limits; null remains unknown, not isotropic."""
++    warp_modulus_pa: float | None = Field(default=None, gt=0)
++    weft_modulus_pa: float | None = Field(default=None, gt=0)
++    shear_modulus_pa: float | None = Field(default=None, gt=0)
++    warp_bending_rigidity_nm: float | None = Field(default=None, ge=0)
++    weft_bending_rigidity_nm: float | None = Field(default=None, ge=0)
++    maximum_warp_strain: float | None = Field(default=None, ge=0)
++    maximum_weft_strain: float | None = Field(default=None, ge=0)
++    minimum_bend_radius_mm: float | None = Field(default=None, gt=0)
++    evidence_uri: Text | None = None
++    evidence_sha256: str | None = Field(default=None, pattern=r'^[a-f0-9]{64}$')
++
++    @model_validator(mode='after')
++    def evidence_pair(self) -> DirectionalFlexibility:
++        """A claimed evidence source must be both locatable and content-pinned."""
++        if (self.evidence_uri is None)!=(self.evidence_sha256 is None):
++            raise ValueError('Material evidence requires both URI and SHA-256')
++        return self
++
++
++class MaterialLayer(DomainModel):
++    """One physical component occurrence within an ordered material stack."""
++    layer_id: Text
++    component_object_id: Text
++    thickness_mm: float | None = Field(default=None, gt=0)
++    material_angle_deg: float = 0.0
++    role: Literal['structural', 'insulation', 'dielectric', 'conductor', 'encapsulation', 'contact', 'spreader', 'storage', 'other']
++
++
++class LayerJoin(DomainModel):
++    """Declared connection of adjacent layers; heat resistance belongs to ThermalIR."""
++    join_id: Text
++    first_layer_id: Text
++    second_layer_id: Text
++    method: Literal['sewn', 'laminated', 'adhesive', 'clamped', 'contact', 'unknown'] = 'unknown'
++    geometry_refs: list[Text] = Field(default_factory=list)
++
++
++class LayeredAssembly(DomainModel):
++    """List order runs along the declared positive normal in the named CAD frame."""
++    stack_id: Text
++    host_object_id: Text
++    frame: Text
++    normal: list[float] = Field(min_length=3, max_length=3)
++    warp_direction: list[float] = Field(min_length=3, max_length=3)
++    layers: list[MaterialLayer] = Field(min_length=1)
++    joins: list[LayerJoin] = Field(default_factory=list)
++
++    @model_validator(mode='after')
++    def topology(self) -> LayeredAssembly:
++        """Reject ambiguous material frames, repeated layers and nonadjacent joins."""
++        for vector in (self.normal,self.warp_direction):
++            if abs(sum(x*x for x in vector)-1)>1e-6:
++                raise ValueError('Layer frame directions must be unit vectors')
++        if abs(sum(a*b for a,b in zip(self.normal,self.warp_direction)))>1e-6:
++            raise ValueError('Warp direction must lie in the layer plane')
++        ids=[layer.layer_id for layer in self.layers]
++        unique(ids,'layer ID');unique([layer.component_object_id for layer in self.layers],'layer occurrence')
++        unique([join.join_id for join in self.joins],'join ID')
++        adjacent={frozenset(pair) for pair in zip(ids,ids[1:])};joined=set()
++        for join in self.joins:
++            pair=frozenset((join.first_layer_id,join.second_layer_id))
++            if pair not in adjacent or pair in joined:
++                raise ValueError('Joins must connect distinct adjacent layers exactly once')
++            joined.add(pair)
++        return self
++
++
++def validate_layer_references(document: MechanicalIR) -> None:
++    """Resolve layer occurrences and reject collisions in the public entity index."""
++    objects={c.object_id for c in document.components}
++    entity_ids=list(objects);occurrences=[]
++    for stack in document.layered_assemblies:
++        entity_ids.extend([stack.stack_id,*[layer.layer_id for layer in stack.layers],*[join.join_id for join in stack.joins]])
++        if stack.host_object_id not in objects:
++            raise ValueError('Layer stack host must be an existing mechanical occurrence')
++        for layer in stack.layers:
++            if layer.component_object_id not in objects or layer.component_object_id==stack.host_object_id:
++                raise ValueError('Layer must reference a distinct existing component occurrence')
++            occurrences.append(layer.component_object_id)
++    unique(entity_ids,'mechanical entity ID');unique(occurrences,'physical layer occurrence across stacks')
++
++
++def inspect_layers(document: MechanicalIR) -> list[dict]:
++    """Report declared thickness accounting without implying a physical evaluation."""
++    from .models import MechanicalIR
++    document = MechanicalIR.model_validate(document.model_dump(mode='json'))
++    return [{'stack_id':stack.stack_id,'layer_order':[layer.layer_id for layer in stack.layers],
++             'total_thickness_mm':None if any(layer.thickness_mm is None for layer in stack.layers) else sum(layer.thickness_mm for layer in stack.layers),
++             'geometry_check':'unsupported','deformation_prediction':'unsupported'} for stack in document.layered_assemblies]
++
++
++def layer_findings(document: MechanicalIR) -> list[Finding]:
++    """Expose absent material evidence and incomplete construction declarations."""
++    parts={p.part_definition_id:p for p in document.parts};objects={c.object_id:c for c in document.components}
++    findings=[]
++    for stack in document.layered_assemblies:
++        if len(stack.joins)<len(stack.layers)-1:
++            findings.append(Finding(code='unknown_layer_join',location=stack.stack_id,severity='warning',message='At least one adjacent interface has no joining declaration.'))
++        for layer in stack.layers:
++            part=parts[objects[layer.component_object_id].part_definition_id]
++            if layer.thickness_mm is None:
++                findings.append(Finding(code='unknown_layer_thickness',location=layer.layer_id,severity='warning',message='Nominal layer thickness is unknown.'))
++            if part.flexibility is None or part.flexibility.evidence_sha256 is None:
++                findings.append(Finding(code='unknown_flexible_material',location=layer.layer_id,severity='warning',message='Directional deformation properties lack pinned evidence; flexibility is not verified.'))
++    return findings
+diff --git a/forma_core/mechanics/models.py b/forma_core/mechanics/models.py
+index 1434dd1..6fedd46 100644
+--- a/forma_core/mechanics/models.py
++++ b/forma_core/mechanics/models.py
+@@ -8,6 +8,7 @@ from pydantic import Field, model_validator
+ 
+ from forma_core.domains.base import ComponentView, DomainDocument, DomainModel, Text, unique
+ from .primitives import MechanicalNotes
++from .layers import DirectionalFlexibility, LayeredAssembly, validate_layer_references
+ 
+ 
+ class MechanicalContext(DomainModel):
+@@ -26,6 +27,7 @@ class MechanicalPart(DomainModel):
+     dimensions_mm: dict[str, float] = Field(default_factory=dict)
+     material: Text | None = None
+     geometry_refs: list[Text] = Field(default_factory=list)
++    flexibility: DirectionalFlexibility | None = Field(default=None, exclude_if=lambda value: value is None)
+ 
+ 
+ class MechanicalIR(DomainDocument):
+@@ -41,6 +43,7 @@ class MechanicalIR(DomainDocument):
+     components: list[ComponentView] = Field(default_factory=list)
+     mechanical: MechanicalNotes | None = None
+     cad_model: Any | None = None
++    layered_assemblies: list[LayeredAssembly] = Field(default_factory=list, exclude_if=lambda value: not value)
+ 
+     @model_validator(mode="after")
+     def validate_references(self) -> MechanicalIR:
+@@ -69,4 +72,5 @@ class MechanicalIR(DomainDocument):
+             for target in targets:
+                 if target not in refs:
+                     raise ValueError(f"Unknown mechanical component '{target}'.")
++        validate_layer_references(self)
+         return self
+diff --git a/forma_core/utils.py b/forma_core/utils.py
+index 5289b13..927089e 100644
+--- a/forma_core/utils.py
++++ b/forma_core/utils.py
+@@ -1,7 +1,9 @@
++from __future__ import annotations
+ import re
+ from typing import Dict
+ import html
+ from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
++from forma_core.electronics.models import ElectricalIR
+ 
+ _MERMAID_ID_PATTERN = re.compile(r"[^a-zA-Z0-9_]")
+ 
+@@ -99,193 +101,67 @@ def generate_mermaid_chart(ir: HardwareIntermediateRepresentation) -> str:
+     return "\n".join(lines)
+ 
+ 
+-def generate_svg_schematic(ir: HardwareIntermediateRepresentation) -> str:
+-    """
+-    Generates a beautifully arranged, color-coded SVG schematic of the circuit.
+-    Renders MCUs in the center, sensors on the left, displays/actuators on the right.
+-    Wires are drawn as orthogonal bezier curves.
+-    """
+-    if not ir or not ir.components:
+-        return "<svg width='400' height='200'><text x='20' y='50'>No circuit defined</text></svg>"
+-
+-    # Dimensions
+-    width = 1000
+-    height = 600
+-    
+-    # Divide layout columns
+-    # Left column: Sensors & Power (x=150)
+-    # Center column: Microcontroller (x=500)
+-    # Right column: Actuators & Displays (x=850)
+-    
+-    # Layout positioning maps
+-    # ref_des -> (x, y)
+-    coords: Dict[str, tuple] = {}
+-    
+-    mcu_parts = [c for c in ir.components if c.category.lower() == "microcontroller"]
+-    sensor_parts = [c for c in ir.components if c.category.lower() == "sensor" or c.category.lower() == "power"]
+-    output_parts = [c for c in ir.components if c.category.lower() in ["actuator", "display", "passives"]]
+-    
+-    # Place MCU in center
+-    if mcu_parts:
+-        for idx, mcu in enumerate(mcu_parts):
+-            coords[mcu.ref_des] = (500, 200 + (idx * 220))
+-            
+-    # Place Sensors on left
+-    for idx, sens in enumerate(sensor_parts):
+-        coords[sens.ref_des] = (150, 100 + (idx * 140))
+-        
+-    # Place Outputs on right
+-    for idx, out in enumerate(output_parts):
+-        coords[out.ref_des] = (850, 100 + (idx * 140))
+-        
+-    # Standard fallback coordinates for any remaining parts
+-    for comp in ir.components:
+-        if comp.ref_des not in coords:
+-            coords[comp.ref_des] = (500, 450)
+-
+-    # Begin building SVG
+-    svg_elements = [
+-        f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 {width} {height}' width='100%' height='100%'>",
+-        "  <!-- Grid Background -->",
+-        "  <defs>",
+-        "    <pattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'>",
+-        "      <path d='M 20 0 L 0 0 0 20' fill='none' stroke='#f0f2f5' stroke-width='1'/>",
+-        "    </pattern>",
+-        "  </defs>",
+-        "  <rect width='100%' height='100%' fill='url(#grid)' />",
+-        "  <rect width='100%' height='100%' fill='none' stroke='#cbd5e1' stroke-width='2' />",
+-        "  <text x='25' y='35' font-family='sans-serif' font-size='18' font-weight='bold' fill='#0f172a'>Electrical Assembly Schematic</text>",
+-        f"  <text x='25' y='55' font-family='sans-serif' font-size='12' fill='#64748b'>{html.escape(ir.overview.title if ir.overview else 'Hardware Project')}</text>"
+-    ]
+-
+-    # Render wires (Nets) first so they are layered behind component boxes
+-    svg_elements.append("  <!-- Wires / Connections -->")
+-    
+-    net_colors = {
+-        "ground": "#000000",       # GND is Black
+-        "power": "#dc2626",        # VCC is Red
+-        "i2c": "#06b6d4",          # I2C is Cyan
+-        "spi": "#a855f7",          # SPI is Purple
+-        "digital": "#3b82f6",      # GPIO is Blue
+-        "analog": "#f59e0b",       # Analog is Amber
+-        "pwm": "#10b981",          # PWM is Emerald
+-        "default": "#64748b"       # General signal is Slate
+-    }
++def generate_svg_schematic(ir: HardwareIntermediateRepresentation | ElectricalIR) -> str:
++    """Render every declared pin and named net without merging parallel connections.
+ 
+-    drawn_lines = set()
++    Supports native ElectricalIR and legacy hardware documents. Named net labels
++    connect equal net IDs across component symbols. This is an interface schematic,
++    not a PCB layout, package-pin assignment or manufacturing verification.
++    """
++    if ir is None or not ir.components:
++        return "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='100'><text x='20' y='50'>No circuit defined</text></svg>"
++    if isinstance(ir, ElectricalIR):
++        ir = ElectricalIR.model_validate(ir.model_dump(mode="json"))
++        parts = {part.part_definition_id: part for part in ir.parts}
++        items = [(c.ref_des, parts[c.part_definition_id]) for c in ir.components]
++    else:
++        items = [(c.ref_des, c) for c in ir.components]
++    known = {(ref, pin.pin_id) for ref, part in items for pin in part.pins}
++    connections: dict[tuple[str, str], list] = {}
+     for net in ir.nets:
+-        color = net_colors.get(net.net_type.lower(), net_colors["default"])
+-        stroke_width = 2.5 if net.net_type.lower() in ["power", "ground"] else 1.5
+-        dash_array = "4 4" if net.net_type.lower() == "ground" else "none"
+-        
+-        # Draw connections
+-        # Connect all pins in a net to a central hub, or chain them together
+-        if len(net.pins) >= 2:
+-            # Let's chain them sequentially
+-            for i in range(len(net.pins) - 1):
+-                p1 = net.pins[i]
+-                p2 = net.pins[i+1]
+-                
+-                pt1 = coords.get(p1.ref_des)
+-                pt2 = coords.get(p2.ref_des)
+-                
+-                if pt1 and pt2:
+-                    # Offsets to connect on left/right side of components
+-                    x1, y1 = pt1
+-                    x2, y2 = pt2
+-                    
+-                    # Offset depending on column
+-                    x1_offset = 110 if x1 < 400 else (-110 if x1 > 600 else (110 if x2 > x1 else -110))
+-                    x2_offset = -110 if x2 > 600 else (110 if x2 < 400 else (110 if x1 > x2 else -110))
+-                    
+-                    cx1, cy1 = x1 + x1_offset, y1
+-                    cx2, cy2 = x2 + x2_offset, y2
+-                    
+-                    line_key = tuple(sorted([(cx1, cy1), (cx2, cy2)]))
+-                    if line_key not in drawn_lines:
+-                        drawn_lines.add(line_key)
+-                        
+-                        # Draw Bezier Curve for organic circuit routing look
+-                        control_x1 = cx1 + (cx2 - cx1) * 0.4
+-                        control_x2 = cx1 + (cx2 - cx1) * 0.6
+-                        
+-                        path_d = f"M {cx1} {cy1} C {control_x1} {cy1}, {control_x2} {cy2}, {cx2} {cy2}"
+-                        svg_elements.append(
+-                            f"  <path d='{path_d}' fill='none' stroke='{color}' stroke-width='{stroke_width}' "
+-                            f"stroke-dasharray='{dash_array}' opacity='0.85' />"
+-                        )
+-
+-    # Render Components
+-    svg_elements.append("  <!-- Components -->")
+-    for comp in ir.components:
+-        x, y = coords[comp.ref_des]
+-        
+-        # Component Box Dimensions
+-        c_width = 220
+-        c_height = 120
+-        box_x = x - (c_width // 2)
+-        box_y = y - (c_height // 2)
+-        
+-        # Category Colors
+-        cat_styles = {
+-            "microcontroller": {"fill": "#eff6ff", "border": "#2563eb", "badge_fill": "#dbeafe", "badge_text": "#1e40af"},
+-            "sensor": {"fill": "#f0fdf4", "border": "#16a34a", "badge_fill": "#dcfce7", "badge_text": "#14532d"},
+-            "display": {"fill": "#faf5ff", "border": "#7c3aed", "badge_fill": "#f3e8ff", "badge_text": "#581c87"},
+-            "actuator": {"fill": "#fffbeb", "border": "#d97706", "badge_fill": "#fef3c7", "badge_text": "#78350f"},
+-            "power": {"fill": "#fef2f2", "border": "#dc2626", "badge_fill": "#fee2e2", "badge_text": "#7f1d1d"},
+-            "default": {"fill": "#f8fafc", "border": "#475569", "badge_fill": "#e2e8f0", "badge_text": "#1e293b"}
+-        }
+-        
+-        style = cat_styles.get(comp.category.lower(), cat_styles["default"])
+-        
+-        # Render Component Rectangle Card
+-        svg_elements.append(f"  <g id='comp-{comp.ref_des}'>")
+-        svg_elements.append(
+-            f"    <rect x='{box_x}' y='{box_y}' width='{c_width}' height='{c_height}' rx='8' ry='8' "
+-            f"fill='{style['fill']}' stroke='{style['border']}' stroke-width='2' filter='drop-shadow(0 2px 4px rgba(0,0,0,0.05))'/>"
+-        )
+-        
+-        # Component Badge (Category)
+-        svg_elements.append(
+-            f"    <rect x='{box_x + 12}' y='{box_y + 12}' width='100' height='18' rx='4' ry='4' fill='{style['badge_fill']}' />"
+-        )
+-        svg_elements.append(
+-            f"    <text x='{box_x + 62}' y='{box_y + 25}' font-family='sans-serif' font-size='9' font-weight='bold' "
+-            f"fill='{style['badge_text']}' text-anchor='middle'>{comp.category.upper()}</text>"
+-        )
+-        
+-        # Reference Designator
+-        svg_elements.append(
+-            f"    <text x='{box_x + c_width - 15}' y='{box_y + 26}' font-family='sans-serif' font-size='14' font-weight='bold' "
+-            f"fill='#0f172a' text-anchor='end'>{comp.ref_des}</text>"
+-        )
+-        
+-        # Part Name
+-        name_truncated = comp.name if len(comp.name) <= 24 else comp.name[:21] + "..."
+-        svg_elements.append(
+-            f"    <text x='{box_x + 12}' y='{box_y + 55}' font-family='sans-serif' font-size='12' font-weight='bold' fill='#0f172a'>{html.escape(name_truncated)}</text>"
+-        )
+-        
+-        # Part Number
+-        svg_elements.append(
+-            f"    <text x='{box_x + 12}' y='{box_y + 75}' font-family='sans-serif' font-size='10' fill='#64748b'>{comp.part_number}</text>"
+-        )
+-        
+-        # Pin Count Badge / Sourcing Pricing
+-        svg_elements.append(
+-            f"    <text x='{box_x + 12}' y='{box_y + 102}' font-family='sans-serif' font-size='10' font-weight='600' fill='#475569'>Est: ${comp.unit_price:.2f}</text>"
+-        )
+-        svg_elements.append(
+-            f"    <text x='{box_x + c_width - 12}' y='{box_y + 102}' font-family='sans-serif' font-size='10' fill='#64748b' text-anchor='end'>{len(comp.pins)} Physical Pins</text>"
+-        )
+-        
+-        # Draw physical connection hubs (ports) on Left & Right bounds of component card
+-        # Left Port
+-        svg_elements.append(f"    <circle cx='{box_x}' cy='{y}' r='5' fill='#ffffff' stroke='{style['border']}' stroke-width='2' />")
+-        # Right Port
+-        svg_elements.append(f"    <circle cx='{box_x + c_width}' cy='{y}' r='5' fill='#ffffff' stroke='{style['border']}' stroke-width='2' />")
+-        
+-        svg_elements.append("  </g>")
+-
+-    svg_elements.append("</svg>")
+-    return "\n".join(svg_elements)
++        for pin in net.pins:
++            endpoint = (pin.ref_des, pin.pin_id)
++            if endpoint not in known:
++                raise ValueError(f"Unknown schematic endpoint: {endpoint}")
++            connections.setdefault(endpoint, []).append(net)
++    columns = min(3, len(items))
++    cell_width = 380
++    max_pin_rows = max(sum(max(1, len(connections.get((ref, p.pin_id), []))) for p in part.pins) for ref, part in items)
++    # Width follows labels so arbitrary identifiers cannot run into adjacent cards.
++    max_label = max([len(n.net_id) for n in ir.nets] + [len(p.pin_id) for _, part in items for p in part.pins] + [10])
++    cell_width = max(cell_width, max_label * 16 + 130)
++    cell_height = max(180, 98 + max_pin_rows * 29)
++    rows = (len(items) + columns - 1) // columns
++    width, height = 40 + columns * cell_width, 120 + rows * cell_height
++    colors = {"power": "#c83535", "ground": "#34465c", "i2c": "#087e98", "digital": "#8756a8"}
++    elements = [f"<svg xmlns='http://www.w3.org/2000/svg' width='{width}' height='{height}' viewBox='0 0 {width} {height}'>",
++                "<rect width='100%' height='100%' fill='#f4f7fb'/>",
++                "<g font-family='sans-serif' fill='#17334b'>",
++                "<text x='25' y='35' font-size='23' font-weight='bold'>Electrical interface schematic</text>",
++                "<text x='25' y='61' font-size='13'>Matching net IDs are connected. Declared interface pins; package pinout and PCB internals are not implied.</text>"]
++    for index, (ref, part) in enumerate(items):
++        x, y = 20 + (index % columns) * cell_width, 85 + (index // columns) * cell_height
++        name = html.escape(part.name or ref)
++        safe_ref = html.escape(ref, quote=True)
++        elements.extend([f"<g data-component='{safe_ref}'>",
++                         f"<rect x='{x}' y='{y}' width='{cell_width-18}' height='{cell_height-15}' rx='10' fill='white' stroke='#afbecb'/>",
++                         f"<text x='{x+14}' y='{y+24}' font-size='15' font-weight='bold'>{safe_ref} / {name}</text>",
++                         f"<text x='{x+14}' y='{y+45}' font-size='12' fill='#60788c'>{html.escape(part.part_number or 'Part selection unresolved')}</text>"])
++        row = 0
++        for pin in part.pins:
++            nets = connections.get((ref, pin.pin_id), [None])
++            for net in nets:
++                py = y + 73 + row * 29
++                label = net.net_id if net else 'UNCONNECTED'
++                color = colors.get(net.net_type.lower(), '#60788c') if net else '#a46016'
++                elements.extend([f"<g data-pin='{html.escape(pin.pin_id, quote=True)}' data-net='{html.escape(label, quote=True)}'>",
++                                 f"<text x='{x+14}' y='{py+4}' font-size='12'>{html.escape(pin.pin_id)}</text>",
++                                 f"<line x1='{x+cell_width*.40}' y1='{py}' x2='{x+cell_width*.55}' y2='{py}' stroke='{color}' stroke-width='2'/>",
++                                 f"<circle cx='{x+cell_width*.40}' cy='{py}' r='3' fill='{color}'/>",
++                                 f"<text x='{x+cell_width*.57}' y='{py+4}' font-size='12' fill='{color}'>{html.escape(label)}</text>", "</g>"])
++                row += 1
++        if not part.pins:
++            elements.append(f"<text x='{x+14}' y='{y+77}' font-size='12'>No pins declared</text>")
++        elements.append('</g>')
++    elements.extend(['</g>', '</svg>'])
++    return '\n'.join(elements)
+diff --git a/tests/control/test_mujoco_adapter.py b/tests/control/test_mujoco_adapter.py
+new file mode 100644
+index 0000000..1ffb9f5
+--- /dev/null
++++ b/tests/control/test_mujoco_adapter.py
+@@ -0,0 +1,115 @@
++"""Exercise the generic adapter on a sliding contact fixture, not a wearable."""
++from __future__ import annotations
++import hashlib
++import json
++import importlib.util
++import tempfile
++import unittest
++from pathlib import Path
++from typing import Any
++
++HAS_MUJOCO=importlib.util.find_spec('mujoco') is not None
++if HAS_MUJOCO:
++    from forma_core.control.mujoco_adapter import MujocoAdapter, MujocoConfiguration
++    from forma_core.control.mujoco_run import SimulationClock
++    from forma_core.control.runtime import MachineRuntime
++
++
++def fixture() -> dict[str, Any]:
++    """Describe a one-axis pusher and an independent spring-loaded switch."""
++    def node(tag: str, attributes: dict[str,str] | None = None, children: list[dict[str,Any]] | None = None) -> dict[str, Any]:
++        """Build a JSON MJCF element for this test fixture."""
++        return {'tag':tag,'attributes':attributes or {},'children':children or []}
++    return {'definition':{'machine_id':'slide','name':'Sliding contact fixture','axes':[{'axis_id':'x','label':'X','unit':'mm','minimum':0.,'maximum':20.,'neutral':0.,'max_rate':10.}]},'axes':{'x':{'joint':'x','actuator':'x'}},'scene':node('mujoco',children=[node('option',{'gravity':'0 0 0','timestep':'0.002','integrator':'implicitfast'}),node('worldbody',children=[node('body',{'name':'pusher'},[node('joint',{'name':'x','type':'slide','axis':'1 0 0','range':'0 .02','damping':'1'}),node('geom',{'name':'pusher-geom','type':'box','size':'.01 .01 .01','mass':'.1'})]),node('body',{'name':'button','pos':'.025 0 0'},[node('joint',{'name':'button-slide','type':'slide','axis':'1 0 0','range':'0 .006','stiffness':'100','damping':'1'}),node('geom',{'name':'button-geom','type':'box','size':'.01 .01 .01','mass':'.01'})])]),node('actuator',children=[node('position',{'name':'x','joint':'x','kp':'1000','kv':'40','ctrlrange':'0 .02'})])]),'switches':[{'switch_id':'switch','geom_a':'pusher-geom','geom_b':'button-geom','travel_joint':'button-slide','minimum_travel_m':.001,'debounce_s':.03}]}
++
++
++@unittest.skipUnless(HAS_MUJOCO,'optional MuJoCo dependency unavailable')
++class MujocoAdapterTests(unittest.TestCase):
++    """Check physics, provenance, contacts and rejection of invalid bindings."""
++    def setUp(self) -> None:
++        """Create a fresh adapter with a deterministic host clock."""
++        self.clock=SimulationClock();self.directory=tempfile.TemporaryDirectory()
++        self.config=MujocoConfiguration.model_validate(fixture())
++        self.adapter=MujocoAdapter(self.config,Path(self.directory.name),clock=self.clock)
++
++    def tearDown(self) -> None:
++        """Remove temporary assets after the test."""
++        self.directory.cleanup()
++
++    def advance(self, target: float, seconds: float) -> None:
++        """Advance fixed steps with the same setpoint."""
++        for _ in range(round(seconds/.01)):
++            self.clock.time+=.01;self.adapter.apply({'x':target},True)
++
++    def test_contact_toggles_once_per_press_and_requires_release(self) -> None:
++        """Holding contact must not create repeated toggle events."""
++        self.adapter.apply({'x':8.},True);self.advance(8.,1.)
++        self.assertEqual(self.adapter.observation()['switch']['press_count'],1)
++        self.assertTrue(self.adapter.observation()['switch']['state'])
++        self.advance(8.,.5);self.assertEqual(self.adapter.observation()['switch']['press_count'],1)
++        self.advance(0.,.7);self.assertFalse(self.adapter.observation()['switch']['pressed'])
++        self.advance(8.,.8);self.assertEqual(self.adapter.observation()['switch']['press_count'],2)
++        self.assertFalse(self.adapter.observation()['switch']['state'])
++        self.assertTrue(all(e['normal_force_n']>0 for e in self.adapter.events if e['event']=='press'))
++
++    def test_feedback_is_physics_and_pauses_when_disarmed(self) -> None:
++        """Setpoints are not returned as simulated joint positions."""
++        self.adapter.apply({'x':4.},True)
++        self.assertEqual(self.adapter.read().axes['x'].simulated,0.)
++        self.advance(4.,.6)
++        feedback=self.adapter.read().axes['x']
++        self.assertAlmostEqual(feedback.simulated,4.,delta=.1);self.assertIsNone(feedback.measured)
++        self.adapter.apply({'x':None},False);before=self.adapter.data.time
++        for _ in range(5):self.clock.time+=.01;self.adapter.apply({'x':None},False)
++        self.assertEqual(self.adapter.data.time,before)
++
++    def test_travel_without_contact_does_not_toggle(self) -> None:
++        """An externally displaced button is not a palm/contact event."""
++        q=self.adapter.switch_ids['switch'][2];self.adapter.data.qpos[q]=.004
++        for i in range(100):
++            self.adapter.data.time=i*.01;self.adapter._observe_switches()
++        self.assertEqual(self.adapter.observation()['switch']['press_count'],0)
++
++    def test_invalid_axis_units_and_attachment_are_rejected(self) -> None:
++        """Wrong joint units and movable attachment paths cannot validate."""
++        raw=fixture();raw['definition']['axes'][0]['unit']='degree'
++        with self.assertRaisesRegex(ValueError,'unit/type'):
++            MujocoAdapter(MujocoConfiguration.model_validate(raw),Path(self.directory.name),clock=self.clock)
++        raw=fixture();raw['attachments']=[{'body':'button','parent':'world'}]
++        with self.assertRaisesRegex(ValueError,'movable joint'):
++            MujocoAdapter(MujocoConfiguration.model_validate(raw),Path(self.directory.name),clock=self.clock)
++
++    def test_bad_command_is_atomic_and_clock_fault_disables(self) -> None:
++        """Reject invalid outputs and surface an integration gap as a runtime fault."""
++        before=self.adapter.data.ctrl.copy()
++        with self.assertRaises(ValueError):self.adapter.apply({'x':float('nan')},True)
++        self.assertEqual(self.adapter.data.ctrl.tolist(),before.tolist())
++        runtime=MachineRuntime(self.config.definition,self.adapter,clock=self.clock)
++        self.clock.time=.2;runtime.tick()
++        self.assertEqual(runtime.state,'FAULT');self.assertFalse(self.adapter.enabled)
++
++    def test_human_reference_digest_and_complete_bindings(self) -> None:
++        """Pin a native participant and reject changed source or missing mappings."""
++        human={'domain':'human','schema_version':'1.0','artifact_id':'test-human','revision':1,'profiles':[{'profile_id':'nominal','revision':1,'source':{'kind':'synthetic','description':'Test only'},'segments':[{'segment_id':'hand','label':'Hand'}]}],'participants':[{'participant_id':'person','profile_id':'nominal','profile_revision':1,'roles':['operator']}]}
++        path=Path(self.directory.name)/'human.json';path.write_text(json.dumps(human))
++        raw=fixture();raw['human']={'file':'human.json','sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'participant_id':'person'};raw['body_bindings']={'hand':'pusher'}
++        MujocoAdapter(MujocoConfiguration.model_validate(raw),Path(self.directory.name),clock=self.clock)
++        missing=dict(raw);missing['body_bindings']={}
++        with self.assertRaisesRegex(ValueError,'Every HumanIR'):
++            MujocoAdapter(MujocoConfiguration.model_validate(missing),Path(self.directory.name),clock=self.clock)
++        path.write_text('{}')
++        with self.assertRaisesRegex(ValueError,'digest mismatch'):
++            MujocoAdapter(MujocoConfiguration.model_validate(raw),Path(self.directory.name),clock=self.clock)
++
++    def test_external_assets_and_include_are_rejected(self) -> None:
++        """JSON scene loading cannot bypass pinned local assets."""
++        raw=fixture();raw['scene']['children'].append({'tag':'include','attributes':{'file':'other.xml'}})
++        with self.assertRaisesRegex(ValueError,'includes'):
++            MujocoAdapter(MujocoConfiguration.model_validate(raw),Path(self.directory.name),clock=self.clock)
++        raw=fixture();raw['scene']['children'].append({'tag':'asset','children':[{'tag':'mesh','attributes':{'name':'mesh','file':'../outside.obj'}}]})
++        with self.assertRaisesRegex(ValueError,'local and hash pinned'):
++            MujocoAdapter(MujocoConfiguration.model_validate(raw),Path(self.directory.name),clock=self.clock)
++
++
++if __name__=='__main__':
++    unittest.main()
+diff --git a/tests/projects/test_layered_materials.py b/tests/projects/test_layered_materials.py
+new file mode 100644
+index 0000000..c81c358
+--- /dev/null
++++ b/tests/projects/test_layered_materials.py
+@@ -0,0 +1,99 @@
++"""Layered-material schema and composition tests independent of wearable fixtures."""
++from __future__ import annotations
++from copy import deepcopy
++import unittest
++from typing import Any
++from pydantic import ValidationError
++from forma_core.domains.base import fingerprint
++from forma_core.domains.registry import parse_domain, validate_domain
++from forma_core.domains.composition import DomainLink, LinkEndpoint, compose_product, validate_product
++from forma_core.mechanics.layers import inspect_layers
++
++
++def documents() -> list[dict[str, Any]]:
++    """Make a generic instrumented laminate with explicitly unknown properties."""
++    mechanical={'domain':'mechanical','schema_version':'1.0','artifact_id':'m','revision':1,'parts':[{'part_definition_id':name} for name in ['panel','backing','foil','coating']],'components':[{'object_id':name,'part_definition_id':name,'ref_des':name} for name in ['panel','backing','foil','coating']],'layered_assemblies':[{'stack_id':'stack','host_object_id':'panel','frame':'panel-local','normal':[0.,0.,1.],'warp_direction':[1.,0.,0.],'layers':[{'layer_id':'layer-'+name,'component_object_id':name,'role':role,'thickness_mm':thickness} for name,role,thickness in [('backing','contact',1.),('foil','conductor',.1),('coating','encapsulation',None)]],'joins':[{'join_id':'join-1','first_layer_id':'layer-backing','second_layer_id':'layer-foil','method':'laminated'},{'join_id':'join-2','first_layer_id':'layer-foil','second_layer_id':'layer-coating','method':'laminated'}]}]}
++    electrical={'domain':'electrical','schema_version':'1.0','artifact_id':'e','revision':1,'parts':[{'part_definition_id':'sensor','pins':[{'pin_id':'OUT','name':'OUT','pin_type':'Analog'}],'engineering':{'temperature_sensor':{'output_unit':'degC'}}}],'components':[{'object_id':'sensor','part_definition_id':'sensor','ref_des':'S1'}],'nets':[{'net_id':'measurement','name':'Measurement','net_type':'Signal','pins':[{'ref_des':'S1','pin_id':'OUT'}]}]}
++    thermal={'domain':'thermal','schema_version':'1.0','artifact_id':'t','revision':1,'nodes':[{'node_id':'surface','kind':'body'}]}
++    human={'domain':'human','schema_version':'1.0','artifact_id':'h','revision':1,'profiles':[{'profile_id':'nominal','revision':1,'source':{'kind':'synthetic','description':'Test only'},'segments':[{'segment_id':'hand','label':'Hand'}]}],'participants':[{'participant_id':'operator','profile_id':'nominal','profile_revision':1,'roles':['operator'],'interfaces':[{'port_id':'contact','kind':'mechanical_contact','segment_id':'hand','description':'Contact'},{'port_id':'heat','kind':'thermal_exchange','segment_id':'hand','description':'Heat exchange'}]}]}
++    return [mechanical,electrical,thermal,human]
++
++
++def bundle() -> Any:
++    """Compose all supported coupling types through the public existing API."""
++    docs=[parse_domain(d) for d in documents()];by_id={d.artifact_id:d for d in docs}
++    def endpoint(artifact: str, object_id: str, port: str | None = None) -> LinkEndpoint:
++        """Pin the exact native artifact revision and content."""
++        return LinkEndpoint(artifact_id=artifact,revision=1,sha256=fingerprint(by_id[artifact]),object_id=object_id,port_id=port)
++    links=[DomainLink(link_id='mount',kind='mounted_on_layer',source=endpoint('e','sensor'),target=endpoint('m','layer-foil')),
++           DomainLink(link_id='observe',kind='observes_temperature',source=endpoint('e','sensor'),target=endpoint('t','surface')),
++           DomainLink(link_id='represent',kind='thermal_representation',source=endpoint('m','layer-backing'),target=endpoint('t','surface')),
++           DomainLink(link_id='contact',kind='wearer_contact',source=endpoint('h','operator','contact'),target=endpoint('m','layer-backing')),
++           DomainLink(link_id='heat',kind='thermal_contact',source=endpoint('h','operator','heat'),target=endpoint('t','surface','heat'))]
++    return compose_product('instrumented-panel',docs,links=links)
++
++
++class LayeredMaterialTests(unittest.TestCase):
++    """Reject false coupling claims while keeping unknown physics explicit."""
++    def test_valid_composition_and_unknown_thickness(self) -> None:
++        """Structural validity never converts absent values into physical results."""
++        result=validate_product(bundle());self.assertTrue(result.is_valid,result.model_dump())
++        document=parse_domain(documents()[0]);self.assertIsNone(inspect_layers(document)[0]['total_thickness_mm'])
++        self.assertTrue(any(f.code=='unknown_layer_thickness' for f in validate_domain(document)))
++        self.assertEqual(inspect_layers(document)[0]['deformation_prediction'],'unsupported')
++
++    def test_nonadjacent_join_and_duplicate_occurrence(self) -> None:
++        """Bad construction topology cannot masquerade as an ordered laminate."""
++        raw=documents()[0];raw['layered_assemblies'][0]['joins'][0]['second_layer_id']='layer-coating'
++        with self.assertRaises(ValidationError):parse_domain(raw)
++        raw=documents()[0];raw['layered_assemblies'][0]['layers'][1]['component_object_id']='backing'
++        with self.assertRaises(ValidationError):parse_domain(raw)
++
++    def test_invalid_material_frame_and_nonfinite_properties(self) -> None:
++        """Reject ambiguous axes and impossible numeric declarations."""
++        raw=documents()[0];raw['layered_assemblies'][0]['warp_direction']=[0.,0.,1.]
++        with self.assertRaises(ValidationError):parse_domain(raw)
++        raw=documents()[0];raw['parts'][1]['flexibility']={'warp_modulus_pa':float('nan')}
++        with self.assertRaises(ValidationError):parse_domain(raw)
++
++    def test_wrong_layer_and_internal_contact(self) -> None:
++        """An ordinary component is not a layer; an internal foil is not exposed."""
++        value=bundle();value.manifest.links[0].target.object_id='panel'
++        self.assertTrue(any(f.code=='layer_coupling' for f in validate_product(value).composition))
++        value=bundle();value.manifest.links[3].target.object_id='layer-foil'
++        self.assertTrue(any(f.code=='layer_coupling' for f in validate_product(value).composition))
++
++    def test_stale_revision_and_digest_invalidate_links(self) -> None:
++        """Composition pins cannot remain valid after independent artifact changes."""
++        value=bundle();value.manifest.links[0].target.revision=2
++        self.assertTrue(any(f.code=='link_revision' for f in validate_product(value).composition))
++        value=bundle();value.manifest.links[0].target.sha256='0'*64
++        self.assertTrue(any(f.code=='link_hash' for f in validate_product(value).composition))
++
++    def test_temperature_observation_requires_sensor_role(self) -> None:
++        """A controller or passive component cannot be labelled a temperature sensor."""
++        raw=documents();raw[1]['parts'][0]['engineering']=None
++        value=compose_product('instrumented-panel',[parse_domain(d) for d in raw],links=bundle().manifest.links)
++        self.assertTrue(any(f.code=='layer_coupling' and f.location=='observe' for f in validate_product(value).composition))
++
++    def test_entity_collision_and_unknown_component_rejected(self) -> None:
++        """Synthetic layer IDs must not shadow physical component IDs."""
++        raw=documents()[0];raw['layered_assemblies'][0]['stack_id']='panel'
++        with self.assertRaises(ValidationError):parse_domain(raw)
++        raw=documents()[0];raw['layered_assemblies'][0]['layers'][0]['component_object_id']='missing'
++        with self.assertRaises(ValidationError):parse_domain(raw)
++
++    def test_legacy_payloads_have_no_new_default_keys(self) -> None:
++        """Absent extensions preserve normalized legacy serialization and hashes."""
++        document=parse_domain({'domain':'mechanical','schema_version':'1.0','artifact_id':'m','revision':1,'parts':[{'part_definition_id':'part'}]})
++        data=document.model_dump(mode='json');self.assertNotIn('layered_assemblies',data);self.assertNotIn('flexibility',data['parts'][0])
++
++    def test_same_object_with_layer_metadata_returns_finding(self) -> None:
++        """New entity kinds cannot crash legacy shared-component validation."""
++        value=bundle();link=value.manifest.links[0];link.kind='same_object';link.target.object_id='layer-foil'
++        # Unequal identities are diagnosed without stopping the validator.
++        result=validate_product(value);self.assertTrue(any(f.code=='physical_identity' for f in result.composition))
++
++
++if __name__=='__main__':
++    unittest.main()
+diff --git a/tests/projects/test_pin_schematic.py b/tests/projects/test_pin_schematic.py
+new file mode 100644
+index 0000000..b736e49
+--- /dev/null
++++ b/tests/projects/test_pin_schematic.py
+@@ -0,0 +1,60 @@
++"""Regression checks for native schematic endpoint preservation."""
++from __future__ import annotations
++import unittest
++import xml.etree.ElementTree as ET
++from forma_core.electronics.models import ElectricalIR
++from forma_core.utils import generate_svg_schematic
++
++
++def circuit(count: int = 2) -> ElectricalIR:
++    """Create generic modules sharing two independent named nets."""
++    return ElectricalIR.model_validate({'artifact_id':'test','revision':1,'parts':[{'part_definition_id':'module','name':'Module & <test>','pins':[{'pin_id':'A','name':'A','pin_type':'Digital'},{'pin_id':'B','name':'B','pin_type':'Ground'}]}],'components':[{'object_id':f'object-{i}','ref_des':f'U{i}','part_definition_id':'module'} for i in range(count)],'nets':[{'net_id':name,'name':name,'net_type':kind,'pins':[{'ref_des':f'U{i}','pin_id':pin} for i in range(count)]} for name,kind,pin in [('signal','Digital','A'),('ground','Ground','B')]]})
++
++
++class PinSchematicTests(unittest.TestCase):
++    """No component-level deduplication may erase distinct electrical nets."""
++    def test_parallel_connections_preserved(self) -> None:
++        """Power/signal and return between the same pair remain distinct."""
++        root=ET.fromstring(generate_svg_schematic(circuit()))
++        pairs=[(e.attrib['data-pin'],e.attrib['data-net']) for e in root.iter() if 'data-pin' in e.attrib]
++        self.assertEqual(pairs.count(('A','signal')),2)
++        self.assertEqual(pairs.count(('B','ground')),2)
++
++    def test_many_modules_have_unique_positions_and_fit(self) -> None:
++        """Fallback module types cannot overlap or escape a fixed canvas."""
++        root=ET.fromstring(generate_svg_schematic(circuit(14)))
++        boxes=[]
++        for group in root.iter():
++            if 'data-component' in group.attrib:
++                box=next(e for e in group if e.tag.endswith('rect'))
++                boxes.append((box.attrib['x'],box.attrib['y']))
++                self.assertLess(float(box.attrib['y'])+float(box.attrib['height']),float(root.attrib['height']))
++        self.assertEqual(len(set(boxes)),14)
++
++    def test_xml_text_escaped(self) -> None:
++        """Names containing markup stay text, not XML elements."""
++        root=ET.fromstring(generate_svg_schematic(circuit()))
++        self.assertIn('Module & <test>',''.join(root.itertext()))
++
++    def test_unconnected_pin_remains_visible(self) -> None:
++        """Unconnected interfaces do not disappear from the output."""
++        doc=circuit();doc.nets=doc.nets[:1]
++        root=ET.fromstring(generate_svg_schematic(doc))
++        self.assertEqual(sum(e.attrib.get('data-net')=='UNCONNECTED' for e in root.iter()),2)
++
++    def test_legacy_document_still_renders(self) -> None:
++        """Existing callers retain the same endpoint-preserving interface."""
++        from forma_core.workspaces.projects.models import HardwareIntermediateRepresentation
++        native=circuit()
++        legacy=HardwareIntermediateRepresentation.model_validate({'components':[{'ref_des':c.ref_des,'name':'Generic module','part_number':'TEST','category':'module','quantity':1,'rationale':'Test fixture','pins':[p.model_dump() for p in native.parts[0].pins]} for c in native.components],'nets':[n.model_dump() for n in native.nets]})
++        root=ET.fromstring(generate_svg_schematic(legacy))
++        self.assertEqual(sum('data-pin' in e.attrib for e in root.iter()),4)
++
++    def test_unknown_endpoint_rejected(self) -> None:
++        """Mutable invalid input cannot generate a convincing incomplete picture."""
++        doc=circuit();doc.nets[0].pins[0].pin_id='missing'
++        with self.assertRaises(ValueError):generate_svg_schematic(doc)
++
++
++if __name__=='__main__':
++    unittest.main()

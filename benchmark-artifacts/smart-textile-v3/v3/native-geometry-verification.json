@@ -1,0 +1,610 @@
+{
+  "device": {
+    "valid": true,
+    "roundtrip_valid": true,
+    "solid_count": 40,
+    "roundtrip_solid_count": 40,
+    "objects": [
+      {
+        "id": "textile-band",
+        "solid_index": 0,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -196.00000011279585,
+          "min_y": -128.00000011279585,
+          "min_z": 1134.9999998872042,
+          "max_x": 196.00000011279585,
+          "max_y": 128.00000011279585,
+          "max_z": 1425.0000001127958
+        }
+      },
+      {
+        "id": "left-strap",
+        "solid_index": 1,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -137.5000001,
+          "min_y": -105.0000001,
+          "min_z": 1456.4999999,
+          "max_x": -84.4999999,
+          "max_y": 105.0000001,
+          "max_z": 1465.5000001
+        }
+      },
+      {
+        "id": "left-strap-front",
+        "solid_index": 2,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -137.5000001,
+          "min_y": -99.0000001,
+          "min_z": 1412.4999999,
+          "max_x": -84.4999999,
+          "max_y": -88.9999999,
+          "max_z": 1461.5000001
+        }
+      },
+      {
+        "id": "left-strap-back",
+        "solid_index": 3,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -137.5000001,
+          "min_y": 88.9999999,
+          "min_z": 1412.4999999,
+          "max_x": -84.4999999,
+          "max_y": 99.0000001,
+          "max_z": 1461.5000001
+        }
+      },
+      {
+        "id": "right-strap",
+        "solid_index": 4,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 84.4999999,
+          "min_y": -105.0000001,
+          "min_z": 1456.4999999,
+          "max_x": 137.5000001,
+          "max_y": 105.0000001,
+          "max_z": 1465.5000001
+        }
+      },
+      {
+        "id": "right-strap-front",
+        "solid_index": 5,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 84.4999999,
+          "min_y": -99.0000001,
+          "min_z": 1412.4999999,
+          "max_x": 137.5000001,
+          "max_y": -88.9999999,
+          "max_z": 1461.5000001
+        }
+      },
+      {
+        "id": "right-strap-back",
+        "solid_index": 6,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 84.4999999,
+          "min_y": 88.9999999,
+          "min_z": 1412.4999999,
+          "max_x": 137.5000001,
+          "max_y": 99.0000001,
+          "max_z": 1461.5000001
+        }
+      },
+      {
+        "id": "left-pocket",
+        "solid_index": 7,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -126.0000001,
+          "min_y": -131.5000001,
+          "min_z": 1231.4999999,
+          "max_x": -37.9999999,
+          "max_y": -120.4999999,
+          "max_z": 1338.5000001
+        }
+      },
+      {
+        "id": "left-spreader",
+        "solid_index": 8,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -114.5000001,
+          "min_y": -135.5000001,
+          "min_z": 1249.9999999,
+          "max_x": -49.4999999,
+          "max_y": -131.4999999,
+          "max_z": 1320.0000001
+        }
+      },
+      {
+        "id": "left-tec",
+        "solid_index": 9,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -102.0000001,
+          "min_y": -139.5000001,
+          "min_z": 1264.9999999,
+          "max_x": -61.9999999,
+          "max_y": -135.4999999,
+          "max_z": 1305.0000001
+        }
+      },
+      {
+        "id": "left-pcm",
+        "solid_index": 10,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -115.0000001,
+          "min_y": -151.5000001,
+          "min_z": 1248.9999999,
+          "max_x": -48.9999999,
+          "max_y": -139.4999999,
+          "max_z": 1321.0000001
+        }
+      },
+      {
+        "id": "left-sink",
+        "solid_index": 11,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -117.0000001,
+          "min_y": -156.5000001,
+          "min_z": 1246.9999999,
+          "max_x": -46.9999999,
+          "max_y": -151.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "left-fin-1",
+        "solid_index": 12,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -114.5000001,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": -109.4999999,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "left-fin-2",
+        "solid_index": 13,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -104.5000001,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": -99.4999999,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "left-fin-3",
+        "solid_index": 14,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -94.5000001,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": -89.4999999,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "left-fin-4",
+        "solid_index": 15,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -84.5000001,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": -79.4999999,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "left-fin-5",
+        "solid_index": 16,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -74.5000001,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": -69.4999999,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "left-fin-6",
+        "solid_index": 17,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -64.5000001,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": -59.4999999,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "left-fin-7",
+        "solid_index": 18,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -54.5000001,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": -49.4999999,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "right-pocket",
+        "solid_index": 19,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 37.9999999,
+          "min_y": -131.5000001,
+          "min_z": 1231.4999999,
+          "max_x": 126.0000001,
+          "max_y": -120.4999999,
+          "max_z": 1338.5000001
+        }
+      },
+      {
+        "id": "right-spreader",
+        "solid_index": 20,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 49.4999999,
+          "min_y": -135.5000001,
+          "min_z": 1249.9999999,
+          "max_x": 114.5000001,
+          "max_y": -131.4999999,
+          "max_z": 1320.0000001
+        }
+      },
+      {
+        "id": "right-tec",
+        "solid_index": 21,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 61.9999999,
+          "min_y": -139.5000001,
+          "min_z": 1264.9999999,
+          "max_x": 102.0000001,
+          "max_y": -135.4999999,
+          "max_z": 1305.0000001
+        }
+      },
+      {
+        "id": "right-pcm",
+        "solid_index": 22,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 48.9999999,
+          "min_y": -151.5000001,
+          "min_z": 1248.9999999,
+          "max_x": 115.0000001,
+          "max_y": -139.4999999,
+          "max_z": 1321.0000001
+        }
+      },
+      {
+        "id": "right-sink",
+        "solid_index": 23,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 46.9999999,
+          "min_y": -156.5000001,
+          "min_z": 1246.9999999,
+          "max_x": 117.0000001,
+          "max_y": -151.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "right-fin-1",
+        "solid_index": 24,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 49.4999999,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": 54.5000001,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "right-fin-2",
+        "solid_index": 25,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 59.4999999,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": 64.5000001,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "right-fin-3",
+        "solid_index": 26,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 69.4999999,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": 74.5000001,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "right-fin-4",
+        "solid_index": 27,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 79.4999999,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": 84.5000001,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "right-fin-5",
+        "solid_index": 28,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 89.4999999,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": 94.5000001,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "right-fin-6",
+        "solid_index": 29,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 99.4999999,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": 104.5000001,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "right-fin-7",
+        "solid_index": 30,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": 109.4999999,
+          "min_y": -170.5000001,
+          "min_z": 1246.9999999,
+          "max_x": 114.5000001,
+          "max_y": -156.4999999,
+          "max_z": 1323.0000001
+        }
+      },
+      {
+        "id": "tec-driver",
+        "solid_index": 31,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -21.0000001,
+          "min_y": -132.0000001,
+          "min_z": 1302.4999999,
+          "max_x": 21.0000001,
+          "max_y": -127.9999999,
+          "max_z": 1337.5000001
+        }
+      },
+      {
+        "id": "controller-flex",
+        "solid_index": 32,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -32.0000001,
+          "min_y": -131.5000001,
+          "min_z": 1356.4999999,
+          "max_x": 32.0000001,
+          "max_y": -128.4999999,
+          "max_z": 1403.5000001
+        }
+      },
+      {
+        "id": "controller-cover",
+        "solid_index": 33,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -36.0000001,
+          "min_y": -142.0000001,
+          "min_z": 1352.4999999,
+          "max_x": 36.0000001,
+          "max_y": -131.9999999,
+          "max_z": 1407.5000001
+        }
+      },
+      {
+        "id": "local-button",
+        "solid_index": 34,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -8.0000001,
+          "min_y": -146.0000001,
+          "min_z": 1371.9999999,
+          "max_x": 8.0000001,
+          "max_y": -141.9999999,
+          "max_z": 1388.0000001
+        }
+      },
+      {
+        "id": "skin-sensor",
+        "solid_index": 35,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -8.0000001,
+          "min_y": -113.5000001,
+          "min_z": 1331.9999999,
+          "max_x": 8.0000001,
+          "max_y": -110.4999999,
+          "max_z": 1348.0000001
+        }
+      },
+      {
+        "id": "ambient-sensor",
+        "solid_index": 36,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -7.5000001,
+          "min_y": -138.0000001,
+          "min_z": 1200.9999999,
+          "max_x": 7.5000001,
+          "max_y": -131.9999999,
+          "max_z": 1219.0000001
+        }
+      },
+      {
+        "id": "power-flex",
+        "solid_index": 37,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -27.0000001,
+          "min_y": 128.4999999,
+          "min_z": 1360.9999999,
+          "max_x": 27.0000001,
+          "max_y": 133.5000001,
+          "max_z": 1399.0000001
+        }
+      },
+      {
+        "id": "battery-pack",
+        "solid_index": 38,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -54.0000001,
+          "min_y": 130.9999999,
+          "min_z": 1233.9999999,
+          "max_x": 54.0000001,
+          "max_y": 143.0000001,
+          "max_z": 1326.0000001
+        }
+      },
+      {
+        "id": "qi-receiver",
+        "solid_index": 39,
+        "valid": true,
+        "center_error_mm": 0.0,
+        "declared_center_match": true,
+        "bbox_mm": {
+          "min_x": -26.0000001,
+          "min_y": 142.9999999,
+          "min_z": 1253.9999999,
+          "max_x": 26.0000001,
+          "max_y": 146.0000001,
+          "max_z": 1306.0000001
+        }
+      }
+    ]
+  }
+}

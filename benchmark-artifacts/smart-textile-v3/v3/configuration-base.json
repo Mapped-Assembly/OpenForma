@@ -1,0 +1,2803 @@
+{
+  "format": "forma.mujoco-adapter",
+  "version": 1,
+  "definition": {
+    "machine_id": "wearable-v2",
+    "name": "V2 human-device virtual interaction",
+    "description": "Fixed pelvis; position servos approximate human joint control. Only palm/button collision is modelled. Not biomechanical validation.",
+    "backend": "virtual",
+    "axes": [
+      {
+        "axis_id": "waist-yaw",
+        "label": "waist-yaw",
+        "unit": "degree",
+        "minimum": -25.0,
+        "maximum": 25.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "waist-bend",
+        "label": "waist-bend",
+        "unit": "degree",
+        "minimum": -15.0,
+        "maximum": 15.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "head-joint",
+        "label": "head-joint",
+        "unit": "degree",
+        "minimum": -30.0,
+        "maximum": 30.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "neck-base",
+        "label": "neck-base",
+        "unit": "degree",
+        "minimum": -20.0,
+        "maximum": 20.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "left-wrist",
+        "label": "left-wrist",
+        "unit": "degree",
+        "minimum": -40.0,
+        "maximum": 40.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "left-elbow",
+        "label": "left-elbow",
+        "unit": "degree",
+        "minimum": -150.0,
+        "maximum": 5.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "left-shoulder-x",
+        "label": "left-shoulder-x",
+        "unit": "degree",
+        "minimum": -130.0,
+        "maximum": 80.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "left-shoulder-y",
+        "label": "left-shoulder-y",
+        "unit": "degree",
+        "minimum": -100.0,
+        "maximum": 100.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "left-shoulder-z",
+        "label": "left-shoulder-z",
+        "unit": "degree",
+        "minimum": -100.0,
+        "maximum": 100.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "right-wrist",
+        "label": "right-wrist",
+        "unit": "degree",
+        "minimum": -40.0,
+        "maximum": 40.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "right-elbow",
+        "label": "right-elbow",
+        "unit": "degree",
+        "minimum": -150.0,
+        "maximum": 5.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "right-shoulder-x",
+        "label": "right-shoulder-x",
+        "unit": "degree",
+        "minimum": -130.0,
+        "maximum": 80.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "right-shoulder-y",
+        "label": "right-shoulder-y",
+        "unit": "degree",
+        "minimum": -100.0,
+        "maximum": 100.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "right-shoulder-z",
+        "label": "right-shoulder-z",
+        "unit": "degree",
+        "minimum": -100.0,
+        "maximum": 100.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "left-ankle",
+        "label": "left-ankle",
+        "unit": "degree",
+        "minimum": -25.0,
+        "maximum": 25.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "left-knee",
+        "label": "left-knee",
+        "unit": "degree",
+        "minimum": -5.0,
+        "maximum": 130.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "left-hip",
+        "label": "left-hip",
+        "unit": "degree",
+        "minimum": -60.0,
+        "maximum": 60.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "right-ankle",
+        "label": "right-ankle",
+        "unit": "degree",
+        "minimum": -25.0,
+        "maximum": 25.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "right-knee",
+        "label": "right-knee",
+        "unit": "degree",
+        "minimum": -5.0,
+        "maximum": 130.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      },
+      {
+        "axis_id": "right-hip",
+        "label": "right-hip",
+        "unit": "degree",
+        "minimum": -60.0,
+        "maximum": 60.0,
+        "neutral": 0.0,
+        "max_rate": 65.0
+      }
+    ]
+  },
+  "scene": {
+    "tag": "mujoco",
+    "attributes": {
+      "model": "declarative-human-wearable"
+    },
+    "children": [
+      {
+        "tag": "compiler",
+        "attributes": {
+          "angle": "degree",
+          "autolimits": "true"
+        },
+        "children": []
+      },
+      {
+        "tag": "option",
+        "attributes": {
+          "timestep": "0.002",
+          "gravity": "0 0 -9.81",
+          "integrator": "implicitfast",
+          "iterations": "80"
+        },
+        "children": []
+      },
+      {
+        "tag": "visual",
+        "attributes": {},
+        "children": [
+          {
+            "tag": "global",
+            "attributes": {
+              "offwidth": "1100",
+              "offheight": "1000"
+            },
+            "children": []
+          },
+          {
+            "tag": "headlight",
+            "attributes": {
+              "ambient": "0.4 0.4 0.4",
+              "diffuse": "0.7 0.7 0.7",
+              "specular": "0.1 0.1 0.1"
+            },
+            "children": []
+          },
+          {
+            "tag": "rgba",
+            "attributes": {
+              "haze": "0.94 0.96 0.98 1"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "tag": "asset",
+        "attributes": {},
+        "children": [
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "textile-band-mesh",
+              "file": "assets/textile-band.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-strap-mesh",
+              "file": "assets/left-strap.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-strap-front-mesh",
+              "file": "assets/left-strap-front.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-strap-back-mesh",
+              "file": "assets/left-strap-back.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-strap-mesh",
+              "file": "assets/right-strap.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-strap-front-mesh",
+              "file": "assets/right-strap-front.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-strap-back-mesh",
+              "file": "assets/right-strap-back.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-pocket-mesh",
+              "file": "assets/left-pocket.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-spreader-mesh",
+              "file": "assets/left-spreader.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-tec-mesh",
+              "file": "assets/left-tec.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-pcm-mesh",
+              "file": "assets/left-pcm.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-sink-mesh",
+              "file": "assets/left-sink.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-fin-1-mesh",
+              "file": "assets/left-fin-1.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-fin-2-mesh",
+              "file": "assets/left-fin-2.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-fin-3-mesh",
+              "file": "assets/left-fin-3.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-fin-4-mesh",
+              "file": "assets/left-fin-4.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-fin-5-mesh",
+              "file": "assets/left-fin-5.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-fin-6-mesh",
+              "file": "assets/left-fin-6.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "left-fin-7-mesh",
+              "file": "assets/left-fin-7.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-pocket-mesh",
+              "file": "assets/right-pocket.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-spreader-mesh",
+              "file": "assets/right-spreader.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-tec-mesh",
+              "file": "assets/right-tec.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-pcm-mesh",
+              "file": "assets/right-pcm.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-sink-mesh",
+              "file": "assets/right-sink.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-fin-1-mesh",
+              "file": "assets/right-fin-1.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-fin-2-mesh",
+              "file": "assets/right-fin-2.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-fin-3-mesh",
+              "file": "assets/right-fin-3.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-fin-4-mesh",
+              "file": "assets/right-fin-4.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-fin-5-mesh",
+              "file": "assets/right-fin-5.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-fin-6-mesh",
+              "file": "assets/right-fin-6.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "right-fin-7-mesh",
+              "file": "assets/right-fin-7.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "tec-driver-mesh",
+              "file": "assets/tec-driver.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "controller-flex-mesh",
+              "file": "assets/controller-flex.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "controller-cover-mesh",
+              "file": "assets/controller-cover.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "local-button-mesh",
+              "file": "assets/local-button.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "skin-sensor-mesh",
+              "file": "assets/skin-sensor.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "ambient-sensor-mesh",
+              "file": "assets/ambient-sensor.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "power-flex-mesh",
+              "file": "assets/power-flex.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "battery-pack-mesh",
+              "file": "assets/battery-pack.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "mesh",
+            "attributes": {
+              "name": "qi-receiver-mesh",
+              "file": "assets/qi-receiver.obj"
+            },
+            "children": []
+          },
+          {
+            "tag": "texture",
+            "attributes": {
+              "type": "skybox",
+              "builtin": "gradient",
+              "rgb1": "0.85 0.9 0.95",
+              "rgb2": "0.96 0.97 0.98",
+              "width": "64",
+              "height": "64"
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "tag": "worldbody",
+        "attributes": {},
+        "children": [
+          {
+            "tag": "light",
+            "attributes": {
+              "pos": "1 -2 3",
+              "dir": "-0.3 0.4 -1",
+              "diffuse": "0.8 0.8 0.8"
+            },
+            "children": []
+          },
+          {
+            "tag": "geom",
+            "attributes": {
+              "name": "floor",
+              "type": "plane",
+              "size": "3 3 0.1",
+              "rgba": "0.91 0.93 0.95 1",
+              "contype": "0",
+              "conaffinity": "0"
+            },
+            "children": []
+          },
+          {
+            "tag": "body",
+            "attributes": {
+              "name": "pelvis",
+              "pos": "0. 0. 1.0225"
+            },
+            "children": [
+              {
+                "tag": "geom",
+                "attributes": {
+                  "name": "pelvis-geom",
+                  "type": "ellipsoid",
+                  "size": "0.151 0.097 0.0775",
+                  "rgba": "0.28 0.37 0.44 1",
+                  "contype": "0",
+                  "conaffinity": "0",
+                  "density": "1690.5211515826454"
+                },
+                "children": []
+              },
+              {
+                "tag": "body",
+                "attributes": {
+                  "name": "torso",
+                  "pos": "0. 0. 0.0775"
+                },
+                "children": [
+                  {
+                    "tag": "joint",
+                    "attributes": {
+                      "name": "waist-yaw",
+                      "type": "hinge",
+                      "axis": "0 0 1",
+                      "range": "-25 25",
+                      "damping": "3",
+                      "armature": "0.04"
+                    },
+                    "children": []
+                  },
+                  {
+                    "tag": "joint",
+                    "attributes": {
+                      "name": "waist-bend",
+                      "type": "hinge",
+                      "axis": "1 0 0",
+                      "range": "-15 15",
+                      "damping": "3",
+                      "armature": "0.04"
+                    },
+                    "children": []
+                  },
+                  {
+                    "tag": "geom",
+                    "attributes": {
+                      "name": "torso-geom",
+                      "type": "ellipsoid",
+                      "pos": "0 0 0.1775",
+                      "size": "0.175 0.105 0.1775",
+                      "rgba": "0.57 0.66 0.72 1",
+                      "contype": "0",
+                      "conaffinity": "0",
+                      "density": "1690.5211515826454"
+                    },
+                    "children": []
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "neck",
+                      "pos": "0. 0. 0.37"
+                    },
+                    "children": [
+                      {
+                        "tag": "joint",
+                        "attributes": {
+                          "name": "neck-base",
+                          "type": "hinge",
+                          "axis": "1 0 0",
+                          "range": "-20 20",
+                          "damping": "3",
+                          "armature": "0.04"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "neck-geom",
+                          "type": "capsule",
+                          "fromto": "0 0 0 0 0 0.08",
+                          "size": "0.043",
+                          "rgba": "0.57 0.66 0.72 1",
+                          "density": "1183.3648061078518",
+                          "contype": "0",
+                          "conaffinity": "0"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "body",
+                        "attributes": {
+                          "name": "head",
+                          "pos": "0. 0. 0.08"
+                        },
+                        "children": [
+                          {
+                            "tag": "joint",
+                            "attributes": {
+                              "name": "head-joint",
+                              "type": "hinge",
+                              "axis": "0 0 1",
+                              "range": "-30 30",
+                              "damping": "3",
+                              "armature": "0.04"
+                            },
+                            "children": []
+                          },
+                          {
+                            "tag": "geom",
+                            "attributes": {
+                              "name": "head-geom",
+                              "type": "sphere",
+                              "pos": "0 0 0.102",
+                              "size": "0.098",
+                              "rgba": "0.57 0.66 0.72 1",
+                              "contype": "0",
+                              "conaffinity": "0",
+                              "density": "1690.5211515826454"
+                            },
+                            "children": []
+                          },
+                          {
+                            "tag": "geom",
+                            "attributes": {
+                              "type": "sphere",
+                              "pos": "0 -0.094 0.1",
+                              "size": "0.016",
+                              "rgba": "0.28 0.37 0.44 1",
+                              "contype": "0",
+                              "conaffinity": "0",
+                              "density": "1690.5211515826454"
+                            },
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-upper-arm",
+                      "pos": "-0.202 0. 0.315"
+                    },
+                    "children": [
+                      {
+                        "tag": "joint",
+                        "attributes": {
+                          "name": "left-shoulder-x",
+                          "type": "hinge",
+                          "axis": "1 0 0",
+                          "range": "-130 80",
+                          "damping": "3",
+                          "armature": "0.04"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "joint",
+                        "attributes": {
+                          "name": "left-shoulder-y",
+                          "type": "hinge",
+                          "axis": "0 1 0",
+                          "range": "-100 100",
+                          "damping": "3",
+                          "armature": "0.04"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "joint",
+                        "attributes": {
+                          "name": "left-shoulder-z",
+                          "type": "hinge",
+                          "axis": "0 0 1",
+                          "range": "-100 100",
+                          "damping": "3",
+                          "armature": "0.04"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-upper-arm-geom",
+                          "type": "capsule",
+                          "fromto": "0 0 0 -0.04299999999999998 0.0 -0.2550000000000001",
+                          "size": "0.042",
+                          "rgba": "0.57 0.66 0.72 1",
+                          "density": "1183.3648061078518",
+                          "contype": "0",
+                          "conaffinity": "0"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "body",
+                        "attributes": {
+                          "name": "left-forearm",
+                          "pos": "-0.043 0. -0.255"
+                        },
+                        "children": [
+                          {
+                            "tag": "joint",
+                            "attributes": {
+                              "name": "left-elbow",
+                              "type": "hinge",
+                              "axis": "1 0 0",
+                              "range": "-150 5",
+                              "damping": "3",
+                              "armature": "0.04"
+                            },
+                            "children": []
+                          },
+                          {
+                            "tag": "geom",
+                            "attributes": {
+                              "name": "left-forearm-geom",
+                              "type": "capsule",
+                              "fromto": "0 0 0 -0.020000000000000018 -0.015 -0.21999999999999997",
+                              "size": "0.034",
+                              "rgba": "0.57 0.66 0.72 1",
+                              "density": "1183.3648061078518",
+                              "contype": "0",
+                              "conaffinity": "0"
+                            },
+                            "children": []
+                          },
+                          {
+                            "tag": "body",
+                            "attributes": {
+                              "name": "left-hand",
+                              "pos": "-0.02 -0.015 -0.22"
+                            },
+                            "children": [
+                              {
+                                "tag": "joint",
+                                "attributes": {
+                                  "name": "left-wrist",
+                                  "type": "hinge",
+                                  "axis": "0 0 1",
+                                  "range": "-40 40",
+                                  "damping": "3",
+                                  "armature": "0.04"
+                                },
+                                "children": []
+                              },
+                              {
+                                "tag": "geom",
+                                "attributes": {
+                                  "name": "left-hand-geom",
+                                  "type": "capsule",
+                                  "fromto": "0 0 0 -0.0030000000000000027 -0.010000000000000002 -0.08999999999999997",
+                                  "size": "0.03",
+                                  "rgba": "0.57 0.66 0.72 1",
+                                  "density": "1183.3648061078518",
+                                  "contype": "0",
+                                  "conaffinity": "0"
+                                },
+                                "children": []
+                              },
+                              {
+                                "tag": "geom",
+                                "attributes": {
+                                  "name": "left-palm",
+                                  "type": "sphere",
+                                  "pos": "-0.0015 -0.005 -0.045",
+                                  "size": "0.03",
+                                  "rgba": "0.57 0.66 0.72 1",
+                                  "contype": "0",
+                                  "conaffinity": "0",
+                                  "mass": "0.0016905211515826455"
+                                },
+                                "children": []
+                              },
+                              {
+                                "tag": "site",
+                                "attributes": {
+                                  "name": "left-palm-site",
+                                  "pos": "-0.0015 -0.005 -0.045",
+                                  "size": "0.003",
+                                  "rgba": "0 0 0 0"
+                                },
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-upper-arm",
+                      "pos": "0.202 0. 0.315"
+                    },
+                    "children": [
+                      {
+                        "tag": "joint",
+                        "attributes": {
+                          "name": "right-shoulder-x",
+                          "type": "hinge",
+                          "axis": "1 0 0",
+                          "range": "-130 80",
+                          "damping": "3",
+                          "armature": "0.04"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "joint",
+                        "attributes": {
+                          "name": "right-shoulder-y",
+                          "type": "hinge",
+                          "axis": "0 1 0",
+                          "range": "-100 100",
+                          "damping": "3",
+                          "armature": "0.04"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "joint",
+                        "attributes": {
+                          "name": "right-shoulder-z",
+                          "type": "hinge",
+                          "axis": "0 0 1",
+                          "range": "-100 100",
+                          "damping": "3",
+                          "armature": "0.04"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-upper-arm-geom",
+                          "type": "capsule",
+                          "fromto": "0 0 0 0.04299999999999998 0.0 -0.2550000000000001",
+                          "size": "0.042",
+                          "rgba": "0.57 0.66 0.72 1",
+                          "density": "1183.3648061078518",
+                          "contype": "0",
+                          "conaffinity": "0"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "body",
+                        "attributes": {
+                          "name": "right-forearm",
+                          "pos": "0.043 0. -0.255"
+                        },
+                        "children": [
+                          {
+                            "tag": "joint",
+                            "attributes": {
+                              "name": "right-elbow",
+                              "type": "hinge",
+                              "axis": "1 0 0",
+                              "range": "-150 5",
+                              "damping": "3",
+                              "armature": "0.04"
+                            },
+                            "children": []
+                          },
+                          {
+                            "tag": "geom",
+                            "attributes": {
+                              "name": "right-forearm-geom",
+                              "type": "capsule",
+                              "fromto": "0 0 0 0.020000000000000018 -0.015 -0.21999999999999997",
+                              "size": "0.034",
+                              "rgba": "0.57 0.66 0.72 1",
+                              "density": "1183.3648061078518",
+                              "contype": "0",
+                              "conaffinity": "0"
+                            },
+                            "children": []
+                          },
+                          {
+                            "tag": "body",
+                            "attributes": {
+                              "name": "right-hand",
+                              "pos": "0.02 -0.015 -0.22"
+                            },
+                            "children": [
+                              {
+                                "tag": "joint",
+                                "attributes": {
+                                  "name": "right-wrist",
+                                  "type": "hinge",
+                                  "axis": "0 0 1",
+                                  "range": "-40 40",
+                                  "damping": "3",
+                                  "armature": "0.04"
+                                },
+                                "children": []
+                              },
+                              {
+                                "tag": "geom",
+                                "attributes": {
+                                  "name": "right-hand-geom",
+                                  "type": "capsule",
+                                  "fromto": "0 0 0 0.0030000000000000027 -0.010000000000000002 -0.08999999999999997",
+                                  "size": "0.03",
+                                  "rgba": "0.57 0.66 0.72 1",
+                                  "density": "1183.3648061078518",
+                                  "contype": "0",
+                                  "conaffinity": "0"
+                                },
+                                "children": []
+                              },
+                              {
+                                "tag": "geom",
+                                "attributes": {
+                                  "name": "right-palm",
+                                  "type": "sphere",
+                                  "pos": "0.0015 -0.005 -0.045",
+                                  "size": "0.03",
+                                  "rgba": "0.9 0.68 0.4 1",
+                                  "contype": "1",
+                                  "conaffinity": "2",
+                                  "mass": "0.0016905211515826455"
+                                },
+                                "children": []
+                              },
+                              {
+                                "tag": "site",
+                                "attributes": {
+                                  "name": "right-palm-site",
+                                  "pos": "0.0015 -0.005 -0.045",
+                                  "size": "0.003",
+                                  "rgba": "0 0 0 0"
+                                },
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "textile-band",
+                      "pos": "0. 0. 0.18"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "textile-band-visual",
+                          "type": "mesh",
+                          "mesh": "textile-band-mesh",
+                          "rgba": "0.1411764705882353 0.49411764705882355 0.5058823529411764 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-strap",
+                      "pos": "-0.111 0. 0.361"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-strap-visual",
+                          "type": "mesh",
+                          "mesh": "left-strap-mesh",
+                          "rgba": "0.10980392156862745 0.3607843137254902 0.38823529411764707 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-strap-front",
+                      "pos": "-0.111 -0.094 0.337"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-strap-front-visual",
+                          "type": "mesh",
+                          "mesh": "left-strap-front-mesh",
+                          "rgba": "0.10980392156862745 0.3607843137254902 0.38823529411764707 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-strap-back",
+                      "pos": "-0.111 0.094 0.337"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-strap-back-visual",
+                          "type": "mesh",
+                          "mesh": "left-strap-back-mesh",
+                          "rgba": "0.10980392156862745 0.3607843137254902 0.38823529411764707 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-strap",
+                      "pos": "0.111 0. 0.361"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-strap-visual",
+                          "type": "mesh",
+                          "mesh": "right-strap-mesh",
+                          "rgba": "0.10980392156862745 0.3607843137254902 0.38823529411764707 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-strap-front",
+                      "pos": "0.111 -0.094 0.337"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-strap-front-visual",
+                          "type": "mesh",
+                          "mesh": "right-strap-front-mesh",
+                          "rgba": "0.10980392156862745 0.3607843137254902 0.38823529411764707 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-strap-back",
+                      "pos": "0.111 0.094 0.337"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-strap-back-visual",
+                          "type": "mesh",
+                          "mesh": "right-strap-back-mesh",
+                          "rgba": "0.10980392156862745 0.3607843137254902 0.38823529411764707 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-pocket",
+                      "pos": "-0.082 -0.126 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-pocket-visual",
+                          "type": "mesh",
+                          "mesh": "left-pocket-mesh",
+                          "rgba": "0.10980392156862745 0.3607843137254902 0.38823529411764707 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-spreader",
+                      "pos": "-0.082 -0.1335 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-spreader-visual",
+                          "type": "mesh",
+                          "mesh": "left-spreader-mesh",
+                          "rgba": "0.5137254901960784 0.796078431372549 0.8352941176470589 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-tec",
+                      "pos": "-0.082 -0.1375 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-tec-visual",
+                          "type": "mesh",
+                          "mesh": "left-tec-mesh",
+                          "rgba": "0.9019607843137255 0.9098039215686274 0.9137254901960784 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-pcm",
+                      "pos": "-0.082 -0.1455 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-pcm-visual",
+                          "type": "mesh",
+                          "mesh": "left-pcm-mesh",
+                          "rgba": "0.8470588235294118 0.6313725490196078 0.29411764705882354 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-sink",
+                      "pos": "-0.082 -0.154 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-sink-visual",
+                          "type": "mesh",
+                          "mesh": "left-sink-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-fin-1",
+                      "pos": "-0.112 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-fin-1-visual",
+                          "type": "mesh",
+                          "mesh": "left-fin-1-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-fin-2",
+                      "pos": "-0.102 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-fin-2-visual",
+                          "type": "mesh",
+                          "mesh": "left-fin-2-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-fin-3",
+                      "pos": "-0.092 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-fin-3-visual",
+                          "type": "mesh",
+                          "mesh": "left-fin-3-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-fin-4",
+                      "pos": "-0.082 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-fin-4-visual",
+                          "type": "mesh",
+                          "mesh": "left-fin-4-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-fin-5",
+                      "pos": "-0.072 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-fin-5-visual",
+                          "type": "mesh",
+                          "mesh": "left-fin-5-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-fin-6",
+                      "pos": "-0.062 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-fin-6-visual",
+                          "type": "mesh",
+                          "mesh": "left-fin-6-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-fin-7",
+                      "pos": "-0.052 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-fin-7-visual",
+                          "type": "mesh",
+                          "mesh": "left-fin-7-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-pocket",
+                      "pos": "0.082 -0.126 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-pocket-visual",
+                          "type": "mesh",
+                          "mesh": "right-pocket-mesh",
+                          "rgba": "0.10980392156862745 0.3607843137254902 0.38823529411764707 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-spreader",
+                      "pos": "0.082 -0.1335 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-spreader-visual",
+                          "type": "mesh",
+                          "mesh": "right-spreader-mesh",
+                          "rgba": "0.5137254901960784 0.796078431372549 0.8352941176470589 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-tec",
+                      "pos": "0.082 -0.1375 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-tec-visual",
+                          "type": "mesh",
+                          "mesh": "right-tec-mesh",
+                          "rgba": "0.9019607843137255 0.9098039215686274 0.9137254901960784 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-pcm",
+                      "pos": "0.082 -0.1455 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-pcm-visual",
+                          "type": "mesh",
+                          "mesh": "right-pcm-mesh",
+                          "rgba": "0.8470588235294118 0.6313725490196078 0.29411764705882354 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-sink",
+                      "pos": "0.082 -0.154 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-sink-visual",
+                          "type": "mesh",
+                          "mesh": "right-sink-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-fin-1",
+                      "pos": "0.052 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-fin-1-visual",
+                          "type": "mesh",
+                          "mesh": "right-fin-1-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-fin-2",
+                      "pos": "0.062 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-fin-2-visual",
+                          "type": "mesh",
+                          "mesh": "right-fin-2-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-fin-3",
+                      "pos": "0.072 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-fin-3-visual",
+                          "type": "mesh",
+                          "mesh": "right-fin-3-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-fin-4",
+                      "pos": "0.082 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-fin-4-visual",
+                          "type": "mesh",
+                          "mesh": "right-fin-4-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-fin-5",
+                      "pos": "0.092 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-fin-5-visual",
+                          "type": "mesh",
+                          "mesh": "right-fin-5-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-fin-6",
+                      "pos": "0.102 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-fin-6-visual",
+                          "type": "mesh",
+                          "mesh": "right-fin-6-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-fin-7",
+                      "pos": "0.112 -0.1635 0.185"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-fin-7-visual",
+                          "type": "mesh",
+                          "mesh": "right-fin-7-mesh",
+                          "rgba": "0.39215686274509803 0.4666666666666667 0.5215686274509804 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "tec-driver",
+                      "pos": "0. -0.13 0.22"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "tec-driver-visual",
+                          "type": "mesh",
+                          "mesh": "tec-driver-mesh",
+                          "rgba": "0.14901960784313725 0.4823529411764706 0.34901960784313724 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "controller-flex",
+                      "pos": "0. -0.13 0.28"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "controller-flex-visual",
+                          "type": "mesh",
+                          "mesh": "controller-flex-mesh",
+                          "rgba": "0.14901960784313725 0.4823529411764706 0.34901960784313724 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "controller-cover",
+                      "pos": "0. -0.137 0.28"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "controller-cover-visual",
+                          "type": "mesh",
+                          "mesh": "controller-cover-mesh",
+                          "rgba": "0.8627450980392157 0.8941176470588236 0.9098039215686274 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "local-button",
+                      "pos": "0. -0.144 0.28"
+                    },
+                    "children": [
+                      {
+                        "tag": "joint",
+                        "attributes": {
+                          "name": "button-travel",
+                          "type": "slide",
+                          "axis": "0 1 0",
+                          "range": "0 0.004",
+                          "stiffness": "600",
+                          "damping": "2",
+                          "armature": "0.001"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "local-button-visual",
+                          "type": "mesh",
+                          "mesh": "local-button-mesh",
+                          "rgba": "0.9058823529411765 0.7254901960784313 0.2980392156862745 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "button-contact",
+                          "type": "box",
+                          "size": "0.008 0.002 0.008",
+                          "rgba": "0.9058823529411765 0.7254901960784313 0.2980392156862745 1",
+                          "mass": "0.01",
+                          "contype": "2",
+                          "conaffinity": "1",
+                          "friction": "0.5 0.005 0.0001",
+                          "solref": "0.004 1"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "skin-sensor",
+                      "pos": "0. -0.112 0.24"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "skin-sensor-visual",
+                          "type": "mesh",
+                          "mesh": "skin-sensor-mesh",
+                          "rgba": "0.5137254901960784 0.796078431372549 0.8352941176470589 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "ambient-sensor",
+                      "pos": "0. -0.135 0.11"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "ambient-sensor-visual",
+                          "type": "mesh",
+                          "mesh": "ambient-sensor-mesh",
+                          "rgba": "0.8627450980392157 0.8941176470588236 0.9098039215686274 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "power-flex",
+                      "pos": "0. 0.131 0.28"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "power-flex-visual",
+                          "type": "mesh",
+                          "mesh": "power-flex-mesh",
+                          "rgba": "0.14901960784313725 0.4823529411764706 0.34901960784313724 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "battery-pack",
+                      "pos": "0. 0.137 0.18"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "battery-pack-visual",
+                          "type": "mesh",
+                          "mesh": "battery-pack-mesh",
+                          "rgba": "0.34901960784313724 0.403921568627451 0.4627450980392157 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "qi-receiver",
+                      "pos": "0. 0.1445 0.18"
+                    },
+                    "children": [
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "qi-receiver-visual",
+                          "type": "mesh",
+                          "mesh": "qi-receiver-mesh",
+                          "rgba": "0.7176470588235294 0.47843137254901963 0.25882352941176473 1",
+                          "contype": "0",
+                          "conaffinity": "0",
+                          "mass": "0.001"
+                        },
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "tag": "body",
+                "attributes": {
+                  "name": "left-thigh",
+                  "pos": "-0.08 0. -0.0575"
+                },
+                "children": [
+                  {
+                    "tag": "joint",
+                    "attributes": {
+                      "name": "left-hip",
+                      "type": "hinge",
+                      "axis": "1 0 0",
+                      "range": "-60 60",
+                      "damping": "3",
+                      "armature": "0.04"
+                    },
+                    "children": []
+                  },
+                  {
+                    "tag": "geom",
+                    "attributes": {
+                      "name": "left-thigh-geom",
+                      "type": "capsule",
+                      "fromto": "0 0 0 -0.0050000000000000044 0.0 -0.43499999999999994",
+                      "size": "0.065",
+                      "rgba": "0.57 0.66 0.72 1",
+                      "density": "1183.3648061078518",
+                      "contype": "0",
+                      "conaffinity": "0"
+                    },
+                    "children": []
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "left-shin",
+                      "pos": "-0.005 0. -0.435"
+                    },
+                    "children": [
+                      {
+                        "tag": "joint",
+                        "attributes": {
+                          "name": "left-knee",
+                          "type": "hinge",
+                          "axis": "1 0 0",
+                          "range": "-5 130",
+                          "damping": "3",
+                          "armature": "0.04"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "left-shin-geom",
+                          "type": "capsule",
+                          "fromto": "0 0 0 -0.001999999999999988 0.0 -0.42000000000000004",
+                          "size": "0.046",
+                          "rgba": "0.57 0.66 0.72 1",
+                          "density": "1183.3648061078518",
+                          "contype": "0",
+                          "conaffinity": "0"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "body",
+                        "attributes": {
+                          "name": "left-foot",
+                          "pos": "-0.002 0. -0.42"
+                        },
+                        "children": [
+                          {
+                            "tag": "joint",
+                            "attributes": {
+                              "name": "left-ankle",
+                              "type": "hinge",
+                              "axis": "1 0 0",
+                              "range": "-25 25",
+                              "damping": "3",
+                              "armature": "0.04"
+                            },
+                            "children": []
+                          },
+                          {
+                            "tag": "geom",
+                            "attributes": {
+                              "name": "left-foot-geom",
+                              "type": "box",
+                              "pos": "0. -0.055 -0.075",
+                              "size": "0.05 0.105 0.035",
+                              "rgba": "0.28 0.37 0.44 1",
+                              "contype": "0",
+                              "conaffinity": "0",
+                              "density": "1690.5211515826454"
+                            },
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "tag": "body",
+                "attributes": {
+                  "name": "right-thigh",
+                  "pos": "0.08 0. -0.0575"
+                },
+                "children": [
+                  {
+                    "tag": "joint",
+                    "attributes": {
+                      "name": "right-hip",
+                      "type": "hinge",
+                      "axis": "1 0 0",
+                      "range": "-60 60",
+                      "damping": "3",
+                      "armature": "0.04"
+                    },
+                    "children": []
+                  },
+                  {
+                    "tag": "geom",
+                    "attributes": {
+                      "name": "right-thigh-geom",
+                      "type": "capsule",
+                      "fromto": "0 0 0 0.0050000000000000044 0.0 -0.43499999999999994",
+                      "size": "0.065",
+                      "rgba": "0.57 0.66 0.72 1",
+                      "density": "1183.3648061078518",
+                      "contype": "0",
+                      "conaffinity": "0"
+                    },
+                    "children": []
+                  },
+                  {
+                    "tag": "body",
+                    "attributes": {
+                      "name": "right-shin",
+                      "pos": "0.005 0. -0.435"
+                    },
+                    "children": [
+                      {
+                        "tag": "joint",
+                        "attributes": {
+                          "name": "right-knee",
+                          "type": "hinge",
+                          "axis": "1 0 0",
+                          "range": "-5 130",
+                          "damping": "3",
+                          "armature": "0.04"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "geom",
+                        "attributes": {
+                          "name": "right-shin-geom",
+                          "type": "capsule",
+                          "fromto": "0 0 0 0.001999999999999988 0.0 -0.42000000000000004",
+                          "size": "0.046",
+                          "rgba": "0.57 0.66 0.72 1",
+                          "density": "1183.3648061078518",
+                          "contype": "0",
+                          "conaffinity": "0"
+                        },
+                        "children": []
+                      },
+                      {
+                        "tag": "body",
+                        "attributes": {
+                          "name": "right-foot",
+                          "pos": "0.002 0. -0.42"
+                        },
+                        "children": [
+                          {
+                            "tag": "joint",
+                            "attributes": {
+                              "name": "right-ankle",
+                              "type": "hinge",
+                              "axis": "1 0 0",
+                              "range": "-25 25",
+                              "damping": "3",
+                              "armature": "0.04"
+                            },
+                            "children": []
+                          },
+                          {
+                            "tag": "geom",
+                            "attributes": {
+                              "name": "right-foot-geom",
+                              "type": "box",
+                              "pos": "0. -0.055 -0.075",
+                              "size": "0.05 0.105 0.035",
+                              "rgba": "0.28 0.37 0.44 1",
+                              "contype": "0",
+                              "conaffinity": "0",
+                              "density": "1690.5211515826454"
+                            },
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tag": "actuator",
+        "attributes": {},
+        "children": [
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "waist-yaw",
+              "joint": "waist-yaw",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-0.4363323129985824 0.4363323129985824",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "waist-bend",
+              "joint": "waist-bend",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-0.2617993877991494 0.2617993877991494",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "head-joint",
+              "joint": "head-joint",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-0.5235987755982988 0.5235987755982988",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "neck-base",
+              "joint": "neck-base",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-0.3490658503988659 0.3490658503988659",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "left-wrist",
+              "joint": "left-wrist",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-0.6981317007977318 0.6981317007977318",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "left-elbow",
+              "joint": "left-elbow",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-2.6179938779914944 0.08726646259971647",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "left-shoulder-x",
+              "joint": "left-shoulder-x",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-2.2689280275926285 1.3962634015954636",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "left-shoulder-y",
+              "joint": "left-shoulder-y",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-1.7453292519943295 1.7453292519943295",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "left-shoulder-z",
+              "joint": "left-shoulder-z",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-1.7453292519943295 1.7453292519943295",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "right-wrist",
+              "joint": "right-wrist",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-0.6981317007977318 0.6981317007977318",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "right-elbow",
+              "joint": "right-elbow",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-2.6179938779914944 0.08726646259971647",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "right-shoulder-x",
+              "joint": "right-shoulder-x",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-2.2689280275926285 1.3962634015954636",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "right-shoulder-y",
+              "joint": "right-shoulder-y",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-1.7453292519943295 1.7453292519943295",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "right-shoulder-z",
+              "joint": "right-shoulder-z",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-1.7453292519943295 1.7453292519943295",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "left-ankle",
+              "joint": "left-ankle",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-0.4363323129985824 0.4363323129985824",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "left-knee",
+              "joint": "left-knee",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-0.08726646259971647 2.2689280275926285",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "left-hip",
+              "joint": "left-hip",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-1.0471975511965976 1.0471975511965976",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "right-ankle",
+              "joint": "right-ankle",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-0.4363323129985824 0.4363323129985824",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "right-knee",
+              "joint": "right-knee",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-0.08726646259971647 2.2689280275926285",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          },
+          {
+            "tag": "position",
+            "attributes": {
+              "name": "right-hip",
+              "joint": "right-hip",
+              "kp": "1800",
+              "kv": "100",
+              "ctrlrange": "-1.0471975511965976 1.0471975511965976",
+              "forcerange": "-500 500"
+            },
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "axes": {
+    "waist-yaw": {
+      "joint": "waist-yaw",
+      "actuator": "waist-yaw"
+    },
+    "waist-bend": {
+      "joint": "waist-bend",
+      "actuator": "waist-bend"
+    },
+    "head-joint": {
+      "joint": "head-joint",
+      "actuator": "head-joint"
+    },
+    "neck-base": {
+      "joint": "neck-base",
+      "actuator": "neck-base"
+    },
+    "left-wrist": {
+      "joint": "left-wrist",
+      "actuator": "left-wrist"
+    },
+    "left-elbow": {
+      "joint": "left-elbow",
+      "actuator": "left-elbow"
+    },
+    "left-shoulder-x": {
+      "joint": "left-shoulder-x",
+      "actuator": "left-shoulder-x"
+    },
+    "left-shoulder-y": {
+      "joint": "left-shoulder-y",
+      "actuator": "left-shoulder-y"
+    },
+    "left-shoulder-z": {
+      "joint": "left-shoulder-z",
+      "actuator": "left-shoulder-z"
+    },
+    "right-wrist": {
+      "joint": "right-wrist",
+      "actuator": "right-wrist"
+    },
+    "right-elbow": {
+      "joint": "right-elbow",
+      "actuator": "right-elbow"
+    },
+    "right-shoulder-x": {
+      "joint": "right-shoulder-x",
+      "actuator": "right-shoulder-x"
+    },
+    "right-shoulder-y": {
+      "joint": "right-shoulder-y",
+      "actuator": "right-shoulder-y"
+    },
+    "right-shoulder-z": {
+      "joint": "right-shoulder-z",
+      "actuator": "right-shoulder-z"
+    },
+    "left-ankle": {
+      "joint": "left-ankle",
+      "actuator": "left-ankle"
+    },
+    "left-knee": {
+      "joint": "left-knee",
+      "actuator": "left-knee"
+    },
+    "left-hip": {
+      "joint": "left-hip",
+      "actuator": "left-hip"
+    },
+    "right-ankle": {
+      "joint": "right-ankle",
+      "actuator": "right-ankle"
+    },
+    "right-knee": {
+      "joint": "right-knee",
+      "actuator": "right-knee"
+    },
+    "right-hip": {
+      "joint": "right-hip",
+      "actuator": "right-hip"
+    }
+  },
+  "switches": [
+    {
+      "switch_id": "local-control",
+      "geom_a": "right-palm",
+      "geom_b": "button-contact",
+      "travel_joint": "button-travel",
+      "minimum_travel_m": 0.0005,
+      "debounce_s": 0.04,
+      "initial_state": false
+    }
+  ],
+  "attachments": [
+    {
+      "body": "textile-band",
+      "parent": "torso"
+    },
+    {
+      "body": "left-strap",
+      "parent": "torso"
+    },
+    {
+      "body": "left-strap-front",
+      "parent": "torso"
+    },
+    {
+      "body": "left-strap-back",
+      "parent": "torso"
+    },
+    {
+      "body": "right-strap",
+      "parent": "torso"
+    },
+    {
+      "body": "right-strap-front",
+      "parent": "torso"
+    },
+    {
+      "body": "right-strap-back",
+      "parent": "torso"
+    },
+    {
+      "body": "left-pocket",
+      "parent": "torso"
+    },
+    {
+      "body": "left-spreader",
+      "parent": "torso"
+    },
+    {
+      "body": "left-tec",
+      "parent": "torso"
+    },
+    {
+      "body": "left-pcm",
+      "parent": "torso"
+    },
+    {
+      "body": "left-sink",
+      "parent": "torso"
+    },
+    {
+      "body": "left-fin-1",
+      "parent": "torso"
+    },
+    {
+      "body": "left-fin-2",
+      "parent": "torso"
+    },
+    {
+      "body": "left-fin-3",
+      "parent": "torso"
+    },
+    {
+      "body": "left-fin-4",
+      "parent": "torso"
+    },
+    {
+      "body": "left-fin-5",
+      "parent": "torso"
+    },
+    {
+      "body": "left-fin-6",
+      "parent": "torso"
+    },
+    {
+      "body": "left-fin-7",
+      "parent": "torso"
+    },
+    {
+      "body": "right-pocket",
+      "parent": "torso"
+    },
+    {
+      "body": "right-spreader",
+      "parent": "torso"
+    },
+    {
+      "body": "right-tec",
+      "parent": "torso"
+    },
+    {
+      "body": "right-pcm",
+      "parent": "torso"
+    },
+    {
+      "body": "right-sink",
+      "parent": "torso"
+    },
+    {
+      "body": "right-fin-1",
+      "parent": "torso"
+    },
+    {
+      "body": "right-fin-2",
+      "parent": "torso"
+    },
+    {
+      "body": "right-fin-3",
+      "parent": "torso"
+    },
+    {
+      "body": "right-fin-4",
+      "parent": "torso"
+    },
+    {
+      "body": "right-fin-5",
+      "parent": "torso"
+    },
+    {
+      "body": "right-fin-6",
+      "parent": "torso"
+    },
+    {
+      "body": "right-fin-7",
+      "parent": "torso"
+    },
+    {
+      "body": "tec-driver",
+      "parent": "torso"
+    },
+    {
+      "body": "controller-flex",
+      "parent": "torso"
+    },
+    {
+      "body": "controller-cover",
+      "parent": "torso"
+    },
+    {
+      "body": "skin-sensor",
+      "parent": "torso"
+    },
+    {
+      "body": "ambient-sensor",
+      "parent": "torso"
+    },
+    {
+      "body": "power-flex",
+      "parent": "torso"
+    },
+    {
+      "body": "battery-pack",
+      "parent": "torso"
+    },
+    {
+      "body": "qi-receiver",
+      "parent": "torso"
+    }
+  ],
+  "body_bindings": {
+    "head": "head",
+    "neck": "neck",
+    "left-hand": "left-hand",
+    "left-forearm": "left-forearm",
+    "left-upper-arm": "left-upper-arm",
+    "right-hand": "right-hand",
+    "right-forearm": "right-forearm",
+    "right-upper-arm": "right-upper-arm",
+    "torso": "torso",
+    "left-foot": "left-foot",
+    "left-shin": "left-shin",
+    "left-thigh": "left-thigh",
+    "right-foot": "right-foot",
+    "right-shin": "right-shin",
+    "right-thigh": "right-thigh",
+    "pelvis": "pelvis"
+  },
+  "joint_bindings": {
+    "waist": [
+      "waist-yaw",
+      "waist-bend"
+    ],
+    "head-joint": [
+      "head-joint"
+    ],
+    "neck-base": [
+      "neck-base"
+    ],
+    "left-wrist": [
+      "left-wrist"
+    ],
+    "left-elbow": [
+      "left-elbow"
+    ],
+    "left-shoulder": [
+      "left-shoulder-x",
+      "left-shoulder-y",
+      "left-shoulder-z"
+    ],
+    "right-wrist": [
+      "right-wrist"
+    ],
+    "right-elbow": [
+      "right-elbow"
+    ],
+    "right-shoulder": [
+      "right-shoulder-x",
+      "right-shoulder-y",
+      "right-shoulder-z"
+    ],
+    "left-ankle": [
+      "left-ankle"
+    ],
+    "left-knee": [
+      "left-knee"
+    ],
+    "left-hip": [
+      "left-hip"
+    ],
+    "right-ankle": [
+      "right-ankle"
+    ],
+    "right-knee": [
+      "right-knee"
+    ],
+    "right-hip": [
+      "right-hip"
+    ]
+  },
+  "asset_hashes": {
+    "assets/textile-band.obj": "4c49d26d781dd1d9c95cd46ce57adac559d641c4bc2b4e271b776c88fd7f6390",
+    "assets/left-strap.obj": "974360468b7cfc2297e975eb8a0932928345c75f7982ddb534554eb57f3466f0",
+    "assets/left-strap-front.obj": "8a56dd7d3879a13c58e2695d873b34681763da8f915153aa99a3bfa7a67b9a02",
+    "assets/left-strap-back.obj": "8a56dd7d3879a13c58e2695d873b34681763da8f915153aa99a3bfa7a67b9a02",
+    "assets/right-strap.obj": "5edfdbaad996757334269f7c8953819820708b40fca43459d9e40114b3231261",
+    "assets/right-strap-front.obj": "53b63f4d5d2944f65837078708ef6dd802c000d3d44f66eed8f39b277532078f",
+    "assets/right-strap-back.obj": "53b63f4d5d2944f65837078708ef6dd802c000d3d44f66eed8f39b277532078f",
+    "assets/left-pocket.obj": "96b904252ff0cdc915ee3bef9bfbc0f558980d940a4f30ff1fa948ffd3428e94",
+    "assets/left-spreader.obj": "8a18738a30d89ddaf4e4d847669aa1e27af4f78b4e5cc0fb83835855cce4a0f0",
+    "assets/left-tec.obj": "8b19c26b39f48ae9e2cc1c064fbf96a1e32fc94d074d9f0b3d98b1c04c9fac4b",
+    "assets/left-pcm.obj": "1de3e1c29026fedfde7de92e5de4054d5b7795cc1883b6090b980f2ff019b3be",
+    "assets/left-sink.obj": "66716191a5daa4154f0a109ec2e6c2bb12f2627b3944e233552494f477d04b9e",
+    "assets/left-fin-1.obj": "d07f7467dd1633f633f2c5514323170e2bc33791cdc8afd9f68c2713086077c7",
+    "assets/left-fin-2.obj": "765e59e92974c6920bd9beb822658de70ebfc1249e56da08aef71c6b9aef9247",
+    "assets/left-fin-3.obj": "d07f7467dd1633f633f2c5514323170e2bc33791cdc8afd9f68c2713086077c7",
+    "assets/left-fin-4.obj": "d07f7467dd1633f633f2c5514323170e2bc33791cdc8afd9f68c2713086077c7",
+    "assets/left-fin-5.obj": "765e59e92974c6920bd9beb822658de70ebfc1249e56da08aef71c6b9aef9247",
+    "assets/left-fin-6.obj": "d07f7467dd1633f633f2c5514323170e2bc33791cdc8afd9f68c2713086077c7",
+    "assets/left-fin-7.obj": "3f0aa6cd0956ab50537968ff0190c2e5d0abd57aeb878093d151b27592da96fd",
+    "assets/right-pocket.obj": "8bf7ca63617a0030a5978db72193c3300c197a0a14893a5da76a31c202430118",
+    "assets/right-spreader.obj": "8a18738a30d89ddaf4e4d847669aa1e27af4f78b4e5cc0fb83835855cce4a0f0",
+    "assets/right-tec.obj": "5aba5dad4b2e67ccc4a6536e22e3c254aa0b51be5154171bffad839ee57ca4dc",
+    "assets/right-pcm.obj": "1de3e1c29026fedfde7de92e5de4054d5b7795cc1883b6090b980f2ff019b3be",
+    "assets/right-sink.obj": "66716191a5daa4154f0a109ec2e6c2bb12f2627b3944e233552494f477d04b9e",
+    "assets/right-fin-1.obj": "d7d8407613c731dca1c9580c3289095299f4169261d9d3335d8084605e47b3aa",
+    "assets/right-fin-2.obj": "d07f7467dd1633f633f2c5514323170e2bc33791cdc8afd9f68c2713086077c7",
+    "assets/right-fin-3.obj": "896dadb2375e38b032dfde346b7d808ee8ff9f42d11dc73fb1c71f48b00ca386",
+    "assets/right-fin-4.obj": "d07f7467dd1633f633f2c5514323170e2bc33791cdc8afd9f68c2713086077c7",
+    "assets/right-fin-5.obj": "d07f7467dd1633f633f2c5514323170e2bc33791cdc8afd9f68c2713086077c7",
+    "assets/right-fin-6.obj": "896dadb2375e38b032dfde346b7d808ee8ff9f42d11dc73fb1c71f48b00ca386",
+    "assets/right-fin-7.obj": "d07f7467dd1633f633f2c5514323170e2bc33791cdc8afd9f68c2713086077c7",
+    "assets/tec-driver.obj": "f6bc86472f16fdb98c807bf8f407aee6898a16d147102cd5307c9ec430984cbb",
+    "assets/controller-flex.obj": "4d35ec33738c6fe6fc128cb313c2d50bb8b15efdf4083a3c8f7a5e002c7b1328",
+    "assets/controller-cover.obj": "05d29d065cd941046c03f90de7d2c701d6a8e7baba9316bf364ad91b634ea8a3",
+    "assets/local-button.obj": "858cbf8ae6e574064fd01c3d1e940ad9cbf93b68ee3baeeb30606e836b95cb79",
+    "assets/skin-sensor.obj": "1a9310d0d86acf25b3a3577d3438e5bca3e658a638e5f75a12ad602e4c487316",
+    "assets/ambient-sensor.obj": "e64b3dbff84adb0d3bd3a7e34cef472344586fe145e81470b5659a2096be038d",
+    "assets/power-flex.obj": "535773a62617f417201dab5ed7e1f3fca171753797a3f8a0ec98b9c49b574cb1",
+    "assets/battery-pack.obj": "e12576bdeafa860c987b8b4b462ca6f0288346016aa449e90cf04758a8eadb0c",
+    "assets/qi-receiver.obj": "c4356210919008849fab3b55e6160231723337fe53f739afc0cd0b20c0cb9b75"
+  },
+  "human": {
+    "file": "human.json",
+    "sha256": "02d89270c72a842327778b92172ee7666debc780f86d1553052bedb2bee6bd97",
+    "participant_id": "wearer-1"
+  }
+}

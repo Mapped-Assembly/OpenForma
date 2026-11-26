@@ -1,0 +1,10 @@
+{
+  "native_device_solids": 40,
+  "bom_covers_device_solids": true,
+  "additional_internal_layers": 3,
+  "net_count": 10,
+  "external_display_branches": 23,
+  "internal_pcb_wires": 0,
+  "physical_wire_routes_verified": false,
+  "electrical_source_sha256": "e05bf9535a7b2b652406a9e4020c7beff2e63ea4c3a61e61214a1cbc0a250da9"
+}

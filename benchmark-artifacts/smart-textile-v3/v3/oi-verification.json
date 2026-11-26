@@ -1,0 +1,8 @@
+{
+  "status": "pass",
+  "instances": 59,
+  "tracks": 59,
+  "keys": 6962,
+  "source_trace_sha256": "38a7b829676b0154768a53b34ce6ebc90ebe944358e2ad1491ff3da0164b09ed",
+  "scope": "Native OI composition, validation and hydration; review keyframes are sampled executed poses. OI may interpolate between keys; the GIF does not."
+}

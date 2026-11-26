@@ -1,0 +1,18 @@
+{
+  "scope": "Evidence for CAID Form issue 283; not hardware release approval",
+  "closed": [
+    {"gap":"No native SystemArchitecture evidence", "resolution":"Authored a valid recursive object tree; pinned local schema validation and architecture usability pass."},
+    {"gap":"No check against reported integer children", "resolution":"Negative fixture reproduces all ten model_type error locations under the current OpenForma schema. No automatic repair or original CAID deployment result claimed."},
+    {"gap":"No exact pin-level electrical diagram", "resolution":"Existing native schematic function now supports ElectricalIR and emits all 33 endpoints on ten named nets without coalescing independent connections."}
+  ],
+  "blocked": [
+    {"gap":"Manufacturable circuit and PCB", "reason":"Module interfaces are logical. MCU package mapping, sensor part/address choices, I2C pull-ups, decoupling, charger/protection/converter and TEC-driver component circuits are not selected.", "needed":"Selected parts and datasheets, package pin mappings, component-level nets and PCB constraints."},
+    {"gap":"Thin-film battery / 1 A feasibility", "reason":"No battery part, peak current rating, energy capacity, converter efficiency or full simultaneous demand. Requirement remains unchanged.", "needed":"Battery and converter datasheets plus duty cycle and runtime target. No feasibility pass can be assigned."},
+    {"gap":"TEC / PCM temperature feedback", "reason":"Native thermal solver does not provide coupled transient TEC/PCM behavior; selected TEC curves, PCM enthalpy data and interface conductance are absent.", "needed":"Pinned material and component data plus a supported coupled thermal adapter; no replacement runtime or synthetic cooling results added."},
+    {"gap":"Cloth deformation", "reason":"The executed model uses rigid attached garment geometry. Material stiffness, mesh discretization and soft-contact validation are absent.", "needed":"Material data and a validated deformable representation within the existing MuJoCo adapter."},
+    {"gap":"Firmware / BLE / Qi execution", "reason":"Button contact toggles a virtual request; there is no deployed MCU firmware, radio or charging model.", "needed":"Selected hardware target and firmware build/integration evidence."},
+    {"gap":"Manufactured wire harness", "reason":"Existing routes are exploded-view illustrations and terminate at module reference positions.", "needed":"Connector selection, pin positions, gauge/current rating, insulation, cut length, bend radius and strain relief."}
+  ],
+  "requirements_changed": false,
+  "original_repository_fix_claimed": false
+}
