@@ -14,11 +14,13 @@ from forma_core.domains.base import DomainDocument, DomainModel, Text, unique
 
 EvidenceBasis = Literal["specified", "measured", "derived", "assumed", "illustrative", "unknown"]
 QuantityKind = Literal[
-    "temperature", "temperature_difference", "heat_rate", "energy",
+    "temperature", "temperature_difference", "heat_rate", "energy", "mass", "specific_heat",
     "resistance", "conductance", "capacity", "conductivity", "area",
     "heat_flux", "convection_coefficient", "emissivity",
 ]
 UNITS: dict[str, frozenset[str]] = {
+    "mass": frozenset({"g", "kg"}),
+    "specific_heat": frozenset({"J/(g*K)", "J/(kg*K)"}),
     "temperature": frozenset({"K", "degC"}),
     "temperature_difference": frozenset({"K", "delta_degC"}),
     "heat_rate": frozenset({"W", "kW"}),
@@ -106,7 +108,7 @@ class ThermalQuantity(DomainModel):
             kelvin = self.value if self.unit == "K" else self.value + 273.15
             if kelvin < 0:
                 raise ValueError("Temperature below absolute zero.")
-        if self.kind in {"resistance", "conductance", "capacity", "conductivity",
+        if self.kind in {"mass", "specific_heat", "resistance", "conductance", "capacity", "conductivity",
                          "area", "convection_coefficient"} and self.value <= 0:
             raise ValueError(f"'{self.kind}' must be positive.")
         if self.kind in {"heat_rate", "energy", "heat_flux"} and self.value < 0:
@@ -130,6 +132,8 @@ class ThermalNode(DomainModel):
     kind: Literal["zone", "body", "boundary"]
     ports: list[ThermalPort] = Field(default_factory=lambda: [ThermalPort(port_id="heat")])
     capacity: ThermalQuantity | None = None
+    mass: ThermalQuantity | None = Field(None, exclude_if=lambda v: v is None)
+    specific_heat: ThermalQuantity | None = Field(None, exclude_if=lambda v: v is None)
     initial_temperature: ThermalQuantity | None = None
     target_temperature: ThermalQuantity | None = None
     maximum_temperature: ThermalQuantity | None = None
@@ -142,6 +146,12 @@ class ThermalNode(DomainModel):
         unique([p.port_id for p in self.ports], "thermal port ID")
         if self.capacity is not None and self.capacity.kind != "capacity":
             raise ValueError("Thermal node capacity must use J/K.")
+        if self.mass is not None and self.mass.kind != "mass":
+            raise ValueError("Thermal node mass requires a mass quantity.")
+        if self.specific_heat is not None and self.specific_heat.kind != "specific_heat":
+            raise ValueError("Thermal node specific heat requires a specific_heat quantity.")
+        if self.capacity is not None and (self.mass is not None or self.specific_heat is not None):
+            raise ValueError("Declare capacity or mass/specific_heat, not competing capacity definitions.")
         for label, quantity in (
             ("initial", self.initial_temperature),
             ("target", self.target_temperature),
@@ -316,7 +326,7 @@ class ThermalIR(DomainDocument):
         claims = [item.claim for item in self.edges + self.boundaries + self.loads + self.properties]
         quantities = (
             [q for node in self.nodes for q in (
-                node.capacity, node.initial_temperature, node.target_temperature,
+                node.capacity, node.mass, node.specific_heat, node.initial_temperature, node.target_temperature,
                 node.maximum_temperature) if q is not None] +
             [q for edge in self.edges for q in (
                 edge.resistance, edge.conductance) if q is not None] +

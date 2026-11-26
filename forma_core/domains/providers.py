@@ -8,11 +8,14 @@ discovery, credential handling or external implementation is loaded here.
 from __future__ import annotations
 
 from copy import deepcopy
-from typing import Annotated, Any, Literal, Protocol
+from typing import Annotated, Any, Literal, Protocol, TYPE_CHECKING
 
 from pydantic import Field, model_validator
 
 from .base import Domain, DomainModel, Finding, Text, unique
+
+if TYPE_CHECKING:
+    from .evaluation import EvaluationRequest, EvaluationReceipt
 
 Revision = Annotated[int, Field(ge=1)] | Text
 Digest = Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
@@ -106,6 +109,13 @@ class ArtifactReference(ArtifactIdentity):
         if self.provider_id == NATIVE_PROVIDER and self.revision is None:
             raise ValueError("Native artifact references require a revision.")
         return self
+
+
+class ArtifactInput(DomainModel):
+    """A standalone provider-owned payload paired with its exact artifact reference."""
+
+    reference: ArtifactReference
+    artifact: dict[str, Any]
 
 
 class DomainProvider(Protocol):
@@ -212,3 +222,58 @@ class DomainRegistry:
         provider = self.provider(reference.domain)
         assert provider is not None
         return provider.validate(deepcopy(payload), reference.model_copy(deep=True))
+
+    def evaluator_catalog(self) -> dict[str, list[dict[str, Any]]]:
+        """Discover optional named evaluators from the already registered domain providers."""
+        from .evaluation import EvaluationSpec
+        catalog = {}
+        for domain in self._metadata:
+            provider = self.provider(domain)
+            discover = getattr(provider, "evaluation_specs", None)
+            if callable(discover) and self._metadata[domain].evaluation:
+                specs = [EvaluationSpec.model_validate(s) for s in discover()]
+                unique([s.evaluator_id + ":" + s.version for s in specs], "named evaluator")
+                catalog[domain] = [s.model_dump(mode="json") for s in specs]
+        return catalog
+
+    def evaluate_named(self, payload: dict[str, Any], reference: ArtifactReference,
+                       request: EvaluationRequest) -> EvaluationReceipt:
+        """Check exact artifact/model pins before invoking a provider-owned evaluator."""
+        from .base import fingerprint
+        from .evaluation import EvaluationReceipt, EvaluationRequest
+        request = EvaluationRequest.model_validate(request.model_dump(mode="json"))
+        receipt = EvaluationReceipt(request=request, artifact=reference, status="unknown",
+            input_digest=fingerprint({"artifact": payload, "reference": reference.model_dump(mode="json"),
+                                      "request": request.model_dump(mode="json")}))
+        if request.artifact_id != reference.artifact_id or fingerprint(payload) != reference.sha256:
+            receipt.status, receipt.message = "fail", "Artifact identity or content digest mismatch."
+            return receipt
+        errors = self.reference_errors(reference)
+        if errors:
+            receipt.message = "; ".join(e.message for e in errors)
+            return receipt
+        provider = self.provider(reference.domain)
+        assert provider is not None
+        identity = provider.describe(deepcopy(payload), reference.model_copy(deep=True))
+        if any(getattr(identity, key) != getattr(reference, key) for key in
+               ("artifact_id", "domain", "schema_id", "schema_version", "revision")):
+            receipt.status, receipt.message = "fail", "Artifact revision/schema identity mismatch."
+            return receipt
+        catalog = self.evaluator_catalog().get(reference.domain, [])
+        if not any(s["evaluator_id"] == request.evaluator_id and s["version"] == request.evaluator_version for s in catalog):
+            receipt.status, receipt.message = "unsupported", "Named evaluator/version is not registered for this domain."
+            return receipt
+        method = getattr(provider, "evaluate_named", None)
+        if not callable(method):
+            receipt.message = "Provider has no named evaluation implementation."
+            return receipt
+        try:
+            result = method(deepcopy(payload), reference.model_copy(deep=True), request.model_copy(deep=True))
+            if set(result) - {"status", "outputs", "raw", "message"}:
+                raise ValueError("Evaluator attempted to replace authoritative invocation metadata.")
+            return EvaluationReceipt(**{**receipt.model_dump(mode="json"), **result})
+        except ValueError as exc:
+            receipt.status, receipt.message = "fail", str(exc)
+        except Exception as exc:
+            receipt.message = f"Evaluator unavailable: {type(exc).__name__}"
+        return receipt

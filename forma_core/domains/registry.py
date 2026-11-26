@@ -173,8 +173,8 @@ class NativeProvider:
             return [check_reaction_balance(document, item).model_dump(mode="json")
                     for item in document.reactions] + [{
                         "status": "unsupported", "capability": "quantitative_stoichiometry",
-                        "message": "Element/charge balance is supported; molar masses, limiting reagent, "
-                                   "theoretical yield, kinetics and experimental yield are not evaluated.",
+                        "message": "This automatic call checks equation balance. Quantitative bounds require the named "
+                                   "stoichiometric-bound evaluator and explicit inventory/property inputs.",
                     }]
         if reference.domain == "process":
             from forma_core.processes.validation import evaluate_balance
@@ -189,6 +189,16 @@ class NativeProvider:
             return [evaluate_case(document, item).model_dump(mode="json") for item in document.cases] or [{
                 "status": "unknown", "message": "No supported thermal evaluation case was supplied."}]
         return []
+
+    def evaluation_specs(self) -> list[dict[str, Any]]:
+        """Discover named models without changing historical domain metadata hashes."""
+        from .native_evaluation import evaluation_specs
+        return [spec.model_dump(mode="json") for spec in evaluation_specs(self.metadata.domain)]
+
+    def evaluate_named(self, payload: dict[str, Any], reference: ArtifactReference, request: Any) -> dict[str, Any]:
+        """Delegate named numerical requests to the owning scientific model."""
+        from .native_evaluation import evaluate_named
+        return evaluate_named(payload, reference, request)
 
     def validate(self, payload: dict[str, Any], reference: ArtifactReference) -> list[Finding]:
         """Run the existing local rules without composition or external providers."""

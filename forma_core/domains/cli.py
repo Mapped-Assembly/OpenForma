@@ -41,7 +41,7 @@ def register_parser(subparsers: argparse._SubParsersAction) -> None:
     """Register the additive domains command while leaving legacy commands compatible."""
     parser = subparsers.add_parser("domains", help="Plan, author and compose independent domain IRs.")
     parser.add_argument("operation", choices=["plan", "generate", "compose", "registry", "validate", "validate-domain", "schema",
-                                              "import-hardware", "export-hardware", "bindings"])
+                                              "import-hardware", "export-hardware", "bindings", "experiment"])
     parser.add_argument("input", help="Input JSON path, or - for stdin.")
     parser.add_argument("--output", help="Output JSON path; product bundles retain immutable revisions.")
     parser.add_argument("--expected-sha256", help="Required current content digest when replacing a product bundle.")
