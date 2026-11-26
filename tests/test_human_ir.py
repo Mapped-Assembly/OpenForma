@@ -97,5 +97,51 @@ class HumanIRTests(unittest.TestCase):
                 self.assertTrue(validate_domain(data))
 
 
+    def test_public_generation_and_revision_pins(self) -> None:
+        """Run both authored examples through the existing engineering control plane."""
+        from forma_core.domains.base import fingerprint
+        from forma_core.domains.generation import EngineeringRequest, EngineeringResult, generate_engineering
+        from forma_core.domains.selection import SelectionDecision, SelectionProject, prepare_selection
+        from forma_core.domains.composition import validate_product
+
+        for name in ("human-wearable.json", "human-workcell.json"):
+            with self.subTest(name=name):
+                raw = fixture(name)
+                product_id = raw["artifact_id"]
+                raw["artifact_id"] = product_id + ".human"
+                request = EngineeringRequest(
+                    product_id=product_id,
+                    brief="Represent the declared physical human participant.",
+                    contexts={"human": {
+                        "scope": "conceptual representation",
+                        "participant_requirements": ["human participant"],
+                        "evidence_requirements": ["no fabricated measurements"],
+                    }},
+                    designs={"human": raw},
+                    unknowns=["Human performance is not measured."],
+                )
+                selection = prepare_selection(SelectionProject(
+                    product_id=request.product_id, brief=request.brief, contexts=request.contexts))
+                request.decision = SelectionDecision(
+                    request_sha256=selection["request_sha256"],
+                    registry_sha256=selection["registry_sha256"],
+                    scope={"physical_structure": False, "mechanical_motion": False,
+                           "wiring": False, "electrical_control": False,
+                           "fluid_network": False, "biological_experiment": False,
+                           "domains": ["human"]},
+                    reasons={"human": "Explicit human representation."},
+                )
+                result = generate_engineering(request)
+                self.assertTrue(result.validation["is_valid"], result.model_dump_json())
+                self.assertEqual(result.status, "partial")
+                self.assertEqual([t.domain for t in result.product.plan.tasks], ["human"])
+                ref, = result.product.manifest.artifacts
+                self.assertEqual(ref.domain, "human")
+                self.assertEqual(ref.sha256, fingerprint(result.product.artifacts[ref.artifact_id]))
+                self.assertEqual(result.evaluations[0]["results"][0]["status"], "unsupported")
+                self.assertTrue(validate_product(result.product).is_valid)
+                self.assertEqual(EngineeringResult.model_validate_json(result.model_dump_json()), result)
+
+
 if __name__ == "__main__":
     unittest.main()
