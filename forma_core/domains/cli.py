@@ -28,6 +28,8 @@ def run(args: argparse.Namespace) -> int:
         return 0 if result["status"] == "awaiting_agent" or result["result"]["status"] == "succeeded" else 1
     if result.get("format") == "forma.engineering-result":
         return 0 if result["status"] == "succeeded" else 1
+    if args.operation == "process-runtime" and payload.get("action") == "run":
+        return 1 if result["runtime"]["status"] in {"failed", "cancelled"} else 0
     if args.operation == "generate":
         return 0 if validate_product(ProductBundle.model_validate(result)).is_valid else 1
     if args.operation.startswith("validate") or (args.operation == "bindings" and payload.get("action") in {"validate", "validate-product"}):
@@ -41,7 +43,7 @@ def register_parser(subparsers: argparse._SubParsersAction) -> None:
     """Register the additive domains command while leaving legacy commands compatible."""
     parser = subparsers.add_parser("domains", help="Plan, author and compose independent domain IRs.")
     parser.add_argument("operation", choices=["plan", "generate", "compose", "registry", "validate", "validate-domain", "schema",
-                                              "import-hardware", "export-hardware", "bindings", "experiment"])
+                                              "import-hardware", "export-hardware", "bindings", "experiment", "process-runtime"])
     parser.add_argument("input", help="Input JSON path, or - for stdin.")
     parser.add_argument("--output", help="Output JSON path; product bundles retain immutable revisions.")
     parser.add_argument("--expected-sha256", help="Required current content digest when replacing a product bundle.")
