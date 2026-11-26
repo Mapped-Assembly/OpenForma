@@ -1,0 +1,1337 @@
+{
+  "format": "forma.product-domains",
+  "manifest": {
+    "schema_version": "1.0",
+    "product_id": "acid-bicarbonate-workcell-v1",
+    "artifacts": [
+      {
+        "artifact_id": "kitchen-open-batch",
+        "domain": "process",
+        "schema_id": "openforma.process",
+        "schema_version": "1.1",
+        "revision": 2,
+        "provider_id": "openforma.native",
+        "provider_version": "1.0",
+        "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0",
+        "locator": null,
+        "provenance": {}
+      },
+      {
+        "artifact_id": "kitchen-acid-bicarbonate",
+        "domain": "chemical",
+        "schema_id": "openforma.chemical",
+        "schema_version": "1.0",
+        "revision": 1,
+        "provider_id": "openforma.native",
+        "provider_version": "1.0",
+        "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854",
+        "locator": null,
+        "provenance": {}
+      },
+      {
+        "artifact_id": "acid-bicarbonate-workcell",
+        "domain": "mechanical",
+        "schema_id": "openforma.mechanical",
+        "schema_version": "1.0",
+        "revision": 1,
+        "provider_id": "openforma.native",
+        "provider_version": "1.0",
+        "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850",
+        "locator": null,
+        "provenance": {}
+      }
+    ],
+    "links": [
+      {
+        "link_id": "solid-feed-soda",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "solid-feed",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "soda",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "solid-feed-cup",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "solid-feed",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "cup",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "solid-feed-scale",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "solid-feed",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "scale",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "vinegar-feed-vinegar",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "vinegar-feed",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "vinegar",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "vinegar-feed-measure",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "vinegar-feed",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "measure",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "react-reactor",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "react",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "reactor",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "react-tray",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "react",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "tray",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "react-spoon",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "react",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "spoon",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "gas-output-scale",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "gas-output",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "scale",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "gas-output-phone",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "gas-output",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "phone",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "residue-output-residue",
+        "kind": "uses_equipment",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "residue-output",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "acid-bicarbonate-workcell",
+          "revision": 1,
+          "object_id": "residue",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "15038818739c5627b246d95e9a5a9177dacae1fd1e092246c310948724717850"
+        },
+        "fact_owners": {},
+        "provenance": {
+          "basis": "specified",
+          "note": "Equipment assignment only; not evidence of physical execution."
+        }
+      },
+      {
+        "link_id": "reaction-model",
+        "kind": "uses_reaction",
+        "source": {
+          "artifact_id": "kitchen-open-batch",
+          "revision": 2,
+          "object_id": "react",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "b33dc65e05f9dea9fb82539f2078e831caf71688ab34ef46161977e6cdfe42b0"
+        },
+        "target": {
+          "artifact_id": "kitchen-acid-bicarbonate",
+          "revision": 1,
+          "object_id": "acid-bicarbonate",
+          "port_id": null,
+          "units": null,
+          "frame": null,
+          "sha256": "ec66bb031d68ea172ee677ed3381485aaf80f5a3505fff33502737f09c35b854"
+        },
+        "fact_owners": {},
+        "provenance": {}
+      }
+    ]
+  },
+  "artifacts": {
+    "kitchen-open-batch": {
+      "artifact_id": "kitchen-open-batch",
+      "revision": 2,
+      "domain": "process",
+      "schema_version": "1.1",
+      "operations": [
+        {
+          "operation_id": "solid-feed",
+          "operation_type": "feed",
+          "capability_version": "conceptual",
+          "ports": [
+            {
+              "port_id": "out",
+              "direction": "out",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "solid"
+            }
+          ],
+          "description": null,
+          "model_fidelity": "conceptual",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "operation_id": "vinegar-feed",
+          "operation_type": "feed",
+          "capability_version": "conceptual",
+          "ports": [
+            {
+              "port_id": "out",
+              "direction": "out",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "aqueous"
+            }
+          ],
+          "description": null,
+          "model_fidelity": "conceptual",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "operation_id": "react",
+          "operation_type": "batch_reaction",
+          "capability_version": "conceptual",
+          "ports": [
+            {
+              "port_id": "solid",
+              "direction": "in",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "solid"
+            },
+            {
+              "port_id": "liquid",
+              "direction": "in",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "aqueous"
+            },
+            {
+              "port_id": "gas",
+              "direction": "out",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "gas"
+            },
+            {
+              "port_id": "residue",
+              "direction": "out",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "aqueous"
+            }
+          ],
+          "description": "Conceptual acid-bicarbonate mixing; duration, conversion and heat remain unknown.",
+          "model_fidelity": "conceptual",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "operation_id": "gas-output",
+          "operation_type": "output",
+          "capability_version": "conceptual",
+          "ports": [
+            {
+              "port_id": "in",
+              "direction": "in",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "gas"
+            }
+          ],
+          "description": null,
+          "model_fidelity": "conceptual",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "operation_id": "residue-output",
+          "operation_type": "output",
+          "capability_version": "conceptual",
+          "ports": [
+            {
+              "port_id": "in",
+              "direction": "in",
+              "kind": "material",
+              "quantity_kind": null,
+              "phase": "aqueous"
+            }
+          ],
+          "description": null,
+          "model_fidelity": "conceptual",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        }
+      ],
+      "streams": [
+        {
+          "stream_id": "solid",
+          "source": {
+            "operation_id": "solid-feed",
+            "port_id": "out"
+          },
+          "target": {
+            "operation_id": "react",
+            "port_id": "solid"
+          },
+          "kind": "material",
+          "quantity": null,
+          "batch_quantity": {
+            "kind": "mass",
+            "value": 2.0,
+            "unit": "g",
+            "claim": {
+              "basis": "specified",
+              "source_ids": [
+                "user-request"
+              ],
+              "rationale": null
+            }
+          },
+          "phase": "solid",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "stream_id": "vinegar",
+          "source": {
+            "operation_id": "vinegar-feed",
+            "port_id": "out"
+          },
+          "target": {
+            "operation_id": "react",
+            "port_id": "liquid"
+          },
+          "kind": "material",
+          "quantity": null,
+          "batch_quantity": {
+            "kind": "volume",
+            "value": 50.0,
+            "unit": "mL",
+            "claim": {
+              "basis": "specified",
+              "source_ids": [
+                "user-request"
+              ],
+              "rationale": null
+            }
+          },
+          "phase": "aqueous",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "stream_id": "gas",
+          "source": {
+            "operation_id": "react",
+            "port_id": "gas"
+          },
+          "target": {
+            "operation_id": "gas-output",
+            "port_id": "in"
+          },
+          "kind": "material",
+          "quantity": null,
+          "phase": "gas",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        },
+        {
+          "stream_id": "residue",
+          "source": {
+            "operation_id": "react",
+            "port_id": "residue"
+          },
+          "target": {
+            "operation_id": "residue-output",
+            "port_id": "in"
+          },
+          "kind": "material",
+          "quantity": null,
+          "phase": "aqueous",
+          "claim": {
+            "basis": "unknown",
+            "source_ids": [],
+            "rationale": null
+          }
+        }
+      ],
+      "balances": [],
+      "steps": [
+        {
+          "step_id": "prepare",
+          "operation_id": "solid-feed",
+          "depends_on": [],
+          "preconditions": [],
+          "description": "Use food-grade baking soda and ordinary food vinegar only. Work in an open, stable bowl of at least 500 mL on a tray; never seal the vessel. Avoid eyes, do not taste the experimental mixture, and keep children/pets away. Gather a scale with 0.01 g resolution, thermometer, 50 mL measuring vessel, small powder cup, spoon and timer. Use the linked MechanicalIR workcell. Verify balance capacity with the complete tray assembly, platform support and 0.01 g resolution; record calibration/uncertainty. The PHONE, stock containers and measuring vessel stay outside the before/after weighing boundary."
+        },
+        {
+          "step_id": "inputs",
+          "operation_id": "vinegar-feed",
+          "depends_on": [
+            "prepare"
+          ],
+          "preconditions": [],
+          "description": "Confirm the vinegar label basis is 5 g acetic acid per 100 mL (or independently establish acid inventory). An unspecified 5% is insufficient. Measure 50 mL vinegar and 2.00 g sodium bicarbonate. Record actual amounts, label photograph and uncertainty. If quantities or basis differ, revise and freeze a new plan BEFORE mixing. The calculation assumes nominal inputs and does not propagate feed uncertainty."
+        },
+        {
+          "step_id": "before",
+          "operation_id": "react",
+          "depends_on": [
+            "inputs"
+          ],
+          "preconditions": [],
+          "description": "Record ambient temperature. Weigh the entire tray, bowl with vinegar, powder cup with bicarbonate, and spoon together; record initial total mass. All these items must remain in the final weighed system."
+        },
+        {
+          "step_id": "mix",
+          "operation_id": "react",
+          "depends_on": [
+            "before"
+          ],
+          "preconditions": [],
+          "description": "Slowly add the powder to the vinegar in the open bowl, keeping the empty cup and spoon on the tray. Stir gently without splashing. Record start time and any spills or losses. Keep the vessel open throughout."
+        },
+        {
+          "step_id": "after",
+          "operation_id": "gas-output",
+          "depends_on": [
+            "mix"
+          ],
+          "preconditions": [],
+          "description": "After visible bubbling subsides, take mass readings one minute apart until two consecutive readings differ by no more than 0.02 g, or stop at 15 minutes and mark incomplete. Record final total mass, elapsed time and a photograph of the final scale reading. A stable mass does not prove chemical completion."
+        },
+        {
+          "step_id": "record",
+          "operation_id": "residue-output",
+          "depends_on": [
+            "after"
+          ],
+          "preconditions": [],
+          "description": "Submit the two total-mass readings, instrument resolution and defensible uncertainty bounds, temperature, evidence and deviations. Do not confirm proxy assumptions after a spill. Retain residue until readings are recorded; clean the ordinary food-ingredient mixture with water. Repeat with fresh independent batches to assess repeatability."
+        }
+      ],
+      "scenarios": [],
+      "evidence": [
+        {
+          "source_id": "user-request",
+          "basis": "specified",
+          "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+          "publisher": "User",
+          "locator": "engineering-request.brief",
+          "published_at": null,
+          "retrieved_at": "2026-11-04T00:00:00Z",
+          "effective_at": null,
+          "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+          "applicability": null,
+          "uncertainty": null,
+          "rationale": null
+        }
+      ]
+    },
+    "kitchen-acid-bicarbonate": {
+      "artifact_id": "kitchen-acid-bicarbonate",
+      "revision": 1,
+      "domain": "chemical",
+      "schema_version": "1.0",
+      "species": [
+        {
+          "species_id": "bicarbonate",
+          "name": "sodium bicarbonate",
+          "formula": "NaHCO3",
+          "charge": 0,
+          "phase": "solid",
+          "registry_id": null,
+          "claim": {
+            "basis": "assumed",
+            "source_ids": [],
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        },
+        {
+          "species_id": "acid",
+          "name": "acetic acid",
+          "formula": "C2H4O2",
+          "charge": 0,
+          "phase": "aqueous",
+          "registry_id": null,
+          "claim": {
+            "basis": "assumed",
+            "source_ids": [],
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        },
+        {
+          "species_id": "acetate",
+          "name": "sodium acetate",
+          "formula": "C2H3NaO2",
+          "charge": 0,
+          "phase": "aqueous",
+          "registry_id": null,
+          "claim": {
+            "basis": "assumed",
+            "source_ids": [],
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        },
+        {
+          "species_id": "water",
+          "name": "water",
+          "formula": "H2O",
+          "charge": 0,
+          "phase": "liquid",
+          "registry_id": null,
+          "claim": {
+            "basis": "assumed",
+            "source_ids": [],
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        },
+        {
+          "species_id": "co2",
+          "name": "carbon dioxide",
+          "formula": "CO2",
+          "charge": 0,
+          "phase": "gas",
+          "registry_id": null,
+          "claim": {
+            "basis": "assumed",
+            "source_ids": [],
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        }
+      ],
+      "mixtures": [],
+      "reactions": [
+        {
+          "reaction_id": "acid-bicarbonate",
+          "reactants": [
+            {
+              "species_id": "bicarbonate",
+              "coefficient": "1"
+            },
+            {
+              "species_id": "acid",
+              "coefficient": "1"
+            }
+          ],
+          "products": [
+            {
+              "species_id": "acetate",
+              "coefficient": "1"
+            },
+            {
+              "species_id": "water",
+              "coefficient": "1"
+            },
+            {
+              "species_id": "co2",
+              "coefficient": "1"
+            }
+          ],
+          "reversible": false,
+          "catalyst_species_ids": [],
+          "condition_ids": [],
+          "model_ids": [],
+          "claim": {
+            "basis": "assumed",
+            "source_ids": [],
+            "rationale": "Conceptual neutral species and ideal acid-bicarbonate reaction; not experimental evidence."
+          }
+        }
+      ],
+      "conditions": [],
+      "models": [],
+      "evidence": [
+        {
+          "source_id": "user-request",
+          "basis": "specified",
+          "title": "Design a chemical system using 2 g of sodium bicarbonate and 50 mL of 5% vinegar to generate carbon dioxide. Represent the reactants, products, process operations, material quantities, and expected outcomes. Validate conservation and report unsupported calculations explicitly.",
+          "publisher": "User",
+          "locator": "engineering-request.brief",
+          "url": null,
+          "published_at": null,
+          "retrieved_at": "2026-11-04T00:00:00Z",
+          "effective_at": null,
+          "undated_reason": "User supplied an undated engineering objective; not an experimental record.",
+          "applicability": null,
+          "uncertainty": null,
+          "rationale": null
+        }
+      ]
+    },
+    "acid-bicarbonate-workcell": {
+      "artifact_id": "acid-bicarbonate-workcell",
+      "revision": 1,
+      "domain": "mechanical",
+      "schema_version": "1.0",
+      "parts": [
+        {
+          "part_definition_id": "bench",
+          "dimensions_mm": {
+            "width": 800.0,
+            "depth": 500.0,
+            "height": 25.0
+          },
+          "material": "sealed worktop",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "scale",
+          "dimensions_mm": {
+            "width": 280.0,
+            "depth": 280.0,
+            "height": 50.0
+          },
+          "material": "commercial instrument; capacity and calibration to verify",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "tray",
+          "dimensions_mm": {
+            "width": 240.0,
+            "depth": 240.0,
+            "height": 20.0
+          },
+          "material": "lightweight polypropylene; assumed total tray mass below scale capacity",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "reactor",
+          "dimensions_mm": {
+            "width": 120.0,
+            "depth": 120.0,
+            "height": 80.0
+          },
+          "material": "glass; open top; dimensions are envelopes",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "cup",
+          "dimensions_mm": {
+            "width": 40.0,
+            "depth": 40.0,
+            "height": 30.0
+          },
+          "material": "polypropylene",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "spoon",
+          "dimensions_mm": {
+            "width": 140.0,
+            "depth": 20.0,
+            "height": 10.0
+          },
+          "material": "stainless steel",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "vinegar",
+          "dimensions_mm": {
+            "width": 70.0,
+            "depth": 70.0,
+            "height": 180.0
+          },
+          "material": "original food vinegar container",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "soda",
+          "dimensions_mm": {
+            "width": 80.0,
+            "depth": 60.0,
+            "height": 130.0
+          },
+          "material": "original food baking soda container",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "measure",
+          "dimensions_mm": {
+            "width": 60.0,
+            "depth": 60.0,
+            "height": 90.0
+          },
+          "material": "graduated polypropylene; precision to establish",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "thermo",
+          "dimensions_mm": {
+            "width": 35.0,
+            "depth": 120.0,
+            "height": 20.0
+          },
+          "material": "commercial instrument; calibration unknown",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "phone",
+          "dimensions_mm": {
+            "width": 80.0,
+            "depth": 155.0,
+            "height": 15.0
+          },
+          "material": "existing phone; outside wet zone",
+          "geometry_refs": []
+        },
+        {
+          "part_definition_id": "residue",
+          "dimensions_mm": {
+            "width": 90.0,
+            "depth": 90.0,
+            "height": 100.0
+          },
+          "material": "labelled open container; transfer only after final reading",
+          "geometry_refs": []
+        }
+      ],
+      "components": [
+        {
+          "object_id": "bench",
+          "ref_des": "BENCH",
+          "part_definition_id": "bench"
+        },
+        {
+          "object_id": "scale",
+          "ref_des": "SCALE",
+          "part_definition_id": "scale"
+        },
+        {
+          "object_id": "tray",
+          "ref_des": "TRAY",
+          "part_definition_id": "tray"
+        },
+        {
+          "object_id": "reactor",
+          "ref_des": "REACTOR",
+          "part_definition_id": "reactor"
+        },
+        {
+          "object_id": "cup",
+          "ref_des": "CUP",
+          "part_definition_id": "cup"
+        },
+        {
+          "object_id": "spoon",
+          "ref_des": "SPOON",
+          "part_definition_id": "spoon"
+        },
+        {
+          "object_id": "vinegar",
+          "ref_des": "VINEGAR",
+          "part_definition_id": "vinegar"
+        },
+        {
+          "object_id": "soda",
+          "ref_des": "SODA",
+          "part_definition_id": "soda"
+        },
+        {
+          "object_id": "measure",
+          "ref_des": "MEASURE",
+          "part_definition_id": "measure"
+        },
+        {
+          "object_id": "thermo",
+          "ref_des": "THERMO",
+          "part_definition_id": "thermo"
+        },
+        {
+          "object_id": "phone",
+          "ref_des": "PHONE",
+          "part_definition_id": "phone"
+        },
+        {
+          "object_id": "residue",
+          "ref_des": "RESIDUE",
+          "part_definition_id": "residue"
+        }
+      ],
+      "mechanical": {
+        "cad_operations": [],
+        "physical_form": "Open manual benchtop workcell, 800 x 500 mm",
+        "enclosure_type": "Off-the-shelf",
+        "mounting_guidance": "Level the balance on the work surface. Center the lightweight tray on a compatible platform; no contact with the bench or nearby objects. Keep all initially weighed tools on the tray for the final reading.",
+        "fabrication_details": [
+          "All dimensions are nominal layout envelopes; confirm selected equipment and balance platform before use.",
+          "Balance resolution 0.01 g is required; resolution is not accuracy. Establish uncertainty and total-load capacity.",
+          "Tray is above the balance and entirely supported by it; it catches droplets but must not bridge to the worktop.",
+          "Open reaction vessel at least 500 mL for nominal 50 mL vinegar; never cap or attach a closed gas collector.",
+          "Do not add pumps or tubing to the weighed boundary for this version."
+        ],
+        "fabrication_cost_estimate_usd": 0.0,
+        "cad_sources": [],
+        "manufacturability_rating": "Easy",
+        "render_dimensions": {
+          "x_mm": 800.0,
+          "y_mm": 500.0,
+          "z_mm": 300.0
+        },
+        "component_placements": [
+          {
+            "ref_des": "BENCH",
+            "label": "Work surface",
+            "category": null,
+            "layer": "structural",
+            "position": {
+              "x_mm": 0.0,
+              "y_mm": 0.0,
+              "z_mm": -12.5
+            },
+            "size": {
+              "x_mm": 800.0,
+              "y_mm": 500.0,
+              "z_mm": 25.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "SCALE",
+            "label": "Balance: 0.01 g resolution",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": 0.0,
+              "y_mm": 30.0,
+              "z_mm": 25.0
+            },
+            "size": {
+              "x_mm": 280.0,
+              "y_mm": 280.0,
+              "z_mm": 50.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "TRAY",
+            "label": "Retained weighing tray",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": 0.0,
+              "y_mm": 30.0,
+              "z_mm": 60.0
+            },
+            "size": {
+              "x_mm": 240.0,
+              "y_mm": 240.0,
+              "z_mm": 20.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "REACTOR",
+            "label": "Open bowl: at least 500 mL",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": -30.0,
+              "y_mm": 45.0,
+              "z_mm": 110.0
+            },
+            "size": {
+              "x_mm": 120.0,
+              "y_mm": 120.0,
+              "z_mm": 80.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "CUP",
+            "label": "Powder cup: stays on tray",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": 65.0,
+              "y_mm": 80.0,
+              "z_mm": 85.0
+            },
+            "size": {
+              "x_mm": 40.0,
+              "y_mm": 40.0,
+              "z_mm": 30.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "SPOON",
+            "label": "Spoon: stays on tray",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": 0.0,
+              "y_mm": -50.0,
+              "z_mm": 75.0
+            },
+            "size": {
+              "x_mm": 140.0,
+              "y_mm": 20.0,
+              "z_mm": 10.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "VINEGAR",
+            "label": "Labelled vinegar feed",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": -290.0,
+              "y_mm": 150.0,
+              "z_mm": 90.0
+            },
+            "size": {
+              "x_mm": 70.0,
+              "y_mm": 70.0,
+              "z_mm": 180.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "SODA",
+            "label": "Bicarbonate feed",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": -290.0,
+              "y_mm": 30.0,
+              "z_mm": 65.0
+            },
+            "size": {
+              "x_mm": 80.0,
+              "y_mm": 60.0,
+              "z_mm": 130.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "MEASURE",
+            "label": "50 mL measuring vessel",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": -290.0,
+              "y_mm": -90.0,
+              "z_mm": 45.0
+            },
+            "size": {
+              "x_mm": 60.0,
+              "y_mm": 60.0,
+              "z_mm": 90.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "THERMO",
+            "label": "Ambient thermometer",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": 220.0,
+              "y_mm": 70.0,
+              "z_mm": 10.0
+            },
+            "size": {
+              "x_mm": 35.0,
+              "y_mm": 120.0,
+              "z_mm": 20.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "PHONE",
+            "label": "Timer / evidence station",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": 290.0,
+              "y_mm": -100.0,
+              "z_mm": 7.5
+            },
+            "size": {
+              "x_mm": 80.0,
+              "y_mm": 155.0,
+              "z_mm": 15.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          },
+          {
+            "ref_des": "RESIDUE",
+            "label": "Post-reading residue station",
+            "category": null,
+            "layer": "misc",
+            "position": {
+              "x_mm": 290.0,
+              "y_mm": 175.0,
+              "z_mm": 50.0
+            },
+            "size": {
+              "x_mm": 90.0,
+              "y_mm": 90.0,
+              "z_mm": 100.0
+            },
+            "orientation_deg": {
+              "x_deg": 0.0,
+              "y_deg": 0.0,
+              "z_deg": 0.0
+            },
+            "mounting_face": null,
+            "notes": "Assumed envelope; not a measured part or fabrication drawing."
+          }
+        ],
+        "spatial_relationships": [
+          {
+            "source_ref_des": "TRAY",
+            "target_ref_des": "SCALE",
+            "relation": "supported-by",
+            "axis": null,
+            "offset_mm": null,
+            "notes": null
+          },
+          {
+            "source_ref_des": "REACTOR",
+            "target_ref_des": "TRAY",
+            "relation": "contained-by",
+            "axis": null,
+            "offset_mm": null,
+            "notes": null
+          },
+          {
+            "source_ref_des": "CUP",
+            "target_ref_des": "TRAY",
+            "relation": "contained-by",
+            "axis": null,
+            "offset_mm": null,
+            "notes": null
+          },
+          {
+            "source_ref_des": "SPOON",
+            "target_ref_des": "TRAY",
+            "relation": "contained-by",
+            "axis": null,
+            "offset_mm": null,
+            "notes": null
+          }
+        ],
+        "motion_intents": [],
+        "mechanism_benchmark": null
+      },
+      "cad_model": null
+    }
+  },
+  "plan": null,
+  "compatibility": null
+}

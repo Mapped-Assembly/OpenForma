@@ -1,0 +1,13 @@
+ref_des,label,width_mm,depth_mm,height_mm,basis
+BENCH,Work surface,800.0,500.0,25.0,assumed layout envelope; supplier and price unverified
+SCALE,Balance: 0.01 g resolution,280.0,280.0,50.0,assumed layout envelope; supplier and price unverified
+TRAY,Retained weighing tray,240.0,240.0,20.0,assumed layout envelope; supplier and price unverified
+REACTOR,Open bowl: at least 500 mL,120.0,120.0,80.0,assumed layout envelope; supplier and price unverified
+CUP,Powder cup: stays on tray,40.0,40.0,30.0,assumed layout envelope; supplier and price unverified
+SPOON,Spoon: stays on tray,140.0,20.0,10.0,assumed layout envelope; supplier and price unverified
+VINEGAR,Labelled vinegar feed,70.0,70.0,180.0,assumed layout envelope; supplier and price unverified
+SODA,Bicarbonate feed,80.0,60.0,130.0,assumed layout envelope; supplier and price unverified
+MEASURE,50 mL measuring vessel,60.0,60.0,90.0,assumed layout envelope; supplier and price unverified
+THERMO,Ambient thermometer,35.0,120.0,20.0,assumed layout envelope; supplier and price unverified
+PHONE,Timer / evidence station,80.0,155.0,15.0,assumed layout envelope; supplier and price unverified
+RESIDUE,Post-reading residue station,90.0,90.0,100.0,assumed layout envelope; supplier and price unverified

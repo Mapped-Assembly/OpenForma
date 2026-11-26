@@ -1,5 +1,11 @@
 # Forma Project Object Examples
 
+## Declarative chemical workcell
+
+[`chemical_workcell/`](chemical_workcell/README.md) links ChemicalIR, ProcessIR and
+MechanicalIR for a manual vinegar–bicarbonate reaction and frozen empirical plan.
+Includes a rendered layout, equipment inventory and exact-revision checks.
+
 ## Real-time machine control
 
 [`control_studio/`](control_studio/README.md) demonstrates the reusable

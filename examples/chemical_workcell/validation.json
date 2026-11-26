@@ -1,0 +1,21 @@
+{
+  "product_sha256": "181d8b6dc67afc3e0067fa52cc1032f36b90aaf5514fc1197ea41841e8b8a9b1",
+  "scientific_sha256": "926c864cefdb09fefe47640c5f7feed13cf57ddacd77ec49c3c8c0e24b0807c9",
+  "contract_status": "pass",
+  "validation": {
+    "local": {
+      "kitchen-open-batch": [],
+      "kitchen-acid-bicarbonate": [],
+      "acid-bicarbonate-workcell": []
+    },
+    "composition": [],
+    "blocked_domains": {}
+  },
+  "equipment_bindings": 11,
+  "physical_status": "not_run",
+  "physical_verification_coverage": 0,
+  "geometry_status": "nominal_envelopes_only",
+  "instrument_calibration": "unknown",
+  "measured_material_balance": "unknown",
+  "industrial_applicability": "unknown"
+}
