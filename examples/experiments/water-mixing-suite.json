@@ -1,0 +1,299 @@
+{
+  "benchmark_id": "water-mixing",
+  "cases": [
+    {
+      "case_id": "equal-portions",
+      "edits": [
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            0,
+            "mass",
+            "value"
+          ],
+          "value": 100
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            1,
+            "mass",
+            "value"
+          ],
+          "value": 100
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            2,
+            "capacity",
+            "value"
+          ],
+          "value": 20
+        }
+      ],
+      "criterion_id": "mixed-temperature",
+      "expected_reference": "3185/107",
+      "observation": {
+        "value": 29.77,
+        "unit": "degC",
+        "uncertainty": 0.1
+      },
+      "expected_status": "pass"
+    },
+    {
+      "case_id": "twice-warm-water",
+      "edits": [
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            0,
+            "mass",
+            "value"
+          ],
+          "value": 200
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            1,
+            "mass",
+            "value"
+          ],
+          "value": 100
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            2,
+            "capacity",
+            "value"
+          ],
+          "value": 20
+        }
+      ],
+      "criterion_id": "mixed-temperature",
+      "expected_reference": "21100/637",
+      "observation": {
+        "value": 33.12,
+        "unit": "degC",
+        "uncertainty": 0.1
+      },
+      "expected_status": "pass"
+    },
+    {
+      "case_id": "more-cool-water",
+      "edits": [
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            0,
+            "mass",
+            "value"
+          ],
+          "value": 50
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            1,
+            "mass",
+            "value"
+          ],
+          "value": 150
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            2,
+            "capacity",
+            "value"
+          ],
+          "value": 20
+        }
+      ],
+      "criterion_id": "mixed-temperature",
+      "expected_reference": "5325/214",
+      "observation": {
+        "value": 24.88,
+        "unit": "degC",
+        "uncertainty": 0.1
+      },
+      "expected_status": "pass"
+    },
+    {
+      "case_id": "larger-vessel-capacity",
+      "edits": [
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            0,
+            "mass",
+            "value"
+          ],
+          "value": 100
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            1,
+            "mass",
+            "value"
+          ],
+          "value": 100
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            2,
+            "capacity",
+            "value"
+          ],
+          "value": 100
+        }
+      ],
+      "criterion_id": "mixed-temperature",
+      "expected_reference": "3385/117",
+      "observation": {
+        "value": 28.93,
+        "unit": "degC",
+        "uncertainty": 0.1
+      },
+      "expected_status": "pass"
+    },
+    {
+      "case_id": "known-temperature-discrepancy",
+      "edits": [
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            0,
+            "mass",
+            "value"
+          ],
+          "value": 100
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            1,
+            "mass",
+            "value"
+          ],
+          "value": 100
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            2,
+            "capacity",
+            "value"
+          ],
+          "value": 20
+        }
+      ],
+      "criterion_id": "mixed-temperature",
+      "expected_reference": "3185/107",
+      "observation": {
+        "value": 25.0,
+        "unit": "degC",
+        "uncertainty": 0.1
+      },
+      "expected_status": "fail"
+    },
+    {
+      "case_id": "unknown-instrument-uncertainty",
+      "edits": [
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            0,
+            "mass",
+            "value"
+          ],
+          "value": 100
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            1,
+            "mass",
+            "value"
+          ],
+          "value": 100
+        },
+        {
+          "path": [
+            "artifacts",
+            0,
+            "artifact",
+            "nodes",
+            2,
+            "capacity",
+            "value"
+          ],
+          "value": 20
+        }
+      ],
+      "criterion_id": "mixed-temperature",
+      "expected_reference": "3185/107",
+      "observation": {
+        "value": 29.77,
+        "unit": "degC",
+        "uncertainty": null
+      },
+      "expected_status": "unknown"
+    }
+  ]
+}

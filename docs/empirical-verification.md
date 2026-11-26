@@ -1,240 +1,195 @@
-# Empirical physical process verification
+# Declarative empirical physical process verification
 
-OpenForma can freeze native chemical/process artifacts, calculate a supported
-conditional prediction, publish a manual protocol, and compare later observations
-against the original criteria. No HardwareIR, CAD, scene, robot, MuJoCo or automatic
-execution is required. **The included benchmark has not been physically performed.**
-All observations in automated tests are synthetic software inputs, even where a test
-exercises the physical-record validation path.
+An experiment is a declaration of native artifacts, evaluator invocations, protocol,
+required inputs and acceptance criteria. A new experiment using a supported model
+requires data, not experiment-specific Python. A new scientific capability requires
+a reusable, versioned domain evaluator.
 
-## Architecture audit (2026-11-26)
+The first implementation coupled every experiment to ChemicalIR and stoichiometry.
+The current named-evaluation path removes that requirement. ChemicalIR, thermal
+models and externally registered domains use the same preparation, observation and
+comparison pipeline. No new engineering IR, robot, HardwareIR, CAD or scene is needed.
 
-Baseline: `3a1125432ce3b7412478c82bbc07f6b26fb1dfea` on `main`. No repository
-`AGENTS.md` was present. The request's Python typing/documentation conventions apply.
-Inspected `CONTRIBUTING.md`, all open issues and active PRs before implementation.
+**No physical experiment has been performed.** The published case-study results are
+software benchmarks with explicitly synthetic observations.
 
-| Existing contract / implementation | Reuse and gap |
+## Declaration contract
+
+| Field | Authority and purpose |
 | --- | --- |
-| `forma_core/domains/selection.py`, `interaction.py`, `generation.py` | Independent domain selection and agent-driven generation already exist. Keep `/generate` and MCP's domain authoring flow; do not introduce a second generator. |
-| `chemistry/models.py`, `stoichiometry.py` | Native species, reactions, Claim/EvidenceRecord, exact inventory accounting, limiting reagent and versioned prediction receipt. Call this evaluator instead of rebuilding arithmetic. |
-| `processes/models.py` | Native batch streams and `ProcessStep` dependency DAG. Use steps for human protocols, with no execution backend. |
-| `thermal/models.py` and domain registry | Thermal design and bounded steady-state evaluation exist, but cannot predict this reaction's heat or evaporation from its equation. Energy remains unsupported in this slice. |
-| `domains/base.py`, `providers.py` | Reuse strict models, canonical JSON SHA-256 and `ArtifactReference`. Pin complete request, native artifacts, protocol and criteria. |
-| `persistence/project_artifacts.py` | Reuse private, content-addressed local/Supabase/S3 artifact storage. Add owner-derived namespaces for plans, evidence and reports; no new measurement database. |
-| Existing project revisions | Store domain generation as before. Experimental receipts are separate immutable artifacts, not fake HardwareIR project revisions. Refinements link predecessor receipts. |
-| `domains/tools.py`, CLI, `opencode/models.py`, `apps/api/opencode_mcp.py` | Add one `experiment` operation, shared with REST and Python. MCP remains a stateless portable tool; hosted receipt persistence is through authenticated REST. |
-| Next.js + FastAPI, `vercel.json` | Add `/experiments` page and authenticated `/experiments/*` API router. Reuse `useFormaAuth`, `webConfig.apiBaseUrl` and `require_user_context`. |
+| `process` | Native ProcessIR operations and dependency-ordered ProcessStep protocol |
+| `artifacts` | Native/external documents with existing ArtifactReference identity, revision, provider version and content hash |
+| `evaluations` | Stable invocation ID, source artifact ID, registered evaluator ID/version and model-owned parameters |
+| `required_inputs` | Actual-input obligations bound by a path to a dimensioned artifact quantity or evaluator parameter; expected values are resolved, not copied |
+| `criteria` | Named evaluation/output target, scientific basis, reporting unit, measurement method, tolerance and proxy assumptions |
+| `conditions` | Preregistered operating/measurement condition intervals |
+| `assumptions`, `limitations` | Explicit applicability and unresolved scientific limitations |
 
-Related issues: #40 (chemical evaluation), #42 (public solver orchestration), #44
-(observation comparison), #59 (general scoped evidence). This slice advances #44,
-but does not close its time-series or full uncertainty requirements. Active PR #47
-adds first-order kinetics and was intentionally not imported; the two-reactant
-benchmark is outside that model anyway. Active #49/#52/#53 concern robot runtime
-and spatial contracts, and #16 concerns a liver-chip demonstration; none is required.
+For example, the thermal case declares:
 
-Documentation lag confirmed: `docs/unified-generation.md` said no limiting-reagent
-solver was installed, while `stoichiometry.py` already implements it. This change
-exposes it through the empirical workflow without claiming general automatic model
-selection or completing every part of #42.
-
-## Public workflow
-
-1. Use the existing remote `/generate` or `forma.opencode.domains` generation flow
-   to select domains and author native artifacts from an objective. An external
-   agent can author without server LLM credentials; no local clone is required.
-2. Use `experiment` with `{"action":"schema"}` to discover the experiment request.
-   Supply the ChemicalIR/ProcessIR artifacts, a pinned stoichiometry request,
-   explicit conditions, feed tolerances, assumptions and criteria. Protocols are
-   authored `ProcessStep` descriptions, deterministically ordered by dependencies.
-   There is no automatic chemistry-to-safe-protocol inference.
-3. Review and freeze via `POST /experiments/plans`. The server recomputes the
-   prediction and records its own creation time before physical execution.
-4. Perform the manual protocol. Record actual species feed amounts (including
-   concentration calculations for mixtures), conditions, raw readings, instrument
-   resolution, uncertainty if known, deviations and source records. Keep photographs.
-5. Upload photographs/raw bytes to `POST /experiments/evidence`; submit runs to
-   `POST /experiments/reports` using the saved plan's record digest. Each run also
-   pins the scientific plan hash. Physical timestamps must follow plan freeze and
-   precede submission. These are user assertions, not proof of measurement authenticity.
-6. Download a reproducible JSON report with embedded original artifacts, predictions,
-   observations, evidence references, evaluator version and input hashes. Raw image
-   bytes remain separately downloadable private evidence artifacts.
-7. Refine by creating a new plan revision, supplying both `parent_plan_sha256` and
-   `parent_record_sha256`. The server verifies experiment identity and consecutive
-   revision; prior plans and reports remain retrievable without alteration.
-
-### Phone interface
-
-On a deployment of this branch, open `/experiments`, sign in if required, load the
-initial benchmark or paste a generated request, and freeze it before starting.
-The page displays the protocol and criteria, accepts instrument readings and photos,
-and supports fresh repeat trials and report downloads. Blank fields never become
-measurements. A missing uncertainty can be submitted and produces an inconclusive
-comparison. Raw evidence does not undergo automated image interpretation.
-
-Keep the saved plan/report digest or downloaded JSON for recovery. Paste the digest
-into **Restore plan/report** to resume on another authenticated device. There is no
-server-side experiment list/index in this first slice. Unsaved form state is not
-persisted across navigation. Downloaded report JSON is portable; its attachment
-references are not a self-contained image archive. Model refinement is available
-through REST/SDK/MCP rather than a dedicated UI editor. The page offers authored
-request input, not a second natural-language chat surface.
-
-### API and MCP
-
-| Interface | Operation |
-| --- | --- |
-| Python | `prepare_experiment(ExperimentRequest)`; `compare_experiment(plan, runs)` |
-| CLI | `python -m forma_core domains experiment request.json` (developer reproducibility only) |
-| MCP | `forma.opencode.domains` with `operation: "experiment"`, `payload` containing JSON text |
-| REST, pure | `POST /experiments/tools` with the same action payload |
-| REST, saved | `POST /experiments/plans` with `{request, parent_record_sha256?}` |
-| REST, evidence | `POST /experiments/evidence`, raw bytes, supported Content-Type, at most 8 MiB |
-| REST, saved comparison | `POST /experiments/reports` with `{plan_record_sha256, runs}` |
-| REST, recovery | `GET /experiments/records/{plans|reports|evidence}/{sha256}` |
-
-Pure actions: `schema`, `benchmark`, `prepare` with `request`, and `compare` with
-`comparison: {plan, runs}`. CLI/MCP reports are portable but not implicitly uploaded.
-All REST endpoints use existing authentication. Storage namespace ownership comes
-from the authenticated identity, never a client-supplied owner. Missing/private
-storage fails explicitly; there is no successful acknowledgement of an unsaved
-record. Production must use durable Supabase/S3 storage and deployed authentication.
-
-## Initial benchmark: acid/bicarbonate, open-batch mass-loss proxy
-
-The packaged fixture is `forma_core/experiments/vinegar-bicarbonate.json` and is
-available remotely through `{"action":"benchmark"}`. It reuses the native species,
-reaction and process streams from `examples/domains/chemistry-generation.json`.
-
-Nominal inputs: 2.00 g sodium bicarbonate and 50 mL food vinegar with an **explicit
-5 g acetic acid / 100 mL basis**, giving 2.5 g acid. An unspecified “5%” label is
-insufficient. No concentration basis, density or measurement is inferred. Actual
-feed differences outside preregistered tolerances prevent comparison and require a
-new plan before execution. Feed precision and uncertainty are retained but not
-propagated into the nominal bound.
-
-`NaHCO3 + C2H4O2 → C2H3NaO2 + H2O + CO2`
-
-With supplied nominal molar masses, bicarbonate limits the theoretical result:
-
-`2 / 84.0066 × 44.0095 = 440095/420033 g ≈ 1.047763 g CO2`.
-
-This assumes complete forward reaction; it does not predict the actual yield or
-reaction duration. Both input and property assumptions remain in the receipt.
-The 0.20 g acceptance tolerance is a chosen screening criterion, not a confidence
-interval or certified accuracy. A 1 g kitchen scale cannot resolve this test; use
-an available 0.01 g scale or choose a different experiment rather than claiming a
-pass with inadequate equipment. No equipment prices have been verified.
-
-Weigh the same open system before/after (tray, bowl, cup and spoon all retained),
-slowly mix in an open bowl with headroom, and record stable readings, temperature,
-labels, deviations and evidence. The native protocol includes stop conditions and
-ordinary food-ingredient precautions. Never seal the gas-evolving mixture.
-
-The difference is explicitly a **proxy** for CO2 formation. Splashing, removed
-objects, evaporation and retained dissolved CO2 can bias it. Confirming assumptions
-is an operator assertion, not a measurement of those biases. Even an interval-based
-`pass` means agreement within this conditional proxy comparison only. It is not a
-full mass-balance closure, proof of completion, isolated yield, safety certification
-or evidence of industrial-scale applicability.
-
-## Comparison and metrics
-
-- Original receipts are recomputed before comparison. Modified predictions,
-  protocol or tolerances are rejected; run hashes bind exact historical plans.
-- Separate net formation, total inventory and isolated product. Total inventory
-  includes initial product. Isolated product requires a recovery assumption and
-  currently rejects nonzero initial product inventory as unsupported.
-- Exact compatible batch-unit conversion: g/mg/kg and mol/mmol/kmol. No inferred
-  density, gas volume, temperature conversion or molar-mass conversion at the
-  observation boundary. Incompatible quantity/condition units remain unsupported.
-- Signed discrepancy = observed − reference; absolute error = its magnitude;
-  relative error = absolute error / |reference|; ratio = observed / reference.
-  Zero denominators remain null. Above-bound observations are retained and flagged.
-- Uncertainty fields are absolute bounds. A difference uses the sum of the two
-  bounds, not an unjustified independent-Gaussian assumption. Unknown uncertainty
-  stays null. An interval entirely within tolerance passes, entirely outside fails,
-  and overlapping intervals remain unknown. Excessive instrument resolution also
-  leaves the verdict unknown. No statistical significance claim is made.
-- Physical coverage counts distinct criteria with conclusive physical comparisons,
-  not schema validity or synthetic agreement. Repeatability reports the sample
-  standard deviation of compatible physical scalar observations from distinct
-  sample IDs; two readings from one trial are not two independent trials.
-- Store per-trial elapsed time, optional cost/currency, and explicit unsupported
-  criteria. No currency conversion or manufacturing cost extrapolation.
-- Full measured material balance remains unknown; energy evaluation is unsupported;
-  unseen-process generalization remains unknown until held-out physical studies.
-  The solver's theoretical conservation receipt remains separate from these metrics.
-
-## Progressive scientific coverage
-
-| Benchmark | This slice | Next scientific requirement |
-| --- | --- | --- |
-| Vinegar + baking soda | Conditional stoichiometric prediction and mass-loss proxy comparison | Feed-uncertainty propagation; evaporation/retention controls |
-| Saltwater evaporation | Not implemented | Batch phase-change accounting, residual-water measurement, energy inputs |
-| Milk + vinegar | Not implemented | pH-dependent precipitation, composition and separation/recovery model |
-| Oil + water emulsification | Not implemented | Droplet/stability metrics, multiphase model and time dependence |
-| Starch gelatinization | Not implemented | Time-temperature history and measurable property transition |
-| Yeast fermentation | Not implemented | Biological kinetics, substrate/product/biomass accounting and matched conditions |
-
-The scalar comparison layer has no benchmark-specific reaction arithmetic. Its
-first prediction adapter is deliberately the existing single-reaction stoichiometric
-solver. Adding thermal/biological/time-series adapters does not require changing
-engineering IR ownership or adding an execution backend. No parameter fitting,
-automatic model correction, independent validation-data split, safety evaluator or
-industrial scale-up model is implemented.
-
-## Deployment audit and remaining operational gate
-
-`vercel.json` declares Next.js frontend + FastAPI backend services; the latter includes
-`forma_core/**`. The existing frontend `webConfig.apiBaseUrl` uses
-`NEXT_PUBLIC_API_URL`/`NEXT_PUBLIC_BACKEND_URL` and otherwise a legacy host. Configure
-it to the actual backend running this branch. Backend artifact storage and authentication
-must already be configured; JSON and photo storage use the same private backend.
-
-The connected Vercel team listed an older `blueprint-oss` project (framework
-`services`, reported `live: false`), with `caid-technologies.us`,
-`mcp.caid-technologies.us` and `forma-oss.vercel.app` among its domains. Its latest
-listed deployment was `0b4c0cad…` from **caid-technologies/Form-OSS**, and the latest
-listed production deployment was `ffd6772d…` from that same older repository.
-This is not evidence that Mapped-Assembly/OpenForma main or this PR is deployed.
-No unrelated project or legacy production domain was changed.
-
-The remote routes/page are implemented and tested through HTTP. A live phone URL
-for this feature still requires deploying this PR to an authorized OpenForma host
-with the correct frontend API URL, authentication and durable private storage.
-No production deployment, hosted LLM run or real kitchen trial is claimed here.
-
-## Reproduce software verification
-
-```bash
-python -m pytest tests/projects/test_empirical_verification.py tests/projects/test_empirical_api.py \
-  tests/projects/test_stoichiometry.py tests/projects/test_chemical_ir.py \
-  tests/projects/test_process_ir.py tests/projects/test_thermal_ir.py -q
+```json
+{
+  "evaluations": [{
+    "evaluation_id": "mix-equilibrium",
+    "artifact_id": "water-mixing.thermal",
+    "evaluator_id": "adiabatic-equilibrium",
+    "evaluator_version": "1.0",
+    "parameters": {
+      "node_ids": ["warm", "cool", "cup"],
+      "closed_adiabatic": true,
+      "constant_capacities": true,
+      "no_phase_change": true,
+      "no_reactions": true
+    }
+  }],
+  "criteria": [{
+    "criterion_id": "mixed-temperature",
+    "target": {"evaluation_id": "mix-equilibrium", "output_id": "final_temperature"},
+    "basis": "equilibrium_temperature",
+    "unit": "degC",
+    "absolute_tolerance": 1.0,
+    "method": "direct"
+  }]
+}
 ```
 
-Tests cover expected arithmetic, shortfall/above-bound results, zero reference,
-initial product inventory, unit conversion, missing uncertainty, inadequate
-precision, incompatible species/bases/conditions, tampering, stale plans,
-refinement, synthetic evidence, repeated trials, transport equivalence, private
-storage round trips, owner isolation, pre-freeze observations and storage failure.
+This is an excerpt, not a complete request. Complete authored requests live in
+`forma_core/experiments/water-mixing.json` and
+`forma_core/experiments/vinegar-bicarbonate-declarative.json`.
+Changing masses, temperatures, container properties, identities, sequencing or
+criteria changes the declaration and its hashes. No `if water`, `if vinegar`,
+benchmark IDs or case-specific constants appear in the evaluator/comparison path.
 
-Executed checks for this implementation:
+## Agent workflow
 
-- Focused empirical + chemistry/process/thermal suite: **80 passed, 57 subtests passed**.
-- Existing generation/domain/provider/MCP suite: **122 passed, 1 skipped, 136 subtests passed**.
-  The skip is the pre-existing opt-in native OpenCAD integration test.
-- Mobile viewport Playwright tests: **2 passed**, using mocked transport and synthetic inputs.
-  The usual browser download returned HTTP 403 and the system Chromium launcher lacked
-  its executable. Tests ran with a separately installed Chromium binary; no browser
-  dependency or local override was added to the application.
-- TypeScript checking, targeted ESLint, production Next.js build, Python package build
-  and whitespace checks passed. The wheel contains the benchmark JSON resource.
-- Full repository test suite and live hosted inference were not run. No physical
-  measurements were collected.
+1. Use existing domain selection/generation to author the relevant native IRs.
+2. Call `forma.opencode.domains`, operation `experiment`, payload `{"action":"catalog"}`.
+   Discover available evaluator IDs, versions, parameter schemas, outputs and
+   limitations. `{"action":"schema"}` exposes the generic authoring/run contract.
+3. Author an experiment request using native documents and named evaluations.
+   Bind actual inputs to source quantities and criteria to the returned output IDs.
+   Protocols are declarative ProcessStep descriptions; no automatic safety inference
+   or arbitrary expression execution is performed.
+4. Call `{"action":"prepare","request":...}` to calculate and freeze the plan.
+   For authenticated timestamped persistence use `POST /experiments/plans`.
+5. Perform the manual protocol; record actual inputs, conditions, readings, method,
+   uncertainty, precision, source records and photographs separately from predictions.
+6. Call `{"action":"compare","comparison":{"plan":...,"runs":[...]}}` or save
+   via `POST /experiments/reports`. Unsupported models never fall back to a guessed
+   equation, and synthetic agreement never contributes physical coverage.
+7. Refine through a new plan revision linked to its original scientific hash and
+   saved parent receipt. Observations remain attached to the historical prediction.
 
-Structural protocol validation does not establish that arbitrary authored prose is
-scientifically meaningful or agrees with every calculation input. Review changed
-feed quantities, typed streams, conditions and procedure text together before freezing
-any refinement. The fixture's linked quantities are explicitly authored; this slice
-does not add a general cross-domain procedural semantics solver.
+Python uses `prepare_experiment(request, registry=...)` and
+`compare_experiment(plan, runs, registry=...)`. CLI uses
+`python -m forma_core domains experiment request.json`. REST `/experiments/tools`
+and MCP dispatch the same operations. The UI `/experiments` discovers case studies
+from the packaged declarations and renders generic inputs/output criteria; it does
+not require a chemical species or a stoichiometric result.
+
+## Existing registry, not a second plugin system
+
+`DomainRegistry.evaluator_catalog()` asks its existing registered providers for an
+optional `evaluation_specs()` capability. `DomainRegistry.evaluate_named()` verifies
+the exact artifact identity, content hash, provider and model version, then calls
+that provider's `evaluate_named()` implementation. Older providers without this
+capability remain compatible and produce explicit unsupported/unavailable findings.
+
+Requests and normalized receipts in `domains/evaluation.py` are transport/evaluation
+envelopes, not another domain IR. Full provider-owned raw receipts are retained.
+Scientific model implementations remain in their domain packages.
+
+| Domain | Named evaluator | Current numerical scope |
+| --- | --- | --- |
+| Chemical | `stoichiometric-bound@1.0` | Existing exact single-reaction forward bounds; species amount/mass formation and final inventory |
+| Thermal | `lumped-resistance@1.0` | Existing single-zone steady-state model |
+| Thermal | `adiabatic-equilibrium@1.0` | Equilibrium endpoint and sensible-energy accounting for explicitly contacting, closed, constant-capacity bodies |
+| External | Provider-defined | Explicitly registered, independently versioned model and named dimensioned outputs |
+
+An external-provider test adds an unrelated viscosity output without modifying the
+experiment or comparison code. It demonstrates software extensibility, not scientific
+validation of an external rheology model. Unregistered models remain unsupported.
+
+ThermalIR already supported node capacity and initial temperature. It did not encode
+mass-derived capacity, so two optional, unit-checked node quantities were added:
+`mass` and `specific_heat`. The equilibrium evaluator calculates `C=m*c`, or uses an
+explicitly supplied capacity. Competing capacity definitions are rejected. Missing
+properties remain unknown. Absent new fields serialize exactly as before, retaining
+old ThermalIR hashes; no new IR or incompatible schema migration is introduced.
+
+## Integrity, comparisons and uncertainty
+
+- Version-2 plans freeze complete declarations, ordered protocol, resolved inputs,
+  source pins, evaluator receipts and hashes. The registry identity is explicit.
+- Comparison verifies the original hash and reruns the named model. Unavailable
+  providers/models block dependent comparisons rather than reusing cached passes.
+  The original receipt remains in the report; availability is reported separately.
+- A criterion references `evaluation_id/output_id`, not a chemical species.
+  Scientific basis must match the evaluator output and observation.
+- Convert compatible quantities by dimension. Kelvin/Celsius offsets affect values;
+  uncertainty and resolution use scale only. Absolute-temperature ratios/relative
+  errors are omitted rather than returning misleading Celsius ratios.
+- Signed discrepancy = observed − reference. Ratio-scale quantities additionally
+  report absolute/relative error and observed/reference ratio where the denominator
+  is nonzero. Only outputs explicitly marked `upper_bound` trigger above-bound flags.
+- Instrument uncertainty is an absolute bound. Direct/difference methods preserve
+  unknown bounds; a difference sums bounds. An interval inside tolerance passes,
+  outside fails, overlapping remains unknown. Inadequate precision stays unknown.
+- Physical coverage counts conclusive criteria from physical observations only.
+  Repeatability requires distinct sample IDs. Optional cost/currency and elapsed
+  time remain attached to each trial.
+- Model conservation residuals are distinct from measured material/energy closure.
+  A solver returning zero joules does not establish experimental energy accuracy.
+
+The original species-based request/receipt is retained as a legacy v1 adapter.
+`tests/projects/fixtures/empirical-v1-plan.json` was frozen by commit `c4ae002`
+before generalization; tests require byte-equivalent JSON serialization and successful
+integrity verification after reading it. New authoring should use named evaluations.
+The no-ID `benchmark` action retains the old fixture for existing callers.
+
+## Persistence and evidence
+
+Existing authenticated REST endpoints and private content-addressed storage are reused:
+
+- `POST /experiments/plans`: `{request, parent_record_sha256?}`.
+- `POST /experiments/evidence`: raw JPEG/PNG/WebP/text/JSON, up to 8 MiB.
+- `POST /experiments/reports`: `{plan_record_sha256, runs}`.
+- `GET /experiments/records/{plans|reports|evidence}/{sha256}`: owner-scoped recovery.
+
+Actual run timestamps must follow plan freeze. Ownership comes from authentication,
+never a submitted user ID. Files are hashed on upload and checked on retrieval.
+Photographs are preserved; no automatic reading extraction or authenticity guarantee
+is claimed. Keep saved digests/downloads for recovery; there is no new experiment
+index or autosaved unsent form state. MCP operations return portable records;
+authenticated REST provides durable timestamped persistence.
+
+## Architecture audit and remaining limitations
+
+Audited baseline `3a1125432ce3b7412478c82bbc07f6b26fb1dfea`, current source,
+CONTRIBUTING.md, open issues and active PRs. No repository AGENTS.md was present.
+Reuse includes domain generation/selection, ChemicalIR/ProcessIR/ThermalIR,
+ProcessStep, exact stoichiometry, bounded thermal evaluation, ArtifactReference,
+evidence/provenance and private artifact storage. Related issues: #40, #42, #44,
+#59. Pending kinetics PR #47 is not imported or required.
+
+The original gap was the frozen-prediction/observation loop. The follow-up removes
+its chemistry coupling. Native IR generation remains the existing pipeline; agents
+compose the discovered evaluator/protocol declaration through existing tools.
+No second natural-language generator or per-experiment execution script is added.
+
+Remaining scientific limitations:
+
+- No transient mixing/cooling, evaporation, precipitation, phase-change, emulsion,
+  gelatinization, fermentation or industrial scale-up solver is implied.
+- The new equilibrium model requires explicit no-reaction/no-phase-change,
+  constant-capacity and adiabatic assumptions. It cannot predict equilibration time.
+- Feed/property uncertainties are retained but not propagated into prediction bounds.
+- Protocol prose and relationships between independently authored domain artifacts
+  still require review. No general procedural-semantics or safety solver is claimed.
+- No parameter fitting, automatic model correction, physical authenticity guarantee
+  or independent calibration/validation data split is implemented.
+- Generalization tests cover data-driven variants and an external adapter; physical
+  generalization across processes remains unmeasured.
+
+See [the thermal case study](water-mixing-case-study.md) for reproducible inputs,
+independent expected values and the published synthetic benchmark report.

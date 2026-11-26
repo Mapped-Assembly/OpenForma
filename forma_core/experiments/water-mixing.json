@@ -1,0 +1,341 @@
+{
+  "experiment_id": "warm-cool-water-equilibrium",
+  "objective": "Predict and compare the equilibrium temperature of warm and cool water including receiving-vessel heat capacity.",
+  "process": {
+    "artifact_id": "water-mixing.process",
+    "domain": "process",
+    "schema_version": "1.0",
+    "operations": [
+      {
+        "operation_id": "prepare",
+        "operation_type": "prepare_batch"
+      },
+      {
+        "operation_id": "contact",
+        "operation_type": "mix"
+      },
+      {
+        "operation_id": "measure",
+        "operation_type": "measure_temperature"
+      }
+    ],
+    "steps": [
+      {
+        "step_id": "prepare",
+        "operation_id": "prepare",
+        "depends_on": [],
+        "description": "Gather a kitchen scale (1 g resolution or better), a thermometer (0.1 \u00b0C resolution preferred), two cups and a stirring spoon. Use plain potable water; warm water should be around 40 \u00b0C, never boiling. Use a stable surface away from children and pets. No heater, custom electronics or automated execution is required."
+      },
+      {
+        "step_id": "inputs",
+        "operation_id": "prepare",
+        "depends_on": [
+          "prepare"
+        ],
+        "description": "Weigh the declared warm and cool water portions and record both initial temperatures immediately before mixing. The receiving cup and spoon should start at the declared cool temperature. The declared 20 J/K effective cup/spoon capacity is an assumption: document the container, or supply a justified capacity before freezing. Include additional bodies as nodes if their heat capacity matters."
+      },
+      {
+        "step_id": "freeze",
+        "operation_id": "prepare",
+        "depends_on": [
+          "inputs"
+        ],
+        "description": "Check actual masses and temperatures against declared inputs. If outside their tolerances, update the native thermal quantities and freeze a new plan before mixing. This model recomputes heat capacities from declared mass and specific heat; do not edit predicted temperature by hand."
+      },
+      {
+        "step_id": "mix",
+        "operation_id": "contact",
+        "depends_on": [
+          "freeze"
+        ],
+        "description": "Combine the two portions in the receiving cup and stir gently. Keep all of the declared water in the system. Record any spill, transfer loss or initial-temperature drift; deviations invalidate the closed-system assumption."
+      },
+      {
+        "step_id": "measure",
+        "operation_id": "measure",
+        "depends_on": [
+          "mix"
+        ],
+        "description": "Record the well-mixed temperature at 60 seconds after contact (target \u00b15 seconds), without touching the cup wall with the probe. Record instrument resolution and defensible uncertainty. The model predicts an equilibrium endpoint, not the time needed to reach it. Record inadequate mixing, probe lag or appreciable ambient heat exchange as unmet assumptions."
+      },
+      {
+        "step_id": "record",
+        "operation_id": "measure",
+        "depends_on": [
+          "measure"
+        ],
+        "description": "Upload readings, timing, cup description and optional photographs. Repeat with fresh batches for repeatability. Unknown uncertainty or unsupported assumptions remain inconclusive; agreement alone does not prove adiabatic behavior."
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "reference": {
+        "artifact_id": "water-mixing.thermal",
+        "domain": "thermal",
+        "schema_id": "openforma.thermal",
+        "schema_version": "1.0",
+        "revision": 1,
+        "provider_id": "openforma.native",
+        "provider_version": "1.0",
+        "sha256": "b1bb353f4599d21a442cc4bc3b638b8bbf0b5afeccb3c9b2090e5ee605f7840f",
+        "locator": null,
+        "provenance": {}
+      },
+      "artifact": {
+        "artifact_id": "water-mixing.thermal",
+        "revision": 1,
+        "domain": "thermal",
+        "schema_version": "1.0",
+        "nodes": [
+          {
+            "node_id": "warm",
+            "kind": "body",
+            "ports": [
+              {
+                "port_id": "heat",
+                "kind": "heat"
+              }
+            ],
+            "capacity": null,
+            "mass": {
+              "kind": "mass",
+              "value": 100.0,
+              "unit": "g",
+              "claim": {
+                "basis": "assumed",
+                "source_ids": [],
+                "rationale": "Nominal room-temperature laboratory property/input, not a physical measurement. Constant heat capacities and negligible ambient heat exchange are model assumptions."
+              }
+            },
+            "specific_heat": {
+              "kind": "specific_heat",
+              "value": 4.18,
+              "unit": "J/(g*K)",
+              "claim": {
+                "basis": "assumed",
+                "source_ids": [],
+                "rationale": "Nominal room-temperature laboratory property/input, not a physical measurement. Constant heat capacities and negligible ambient heat exchange are model assumptions."
+              }
+            },
+            "initial_temperature": {
+              "kind": "temperature",
+              "value": 40.0,
+              "unit": "degC",
+              "claim": {
+                "basis": "assumed",
+                "source_ids": [],
+                "rationale": "Nominal room-temperature laboratory property/input, not a physical measurement. Constant heat capacities and negligible ambient heat exchange are model assumptions."
+              }
+            },
+            "target_temperature": null,
+            "maximum_temperature": null,
+            "material_reference": null,
+            "description": null
+          },
+          {
+            "node_id": "cool",
+            "kind": "body",
+            "ports": [
+              {
+                "port_id": "heat",
+                "kind": "heat"
+              }
+            ],
+            "capacity": null,
+            "mass": {
+              "kind": "mass",
+              "value": 100.0,
+              "unit": "g",
+              "claim": {
+                "basis": "assumed",
+                "source_ids": [],
+                "rationale": "Nominal room-temperature laboratory property/input, not a physical measurement. Constant heat capacities and negligible ambient heat exchange are model assumptions."
+              }
+            },
+            "specific_heat": {
+              "kind": "specific_heat",
+              "value": 4.18,
+              "unit": "J/(g*K)",
+              "claim": {
+                "basis": "assumed",
+                "source_ids": [],
+                "rationale": "Nominal room-temperature laboratory property/input, not a physical measurement. Constant heat capacities and negligible ambient heat exchange are model assumptions."
+              }
+            },
+            "initial_temperature": {
+              "kind": "temperature",
+              "value": 20.0,
+              "unit": "degC",
+              "claim": {
+                "basis": "assumed",
+                "source_ids": [],
+                "rationale": "Nominal room-temperature laboratory property/input, not a physical measurement. Constant heat capacities and negligible ambient heat exchange are model assumptions."
+              }
+            },
+            "target_temperature": null,
+            "maximum_temperature": null,
+            "material_reference": null,
+            "description": null
+          },
+          {
+            "node_id": "cup",
+            "kind": "body",
+            "ports": [
+              {
+                "port_id": "heat",
+                "kind": "heat"
+              }
+            ],
+            "capacity": {
+              "kind": "capacity",
+              "value": 20.0,
+              "unit": "J/K",
+              "claim": {
+                "basis": "assumed",
+                "source_ids": [],
+                "rationale": "Nominal room-temperature laboratory property/input, not a physical measurement. Constant heat capacities and negligible ambient heat exchange are model assumptions."
+              }
+            },
+            "initial_temperature": {
+              "kind": "temperature",
+              "value": 20.0,
+              "unit": "degC",
+              "claim": {
+                "basis": "assumed",
+                "source_ids": [],
+                "rationale": "Nominal room-temperature laboratory property/input, not a physical measurement. Constant heat capacities and negligible ambient heat exchange are model assumptions."
+              }
+            },
+            "target_temperature": null,
+            "maximum_temperature": null,
+            "material_reference": null,
+            "description": null
+          }
+        ],
+        "edges": [],
+        "boundaries": [],
+        "loads": [],
+        "properties": [],
+        "cases": [],
+        "evidence": []
+      }
+    }
+  ],
+  "evaluations": [
+    {
+      "evaluation_id": "mix-equilibrium",
+      "artifact_id": "water-mixing.thermal",
+      "evaluator_id": "adiabatic-equilibrium",
+      "evaluator_version": "1.0",
+      "parameters": {
+        "node_ids": [
+          "warm",
+          "cool",
+          "cup"
+        ],
+        "closed_adiabatic": true,
+        "constant_capacities": true,
+        "no_phase_change": true,
+        "no_reactions": true
+      }
+    }
+  ],
+  "required_inputs": [
+    {
+      "input_id": "warm-mass",
+      "artifact_id": "water-mixing.thermal",
+      "path": [
+        "nodes",
+        0,
+        "mass"
+      ],
+      "dimension": "mass",
+      "unit": "g",
+      "absolute_tolerance": 1
+    },
+    {
+      "input_id": "cool-mass",
+      "artifact_id": "water-mixing.thermal",
+      "path": [
+        "nodes",
+        1,
+        "mass"
+      ],
+      "dimension": "mass",
+      "unit": "g",
+      "absolute_tolerance": 1
+    },
+    {
+      "input_id": "warm-initial_temperature",
+      "artifact_id": "water-mixing.thermal",
+      "path": [
+        "nodes",
+        0,
+        "initial_temperature"
+      ],
+      "dimension": "temperature",
+      "unit": "degC",
+      "absolute_tolerance": 0.2
+    },
+    {
+      "input_id": "cool-initial_temperature",
+      "artifact_id": "water-mixing.thermal",
+      "path": [
+        "nodes",
+        1,
+        "initial_temperature"
+      ],
+      "dimension": "temperature",
+      "unit": "degC",
+      "absolute_tolerance": 0.2
+    },
+    {
+      "input_id": "cup-initial_temperature",
+      "artifact_id": "water-mixing.thermal",
+      "path": [
+        "nodes",
+        2,
+        "initial_temperature"
+      ],
+      "dimension": "temperature",
+      "unit": "degC",
+      "absolute_tolerance": 0.5
+    }
+  ],
+  "criteria": [
+    {
+      "criterion_id": "mixed-temperature",
+      "target": {
+        "evaluation_id": "mix-equilibrium",
+        "output_id": "final_temperature"
+      },
+      "basis": "equilibrium_temperature",
+      "unit": "degC",
+      "absolute_tolerance": 1.0,
+      "method": "direct",
+      "assumptions": [
+        "The declared water portions and receiving vessel constitute the contacted system; no spills or missing bodies.",
+        "The reading represents a well-mixed endpoint with negligible ambient heat exchange and probe lag."
+      ]
+    }
+  ],
+  "conditions": [
+    {
+      "name": "measurement_delay",
+      "unit": "s",
+      "minimum": 55,
+      "maximum": 65
+    }
+  ],
+  "assumptions": [
+    "Water specific heat is assumed constant at 4.18 J/(g*K) over the declared 20\u201340 \u00b0C range.",
+    "Effective vessel/spoon heat capacity is assumed 20 J/K; it is not measured or calibrated.",
+    "No phase change or reaction; mixing/stirring work and ambient heat exchange are neglected."
+  ],
+  "limitations": [
+    "No finite-time or heat-loss prediction; the 60-second measurement time is a declared protocol condition, not a calculated equilibration time.",
+    "Input/property uncertainties are preserved but not propagated into the conditional endpoint.",
+    "This is a nominal kitchen-scale case, not industrial scale-up or measured energy-balance closure."
+  ]
+}

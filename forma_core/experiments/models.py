@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import Field, model_validator
 
@@ -10,6 +10,7 @@ from forma_core.chemistry.models import ChemicalIR, EvidenceRecord
 from forma_core.chemistry.stoichiometry import StoichiometryRequest, StoichiometryResult
 from forma_core.domains.base import DomainModel, Text, unique
 from forma_core.domains.providers import ArtifactReference, Digest
+from forma_core.domains.evaluation import EvaluationRequest, EvaluationReceipt, PinnedArtifact
 from forma_core.processes.models import ProcessIR
 
 
@@ -40,12 +41,46 @@ class Reading(DomainModel):
     calibration: Text | None = None
 
 
+class OutputTarget(DomainModel):
+    """Address one named output of a pinned evaluator invocation."""
+
+    evaluation_id: Text
+    output_id: Text
+
+
+class InputRequirement(DomainModel):
+    """Bind a required actual input to a dimensioned quantity in a native artifact."""
+
+    input_id: Text
+    artifact_id: Text | None = Field(None, exclude_if=lambda v: v is None)
+    evaluation_id: Text | None = Field(None, exclude_if=lambda v: v is None)
+    path: list[str | int] = Field(min_length=1)
+    dimension: Text
+    unit: Text
+    absolute_tolerance: float = Field(ge=0)
+
+
+    @model_validator(mode="after")
+    def one_source(self) -> InputRequirement:
+        """Resolve from either an artifact quantity or pinned evaluator parameters."""
+        if (self.artifact_id is None) == (self.evaluation_id is None):
+            raise ValueError("Input requires exactly one artifact or evaluation source.")
+        return self
+
+
+class ResolvedInput(InputRequirement):
+    """Frozen input quantity, resolved from its artifact rather than copied manually."""
+
+    value: str
+
+
 class Criterion(DomainModel):
-    """A preregistered scalar comparison with an existing stoichiometric output."""
+    """A preregistered comparison to a named output; species is legacy compatibility only."""
 
     criterion_id: Text
-    species_id: Text
-    basis: Literal["net_formation", "total_inventory", "isolated_product"] = "net_formation"
+    species_id: Text | None = Field(None, exclude_if=lambda v: v is None)
+    target: OutputTarget | None = Field(None, exclude_if=lambda v: v is None)
+    basis: Text = "net_formation"
     unit: Text
     absolute_tolerance: float = Field(ge=0)
     method: Literal["direct", "difference_proxy"] = "direct"
@@ -55,6 +90,10 @@ class Criterion(DomainModel):
     @model_validator(mode="after")
     def explicit_proxy(self) -> Criterion:
         """Do not silently identify a change in total mass with a species measurement."""
+        if (self.species_id is None) == (self.target is None):
+            raise ValueError("Specify exactly one named output target or legacy species.")
+        if self.target is not None and self.recovery_fraction is not None:
+            raise ValueError("Declare recovery in the evaluator; generic criteria do not modify predictions.")
         if self.method == "difference_proxy" and not self.assumptions:
             raise ValueError("A difference proxy requires explicit measurement assumptions.")
         return self
@@ -67,12 +106,15 @@ class ExperimentRequest(DomainModel):
     revision: int = Field(1, ge=1)
     parent_plan_sha256: Digest | None = None
     objective: Text
-    chemical: ChemicalIR
+    chemical: ChemicalIR | None = Field(None, exclude_if=lambda v: v is None, description="Legacy v1 only. New workflows declare artifacts and evaluations.")
     process: ProcessIR
-    calculation: StoichiometryRequest
+    calculation: StoichiometryRequest | None = Field(None, exclude_if=lambda v: v is None, description="Legacy v1 only. Select a named, versioned evaluator in evaluations.")
+    artifacts: list[PinnedArtifact] = Field(default_factory=list, exclude_if=lambda v: not v)
+    evaluations: list[EvaluationRequest] = Field(default_factory=list, exclude_if=lambda v: not v)
+    required_inputs: list[InputRequirement] = Field(default_factory=list, exclude_if=lambda v: not v)
     inventory_tolerances: dict[str, float] = Field(default_factory=dict)
     criteria: list[Criterion] = Field(min_length=1)
-    conditions: list[Condition] = Field(min_length=1)
+    conditions: list[Condition] = Field(default_factory=list)
     assumptions: list[Text] = Field(min_length=1)
     limitations: list[Text] = Field(min_length=1)
 
@@ -83,12 +125,31 @@ class ExperimentRequest(DomainModel):
         unique([c.name for c in self.conditions], "condition name")
         if not self.process.steps:
             raise ValueError("A protocol requires ProcessIR steps.")
-        feeds = {f.species_id for f in self.calculation.inventory}
-        if set(self.inventory_tolerances) - feeds or any(v < 0 for v in self.inventory_tolerances.values()):
-            raise ValueError("Inventory tolerances must be nonnegative and reference supplied feeds.")
-        species = {s.species_id for s in self.chemical.species}
-        if any(c.species_id not in species for c in self.criteria):
-            raise ValueError("Criterion species must exist in ChemicalIR.")
+        if self.evaluations:
+            if self.chemical is not None or self.calculation is not None or self.inventory_tolerances:
+                raise ValueError("Named evaluations cannot be mixed with legacy chemical inputs.")
+            unique([a.reference.artifact_id for a in self.artifacts] + [self.process.artifact_id], "artifact ID")
+            unique([e.evaluation_id for e in self.evaluations], "evaluation ID")
+            unique([i.input_id for i in self.required_inputs], "required input ID")
+            artifact_ids = {a.reference.artifact_id for a in self.artifacts} | {self.process.artifact_id}
+            if any(e.artifact_id not in artifact_ids for e in self.evaluations):
+                raise ValueError("Evaluation references an absent artifact.")
+            if any(i.artifact_id is not None and i.artifact_id not in artifact_ids for i in self.required_inputs):
+                raise ValueError("Required input references an absent artifact.")
+            evaluation_ids = {e.evaluation_id for e in self.evaluations}
+            if any(i.evaluation_id is not None and i.evaluation_id not in evaluation_ids for i in self.required_inputs):
+                raise ValueError("Required input references an absent evaluation.")
+            if any(c.target is None or c.target.evaluation_id not in evaluation_ids for c in self.criteria):
+                raise ValueError("Each criterion must target a declared evaluation.")
+        else:
+            if self.chemical is None or self.calculation is None or self.artifacts or self.required_inputs:
+                raise ValueError("Declare named evaluations, or supply a complete legacy chemical request.")
+            feeds = {f.species_id for f in self.calculation.inventory}
+            if set(self.inventory_tolerances) - feeds or any(v < 0 for v in self.inventory_tolerances.values()):
+                raise ValueError("Inventory tolerances must be nonnegative and reference supplied feeds.")
+            species = {s.species_id for s in self.chemical.species}
+            if any(c.target is not None or c.species_id not in species for c in self.criteria):
+                raise ValueError("Legacy criterion species must exist in ChemicalIR.")
         if self.revision > 1 and self.parent_plan_sha256 is None:
             raise ValueError("Refinement must reference the historical plan.")
         return self
@@ -98,9 +159,11 @@ class ExperimentPlan(DomainModel):
     """Frozen, self-contained prediction/protocol receipt; integrity is checked on use."""
 
     format: Literal["forma.experiment-plan"] = "forma.experiment-plan"
-    schema_version: Literal["1.0"] = "1.0"
+    schema_version: Literal["1.0", "2.0"] = "1.0"
     request: ExperimentRequest
-    prediction: StoichiometryResult
+    prediction: StoichiometryResult | None = Field(None, exclude_if=lambda v: v is None)
+    predictions: list[EvaluationReceipt] = Field(default_factory=list, exclude_if=lambda v: not v)
+    input_requirements: list[ResolvedInput] = Field(default_factory=list, exclude_if=lambda v: not v)
     process_reference: ArtifactReference
     protocol_step_ids: list[Text]
     scientific_sha256: Digest
@@ -119,8 +182,9 @@ class Observation(DomainModel):
 
     observation_id: Text
     criterion_id: Text
-    species_id: Text
-    basis: Literal["net_formation", "total_inventory", "isolated_product"]
+    species_id: Text | None = Field(None, exclude_if=lambda v: v is None)
+    target: OutputTarget | None = Field(None, exclude_if=lambda v: v is None)
+    basis: Text
     readings: list[Reading] = Field(min_length=1, max_length=2)
     evidence_ids: list[Text] = Field(min_length=1)
     assumptions_confirmed: bool = False
@@ -136,6 +200,7 @@ class ExperimentRun(DomainModel):
     started_at: datetime
     completed_at: datetime
     operator: Text
+    inputs: dict[str, Reading] = Field(default_factory=dict, exclude_if=lambda v: not v)
     actual_inventory: dict[str, Reading] = Field(default_factory=dict)
     conditions: dict[str, Reading] = Field(default_factory=dict)
     observations: list[Observation] = Field(default_factory=list)

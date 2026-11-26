@@ -11,7 +11,7 @@ from .compatibility import export_hardware_ir, import_hardware_ir
 from .composition import ArtifactReference, DomainLink, ProductBundle, compose_product, validate_product
 from .generation import DeclaredInput, fixture_author, generate_product
 from .planning import ProductPlan, ProductScope, select_domains
-from .providers import DomainRegistry, NATIVE_PROVIDER
+from .providers import ArtifactInput, DomainRegistry, NATIVE_PROVIDER
 from .registry import domain_model, get_registry, parse_domain, validate_domain
 from .selection import SelectionDecision, SelectionProject, apply_selection, prepare_selection
 
@@ -60,13 +60,6 @@ class ComposeInput(DomainModel):
     plan: ProductPlan | None = None
 
 
-class ArtifactInput(DomainModel):
-    """An external provider's standalone payload plus its explicit identity contract."""
-
-    reference: ArtifactReference
-    artifact: dict[str, Any]
-
-
 class ImportInput(DomainModel):
     """Legacy import with an explicit stable product identity."""
 
@@ -89,7 +82,7 @@ def call_domain_tool(operation: Operation, payload: dict[str, Any], *, registry:
     """Execute a stateless operation; no hosted revision or file is implicitly changed."""
     if operation == "experiment":
         from forma_core.experiments.tools import experiment_tool
-        return experiment_tool(payload)
+        return experiment_tool(payload, registry=registry)
     if operation == "bindings":
         from forma_core.geometry_bindings.tools import binding_tool
         return binding_tool(payload)

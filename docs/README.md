@@ -49,3 +49,5 @@
 - [Legal and policy drafts](legal/README.md)
 
 - [Empirical physical process verification](empirical-verification.md): frozen predictions, manual protocols, observations and remote comparison.
+
+- [Declarative water-mixing case study](water-mixing-case-study.md): thermal-only inputs, named outputs and a six-case synthetic benchmark.
