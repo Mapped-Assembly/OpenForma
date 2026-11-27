@@ -5,6 +5,7 @@ updates are conservative discrete transactions after observed motion completion.
 """
 from __future__ import annotations
 
+from copy import deepcopy
 from fractions import Fraction
 from typing import Any, Literal
 
@@ -49,6 +50,7 @@ class Transfer(DomainModel):
     target: Text
     stream_id: Text
     mass_g: float = Field(gt=0)
+    entity: Text | None = None
 
 
 class Phase(DomainModel):
@@ -69,6 +71,7 @@ class VirtualWorkcell(DomainModel):
     """Execution sidecar composing existing contracts; not an engineering IR."""
 
     machine: MachinePackage
+    verification_mode: Literal['strict', 'legacy-unverified'] = 'strict'
     interactions: InteractionSpec | None = None
     geometry_sha256: str = Field(pattern=r'^[a-f0-9]{64}$')
     containers: list[Container] = Field(min_length=1, max_length=100)
@@ -97,6 +100,10 @@ class VirtualWorkcell(DomainModel):
                 raise ValueError('Transfer needs two distinct known containers.')
             if phase.agitate and phase.agitate not in containers:
                 raise ValueError('Agitation references an unknown container.')
+        if self.verification_mode == 'strict' and self.interactions is None:
+            raise ValueError('Strict workcells require interaction declarations; legacy playback must explicitly select legacy-unverified.')
+        if self.verification_mode == 'legacy-unverified' and self.interactions is not None:
+            raise ValueError('Interaction declarations require strict verification mode.')
         if self.interactions:
             entities = {e.body_id: e for e in self.interactions.entities}
             axes = {a.axis_id: a for a in self.machine.definition.axes}
@@ -106,15 +113,41 @@ class VirtualWorkcell(DomainModel):
                         if body in entities and entities[body].kind != 'actor':
                             raise ValueError('Nonactor poses must derive from relationships, not independent axes.')
             bodies = {b for a in axes.values() if a.joint for b in a.joint.body_ids}
+            if bodies - entities.keys():
+                raise ValueError('Every motion body requires an interaction entity.')
+            if {c.body_id for c in self.containers} - entities.keys():
+                raise ValueError('Every inventory container requires an interaction entity.')
             if {e.body_id for e in entities.values() if e.kind == 'actor'} - bodies:
                 raise ValueError('Every actor requires a feedback body binding.')
             for mechanism in self.interactions.mechanisms:
                 if mechanism.input_axis not in axes:
                     raise ValueError('Unknown mechanism input axis.')
+            surfaces = {surface.surface_id: surface for surface in self.interactions.surfaces}
+            container_bodies = {c.container_id: c.body_id for c in self.containers}
             for phase in self.phases:
+                used_axes = set(actions[phase.action_id].axes)
+                drives = {m.input_axis: m.body_id for m in self.interactions.mechanisms}
+                for axis_id in used_axes:
+                    if axes[axis_id].joint is None and axis_id not in drives:
+                        raise ValueError('Every commanded axis requires a body or transmission binding.')
+                    if axis_id in drives and not any(cmd.action == 'actuate' and cmd.entity == drives[axis_id] for cmd in phase.before):
+                        raise ValueError('A transmission action requires phase-scoped actuation before dispatch.')
+                if phase.transfer:
+                    transfer = phase.transfer
+                    if transfer.entity not in entities or entities[transfer.entity].kind != 'movable':
+                        raise ValueError('Strict transfers require a movable entity.')
+                    target = container_bodies[transfer.target]
+                    matches = [cmd for cmd in [*phase.before, *phase.after]
+                               if cmd.entity == transfer.entity and (
+                                   (cmd.action == 'grasp' and cmd.actor == target) or
+                                   (cmd.action == 'release' and cmd.surface in surfaces and surfaces[cmd.surface].body_id == target))]
+                    if len(matches) != 1:
+                        raise ValueError('Transfer requires exactly one matching grasp or supported release.')
                 for command in [*phase.before, *phase.after]:
                     if command.entity not in entities or command.actor not in entities:
                         raise ValueError('Unknown interaction action target.')
+                    if command.surface is not None and command.surface not in surfaces:
+                        raise ValueError('Unknown interaction support surface.')
                     if command.action not in entities[command.actor].actions:
                         raise ValueError('Actor does not provide the requested action.')
                     if command.action not in entities[command.entity].actions:
@@ -254,6 +287,7 @@ class WorkcellAdapter(MachineProcessAdapter):
         self.current: Phase | None = None
         self.index: dict[str, int] = {}
         self.failure: str | None = None
+        self.transfer_sources_checked: set[str] = set()
         self.interactions = InteractionRuntime(spec.interactions) if spec.interactions else None
 
     def evidence_basis(self, plan: ProcessExecutionPlan, binding: StepBinding) -> str:
@@ -278,6 +312,12 @@ class WorkcellAdapter(MachineProcessAdapter):
                 from .kinematics import body_transforms
                 positions = {key: value['simulated'] for key, value in self.host.runtime.snapshot()['axes'].items()}
                 self.interactions.update(body_transforms(self.spec, positions), positions)
+                if phase.transfer and phase.phase_id not in self.transfer_sources_checked:
+                    source = next(c.body_id for c in self.spec.containers if c.container_id == phase.transfer.source)
+                    relation = self.interactions.parent.get(phase.transfer.entity)
+                    if relation is None or relation[0] != source:
+                        raise ValueError('Transfer source does not own or support the declared entity.')
+                    self.transfer_sources_checked.add(phase.phase_id)
                 self.interactions.commands(phase.before, phase.phase_id)
         except ValueError as exc:
             self.failure = str(exc)
@@ -292,7 +332,15 @@ class WorkcellAdapter(MachineProcessAdapter):
             return result
         try:
             if self.interactions:
-                self.interactions.commands(phase.after, phase.phase_id, after=True)
+                trial = deepcopy(self.interactions)
+                trial.commands(phase.after, phase.phase_id, after=True)
+                if phase.transfer:
+                    target = next(c.body_id for c in self.spec.containers if c.container_id == phase.transfer.target)
+                    relation = trial.parent.get(phase.transfer.entity)
+                    events = [e for e in trial.events if e['phase_id'] == phase.phase_id and e['entity'] == phase.transfer.entity and e['action'] in {'grasp', 'release'}]
+                    if relation is None or relation[0] != target or relation[2] not in {'grasp', 'support'} or not events:
+                        raise ValueError('Transfer requires observed grasp or supported release to its target.')
+                self.interactions = trial
         except ValueError as exc:
             self.failure = str(exc)
             return AdapterResult(status='failed', provenance='simulated', message=self.failure)
@@ -374,7 +422,9 @@ def simulate_workcell(plan: ProcessExecutionPlan, spec: VirtualWorkcell, run_id:
             'submissions': results, 'stop_reason': reason, 'workcell_sha256': fingerprint(spec),
             'geometry_sha256': spec.geometry_sha256, 'machine_package_sha256': spec.machine.sha256,
             'fidelity': 'ideal-kinematics + conservative discrete transfers; no fluid, contact or reaction dynamics',
-            'physical_verification': 'not_run'}
+            'physical_verification': 'not_run',
+            'interaction_verification': 'kinematic-anchors-only' if spec.interactions else 'unverified',
+            'verification_mode': spec.verification_mode}
         if result['runtime']['status'] == 'completed' and plan.experiment:
             from forma_core.experiments.evaluation import compare_experiment
             trial = runtime.experiment_run('declarative virtual workcell')

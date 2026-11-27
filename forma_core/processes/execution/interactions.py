@@ -102,7 +102,7 @@ class InteractionCommand(DomainModel):
 
 
 class InteractionSpec(DomainModel):
-    """Optional strict interaction section of the existing workcell sidecar."""
+    """Strict interaction section of the existing workcell sidecar."""
 
     entities: list[Entity] = Field(min_length=1)
     surfaces: list[Surface] = Field(default_factory=list)

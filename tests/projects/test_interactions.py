@@ -72,7 +72,7 @@ def test_fixed_and_movable_axes_are_rejected_before_dispatch() -> None:
     """An independent body pose axis cannot bypass the strict interaction graph."""
     data = small_case(); body = next(a['joint']['body_ids'][0] for a in data['workcell']['machine']['definition']['axes'] if a.get('joint'))
     spec = fixture().model_dump(mode='json'); spec['entities'][0]['body_id'] = body; spec['surfaces'][0]['body_id'] = body
-    data['workcell']['interactions'] = spec
+    data['workcell']['verification_mode'] = 'strict'; data['workcell']['interactions'] = spec
     with pytest.raises(ValueError, match='Nonactor poses'):
         VirtualWorkcell.model_validate(data['workcell'])
 
@@ -117,9 +117,14 @@ def test_process_completion_is_blocked_by_failed_placement() -> None:
     entities.extend([
         {'body_id':'table','kind':'fixed','initial_pose_mm':pose(*location)},
         {'body_id':'payload','kind':'movable','actions':['grasp','carry','release'],'initial_pose_mm':transforms[actor].tolist(),'contact_mm':[[0,0,0]],'initial_support':'tabletop'}])
-    data['workcell']['interactions'] = {'entities':entities,'surfaces':[
+    data['workcell']['verification_mode'] = 'strict'; data['workcell']['interactions'] = {'entities':entities,'surfaces':[
         {'surface_id':'tabletop','body_id':'table','bounds_xy_mm':[-100,-100,100,100],'height_mm':0},
         {'surface_id':'unreachable','body_id':'table','bounds_xy_mm':[-100,-100,100,100],'height_mm':1000}]}
+    for phase in data['workcell']['phases']:
+        phase.pop('transfer', None)
+    for container in data['workcell']['containers']:
+        if container['body_id'] not in {e['body_id'] for e in entities}:
+            entities.append({'body_id':container['body_id'],'kind':'fixed','initial_pose_mm':pose()})
     first=data['workcell']['phases'][0]
     first['before']=[{'action':'grasp','entity':'payload','actor':actor}]
     first['after']=[{'action':'release','entity':'payload','actor':actor,'surface':'unreachable'}]

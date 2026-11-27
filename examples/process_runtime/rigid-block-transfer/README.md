@@ -35,3 +35,9 @@ verification is claimed. The mannequin uses the existing 1.75 m, 16-segment mesh
 Support patches coincide with the native mesh interior floors: 4 mm above the
 tray bottom, inside its 4 mm walls. The raised rim is not treated as a solid
 support plane across the empty tray interior.
+
+Strict execution is now the default. Transfers name the rigid payload (`entity`),
+require source ownership and commit only after a matching grasp or supported
+release establishes target ownership. Removing interaction declarations or hooks
+is rejected. Intermediate motion frames are explicitly declared as move-only
+kinematic actors; they are coordinate frames, not additional people.

@@ -101,7 +101,7 @@ feedback-only pose transforms, hash tampering, and the full example.
 
 ## Strict entity interactions
 
-The optional `workcell.interactions` section declares geometry identities, allowed
+The required-by-default `workcell.interactions` section declares geometry identities, allowed
 entity actions, initial rigid poses, bounded supporting patches and scalar
 mechanical transmissions. This extends the existing execution sidecar; it is not
 a new domain IR. Each phase may declare `before` and `after` interaction actions.
@@ -134,7 +134,8 @@ This verifies **sampled kinematic motion provenance and declared anchors only**.
 It does not verify forces, friction, stability, full mesh collision, continuous-time
 collision, human balance, material formation, or actuator energy. Human body axes
 remain authored kinematics. Virtual human input axes are not physical motors.
-Legacy workcells without this section remain unverified choreography, explicitly
+Legacy workcells must opt into `legacy-unverified` to omit this section. They are
+unverified choreography, explicitly
 separate from strict interaction evidence. The geometry consumer must resolve all
 rendered body identities against the declared entity inventory; no silent visual
 fallback is allowed for a strict scene.
@@ -144,3 +145,34 @@ same current state with an empty history array plus `event_count` and
 `last_event_sha256`. The default snapshot still includes the complete append-only
 history. The workcell host uses compact polling and exports full history at the
 end; this avoids repeatedly copying all prior observations for every pose sample.
+
+
+### Strict defaults and inventory evidence
+
+`verification_mode` defaults to `strict`. Omitting interaction declarations fails
+before host dispatch. Every motion body (including intermediate coordinate frames)
+and inventory container must resolve to an entity. Actors need declared movement
+capabilities; grasp/release/use/actuate commands require capabilities on both ends.
+Release supports and scalar transmissions must resolve before execution.
+
+Each strict transfer must name its `entity`, a movable payload, and have exactly
+one matching grasp or supported release in that phase's boundary commands. Before
+the phase acts, the payload must belong to the source container's body through a
+support or grasp relationship. Before inventory commits, the same payload must
+belong to the target through a successful grasp or supported release. This bounds
+rigid-payload transfers; pouring, fiber deposition and other material changes need
+an appropriate future relationship contract and are not silently inferred.
+
+For archival choreography only, explicitly set
+`verification_mode: "legacy-unverified"` and omit interaction declarations/hooks.
+The result reports `interaction_verification: "unverified"`; workflow completion
+is not interaction or physical verification. The original chemical workcell is
+explicitly marked this way. New workcells should follow the rigid-block example.
+Strict results report `kinematic-anchors-only`; physical verification stays
+`not_run` in both modes. These declarations do not establish forces or friction.
+
+Run the regression benchmark with:
+
+```bash
+python -m pytest tests/projects/test_interactions.py tests/projects/test_rigid_block_transfer.py tests/projects/test_workcell_execution.py tests/projects/test_process_runtime.py -q
+```

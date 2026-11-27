@@ -3260,6 +3260,7 @@
       }
     ],
     "frame_interval_s": 0.15,
-    "maximum_duration_s": 100.0
+    "maximum_duration_s": 100.0,
+    "verification_mode": "legacy-unverified"
   }
 }
