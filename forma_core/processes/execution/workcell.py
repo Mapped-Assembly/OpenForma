@@ -16,6 +16,7 @@ from forma_core.domains.base import DomainModel, Text, fingerprint, unique
 from .adapters import MachineProcessAdapter, VirtualProcessAdapter
 from .models import AdapterResult, MachineBinding, ProcessExecutionPlan, StepBinding, StepSubmission
 from .runtime import ProcessRuntime
+from .interactions import InteractionCommand, InteractionSpec, InteractionRuntime
 
 
 class Container(DomainModel):
@@ -60,12 +61,15 @@ class Phase(DomainModel):
     parameters: dict[str, float] = Field(default_factory=dict)
     transfer: Transfer | None = None
     agitate: Text | None = None
+    before: list[InteractionCommand] = Field(default_factory=list)
+    after: list[InteractionCommand] = Field(default_factory=list)
 
 
 class VirtualWorkcell(DomainModel):
     """Execution sidecar composing existing contracts; not an engineering IR."""
 
     machine: MachinePackage
+    interactions: InteractionSpec | None = None
     geometry_sha256: str = Field(pattern=r'^[a-f0-9]{64}$')
     containers: list[Container] = Field(min_length=1, max_length=100)
     phases: list[Phase] = Field(min_length=1, max_length=1000)
@@ -93,6 +97,30 @@ class VirtualWorkcell(DomainModel):
                 raise ValueError('Transfer needs two distinct known containers.')
             if phase.agitate and phase.agitate not in containers:
                 raise ValueError('Agitation references an unknown container.')
+        if self.interactions:
+            entities = {e.body_id: e for e in self.interactions.entities}
+            axes = {a.axis_id: a for a in self.machine.definition.axes}
+            for axis in axes.values():
+                if axis.joint:
+                    for body in axis.joint.body_ids:
+                        if body in entities and entities[body].kind != 'actor':
+                            raise ValueError('Nonactor poses must derive from relationships, not independent axes.')
+            bodies = {b for a in axes.values() if a.joint for b in a.joint.body_ids}
+            if {e.body_id for e in entities.values() if e.kind == 'actor'} - bodies:
+                raise ValueError('Every actor requires a feedback body binding.')
+            for mechanism in self.interactions.mechanisms:
+                if mechanism.input_axis not in axes:
+                    raise ValueError('Unknown mechanism input axis.')
+            for phase in self.phases:
+                for command in [*phase.before, *phase.after]:
+                    if command.entity not in entities or command.actor not in entities:
+                        raise ValueError('Unknown interaction action target.')
+                    if command.action not in entities[command.actor].actions:
+                        raise ValueError('Actor does not provide the requested action.')
+                    if command.action not in entities[command.entity].actions:
+                        raise ValueError('Entity does not provide the requested action.')
+        elif any(p.before or p.after for p in self.phases):
+            raise ValueError('Interaction actions require entity declarations.')
         return self
 
     def validate_plan(self, plan: ProcessExecutionPlan) -> None:
@@ -186,7 +214,7 @@ class IdealMachineHost:
 
     def capabilities(self) -> dict[str, Any]:
         """Advertise the exact package consumed by the process execution adapter."""
-        return {'machine_package': self.package.model_dump(mode='json')}
+        return {'machine_package': self.package}
 
     def command(self, op: str, **parameters: Any) -> dict[str, Any]:
         """Use existing lease, sequence, watchdog, action and feedback validation."""
@@ -217,6 +245,8 @@ class WorkcellAdapter(MachineProcessAdapter):
         """Use a separate action key per phase; retain every completed action receipt."""
         super().__init__(host, spec.machine.definition.machine_id)
         self.spec = spec.model_copy(deep=True)
+        self.host = host
+        self.package_sha256 = self.spec.machine.sha256
         self.ledger = MaterialLedger(spec.containers)
         self.machine = MachineProcessAdapter(host, self.machine_id)
         self.virtual = VirtualProcessAdapter()
@@ -224,6 +254,7 @@ class WorkcellAdapter(MachineProcessAdapter):
         self.current: Phase | None = None
         self.index: dict[str, int] = {}
         self.failure: str | None = None
+        self.interactions = InteractionRuntime(spec.interactions) if spec.interactions else None
 
     def evidence_basis(self, plan: ProcessExecutionPlan, binding: StepBinding) -> str:
         """All inputs and results of this offline adapter remain illustrative."""
@@ -243,20 +274,32 @@ class WorkcellAdapter(MachineProcessAdapter):
         phase = self.current = phases[index]
         try:
             self.ledger.validate(phase)
+            if self.interactions:
+                from .kinematics import body_transforms
+                positions = {key: value['simulated'] for key, value in self.host.runtime.snapshot()['axes'].items()}
+                self.interactions.update(body_transforms(self.spec, positions), positions)
+                self.interactions.commands(phase.before, phase.phase_id)
         except ValueError as exc:
             self.failure = str(exc)
             return AdapterResult(status='failed', provenance='simulated', message=self.failure)
         machine_binding = StepBinding(step_id=phase.phase_id, machine=MachineBinding(
-            machine_id=self.machine_id, package_sha256=self.spec.machine.sha256,
+            machine_id=self.machine_id, package_sha256=self.package_sha256,
             action_id=phase.action_id, parameters=phase.parameters))
         result = self.machine.execute(plan, machine_binding, submission)
         if result.status == 'failed':
             self.failure = result.message
         if result.status != 'ready':
             return result
+        try:
+            if self.interactions:
+                self.interactions.commands(phase.after, phase.phase_id, after=True)
+        except ValueError as exc:
+            self.failure = str(exc)
+            return AdapterResult(status='failed', provenance='simulated', message=self.failure)
         self.ledger.apply(phase)
         self.completed.append({'phase_id': phase.phase_id, 'step_id': phase.step_id,
-                               'receipt': result.machine_receipt, 'materials': self.ledger.snapshot()})
+                               'receipt': result.machine_receipt, 'materials': self.ledger.snapshot(),
+                               'interactions': self.interactions.snapshot() if self.interactions else None})
         self.index[binding.step_id] = index + 1
         if index + 1 < len(phases):
             return AdapterResult(status='unknown', provenance='simulated', message='Next declared phase pending.',
@@ -281,7 +324,7 @@ def simulate_workcell(plan: ProcessExecutionPlan, spec: VirtualWorkcell, run_id:
     reason = None
     try:
         while host.time <= spec.maximum_duration_s:
-            state = runtime.snapshot()
+            state = runtime.snapshot(include_events=False)
             if state['status'] in {'completed', 'failed', 'cancelled'}:
                 break
             step = state['active_step']
@@ -297,7 +340,7 @@ def simulate_workcell(plan: ProcessExecutionPlan, spec: VirtualWorkcell, run_id:
             count += 1
             response = runtime.submit(step, submission)
             results.append(response)
-            state = runtime.snapshot()
+            state = runtime.snapshot(include_events=False)
             machine = host.runtime.snapshot()
             frame = {'time_s': round(host.time, 6), 'step_id': step,
                      'phase_id': adapter.current.phase_id if adapter.current else None,
@@ -305,7 +348,8 @@ def simulate_workcell(plan: ProcessExecutionPlan, spec: VirtualWorkcell, run_id:
                      'process_status': state['status'], 'steps': state['steps'],
                      'positions': {key: value['simulated'] for key, value in machine['axes'].items()},
                      'machine_action': machine['action'], 'materials': adapter.ledger.snapshot(),
-                     'process_event_sha256': state['events'][-1]['sha256'] if state['events'] else None}
+                     'interactions': adapter.interactions.snapshot() if adapter.interactions else None,
+                     'process_event_sha256': state['last_event_sha256']}
             frames.append(frame)
             # Preconditions, unsupported science and absent readings must not be papered over.
             if response['adapter'] is None or response['status'] in {'failed', 'unsupported'}:

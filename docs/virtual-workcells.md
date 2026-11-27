@@ -98,3 +98,49 @@ Regression tests cover real machine feedback gating, action interruption,
 conservative/idempotent transfers, atomic overflow/overdraw rejection, a second
 material mixture, unresolved bindings, absent preconditions, hardware rejection,
 feedback-only pose transforms, hash tampering, and the full example.
+
+## Strict entity interactions
+
+The optional `workcell.interactions` section declares geometry identities, allowed
+entity actions, initial rigid poses, bounded supporting patches and scalar
+mechanical transmissions. This extends the existing execution sidecar; it is not
+a new domain IR. Each phase may declare `before` and `after` interaction actions.
+
+`grasp` requires coincident actor/object grip anchors and an unoccupied hand.
+Carried transforms derive from the hand and a captured rigid offset. Nonactor
+entities cannot have independently commanded pose axes in this mode. `release`
+requires the owning hand and a valid receiving support patch. All declared contact
+anchors must be on that finite patch; the patch must face upwards. Release is
+atomic, so a rejected placement leaves the grasp intact. Fixed equipment retains
+its declared pose. Supported loads follow the carrier, with support orientation
+checked on each sampled feedback update. `use` requires contact with the declared
+control/grip anchor. `actuate` grants a phase-scoped human input for a declared
+scalar transmission; absent contact, out-of-range travel or an undeclared input
+blocks completion. The transmission's pitch/ratio is a scenario assumption.
+
+Initial retention can declare adhesion or a fixture holding an object to a carrier
+(`initial_retention: true`, with a valid `initial_support`). This differs from
+ordinary support and must be explicit: it allows an attached item to remain with
+an inverted carrier. Its strength is **unverified**. This is useful for a wet-web
+visual proxy retained on a mould, not evidence that the real web will adhere.
+
+Interaction state updates from machine feedback before process completion. A
+failed interaction prevents inventory effects and downstream completion. After
+commands commit only on a matching completed machine action receipt. The trace
+includes authoritative entity poses, ownership/support relationships, and action
+events. Viewers must use those recorded entity poses for strict workcells.
+
+This verifies **sampled kinematic motion provenance and declared anchors only**.
+It does not verify forces, friction, stability, full mesh collision, continuous-time
+collision, human balance, material formation, or actuator energy. Human body axes
+remain authored kinematics. Virtual human input axes are not physical motors.
+Legacy workcells without this section remain unverified choreography, explicitly
+separate from strict interaction evidence. The geometry consumer must resolve all
+rendered body identities against the declared entity inventory; no silent visual
+fallback is allowed for a strict scene.
+
+For long sequences, `ProcessRuntime.snapshot(include_events=False)` returns the
+same current state with an empty history array plus `event_count` and
+`last_event_sha256`. The default snapshot still includes the complete append-only
+history. The workcell host uses compact polling and exports full history at the
+end; this avoids repeatedly copying all prior observations for every pose sample.

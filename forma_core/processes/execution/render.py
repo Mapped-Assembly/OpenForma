@@ -15,39 +15,7 @@ from forma_core.domains.base import fingerprint
 from .workcell import VirtualWorkcell
 
 
-def body_transforms(spec: VirtualWorkcell, positions: dict[str, float | None]) -> dict[str, Any]:
-    """Resolve the existing MachineDefinition joint hierarchy using simulated feedback."""
-    import numpy as np
-    axes = {a.axis_id: a for a in spec.machine.definition.axes}
-    transforms: dict[str, Any] = {}
-
-    def resolve(axis_id: str) -> Any:
-        """Compose rotation/translation about each declared world rest origin."""
-        if axis_id in transforms:
-            return transforms[axis_id]
-        joint = axes[axis_id].joint
-        if joint is None:
-            raise ValueError('Renderable axes require joint bindings.')
-        value = positions.get(axis_id)
-        if value is None or not math.isfinite(value):
-            raise ValueError('Cannot render missing or nonfinite machine feedback.')
-        value *= joint.sign
-        matrix = np.eye(4)
-        direction = np.array(joint.axis)
-        if joint.kind == 'prismatic':
-            matrix[:3, 3] = direction * value
-        else:
-            angle = math.radians(value)
-            x, y, z = direction
-            cross = np.array([[0., -z, y], [z, 0., -x], [-y, x, 0.]])
-            rotation = np.eye(3) + math.sin(angle)*cross + (1-math.cos(angle))*(cross@cross)
-            matrix[:3, :3] = rotation
-            origin = np.array(joint.origin_mm)
-            matrix[:3, 3] = origin - rotation@origin
-        transforms[axis_id] = resolve(joint.parent_axis)@matrix if joint.parent_axis else matrix
-        return transforms[axis_id]
-
-    return {body: resolve(axis.axis_id) for axis in axes.values() if axis.joint for body in axis.joint.body_ids}
+from .kinematics import body_transforms
 
 
 def rasterize(polygons: list[tuple[float, Any, tuple[int, int, int]]], width: int, height: int) -> Any:
@@ -99,6 +67,8 @@ def render_workcell(request: dict[str, Any], trace: dict[str, Any], scene: dict[
     if not trace['frames']:
         raise ValueError('No recorded workcell frames.')
     bodies = {b['id']: b for b in scene['bodies']}
+    if spec.interactions and bodies.keys() - {e.body_id for e in spec.interactions.entities}:
+        raise ValueError('Strict geometry contains undeclared entities.')
     if len(bodies) != len(scene['bodies']):
         raise ValueError('Duplicate geometry body identity.')
     required = {b for a in spec.machine.definition.axes if a.joint for b in a.joint.body_ids}
@@ -119,7 +89,12 @@ def render_workcell(request: dict[str, Any], trace: dict[str, Any], scene: dict[
     identity = np.eye(4)
     images = []
     for frame in trace['frames']:
-        transforms = body_transforms(spec, frame['positions'])
+        if spec.interactions:
+            if not frame.get('interactions'):
+                raise ValueError('Strict workcell frame lacks causal interaction evidence.')
+            transforms = {key: np.asarray(value) for key, value in frame['interactions']['poses_mm'].items()}
+        else:
+            transforms = body_transforms(spec, frame['positions'])
         polygons: list[tuple[float, Any, tuple[int, int, int]]] = []
         def project(points: Any) -> Any:
             """Fixed orthographic projection preserves comparable poses between frames."""

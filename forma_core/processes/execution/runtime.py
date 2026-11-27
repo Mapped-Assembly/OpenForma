@@ -216,8 +216,8 @@ class ProcessRuntime:
         self._active = None
         return self.snapshot()
 
-    def snapshot(self) -> dict[str, Any]:
-        """Expose copies for UI/animation/persistence; event completion never proves physics."""
+    def snapshot(self, *, include_events: bool = True) -> dict[str, Any]:
+        """Expose copied state, optionally omitting history during high-rate polling."""
         import copy
         operations = {}
         for operation in self._plan.process.operations:
@@ -228,7 +228,9 @@ class ProcessRuntime:
             'status': 'cancelled' if self._cancelled else 'completed' if all(s == 'completed' for s in self._states.values()) else 'failed' if 'failed' in self._states.values() else 'running',
             'steps': self._states, 'operations': operations, 'active_step': self._active,
             'ready_steps': self.ready_steps(), 'batches': self._batches,
-            'events': [e.model_dump(mode='json') for e in self._events],
+            'events': [e.model_dump(mode='json') for e in self._events] if include_events else [],
+            'event_count': len(self._events),
+            'last_event_sha256': self._events[-1].sha256 if self._events else None,
             'physical_verification': 'not_evaluated', 'material_balance': 'unknown'})
 
     def experiment_run(self, operator: str) -> ExperimentRun:
