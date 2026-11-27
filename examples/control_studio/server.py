@@ -108,6 +108,15 @@ def create_app(registry=None, *, package_paths=(), task_agent=None, task_directo
             if len(scenes) != 1:
                 raise ValueError("SO-101 package requires exactly one hashed mujoco-scene artifact.")
             adapter = SO101Adapter(path.parent/scenes[0].path)
+        elif package.adapter.adapter_id == "forma.mujoco-joints":
+            from forma_core.control.mujoco_joints import MujocoJointAdapter, load_mujoco_configuration
+            configurations = [a for a in package.artifacts if a.role == "mujoco-joints"]
+            if len(configurations) != 1:
+                raise ValueError("MuJoCo package requires exactly one hashed mujoco-joints artifact.")
+            config_path = path.parent/configurations[0].path
+            adapter = MujocoJointAdapter(load_mujoco_configuration(config_path), config_path.parent)
+            if adapter.definition() != package.definition:
+                raise ValueError("MuJoCo definition differs from the machine package.")
         elif package.adapter.adapter_id != "forma.ideal":
             raise ValueError("Register this adapter explicitly through MachineRegistry.add_package().")
         registry.add_package(package, adapter)
@@ -267,7 +276,7 @@ def create_app(registry=None, *, package_paths=(), task_agent=None, task_directo
         machine = registry.get(machine_id)
         machine._require_owner(body.session_id)
         adapter = machine.adapter
-        if hasattr(adapter, "inverse_kinematics") and hasattr(adapter, "fresh"):
+        if not isinstance(adapter, FirmwareSilAdapter) and callable(getattr(adapter, "fresh", None)):
             if body.op != "reset" or body.axis is not None:
                 raise ControlError("unsupported_task_operation")
             fresh = adapter.fresh()
