@@ -1,0 +1,4374 @@
+{
+  "action": "simulate",
+  "mode": "virtual",
+  "run_id": "simple-human-block-transfer",
+  "plan": {
+    "process": {
+      "artifact_id": "rigid-block-transfer",
+      "revision": 1,
+      "domain": "process",
+      "schema_version": "1.1",
+      "operations": [
+        {
+          "operation_id": "pick",
+          "operation_type": "manual_pick",
+          "ports": [
+            {
+              "port_id": "out",
+              "direction": "out",
+              "kind": "material",
+              "phase": "solid"
+            }
+          ]
+        },
+        {
+          "operation_id": "carry",
+          "operation_type": "manual_carry",
+          "ports": [
+            {
+              "port_id": "in",
+              "direction": "in",
+              "kind": "material",
+              "phase": "solid"
+            },
+            {
+              "port_id": "out",
+              "direction": "out",
+              "kind": "material",
+              "phase": "solid"
+            }
+          ]
+        },
+        {
+          "operation_id": "place",
+          "operation_type": "manual_place",
+          "ports": [
+            {
+              "port_id": "in",
+              "direction": "in",
+              "kind": "material",
+              "phase": "solid"
+            }
+          ]
+        },
+        {
+          "operation_id": "withdraw",
+          "operation_type": "manual_withdraw",
+          "ports": []
+        }
+      ],
+      "steps": [
+        {
+          "step_id": "pick",
+          "operation_id": "pick",
+          "depends_on": []
+        },
+        {
+          "step_id": "carry",
+          "operation_id": "carry",
+          "depends_on": [
+            "pick"
+          ]
+        },
+        {
+          "step_id": "place",
+          "operation_id": "place",
+          "depends_on": [
+            "carry"
+          ]
+        },
+        {
+          "step_id": "withdraw",
+          "operation_id": "withdraw",
+          "depends_on": [
+            "place"
+          ]
+        }
+      ],
+      "streams": [
+        {
+          "stream_id": "picked-block",
+          "kind": "material",
+          "phase": "solid",
+          "source": {
+            "operation_id": "pick",
+            "port_id": "out"
+          },
+          "target": {
+            "operation_id": "carry",
+            "port_id": "in"
+          },
+          "batch_quantity": {
+            "kind": "mass",
+            "value": 300,
+            "unit": "g",
+            "claim": {
+              "basis": "illustrative",
+              "rationale": "Declared nominal block mass, not weighed."
+            }
+          }
+        },
+        {
+          "stream_id": "placed-block",
+          "kind": "material",
+          "phase": "solid",
+          "source": {
+            "operation_id": "carry",
+            "port_id": "out"
+          },
+          "target": {
+            "operation_id": "place",
+            "port_id": "in"
+          },
+          "batch_quantity": {
+            "kind": "mass",
+            "value": 300,
+            "unit": "g",
+            "claim": {
+              "basis": "illustrative",
+              "rationale": "Declared nominal block mass, not weighed."
+            }
+          }
+        }
+      ]
+    },
+    "bindings": [
+      {
+        "step_id": "pick"
+      },
+      {
+        "step_id": "carry"
+      },
+      {
+        "step_id": "place"
+      },
+      {
+        "step_id": "withdraw"
+      }
+    ]
+  },
+  "submissions": {
+    "pick": {
+      "submission_id": "pick",
+      "actor": "operator-1",
+      "acknowledged": true,
+      "evidence": [
+        {
+          "source_id": "scenario-pick",
+          "basis": "illustrative",
+          "title": "Rigid block handling rehearsal",
+          "rationale": "Authored acknowledgement; no physical measurements."
+        }
+      ]
+    },
+    "carry": {
+      "submission_id": "carry",
+      "actor": "operator-1",
+      "acknowledged": true,
+      "evidence": [
+        {
+          "source_id": "scenario-carry",
+          "basis": "illustrative",
+          "title": "Rigid block handling rehearsal",
+          "rationale": "Authored acknowledgement; no physical measurements."
+        }
+      ]
+    },
+    "place": {
+      "submission_id": "place",
+      "actor": "operator-1",
+      "acknowledged": true,
+      "evidence": [
+        {
+          "source_id": "scenario-place",
+          "basis": "illustrative",
+          "title": "Rigid block handling rehearsal",
+          "rationale": "Authored acknowledgement; no physical measurements."
+        }
+      ]
+    },
+    "withdraw": {
+      "submission_id": "withdraw",
+      "actor": "operator-1",
+      "acknowledged": true,
+      "evidence": [
+        {
+          "source_id": "scenario-withdraw",
+          "basis": "illustrative",
+          "title": "Rigid block handling rehearsal",
+          "rationale": "Authored acknowledgement; no physical measurements."
+        }
+      ]
+    }
+  },
+  "workcell": {
+    "machine": {
+      "definition": {
+        "format": "forma.control-definition",
+        "version": 1,
+        "machine_id": "human-block-transfer",
+        "name": "Human rigid-block transfer",
+        "description": "Virtual human kinematics, no physical motors",
+        "source_project_id": null,
+        "backend": "virtual",
+        "axes": [
+          {
+            "axis_id": "torso__x",
+            "label": "torso__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -80.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "torso__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "torso__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "torso__y",
+            "label": "torso__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -389.29142455969384,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "torso__y",
+              "kind": "prismatic",
+              "parent_axis": "torso__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "torso__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "torso__z",
+            "label": "torso__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 1266.7954401894988,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "torso__z",
+              "kind": "prismatic",
+              "parent_axis": "torso__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "torso__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "torso__rx",
+            "label": "torso__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -19.999999999999996,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "torso__rx",
+              "kind": "revolute",
+              "parent_axis": "torso__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "torso__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "torso__ry",
+            "label": "torso__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "torso__ry",
+              "kind": "revolute",
+              "parent_axis": "torso__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "torso__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "torso__rz",
+            "label": "torso__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "torso__rz",
+              "kind": "revolute",
+              "parent_axis": "torso__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "torso"
+              ]
+            }
+          },
+          {
+            "axis_id": "pelvis__x",
+            "label": "pelvis__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -80.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "pelvis__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "pelvis__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "pelvis__y",
+            "label": "pelvis__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -476.50656110773934,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "pelvis__y",
+              "kind": "prismatic",
+              "parent_axis": "pelvis__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "pelvis__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "pelvis__z",
+            "label": "pelvis__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 1027.173821889092,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "pelvis__z",
+              "kind": "prismatic",
+              "parent_axis": "pelvis__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "pelvis__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "pelvis__rx",
+            "label": "pelvis__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -19.999999999999996,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "pelvis__rx",
+              "kind": "revolute",
+              "parent_axis": "pelvis__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "pelvis__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "pelvis__ry",
+            "label": "pelvis__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "pelvis__ry",
+              "kind": "revolute",
+              "parent_axis": "pelvis__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "pelvis__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "pelvis__rz",
+            "label": "pelvis__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "pelvis__rz",
+              "kind": "revolute",
+              "parent_axis": "pelvis__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "pelvis"
+              ]
+            }
+          },
+          {
+            "axis_id": "neck__x",
+            "label": "neck__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -80.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "neck__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "neck__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "neck__y",
+            "label": "neck__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -309.60073116481306,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "neck__y",
+              "kind": "prismatic",
+              "parent_axis": "neck__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "neck__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "neck__z",
+            "label": "neck__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 1485.7438208326153,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "neck__z",
+              "kind": "prismatic",
+              "parent_axis": "neck__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "neck__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "neck__rx",
+            "label": "neck__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -19.999999999999996,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "neck__rx",
+              "kind": "revolute",
+              "parent_axis": "neck__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "neck__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "neck__ry",
+            "label": "neck__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "neck__ry",
+              "kind": "revolute",
+              "parent_axis": "neck__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "neck__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "neck__rz",
+            "label": "neck__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "neck__rz",
+              "kind": "revolute",
+              "parent_axis": "neck__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "neck"
+              ]
+            }
+          },
+          {
+            "axis_id": "head__x",
+            "label": "head__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -80.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "head__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "head__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "head__y",
+            "label": "head__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -261.2048808842309,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "head__y",
+              "kind": "prismatic",
+              "parent_axis": "head__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "head__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "head__z",
+            "label": "head__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 1618.7103266738213,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "head__z",
+              "kind": "prismatic",
+              "parent_axis": "head__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "head__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "head__rx",
+            "label": "head__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -19.999999999999996,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "head__rx",
+              "kind": "revolute",
+              "parent_axis": "head__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "head__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "head__ry",
+            "label": "head__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "head__ry",
+              "kind": "revolute",
+              "parent_axis": "head__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "head__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "head__rz",
+            "label": "head__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "head__rz",
+              "kind": "revolute",
+              "parent_axis": "head__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "head"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-upper-arm__x",
+            "label": "left-upper-arm__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -214.54451086231325,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-upper-arm__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-upper-arm__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-upper-arm__y",
+            "label": "left-upper-arm__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -449.6496218840458,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-upper-arm__y",
+              "kind": "prismatic",
+              "parent_axis": "left-upper-arm__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-upper-arm__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-upper-arm__z",
+            "label": "left-upper-arm__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 1322.0720930336308,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-upper-arm__z",
+              "kind": "prismatic",
+              "parent_axis": "left-upper-arm__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-upper-arm__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-upper-arm__rx",
+            "label": "left-upper-arm__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -47.35075759395917,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-upper-arm__rx",
+              "kind": "revolute",
+              "parent_axis": "left-upper-arm__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-upper-arm__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-upper-arm__ry",
+            "label": "left-upper-arm__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -13.808377662454262,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-upper-arm__ry",
+              "kind": "revolute",
+              "parent_axis": "left-upper-arm__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-upper-arm__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-upper-arm__rz",
+            "label": "left-upper-arm__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -6.078146922489372,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-upper-arm__rz",
+              "kind": "revolute",
+              "parent_axis": "left-upper-arm__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-upper-arm"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-forearm__x",
+            "label": "left-forearm__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -237.04451086231327,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-forearm__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-forearm__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-forearm__y",
+            "label": "left-forearm__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -460.358197324352,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-forearm__y",
+              "kind": "prismatic",
+              "parent_axis": "left-forearm__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-forearm__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-forearm__z",
+            "label": "left-forearm__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 1142.776652844132,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-forearm__z",
+              "kind": "prismatic",
+              "parent_axis": "left-forearm__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-forearm__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-forearm__rx",
+            "label": "left-forearm__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 58.44377146789238,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-forearm__rx",
+              "kind": "revolute",
+              "parent_axis": "left-forearm__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-forearm__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-forearm__ry",
+            "label": "left-forearm__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 25.924786193135528,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-forearm__ry",
+              "kind": "revolute",
+              "parent_axis": "left-forearm__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-forearm__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-forearm__rz",
+            "label": "left-forearm__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -14.67372712864473,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-forearm__rz",
+              "kind": "revolute",
+              "parent_axis": "left-forearm__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-forearm"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-hand__x",
+            "label": "left-hand__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -300.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-hand__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-hand__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-hand__y",
+            "label": "left-hand__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -350.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-hand__y",
+              "kind": "prismatic",
+              "parent_axis": "left-hand__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-hand__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-hand__z",
+            "label": "left-hand__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 1000.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-hand__z",
+              "kind": "prismatic",
+              "parent_axis": "left-hand__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-hand__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-hand__rx",
+            "label": "left-hand__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-hand__rx",
+              "kind": "revolute",
+              "parent_axis": "left-hand__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-hand__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-hand__ry",
+            "label": "left-hand__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-hand__ry",
+              "kind": "revolute",
+              "parent_axis": "left-hand__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-hand__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-hand__rz",
+            "label": "left-hand__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-hand__rz",
+              "kind": "revolute",
+              "parent_axis": "left-hand__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-hand"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-thigh__x",
+            "label": "left-thigh__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -180.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-thigh__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-thigh__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-thigh__y",
+            "label": "left-thigh__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -450.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-thigh__y",
+              "kind": "prismatic",
+              "parent_axis": "left-thigh__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-thigh__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-thigh__z",
+            "label": "left-thigh__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 817.5,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-thigh__z",
+              "kind": "prismatic",
+              "parent_axis": "left-thigh__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-thigh__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-thigh__rx",
+            "label": "left-thigh__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-thigh__rx",
+              "kind": "revolute",
+              "parent_axis": "left-thigh__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-thigh__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-thigh__ry",
+            "label": "left-thigh__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-thigh__ry",
+              "kind": "revolute",
+              "parent_axis": "left-thigh__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-thigh__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-thigh__rz",
+            "label": "left-thigh__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-thigh__rz",
+              "kind": "revolute",
+              "parent_axis": "left-thigh__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-thigh"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-shin__x",
+            "label": "left-shin__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -180.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-shin__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-shin__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-shin__y",
+            "label": "left-shin__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -450.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-shin__y",
+              "kind": "prismatic",
+              "parent_axis": "left-shin__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-shin__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-shin__z",
+            "label": "left-shin__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 334.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-shin__z",
+              "kind": "prismatic",
+              "parent_axis": "left-shin__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-shin__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-shin__rx",
+            "label": "left-shin__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-shin__rx",
+              "kind": "revolute",
+              "parent_axis": "left-shin__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-shin__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-shin__ry",
+            "label": "left-shin__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-shin__ry",
+              "kind": "revolute",
+              "parent_axis": "left-shin__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-shin__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-shin__rz",
+            "label": "left-shin__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-shin__rz",
+              "kind": "revolute",
+              "parent_axis": "left-shin__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-shin"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-foot__x",
+            "label": "left-foot__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -180.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-foot__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-foot__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-foot__y",
+            "label": "left-foot__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -450.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-foot__y",
+              "kind": "prismatic",
+              "parent_axis": "left-foot__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-foot__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-foot__z",
+            "label": "left-foot__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 35.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-foot__z",
+              "kind": "prismatic",
+              "parent_axis": "left-foot__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-foot__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-foot__rx",
+            "label": "left-foot__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-foot__rx",
+              "kind": "revolute",
+              "parent_axis": "left-foot__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-foot__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-foot__ry",
+            "label": "left-foot__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-foot__ry",
+              "kind": "revolute",
+              "parent_axis": "left-foot__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-foot__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "left-foot__rz",
+            "label": "left-foot__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "left-foot__rz",
+              "kind": "revolute",
+              "parent_axis": "left-foot__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "left-foot"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-upper-arm__x",
+            "label": "right-upper-arm__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 231.96797511931487,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-upper-arm__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-upper-arm__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-upper-arm__y",
+            "label": "right-upper-arm__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -358.0848337432815,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-upper-arm__y",
+              "kind": "prismatic",
+              "parent_axis": "right-upper-arm__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-upper-arm__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-upper-arm__z",
+            "label": "right-upper-arm__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 1338.1987596615804,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-upper-arm__z",
+              "kind": "prismatic",
+              "parent_axis": "right-upper-arm__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-upper-arm__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-upper-arm__rx",
+            "label": "right-upper-arm__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -17.185304246733782,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-upper-arm__rx",
+              "kind": "revolute",
+              "parent_axis": "right-upper-arm__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-upper-arm__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-upper-arm__ry",
+            "label": "right-upper-arm__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -53.90785472097677,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-upper-arm__ry",
+              "kind": "revolute",
+              "parent_axis": "right-upper-arm__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-upper-arm__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-upper-arm__rz",
+            "label": "right-upper-arm__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -8.78779336127006,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-upper-arm__rz",
+              "kind": "revolute",
+              "parent_axis": "right-upper-arm__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-upper-arm"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-forearm__x",
+            "label": "right-forearm__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 234.46797511931487,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-forearm__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-forearm__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-forearm__y",
+            "label": "right-forearm__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -348.7934091835877,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-forearm__y",
+              "kind": "prismatic",
+              "parent_axis": "right-forearm__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-forearm__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-forearm__z",
+            "label": "right-forearm__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 1208.9033194720819,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-forearm__z",
+              "kind": "prismatic",
+              "parent_axis": "right-forearm__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-forearm__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-forearm__rx",
+            "label": "right-forearm__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 48.84831694440236,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-forearm__rx",
+              "kind": "revolute",
+              "parent_axis": "right-forearm__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-forearm__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-forearm__ry",
+            "label": "right-forearm__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 69.03599541169504,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-forearm__ry",
+              "kind": "revolute",
+              "parent_axis": "right-forearm__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-forearm__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-forearm__rz",
+            "label": "right-forearm__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -34.68967797279517,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-forearm__rz",
+              "kind": "revolute",
+              "parent_axis": "right-forearm__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-forearm"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-hand__x",
+            "label": "right-hand__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 100.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-hand__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-hand__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-hand__y",
+            "label": "right-hand__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -310.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-hand__y",
+              "kind": "prismatic",
+              "parent_axis": "right-hand__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-hand__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-hand__z",
+            "label": "right-hand__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 1100.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-hand__z",
+              "kind": "prismatic",
+              "parent_axis": "right-hand__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-hand__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-hand__rx",
+            "label": "right-hand__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-hand__rx",
+              "kind": "revolute",
+              "parent_axis": "right-hand__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-hand__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-hand__ry",
+            "label": "right-hand__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-hand__ry",
+              "kind": "revolute",
+              "parent_axis": "right-hand__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-hand__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-hand__rz",
+            "label": "right-hand__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-hand__rz",
+              "kind": "revolute",
+              "parent_axis": "right-hand__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-hand"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-thigh__x",
+            "label": "right-thigh__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 20.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-thigh__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-thigh__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-thigh__y",
+            "label": "right-thigh__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -450.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-thigh__y",
+              "kind": "prismatic",
+              "parent_axis": "right-thigh__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-thigh__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-thigh__z",
+            "label": "right-thigh__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 817.5,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-thigh__z",
+              "kind": "prismatic",
+              "parent_axis": "right-thigh__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-thigh__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-thigh__rx",
+            "label": "right-thigh__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-thigh__rx",
+              "kind": "revolute",
+              "parent_axis": "right-thigh__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-thigh__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-thigh__ry",
+            "label": "right-thigh__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-thigh__ry",
+              "kind": "revolute",
+              "parent_axis": "right-thigh__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-thigh__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-thigh__rz",
+            "label": "right-thigh__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-thigh__rz",
+              "kind": "revolute",
+              "parent_axis": "right-thigh__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-thigh"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-shin__x",
+            "label": "right-shin__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 20.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-shin__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-shin__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-shin__y",
+            "label": "right-shin__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -450.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-shin__y",
+              "kind": "prismatic",
+              "parent_axis": "right-shin__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-shin__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-shin__z",
+            "label": "right-shin__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 334.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-shin__z",
+              "kind": "prismatic",
+              "parent_axis": "right-shin__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-shin__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-shin__rx",
+            "label": "right-shin__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-shin__rx",
+              "kind": "revolute",
+              "parent_axis": "right-shin__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-shin__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-shin__ry",
+            "label": "right-shin__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-shin__ry",
+              "kind": "revolute",
+              "parent_axis": "right-shin__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-shin__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-shin__rz",
+            "label": "right-shin__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-shin__rz",
+              "kind": "revolute",
+              "parent_axis": "right-shin__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-shin"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-foot__x",
+            "label": "right-foot__x",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 20.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-foot__x",
+              "kind": "prismatic",
+              "parent_axis": null,
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-foot__x-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-foot__y",
+            "label": "right-foot__y",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -450.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-foot__y",
+              "kind": "prismatic",
+              "parent_axis": "right-foot__x",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-foot__y-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-foot__z",
+            "label": "right-foot__z",
+            "unit": "mm",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 35.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-foot__z",
+              "kind": "prismatic",
+              "parent_axis": "right-foot__y",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-foot__z-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-foot__rx",
+            "label": "right-foot__rx",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": -0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-foot__rx",
+              "kind": "revolute",
+              "parent_axis": "right-foot__z",
+              "axis": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-foot__rx-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-foot__ry",
+            "label": "right-foot__ry",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-foot__ry",
+              "kind": "revolute",
+              "parent_axis": "right-foot__rx",
+              "axis": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-foot__ry-frame"
+              ]
+            }
+          },
+          {
+            "axis_id": "right-foot__rz",
+            "label": "right-foot__rz",
+            "unit": "degree",
+            "minimum": -5000,
+            "maximum": 5000,
+            "neutral": 0.0,
+            "max_rate": 30000,
+            "joint": {
+              "joint_id": "right-foot__rz",
+              "kind": "revolute",
+              "parent_axis": "right-foot__ry",
+              "axis": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "origin_mm": [
+                0,
+                0,
+                0
+              ],
+              "body_ids": [
+                "right-foot"
+              ]
+            }
+          }
+        ],
+        "timing": {
+          "update_ms": 20,
+          "telemetry_ms": 50,
+          "heartbeat_ms": 200,
+          "lease_ms": 500,
+          "link_loss_ms": 1000
+        },
+        "model_asset": null
+      },
+      "model_source": "external",
+      "adapter": {
+        "adapter_id": "forma.ideal",
+        "version": 1,
+        "mode": "virtual",
+        "evidence": "ideal-kinematics",
+        "configuration_sha256": null,
+        "actuators": {
+          "torso__x": "torso__x",
+          "torso__y": "torso__y",
+          "torso__z": "torso__z",
+          "torso__rx": "torso__rx",
+          "torso__ry": "torso__ry",
+          "torso__rz": "torso__rz",
+          "pelvis__x": "pelvis__x",
+          "pelvis__y": "pelvis__y",
+          "pelvis__z": "pelvis__z",
+          "pelvis__rx": "pelvis__rx",
+          "pelvis__ry": "pelvis__ry",
+          "pelvis__rz": "pelvis__rz",
+          "neck__x": "neck__x",
+          "neck__y": "neck__y",
+          "neck__z": "neck__z",
+          "neck__rx": "neck__rx",
+          "neck__ry": "neck__ry",
+          "neck__rz": "neck__rz",
+          "head__x": "head__x",
+          "head__y": "head__y",
+          "head__z": "head__z",
+          "head__rx": "head__rx",
+          "head__ry": "head__ry",
+          "head__rz": "head__rz",
+          "left-upper-arm__x": "left-upper-arm__x",
+          "left-upper-arm__y": "left-upper-arm__y",
+          "left-upper-arm__z": "left-upper-arm__z",
+          "left-upper-arm__rx": "left-upper-arm__rx",
+          "left-upper-arm__ry": "left-upper-arm__ry",
+          "left-upper-arm__rz": "left-upper-arm__rz",
+          "left-forearm__x": "left-forearm__x",
+          "left-forearm__y": "left-forearm__y",
+          "left-forearm__z": "left-forearm__z",
+          "left-forearm__rx": "left-forearm__rx",
+          "left-forearm__ry": "left-forearm__ry",
+          "left-forearm__rz": "left-forearm__rz",
+          "left-hand__x": "left-hand__x",
+          "left-hand__y": "left-hand__y",
+          "left-hand__z": "left-hand__z",
+          "left-hand__rx": "left-hand__rx",
+          "left-hand__ry": "left-hand__ry",
+          "left-hand__rz": "left-hand__rz",
+          "left-thigh__x": "left-thigh__x",
+          "left-thigh__y": "left-thigh__y",
+          "left-thigh__z": "left-thigh__z",
+          "left-thigh__rx": "left-thigh__rx",
+          "left-thigh__ry": "left-thigh__ry",
+          "left-thigh__rz": "left-thigh__rz",
+          "left-shin__x": "left-shin__x",
+          "left-shin__y": "left-shin__y",
+          "left-shin__z": "left-shin__z",
+          "left-shin__rx": "left-shin__rx",
+          "left-shin__ry": "left-shin__ry",
+          "left-shin__rz": "left-shin__rz",
+          "left-foot__x": "left-foot__x",
+          "left-foot__y": "left-foot__y",
+          "left-foot__z": "left-foot__z",
+          "left-foot__rx": "left-foot__rx",
+          "left-foot__ry": "left-foot__ry",
+          "left-foot__rz": "left-foot__rz",
+          "right-upper-arm__x": "right-upper-arm__x",
+          "right-upper-arm__y": "right-upper-arm__y",
+          "right-upper-arm__z": "right-upper-arm__z",
+          "right-upper-arm__rx": "right-upper-arm__rx",
+          "right-upper-arm__ry": "right-upper-arm__ry",
+          "right-upper-arm__rz": "right-upper-arm__rz",
+          "right-forearm__x": "right-forearm__x",
+          "right-forearm__y": "right-forearm__y",
+          "right-forearm__z": "right-forearm__z",
+          "right-forearm__rx": "right-forearm__rx",
+          "right-forearm__ry": "right-forearm__ry",
+          "right-forearm__rz": "right-forearm__rz",
+          "right-hand__x": "right-hand__x",
+          "right-hand__y": "right-hand__y",
+          "right-hand__z": "right-hand__z",
+          "right-hand__rx": "right-hand__rx",
+          "right-hand__ry": "right-hand__ry",
+          "right-hand__rz": "right-hand__rz",
+          "right-thigh__x": "right-thigh__x",
+          "right-thigh__y": "right-thigh__y",
+          "right-thigh__z": "right-thigh__z",
+          "right-thigh__rx": "right-thigh__rx",
+          "right-thigh__ry": "right-thigh__ry",
+          "right-thigh__rz": "right-thigh__rz",
+          "right-shin__x": "right-shin__x",
+          "right-shin__y": "right-shin__y",
+          "right-shin__z": "right-shin__z",
+          "right-shin__rx": "right-shin__rx",
+          "right-shin__ry": "right-shin__ry",
+          "right-shin__rz": "right-shin__rz",
+          "right-foot__x": "right-foot__x",
+          "right-foot__y": "right-foot__y",
+          "right-foot__z": "right-foot__z",
+          "right-foot__rx": "right-foot__rx",
+          "right-foot__ry": "right-foot__ry",
+          "right-foot__rz": "right-foot__rz"
+        },
+        "handlers": [
+          "move"
+        ],
+        "observations": {}
+      },
+      "actions": [
+        {
+          "action_id": "reach",
+          "label": "Reach the block",
+          "handler": "move",
+          "targets": {
+            "right-upper-arm__x": 71.780926716614,
+            "right-upper-arm__y": -190.61360261521804,
+            "right-upper-arm__z": 1337.9059199362382,
+            "right-upper-arm__rx": 55.25776984066228,
+            "right-upper-arm__ry": 7.873458036174513,
+            "right-upper-arm__rz": -4.125913548974337,
+            "right-forearm__x": -65.71907328338598,
+            "right-forearm__y": -103.82217805552423,
+            "right-forearm__z": 1171.1104797467392,
+            "right-forearm__rx": -35.742358165208394,
+            "right-forearm__ry": 52.52487377176859,
+            "right-forearm__rz": 18.079395556739897,
+            "right-hand__x": -180.0,
+            "right-hand__y": -155.0,
+            "right-hand__z": 1025.0
+          },
+          "axes": [
+            "right-upper-arm__x",
+            "right-upper-arm__y",
+            "right-upper-arm__z",
+            "right-upper-arm__rx",
+            "right-upper-arm__ry",
+            "right-upper-arm__rz",
+            "right-forearm__x",
+            "right-forearm__y",
+            "right-forearm__z",
+            "right-forearm__rx",
+            "right-forearm__ry",
+            "right-forearm__rz",
+            "right-hand__x",
+            "right-hand__y",
+            "right-hand__z"
+          ],
+          "rates": {
+            "right-upper-arm__x": 80.09352420135043,
+            "right-upper-arm__y": 83.73561556403172,
+            "right-upper-arm__z": 0.1464198626711095,
+            "right-upper-arm__rx": 36.22153704369803,
+            "right-upper-arm__ry": 30.890656378575642,
+            "right-upper-arm__rz": 2.3309399061478615,
+            "right-forearm__x": 150.09352420135042,
+            "right-forearm__y": 122.48561556403173,
+            "right-forearm__z": 18.896419862671337,
+            "right-forearm__rx": 42.29533755480538,
+            "right-forearm__ry": 8.255560819963225,
+            "right-forearm__rz": 26.38453676476753,
+            "right-hand__x": 140.0,
+            "right-hand__y": 77.5,
+            "right-hand__z": 37.5
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.001,
+            "conditions": [],
+            "dwell_s": 0.04,
+            "timeout_s": 10
+          }
+        },
+        {
+          "action_id": "grasp",
+          "label": "Grasp the block",
+          "handler": "move",
+          "targets": {
+            "head__x": -80.0
+          },
+          "axes": [
+            "head__x"
+          ],
+          "rates": {
+            "head__x": 0.1
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.001,
+            "conditions": [],
+            "dwell_s": 0.7,
+            "timeout_s": 10
+          }
+        },
+        {
+          "action_id": "lift",
+          "label": "Lift clear of the source tray",
+          "handler": "move",
+          "targets": {
+            "right-upper-arm__x": 77.0655796165606,
+            "right-upper-arm__y": -169.75837240873733,
+            "right-upper-arm__z": 1377.1693227693554,
+            "right-upper-arm__rx": 70.44268621950505,
+            "right-upper-arm__ry": 6.073708775572391,
+            "right-upper-arm__rz": -4.289934147248683,
+            "right-forearm__x": -60.43442038343939,
+            "right-forearm__y": -82.9669478490435,
+            "right-forearm__z": 1285.3738825798566,
+            "right-forearm__rx": -63.84533817916872,
+            "right-forearm__ry": 56.13126652410171,
+            "right-forearm__rz": 36.74966062178735,
+            "right-hand__z": 1175.0
+          },
+          "axes": [
+            "right-upper-arm__x",
+            "right-upper-arm__y",
+            "right-upper-arm__z",
+            "right-upper-arm__rx",
+            "right-upper-arm__ry",
+            "right-upper-arm__rz",
+            "right-forearm__x",
+            "right-forearm__y",
+            "right-forearm__z",
+            "right-forearm__rx",
+            "right-forearm__ry",
+            "right-forearm__rz",
+            "right-hand__z"
+          ],
+          "rates": {
+            "right-upper-arm__x": 3.523101933297729,
+            "right-upper-arm__y": 13.903486804320474,
+            "right-upper-arm__z": 26.175601888744797,
+            "right-upper-arm__rx": 10.123277585895181,
+            "right-upper-arm__ry": 1.1998328404014142,
+            "right-upper-arm__rz": 0.1093470655162309,
+            "right-forearm__x": 3.523101933297729,
+            "right-forearm__y": 13.903486804320485,
+            "right-forearm__z": 76.17560188874495,
+            "right-forearm__rx": 18.735320009306886,
+            "right-forearm__ry": 2.404261834888748,
+            "right-forearm__rz": 12.446843376698302,
+            "right-hand__z": 100.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.001,
+            "conditions": [],
+            "dwell_s": 0.04,
+            "timeout_s": 10
+          }
+        },
+        {
+          "action_id": "carry",
+          "label": "Carry to the destination tray",
+          "handler": "move",
+          "targets": {
+            "right-upper-arm__x": 250.87931327738073,
+            "right-upper-arm__y": -326.9022985986418,
+            "right-upper-arm__z": 1367.039656181997,
+            "right-upper-arm__rx": 1.4465247569213937,
+            "right-upper-arm__ry": -66.87379584666287,
+            "right-upper-arm__rz": 0.95517308727317,
+            "right-forearm__x": 293.37931327738073,
+            "right-forearm__y": -240.11087403894794,
+            "right-forearm__z": 1275.2442159924983,
+            "right-forearm__rx": 73.47943870962409,
+            "right-forearm__ry": 51.939139366987696,
+            "right-forearm__rz": -39.9605359505459,
+            "right-hand__x": 180.0
+          },
+          "axes": [
+            "right-upper-arm__x",
+            "right-upper-arm__y",
+            "right-upper-arm__z",
+            "right-upper-arm__rx",
+            "right-upper-arm__ry",
+            "right-upper-arm__rz",
+            "right-forearm__x",
+            "right-forearm__y",
+            "right-forearm__z",
+            "right-forearm__rx",
+            "right-forearm__ry",
+            "right-forearm__rz",
+            "right-hand__x"
+          ],
+          "rates": {
+            "right-upper-arm__x": 69.52549346432805,
+            "right-upper-arm__y": 62.85757047596178,
+            "right-upper-arm__z": 4.051866634943326,
+            "right-upper-arm__rx": 27.59846458503346,
+            "right-upper-arm__ry": 29.179001848894103,
+            "right-upper-arm__rz": 2.098042893808741,
+            "right-forearm__x": 141.52549346432804,
+            "right-forearm__y": 62.85757047596178,
+            "right-forearm__z": 4.051866634943326,
+            "right-forearm__rx": 54.92991075551713,
+            "right-forearm__ry": 1.676850862845606,
+            "right-forearm__rz": 30.6840786289333,
+            "right-hand__x": 144.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.001,
+            "conditions": [],
+            "dwell_s": 0.04,
+            "timeout_s": 10
+          }
+        },
+        {
+          "action_id": "lower",
+          "label": "Lower onto the destination tray",
+          "handler": "move",
+          "targets": {
+            "right-upper-arm__x": 230.86490955140596,
+            "right-upper-arm__y": -329.7373215732147,
+            "right-upper-arm__z": 1332.2516305991535,
+            "right-upper-arm__rx": -0.6526941734347469,
+            "right-upper-arm__ry": -53.279607428653605,
+            "right-upper-arm__rz": -0.32741487648390144,
+            "right-forearm__x": 273.36490955140596,
+            "right-forearm__y": -242.94589701352086,
+            "right-forearm__z": 1165.4561904096547,
+            "right-forearm__rx": 53.34050349700768,
+            "right-forearm__ry": 40.41862569350724,
+            "right-forearm__rz": -20.951588605488453,
+            "right-hand__z": 1025.0
+          },
+          "axes": [
+            "right-upper-arm__x",
+            "right-upper-arm__y",
+            "right-upper-arm__z",
+            "right-upper-arm__rx",
+            "right-upper-arm__ry",
+            "right-upper-arm__rz",
+            "right-forearm__x",
+            "right-forearm__y",
+            "right-forearm__z",
+            "right-forearm__rx",
+            "right-forearm__ry",
+            "right-forearm__rz",
+            "right-hand__z"
+          ],
+          "rates": {
+            "right-upper-arm__x": 13.342935817316516,
+            "right-upper-arm__y": 1.8900153163819293,
+            "right-upper-arm__z": 23.19201705522907,
+            "right-upper-arm__rx": 1.3994792869040937,
+            "right-upper-arm__ry": 9.062792278672845,
+            "right-upper-arm__rz": 0.8550586425047143,
+            "right-forearm__x": 13.342935817316516,
+            "right-forearm__y": 1.8900153163819482,
+            "right-forearm__z": 73.19201705522907,
+            "right-forearm__rx": 13.42595680841094,
+            "right-forearm__ry": 7.6803424489869725,
+            "right-forearm__rz": 12.672631563371633,
+            "right-hand__z": 100.0
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.001,
+            "conditions": [],
+            "dwell_s": 0.04,
+            "timeout_s": 10
+          }
+        },
+        {
+          "action_id": "release",
+          "label": "Release only after support is established",
+          "handler": "move",
+          "targets": {
+            "head__x": -80.0
+          },
+          "axes": [
+            "head__x"
+          ],
+          "rates": {
+            "head__x": 0.1
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.001,
+            "conditions": [],
+            "dwell_s": 0.7,
+            "timeout_s": 10
+          }
+        },
+        {
+          "action_id": "withdraw",
+          "label": "Withdraw the empty hand",
+          "handler": "move",
+          "targets": {
+            "right-upper-arm__x": 231.96797511931487,
+            "right-upper-arm__y": -358.0848337432815,
+            "right-upper-arm__z": 1338.1987596615804,
+            "right-upper-arm__rx": -17.185304246733782,
+            "right-upper-arm__ry": -53.90785472097677,
+            "right-upper-arm__rz": -8.78779336127006,
+            "right-forearm__x": 234.46797511931487,
+            "right-forearm__y": -348.7934091835877,
+            "right-forearm__z": 1208.9033194720819,
+            "right-forearm__rx": 48.84831694440236,
+            "right-forearm__ry": 69.03599541169504,
+            "right-forearm__rz": -34.68967797279517,
+            "right-hand__x": 100.0,
+            "right-hand__y": -310.0,
+            "right-hand__z": 1100.0
+          },
+          "axes": [
+            "right-upper-arm__x",
+            "right-upper-arm__y",
+            "right-upper-arm__z",
+            "right-upper-arm__rx",
+            "right-upper-arm__ry",
+            "right-upper-arm__rz",
+            "right-forearm__x",
+            "right-forearm__y",
+            "right-forearm__z",
+            "right-forearm__rx",
+            "right-forearm__ry",
+            "right-forearm__rz",
+            "right-hand__x",
+            "right-hand__y",
+            "right-hand__z"
+          ],
+          "rates": {
+            "right-upper-arm__x": 0.6128142043938409,
+            "right-upper-arm__y": 15.748617872259336,
+            "right-upper-arm__z": 3.303960590237188,
+            "right-upper-arm__rx": 9.18478337405502,
+            "right-upper-arm__ry": 0.3490262735128703,
+            "right-upper-arm__rz": 4.700210269325644,
+            "right-forearm__x": 21.609408017828382,
+            "right-forearm__y": 58.80417342781491,
+            "right-forearm__z": 24.137293923570645,
+            "right-forearm__rx": 2.4956591958918435,
+            "right-forearm__ry": 15.898538732326557,
+            "right-forearm__rz": 7.632271870725952,
+            "right-hand__x": 44.44444444444444,
+            "right-hand__y": 86.11111111111111,
+            "right-hand__z": 41.666666666666664
+          },
+          "completion": {
+            "source": "simulated",
+            "positions": true,
+            "tolerance": 0.001,
+            "conditions": [],
+            "dwell_s": 0.04,
+            "timeout_s": 10
+          }
+        }
+      ],
+      "operating_notes": [
+        "Virtual human pose channels, not physical actuators.",
+        "Native CAD meshes reused without shape changes."
+      ]
+    },
+    "geometry_sha256": "1e0083ff5b847497a19fc1ec02373bd9f3baeffb8fcde10b75752cbbaed7b4ff",
+    "containers": [
+      {
+        "container_id": "source",
+        "body_id": "tray-a",
+        "label": "source",
+        "capacity_g": 1000,
+        "contents_g": {
+          "wood": 300
+        },
+        "center_mm": [
+          0,
+          0,
+          0
+        ],
+        "radius_mm": 80,
+        "height_mm": 25,
+        "color": [
+          0.8,
+          0.5,
+          0.2
+        ]
+      },
+      {
+        "container_id": "in-hand",
+        "body_id": "right-hand",
+        "label": "in-hand",
+        "capacity_g": 1000,
+        "contents_g": {},
+        "center_mm": [
+          0,
+          0,
+          0
+        ],
+        "radius_mm": 80,
+        "height_mm": 25,
+        "color": [
+          0.8,
+          0.5,
+          0.2
+        ]
+      },
+      {
+        "container_id": "destination",
+        "body_id": "tray-b",
+        "label": "destination",
+        "capacity_g": 1000,
+        "contents_g": {},
+        "center_mm": [
+          0,
+          0,
+          0
+        ],
+        "radius_mm": 80,
+        "height_mm": 25,
+        "color": [
+          0.8,
+          0.5,
+          0.2
+        ]
+      }
+    ],
+    "phases": [
+      {
+        "phase_id": "reach",
+        "step_id": "pick",
+        "label": "Reach the block",
+        "action_id": "reach"
+      },
+      {
+        "phase_id": "grasp",
+        "step_id": "pick",
+        "label": "Grasp the block",
+        "action_id": "grasp",
+        "before": [
+          {
+            "action": "grasp",
+            "entity": "block",
+            "actor": "right-hand"
+          }
+        ],
+        "transfer": {
+          "source": "source",
+          "target": "in-hand",
+          "stream_id": "picked-block",
+          "mass_g": 300
+        }
+      },
+      {
+        "phase_id": "lift",
+        "step_id": "carry",
+        "label": "Lift clear of the source tray",
+        "action_id": "lift"
+      },
+      {
+        "phase_id": "carry",
+        "step_id": "carry",
+        "label": "Carry to the destination tray",
+        "action_id": "carry"
+      },
+      {
+        "phase_id": "lower",
+        "step_id": "place",
+        "label": "Lower onto the destination tray",
+        "action_id": "lower"
+      },
+      {
+        "phase_id": "release",
+        "step_id": "place",
+        "label": "Release only after support is established",
+        "action_id": "release",
+        "after": [
+          {
+            "action": "release",
+            "entity": "block",
+            "actor": "right-hand",
+            "surface": "destination-pad"
+          }
+        ],
+        "transfer": {
+          "source": "in-hand",
+          "target": "destination",
+          "stream_id": "placed-block",
+          "mass_g": 300
+        }
+      },
+      {
+        "phase_id": "withdraw",
+        "step_id": "withdraw",
+        "label": "Withdraw the empty hand",
+        "action_id": "withdraw"
+      }
+    ],
+    "interactions": {
+      "entities": [
+        {
+          "body_id": "bench",
+          "kind": "fixed",
+          "actions": [],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              885.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "leg-1",
+          "kind": "fixed",
+          "actions": [],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              -835.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -310.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              435.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "leg-2",
+          "kind": "fixed",
+          "actions": [],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              -835.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              310.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              435.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "leg-3",
+          "kind": "fixed",
+          "actions": [],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              835.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -310.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              435.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "leg-4",
+          "kind": "fixed",
+          "actions": [],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              835.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              310.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              435.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "tray-a",
+          "kind": "fixed",
+          "actions": [],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              -180.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -80.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              912.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "tray-b",
+          "kind": "fixed",
+          "actions": [],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              180.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -80.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              912.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "block",
+          "kind": "movable",
+          "actions": [
+            "grasp",
+            "carry",
+            "release"
+          ],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              -180.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -80.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              937.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            -75,
+            12.5
+          ],
+          "contact_mm": [
+            [
+              -80,
+              -75,
+              -12.5
+            ],
+            [
+              -80,
+              75,
+              -12.5
+            ],
+            [
+              80,
+              -75,
+              -12.5
+            ],
+            [
+              80,
+              75,
+              -12.5
+            ]
+          ],
+          "initial_support": "source-pad"
+        },
+        {
+          "body_id": "pelvis",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              0.9999999999999999,
+              -0.0,
+              0.0,
+              -80.0
+            ],
+            [
+              0.0,
+              0.9396926207859083,
+              0.34202014332566866,
+              -476.50656110773934
+            ],
+            [
+              -0.0,
+              -0.34202014332566866,
+              0.9396926207859083,
+              1027.173821889092
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "torso",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              0.9999999999999999,
+              -0.0,
+              0.0,
+              -80.0
+            ],
+            [
+              0.0,
+              0.9396926207859083,
+              0.34202014332566866,
+              -389.29142455969384
+            ],
+            [
+              -0.0,
+              -0.34202014332566866,
+              0.9396926207859083,
+              1266.7954401894988
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "neck",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              0.9999999999999999,
+              -0.0,
+              0.0,
+              -80.0
+            ],
+            [
+              0.0,
+              0.9396926207859083,
+              0.34202014332566866,
+              -309.60073116481306
+            ],
+            [
+              -0.0,
+              -0.34202014332566866,
+              0.9396926207859083,
+              1485.7438208326153
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "head",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              0.9999999999999999,
+              -0.0,
+              0.0,
+              -80.0
+            ],
+            [
+              0.0,
+              0.9396926207859083,
+              0.34202014332566866,
+              -261.2048808842309
+            ],
+            [
+              -0.0,
+              -0.34202014332566866,
+              0.9396926207859083,
+              1618.7103266738213
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "left-thigh",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              -180.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -450.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              817.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "left-shin",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              -180.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -450.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              334.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "left-foot",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              -180.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -450.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              35.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "left-upper-arm",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              0.9656402610918493,
+              0.10282467945174176,
+              -0.23867545213974464,
+              -214.54451086231325
+            ],
+            [
+              0.10282467945174176,
+              0.6922876878483673,
+              0.7142582463991634,
+              -449.6496218840458
+            ],
+            [
+              0.23867545213974464,
+              -0.7142582463991634,
+              0.6579279489402167,
+              1322.0720930336308
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "left-forearm",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              0.8700349335760645,
+              0.22782303246531796,
+              0.43719089678949113,
+              -237.04451086231327
+            ],
+            [
+              0.22782303246531796,
+              0.600636266730408,
+              -0.7663763703079999,
+              -460.358197324352
+            ],
+            [
+              -0.43719089678949113,
+              0.7663763703079999,
+              0.47067120030647264,
+              1142.776652844132
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "left-hand",
+          "kind": "actor",
+          "actions": [
+            "move",
+            "grasp",
+            "carry",
+            "release"
+          ],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              -300.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -350.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              1000.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            -75
+          ]
+        },
+        {
+          "body_id": "right-thigh",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              20.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -450.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              817.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "right-shin",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              20.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -450.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              334.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "right-foot",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              20.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -450.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              35.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "right-upper-arm",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              0.582170279964942,
+              0.08999772366600366,
+              -0.8080706496714742,
+              231.96797511931487
+            ],
+            [
+              0.08999772366600366,
+              0.9806150929991702,
+              0.1740530066306424,
+              -358.0848337432815
+            ],
+            [
+              0.8080706496714742,
+              -0.1740530066306424,
+              0.5627853729641122,
+              1338.1987596615804
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "right-forearm",
+          "kind": "actor",
+          "actions": [
+            "move"
+          ],
+          "initial_pose_mm": [
+            [
+              0.2941845079135248,
+              0.20362461149824337,
+              0.9338053827730204,
+              234.46797511931487
+            ],
+            [
+              0.20362461149824337,
+              0.9412552106425989,
+              -0.2693986748860258,
+              -348.7934091835877
+            ],
+            [
+              -0.9338053827730204,
+              0.2693986748860258,
+              0.23543971855612345,
+              1208.9033194720819
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "body_id": "right-hand",
+          "kind": "actor",
+          "actions": [
+            "move",
+            "grasp",
+            "carry",
+            "release"
+          ],
+          "initial_pose_mm": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              100.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              -310.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              1100.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "grip_mm": [
+            0,
+            0,
+            -75
+          ]
+        }
+      ],
+      "surfaces": [
+        {
+          "surface_id": "source-pad",
+          "body_id": "tray-a",
+          "bounds_xy_mm": [
+            -125,
+            -110,
+            125,
+            110
+          ],
+          "height_mm": 12.5
+        },
+        {
+          "surface_id": "destination-pad",
+          "body_id": "tray-b",
+          "bounds_xy_mm": [
+            -125,
+            -110,
+            125,
+            110
+          ],
+          "height_mm": 12.5
+        }
+      ],
+      "contact_tolerance_mm": 1
+    },
+    "frame_interval_s": 0.05,
+    "maximum_duration_s": 30
+  }
+}
