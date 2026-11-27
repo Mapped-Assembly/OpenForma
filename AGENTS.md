@@ -83,3 +83,12 @@ Read `docs/virtual-workcells.md` before authoring new workcells. The example's
 motions represent virtual human manipulation; no physical actuator is designed.
 Fluid dynamics, collision checking, mixing homogeneity and reaction kinetics are
 not supplied by this bridge. Do not confuse its inventory accounting with chemistry.
+
+## Declarative robot joint execution
+
+For imported robot joints, read `docs/declarative-mujoco-joints.md`. Use
+`forma.mujoco-joints` JSON for named axes, native joint/actuator mappings, gains
+and pinned assets instead of adapting SO-101-specific code. Discover the schema
+with `machine mujoco-schema` and verify bindings with `machine validate-mujoco`.
+MachineRuntime owns execution and observed completion. This adapter supplies
+scalar-joint contact physics, not IK, balance, locomotion or grasp verification.

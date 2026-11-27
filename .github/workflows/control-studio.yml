@@ -40,7 +40,7 @@ jobs:
       - name: Build native firmware (required, not skipped)
         run: python -m forma_core.firmware.sil.build --output examples/control_studio/generated/firmware
       - name: Test control runtime, native firmware and service
-        run: python -m unittest tests.control.test_runtime tests.control.test_client tests.control.test_service tests.control.test_package tests.control.test_tasks tests.firmware.test_sil -v
+        run: python -m unittest tests.control.test_runtime tests.control.test_client tests.control.test_service tests.control.test_package tests.control.test_tasks tests.control.test_mujoco_joints tests.firmware.test_sil -v
       - name: Verify portable two-rover workcell
         if: runner.os == 'Linux'
         run: |

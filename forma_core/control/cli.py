@@ -23,6 +23,13 @@ def register_parser(subparsers):
     validate.add_argument("package")
     validate.add_argument("--output")
     validate.set_defaults(func=validate_package)
+    mujoco_schema = commands.add_parser("mujoco-schema", help="Print declarative MuJoCo joint configuration schema.")
+    mujoco_schema.add_argument("--output")
+    mujoco_schema.set_defaults(func=mujoco_schema_command)
+    mujoco_validate = commands.add_parser("validate-mujoco", help="Verify pinned assets and native joint/actuator bindings; no motion.")
+    mujoco_validate.add_argument("configuration")
+    mujoco_validate.add_argument("--output")
+    mujoco_validate.set_defaults(func=validate_mujoco_command)
     identity = commands.add_parser("import-opencad", help="Preserve OpenCAD assembly/joint identities in a sidecar.")
     identity.add_argument("--assembly", required=True)
     identity.add_argument("--joints", required=True)
@@ -46,4 +53,23 @@ def import_identity(args):
         return json.loads(Path(path).read_text(encoding="utf-8"))
     identity = import_opencad_identity(read(args.assembly), read(args.joints), read(args.axis_joints))
     _write(identity.model_dump(mode="json"), args.output)
+    return 0
+
+
+def mujoco_schema_command(args) -> int:
+    """Discover the simulation contract without importing the optional engine."""
+    from .mujoco_joints import MujocoJointConfiguration
+    _write(MujocoJointConfiguration.model_json_schema(), args.output)
+    return 0
+
+
+def validate_mujoco_command(args) -> int:
+    """Compile pinned MJCF and verify scalar bindings without stepping physics."""
+    from .mujoco_joints import MujocoJointAdapter, load_mujoco_configuration
+    path = Path(args.configuration)
+    adapter = MujocoJointAdapter(load_mujoco_configuration(path), path.parent)
+    _write(dict(valid=True, scope="native-joint-binding-and-artifact-integrity",
+                execution_verified=False, configuration_sha256=adapter.config.sha256,
+                axes=len(adapter.config.bindings), actuators=adapter.model.nu,
+                adapter=adapter.describe().model_dump(mode="json")), args.output)
     return 0
