@@ -2930,21 +2930,21 @@
           "label": "Reach the block",
           "handler": "move",
           "targets": {
-            "right-upper-arm__x": 71.780926716614,
-            "right-upper-arm__y": -190.61360261521804,
-            "right-upper-arm__z": 1337.9059199362382,
-            "right-upper-arm__rx": 55.25776984066228,
-            "right-upper-arm__ry": 7.873458036174513,
-            "right-upper-arm__rz": -4.125913548974337,
-            "right-forearm__x": -65.71907328338598,
-            "right-forearm__y": -103.82217805552423,
-            "right-forearm__z": 1171.1104797467392,
-            "right-forearm__rx": -35.742358165208394,
-            "right-forearm__ry": 52.52487377176859,
-            "right-forearm__rz": 18.079395556739897,
+            "right-upper-arm__x": 70.10055192228074,
+            "right-upper-arm__y": -194.67671476534656,
+            "right-upper-arm__z": 1332.697795047135,
+            "right-upper-arm__rx": 53.003390933139315,
+            "right-upper-arm__ry": 8.447284672567097,
+            "right-upper-arm__rz": -4.217713321067273,
+            "right-forearm__x": -67.39944807771923,
+            "right-forearm__y": -107.88529020565274,
+            "right-forearm__z": 1155.4023548576365,
+            "right-forearm__rx": -31.66070996724168,
+            "right-forearm__ry": 51.43930557938506,
+            "right-forearm__rz": 15.554695697752466,
             "right-hand__x": -180.0,
             "right-hand__y": -155.0,
-            "right-hand__z": 1025.0
+            "right-hand__z": 1004.0
           },
           "axes": [
             "right-upper-arm__x",
@@ -2964,21 +2964,21 @@
             "right-hand__z"
           ],
           "rates": {
-            "right-upper-arm__x": 80.09352420135043,
-            "right-upper-arm__y": 83.73561556403172,
-            "right-upper-arm__z": 0.1464198626711095,
-            "right-upper-arm__rx": 36.22153704369803,
-            "right-upper-arm__ry": 30.890656378575642,
-            "right-upper-arm__rz": 2.3309399061478615,
-            "right-forearm__x": 150.09352420135042,
-            "right-forearm__y": 122.48561556403173,
-            "right-forearm__z": 18.896419862671337,
-            "right-forearm__rx": 42.29533755480538,
-            "right-forearm__ry": 8.255560819963225,
-            "right-forearm__rz": 26.38453676476753,
+            "right-upper-arm__x": 80.93371159851706,
+            "right-upper-arm__y": 81.70405948896746,
+            "right-upper-arm__z": 2.7504823072226827,
+            "right-upper-arm__rx": 35.09434758993655,
+            "right-upper-arm__ry": 31.177569696771933,
+            "right-upper-arm__rz": 2.2850400201013934,
+            "right-forearm__x": 150.93371159851705,
+            "right-forearm__y": 120.45405948896749,
+            "right-forearm__z": 26.750482307222683,
+            "right-forearm__rx": 40.25451345582202,
+            "right-forearm__ry": 8.798344916154988,
+            "right-forearm__rz": 25.122186835273816,
             "right-hand__x": 140.0,
             "right-hand__y": 77.5,
-            "right-hand__z": 37.5
+            "right-hand__z": 48.0
           },
           "completion": {
             "source": "simulated",
@@ -3046,19 +3046,19 @@
             "right-hand__z"
           ],
           "rates": {
-            "right-upper-arm__x": 3.523101933297729,
-            "right-upper-arm__y": 13.903486804320474,
-            "right-upper-arm__z": 26.175601888744797,
-            "right-upper-arm__rx": 10.123277585895181,
-            "right-upper-arm__ry": 1.1998328404014142,
-            "right-upper-arm__rz": 0.1093470655162309,
-            "right-forearm__x": 3.523101933297729,
-            "right-forearm__y": 13.903486804320485,
-            "right-forearm__z": 76.17560188874495,
-            "right-forearm__rx": 18.735320009306886,
-            "right-forearm__ry": 2.404261834888748,
-            "right-forearm__rz": 12.446843376698302,
-            "right-hand__z": 100.0
+            "right-upper-arm__x": 4.643351796186569,
+            "right-upper-arm__y": 16.612228237739487,
+            "right-upper-arm__z": 29.647685148146895,
+            "right-upper-arm__rx": 11.626196857577156,
+            "right-upper-arm__ry": 1.5823839313298038,
+            "right-upper-arm__rz": 0.1,
+            "right-forearm__x": 4.64335179618656,
+            "right-forearm__y": 16.612228237739487,
+            "right-forearm__z": 86.64768514814675,
+            "right-forearm__rx": 21.456418807951362,
+            "right-forearm__ry": 3.127973963144432,
+            "right-forearm__rz": 14.129976616023256,
+            "right-hand__z": 114.0
           },
           "completion": {
             "source": "simulated",
@@ -3132,19 +3132,19 @@
           "label": "Lower onto the destination tray",
           "handler": "move",
           "targets": {
-            "right-upper-arm__x": 230.86490955140596,
-            "right-upper-arm__y": -329.7373215732147,
-            "right-upper-arm__z": 1332.2516305991535,
-            "right-upper-arm__rx": -0.6526941734347469,
-            "right-upper-arm__ry": -53.279607428653605,
-            "right-upper-arm__rz": -0.32741487648390144,
-            "right-forearm__x": 273.36490955140596,
-            "right-forearm__y": -242.94589701352086,
-            "right-forearm__z": 1165.4561904096547,
-            "right-forearm__rx": 53.34050349700768,
-            "right-forearm__ry": 40.41862569350724,
-            "right-forearm__rz": -20.951588605488453,
-            "right-hand__z": 1025.0
+            "right-upper-arm__x": 227.24214247262546,
+            "right-upper-arm__y": -328.9889594787941,
+            "right-upper-arm__z": 1327.5621067907596,
+            "right-upper-arm__rx": -0.219452654584189,
+            "right-upper-arm__ry": -51.277941127176895,
+            "right-upper-arm__rz": -0.10532778201006986,
+            "right-forearm__x": 269.74214247262546,
+            "right-forearm__y": -242.19753491910024,
+            "right-forearm__z": 1150.266666601261,
+            "right-forearm__rx": 50.7408230825961,
+            "right-forearm__ry": 38.55087686290802,
+            "right-forearm__rz": -18.83191429704892,
+            "right-hand__z": 1004.0
           },
           "axes": [
             "right-upper-arm__x",
@@ -3162,19 +3162,19 @@
             "right-hand__z"
           ],
           "rates": {
-            "right-upper-arm__x": 13.342935817316516,
-            "right-upper-arm__y": 1.8900153163819293,
-            "right-upper-arm__z": 23.19201705522907,
-            "right-upper-arm__rx": 1.3994792869040937,
-            "right-upper-arm__ry": 9.062792278672845,
-            "right-upper-arm__rz": 0.8550586425047143,
-            "right-forearm__x": 13.342935817316516,
-            "right-forearm__y": 1.8900153163819482,
-            "right-forearm__z": 73.19201705522907,
-            "right-forearm__rx": 13.42595680841094,
-            "right-forearm__ry": 7.6803424489869725,
-            "right-forearm__rz": 12.672631563371633,
-            "right-hand__z": 100.0
+            "right-upper-arm__x": 15.758113869836848,
+            "right-upper-arm__y": 1.391107253434863,
+            "right-upper-arm__z": 26.318366260825012,
+            "right-upper-arm__rx": 1.1106516076703885,
+            "right-upper-arm__ry": 10.397236479657318,
+            "right-upper-arm__rz": 0.7070005795221599,
+            "right-forearm__x": 15.758113869836848,
+            "right-forearm__y": 1.391107253434863,
+            "right-forearm__z": 83.31836626082486,
+            "right-forearm__rx": 15.159077084685327,
+            "right-forearm__ry": 8.925508336053118,
+            "right-forearm__rz": 14.085747768997988,
+            "right-hand__z": 114.0
           },
           "completion": {
             "source": "simulated",
@@ -3246,21 +3246,21 @@
             "right-hand__z"
           ],
           "rates": {
-            "right-upper-arm__x": 0.6128142043938409,
-            "right-upper-arm__y": 15.748617872259336,
-            "right-upper-arm__z": 3.303960590237188,
-            "right-upper-arm__rx": 9.18478337405502,
-            "right-upper-arm__ry": 0.3490262735128703,
-            "right-upper-arm__rz": 4.700210269325644,
-            "right-forearm__x": 21.609408017828382,
-            "right-forearm__y": 58.80417342781491,
-            "right-forearm__z": 24.137293923570645,
-            "right-forearm__rx": 2.4956591958918435,
-            "right-forearm__ry": 15.898538732326557,
-            "right-forearm__rz": 7.632271870725952,
+            "right-upper-arm__x": 2.6254625814941175,
+            "right-upper-arm__y": 16.164374591381893,
+            "right-upper-arm__z": 5.909251594900474,
+            "right-upper-arm__rx": 9.425473106749774,
+            "right-upper-arm__ry": 1.4610631076665983,
+            "right-upper-arm__rz": 4.823591988477772,
+            "right-forearm__x": 19.596759640728106,
+            "right-forearm__y": 59.21993014693748,
+            "right-forearm__z": 32.57591826156714,
+            "right-forearm__rx": 1.0513922989965212,
+            "right-forearm__ry": 16.936176971548345,
+            "right-forearm__rz": 8.809868708747914,
             "right-hand__x": 44.44444444444444,
             "right-hand__y": 86.11111111111111,
-            "right-hand__z": 41.666666666666664
+            "right-hand__z": 53.33333333333333
           },
           "completion": {
             "source": "simulated",
@@ -3689,7 +3689,7 @@
               0.0,
               0.0,
               1.0,
-              937.5
+              916.5
             ],
             [
               0.0,
@@ -4347,23 +4347,23 @@
           "surface_id": "source-pad",
           "body_id": "tray-a",
           "bounds_xy_mm": [
-            -125,
-            -110,
-            125,
-            110
+            -121,
+            -106,
+            121,
+            106
           ],
-          "height_mm": 12.5
+          "height_mm": -8.5
         },
         {
           "surface_id": "destination-pad",
           "body_id": "tray-b",
           "bounds_xy_mm": [
-            -125,
-            -110,
-            125,
-            110
+            -121,
+            -106,
+            121,
+            106
           ],
-          "height_mm": 12.5
+          "height_mm": -8.5
         }
       ],
       "contact_tolerance_mm": 1

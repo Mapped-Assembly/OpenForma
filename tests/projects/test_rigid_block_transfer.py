@@ -32,7 +32,7 @@ def test_block_transfer_keeps_grasp_and_inventory_coherent() -> None:
     assert result['materials']['residual_g']==0
     last=result['frames'][-1]['interactions']
     assert last['relationships']['block']=={'parent':'tray-b','kind':'support'}
-    assert np.allclose(np.asarray(last['poses_mm']['block'])[:3,3],[180,-80,937.5])
+    assert np.allclose(np.asarray(last['poses_mm']['block'])[:3,3],[180,-80,916.5])
 
 
 def test_remote_grasp_cannot_move_material() -> None:

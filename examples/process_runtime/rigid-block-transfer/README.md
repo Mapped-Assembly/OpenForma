@@ -1,7 +1,7 @@
 # Human rigid-block transfer
 
 Independent minimal strict-interaction fixture: one stationary human mannequin,
-one workbench, two flat staging trays and one rigid 160 × 150 × 25 mm block.
+one workbench, two shallow trays and one rigid 160 × 150 × 25 mm block.
 Four ProcessIR steps (pick, carry, place, withdraw) execute seven action phases:
 reach, grasp, lift, carry, lower, release, withdraw. The hands explicitly advertise
 move/grasp/carry/release; the block advertises grasp/carry/release. The workbench,
@@ -31,3 +31,7 @@ the regression fixture needs no renderer or geometry engine installation.
 Evidence is sampled simulated kinematics and conservative nominal accounting.
 No force, friction, full collision, human balance or continuous anatomical
 verification is claimed. The mannequin uses the existing 1.75 m, 16-segment mesh.
+
+Support patches coincide with the native mesh interior floors: 4 mm above the
+tray bottom, inside its 4 mm walls. The raised rim is not treated as a solid
+support plane across the empty tray interior.
