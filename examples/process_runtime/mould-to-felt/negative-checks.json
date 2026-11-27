@@ -1,0 +1,19 @@
+[
+  {
+    "case": "no_retention",
+    "correctly_blocked": true,
+    "reason": "Support patch is not upward-facing.",
+    "felt_mass_g": 0
+  },
+  {
+    "case": "release_above_felt",
+    "correctly_blocked": true,
+    "reason": "Unsupported placement: sheet-01 on felt-stack-top.",
+    "felt_mass_g": 0
+  },
+  {
+    "case": "missing_release",
+    "correctly_blocked": true,
+    "reason": "Missing matching release; rejected before execution"
+  }
+]

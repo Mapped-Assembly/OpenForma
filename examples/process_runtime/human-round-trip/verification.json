@@ -1,0 +1,65 @@
+{
+  "code_head": "dba67ff74bc69b4baf9481585ffbb056f6421f1f",
+  "positive_execution": {
+    "completed_phases": 14,
+    "completed_process_steps": 8,
+    "grasp_episodes": 2,
+    "runtime_s": 23.15,
+    "fixed_entities": 7,
+    "inventory_conserved_all_frames": true,
+    "grasp_offsets_preserved_all_frames": true,
+    "final_support": "tray-a",
+    "checkpoints": [
+      {
+        "phase": "grasp",
+        "inventory_g": {
+          "source": 0.0,
+          "in-hand": 300.0,
+          "destination": 0.0
+        },
+        "relationship": {
+          "parent": "right-hand",
+          "kind": "grasp"
+        }
+      },
+      {
+        "phase": "release",
+        "inventory_g": {
+          "source": 0.0,
+          "in-hand": 0.0,
+          "destination": 300.0
+        },
+        "relationship": {
+          "parent": "tray-b",
+          "kind": "support"
+        }
+      },
+      {
+        "phase": "return-grasp",
+        "inventory_g": {
+          "source": 0.0,
+          "in-hand": 300.0,
+          "destination": 0.0
+        },
+        "relationship": {
+          "parent": "right-hand",
+          "kind": "grasp"
+        }
+      },
+      {
+        "phase": "return-release",
+        "inventory_g": {
+          "source": 300.0,
+          "in-hand": 0.0,
+          "destination": 0.0
+        },
+        "relationship": {
+          "parent": "tray-a",
+          "kind": "support"
+        }
+      }
+    ]
+  },
+  "evidence": "simulated sampled kinematics; physical verification not_run",
+  "trace_sha256": "e41de7b7c4e026cc3538f534d644b21e8c3e7a973aa16769f016113cae830f6a"
+}
