@@ -1,0 +1,50 @@
+{
+  "runtime_status": "completed",
+  "phases_completed": 11,
+  "process_steps": 3,
+  "runtime_seconds": 12.3,
+  "nominal_dry_cellulose_g": 4.51612,
+  "final_inventory": {
+    "on-mould": {
+      "contents_g": {
+        "dry-cellulose-equivalent": 0.0
+      },
+      "mass_g": 0.0,
+      "agitation_performed": false
+    },
+    "on-felt": {
+      "contents_g": {
+        "dry-cellulose-equivalent": 4.51612
+      },
+      "mass_g": 4.51612,
+      "agitation_performed": false
+    }
+  },
+  "sheet_stays_on_felt_during_mould_removal": true,
+  "bench_stationary": true,
+  "trace_sha256": "e3b1bcd72d12d944d11b4d456624f700418c6a123323eeff4d26d9fee18ee472",
+  "code_head": "dba67ff74bc69b4baf9481585ffbb056f6421f1f",
+  "evidence": "simulated rigid retained-web proxy and nominal dry-fiber ledger",
+  "unknown": [
+    "wet mass and water drainage",
+    "adhesion and release force",
+    "wet-web deformation and tearing",
+    "fiber retention and actual transfer yield",
+    "drying kinetics",
+    "filtration efficiency",
+    "saleable product quality"
+  ],
+  "physical_verification": "not_run",
+  "source_artifacts": [
+    "paper-human-v2/request.json",
+    "paper-human-v2/trace.json",
+    "paper-human-v2/scene-base.oi.json",
+    "simple-transfer-rerun/scene-base.oi.json (four legs)"
+  ],
+  "geometry_extent_mm_y_up": [
+    177.8,
+    1.2,
+    127.0
+  ],
+  "fixed_bench_and_legs_verified": true
+}

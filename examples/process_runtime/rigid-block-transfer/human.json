@@ -1,0 +1,271 @@
+{
+  "artifact_id": "block-transfer-human",
+  "revision": 1,
+  "domain": "human",
+  "schema_version": "1.0",
+  "profiles": [
+    {
+      "profile_id": "adult-nominal",
+      "revision": 1,
+      "source": {
+        "kind": "synthetic",
+        "description": "Simplified nominal mannequin, no measured anatomy.",
+        "reference": null
+      },
+      "stature_m": 1.75,
+      "mass_kg": 75.0,
+      "segments": [
+        {
+          "segment_id": "torso",
+          "label": "Torso",
+          "length_m": 0.355,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "pelvis",
+          "label": "Pelvis",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "neck",
+          "label": "Neck",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "head",
+          "label": "Head",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "left-upper-arm",
+          "label": "left upper arm",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "left-forearm",
+          "label": "left forearm",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "left-hand",
+          "label": "left hand",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "left-thigh",
+          "label": "left thigh",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "left-shin",
+          "label": "left shin",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "left-foot",
+          "label": "left foot",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "right-upper-arm",
+          "label": "right upper arm",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "right-forearm",
+          "label": "right forearm",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "right-hand",
+          "label": "right hand",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "right-thigh",
+          "label": "right thigh",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "right-shin",
+          "label": "right shin",
+          "length_m": null,
+          "mass_kg": null
+        },
+        {
+          "segment_id": "right-foot",
+          "label": "right foot",
+          "length_m": null,
+          "mass_kg": null
+        }
+      ],
+      "joints": [
+        {
+          "joint_id": "waist",
+          "parent_segment_id": "pelvis",
+          "child_segment_id": "torso",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "neck-base",
+          "parent_segment_id": "torso",
+          "child_segment_id": "neck",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "head-joint",
+          "parent_segment_id": "neck",
+          "child_segment_id": "head",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "left-shoulder",
+          "parent_segment_id": "torso",
+          "child_segment_id": "left-upper-arm",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "left-elbow",
+          "parent_segment_id": "left-upper-arm",
+          "child_segment_id": "left-forearm",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "left-wrist",
+          "parent_segment_id": "left-forearm",
+          "child_segment_id": "left-hand",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "left-hip",
+          "parent_segment_id": "pelvis",
+          "child_segment_id": "left-thigh",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "left-knee",
+          "parent_segment_id": "left-thigh",
+          "child_segment_id": "left-shin",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "left-ankle",
+          "parent_segment_id": "left-shin",
+          "child_segment_id": "left-foot",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "right-shoulder",
+          "parent_segment_id": "torso",
+          "child_segment_id": "right-upper-arm",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "right-elbow",
+          "parent_segment_id": "right-upper-arm",
+          "child_segment_id": "right-forearm",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "right-wrist",
+          "parent_segment_id": "right-forearm",
+          "child_segment_id": "right-hand",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "right-hip",
+          "parent_segment_id": "pelvis",
+          "child_segment_id": "right-thigh",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "right-knee",
+          "parent_segment_id": "right-thigh",
+          "child_segment_id": "right-shin",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        },
+        {
+          "joint_id": "right-ankle",
+          "parent_segment_id": "right-shin",
+          "child_segment_id": "right-foot",
+          "lower_limit_deg": null,
+          "upper_limit_deg": null
+        }
+      ],
+      "capabilities": [
+        {
+          "capability_id": "block-transfer",
+          "action": "Grasp, carry and place a rigid block",
+          "required_tools": [
+            "tray-a",
+            "tray-b"
+          ]
+        }
+      ],
+      "assumptions": [
+        "Nominal stature 1.75 m and total mass 75 kg.",
+        "MuJoCo segment mass distribution is geometric density rescaled to 75 kg; not measured anthropometry.",
+        "Pelvis is fixed; virtual position servos drive joints. No muscle, balance or physiological model.",
+        "Simulation joint ranges are assumed, not measured personal limits."
+      ],
+      "unknowns": [
+        "Segment mass distribution, joint limits, skin geometry, biomechanical response."
+      ]
+    }
+  ],
+  "participants": [
+    {
+      "participant_id": "operator-1",
+      "profile_id": "adult-nominal",
+      "profile_revision": 1,
+      "roles": [
+        "operator"
+      ],
+      "interfaces": [
+        {
+          "port_id": "manual-task",
+          "kind": "task",
+          "description": "Manual rigid-block transfer"
+        }
+      ],
+      "constraints": [
+        {
+          "constraint_id": "skin-temperature-limit",
+          "quantity": "skin_temperature",
+          "segment_id": "torso",
+          "lower": null,
+          "upper": null,
+          "basis": null
+        }
+      ],
+      "unknowns": []
+    }
+  ]
+}

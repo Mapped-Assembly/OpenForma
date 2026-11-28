@@ -25,6 +25,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
+    "numpy>=1.24",
     "google-auth>=2.29.0",
     "json-repair>=0.30.0",
     "keyring>=25.0.0",

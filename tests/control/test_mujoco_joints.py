@@ -20,7 +20,7 @@ SCENE = '''<mujoco><option gravity="0 0 0" timestep="0.002"/><worldbody>
 
 def declaration(root: Path, scene: str = SCENE) -> dict:
     """Create a pinned fixture using arbitrary names and mixed units."""
-    (root/'scene.xml').write_text(scene)
+    (root/'scene.xml').write_bytes(scene.encode('utf-8'))
     return dict(definition=dict(machine_id='mixed', name='Mixed', axes=[
         dict(axis_id='rotation',label='Rotation',unit='degree',minimum=-45.,maximum=45.,neutral=0.,max_rate=60.),
         dict(axis_id='travel',label='Travel',unit='mm',minimum=-40.,maximum=40.,neutral=0.,max_rate=50.)]),

@@ -92,3 +92,15 @@ and pinned assets instead of adapting SO-101-specific code. Discover the schema
 with `machine mujoco-schema` and verify bindings with `machine validate-mujoco`.
 MachineRuntime owns execution and observed completion. This adapter supplies
 scalar-joint contact physics, not IK, balance, locomotion or grasp verification.
+
+
+## Strict workcell interaction evidence
+
+New virtual workcells default to strict interaction validation. Use
+`examples/process_runtime/rigid-block-transfer/request.json` as the minimal human
+handling benchmark. Declare every motion body and inventory location, capabilities,
+support surfaces and each transfer's payload entity. Missing interaction data must
+fail before execution; do not remove guards to make a workflow complete.
+The older chemical choreography explicitly uses `legacy-unverified`; its inventory
+completion does not prove grasp, support or physical transfer. Read the strict
+migration section of `docs/virtual-workcells.md` before reusing it.

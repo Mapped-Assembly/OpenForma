@@ -1,0 +1,27 @@
+[
+  {
+    "case": "return_remote_grasp",
+    "correctly_blocked": true,
+    "reason": "Contact missing: right-hand -> block.",
+    "inventory_g": {
+      "source": 0.0,
+      "in-hand": 0.0,
+      "destination": 300.0
+    }
+  },
+  {
+    "case": "return_midair_release",
+    "correctly_blocked": true,
+    "reason": "Unsupported placement: block on source-pad.",
+    "inventory_g": {
+      "source": 0.0,
+      "in-hand": 300.0,
+      "destination": 0.0
+    }
+  },
+  {
+    "case": "missing_interactions",
+    "correctly_blocked": true,
+    "reason": "Missing required declarations; blocked before execution"
+  }
+]
